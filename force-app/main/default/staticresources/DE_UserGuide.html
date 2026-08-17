@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Edge - CRM Guide</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D1B3C;
+  --navy2:#162448;
+  --navy3:#1e3163;
+  --orange:#f97316;
+  --orange2:#ea580c;
+  --orange-lt:#fff7ed;
+  --orange-bd:#fed7aa;
+  --text:#1e293b;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --bg:#f1f5f9;
+  --white:#ffffff;
+  --green:#16a34a;
+  --green-lt:#f0fdf4;
+  --green-bd:#bbf7d0;
+  --blue:#3b82f6;
+  --blue-lt:#eff6ff;
+  --blue-bd:#bfdbfe;
+  --amber-lt:#fffbeb;
+  --amber-bd:#fde68a;
+  --red-lt:#fef2f2;
+  --red-bd:#fecaca;
+  --sb:268px;
+  --r:10px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-size:14px;color:var(--text);background:var(--bg);
+  display:flex;min-height:100vh;
+}
+
+/* ===== SIDEBAR ===== */
+#sb{
+  width:var(--sb);min-width:var(--sb);
+  background:var(--navy);
+  position:fixed;top:0;left:0;bottom:0;
+  display:flex;flex-direction:column;
+  overflow-y:auto;z-index:100;
+}
+#sb::-webkit-scrollbar{width:3px}
+#sb::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:3px}
+
+/* DE Logo */
+.sb-logo{padding:20px 20px 18px;border-bottom:1px solid rgba(255,255,255,0.07)}
+.sb-logo-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:40px;height:40px;border-radius:9px;
+  background:var(--orange);
+  font-size:16px;font-weight:900;color:#fff;letter-spacing:-.5px;
+  margin-bottom:10px;
+}
+.sb-logo-name{font-size:16px;font-weight:800;color:#fff;line-height:1}
+.sb-logo-sub{font-size:10.5px;color:rgba(255,255,255,0.35);margin-top:3px}
+.sb-logo-guide{
+  margin-top:10px;
+  font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--orange);
+}
+
+nav{padding:8px 0 32px;flex:1}
+.nav-section{
+  font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,0.22);padding:16px 20px 5px;
+}
+nav a{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 20px;font-size:13px;font-weight:500;
+  color:rgba(255,255,255,0.58);text-decoration:none;
+  border-left:3px solid transparent;transition:all .12s;line-height:1.3;
+}
+.nav-ico{font-size:14px;flex-shrink:0;width:18px;text-align:center;opacity:.8}
+nav a:hover{color:#fff;background:rgba(255,255,255,0.05);border-left-color:rgba(249,115,22,0.5)}
+nav a.active{color:#fff;background:rgba(249,115,22,0.15);border-left-color:var(--orange)}
+nav a.active .nav-ico{opacity:1}
+
+/* ===== MAIN ===== */
+#main{margin-left:var(--sb);flex:1;min-width:0;display:flex;flex-direction:column}
+
+/* ===== PAGE HEADER ===== */
+#phdr{
+  background:var(--navy2);
+  padding:26px 44px 22px;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  position:sticky;top:0;z-index:50;
+}
+.phdr-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:5px}
+.phdr-title{font-size:26px;font-weight:800;color:#fff;line-height:1.2}
+.phdr-desc{font-size:13px;color:rgba(255,255,255,0.45);margin-top:7px;line-height:1.6;max-width:540px}
+
+/* ===== CONTENT ===== */
+#content{padding:32px 44px 72px;flex:1}
+
+/* ===== SECTION ===== */
+.section{margin-bottom:56px;scroll-margin-top:120px}
+.sec-hdr{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid var(--border)}
+.sec-num{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--navy);color:#fff;
+  font-size:15px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sec-title{font-size:21px;font-weight:800;color:var(--text)}
+.sec-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* ===== STEPS ===== */
+.steps{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.step{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px 20px;
+  display:flex;gap:16px;align-items:flex-start;
+  box-shadow:0 1px 3px rgba(15,23,42,0.05);
+}
+.sn{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--orange);color:#fff;
+  font-size:12px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+}
+.sb2{flex:1}
+.st{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.sd{font-size:13px;color:#475569;line-height:1.65}
+.sd strong{color:var(--text)}
+
+/* Action button - what the user clicks in Salesforce */
+.do{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--navy);color:var(--orange);
+  font-size:11.5px;font-weight:800;
+  border-radius:5px;padding:2px 10px;
+  white-space:nowrap;vertical-align:middle;margin:0 2px;
+  border:1px solid rgba(249,115,22,0.25);
+}
+.do::before{content:'▸';font-size:9px;opacity:.7}
+
+/* Field name */
+.f{
+  background:#f8fafc;border:1px solid var(--border);
+  border-radius:4px;padding:1px 6px;
+  font-size:11.5px;font-weight:600;color:#334155;
+  white-space:nowrap;vertical-align:middle;margin:0 2px;
+  font-family:'SF Mono',Consolas,monospace;
+}
+
+/* ===== NOTE BOXES ===== */
+.note{
+  border-radius:9px;padding:14px 16px;margin-bottom:18px;
+  display:flex;gap:12px;align-items:flex-start;
+  font-size:13px;line-height:1.65;color:#334155;
+}
+.note-tip{background:var(--orange-lt);border:1px solid var(--orange-bd)}
+.note-info{background:var(--blue-lt);border:1px solid var(--blue-bd)}
+.note-ok{background:var(--green-lt);border:1px solid var(--green-bd)}
+.note-warn{background:var(--red-lt);border:1px solid var(--red-bd)}
+.ni2{font-size:16px;flex-shrink:0;margin-top:1px}
+.note strong{font-weight:700;color:var(--text);display:block;margin-bottom:2px}
+
+/* ===== CARD ===== */
+.card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:18px 20px;margin-bottom:12px;
+  box-shadow:0 1px 3px rgba(15,23,42,0.05);
+}
+.ct{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.cb{font-size:13px;color:#475569;line-height:1.7}
+.cb p{margin-bottom:7px}.cb p:last-child{margin-bottom:0}
+
+/* ===== GRID ===== */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:700px){.g2{grid-template-columns:1fr}}
+
+/* ===== CALLOUT BANNER ===== */
+.callout{
+  background:var(--navy);border-radius:var(--r);
+  padding:18px 22px;margin-bottom:18px;
+  border-left:4px solid var(--orange);color:#fff;
+}
+.cl-tag{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:5px}
+.cl-title{font-size:15px;font-weight:800;margin-bottom:5px}
+.cl-body{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.65}
+.cl-body strong{color:var(--orange)}
+
+/* ===== FLOW DIAGRAM ===== */
+.flow{display:flex;align-items:center;gap:0;margin-bottom:20px;flex-wrap:wrap;gap:4px}
+.fl-step{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:8px;padding:10px 14px;text-align:center;
+  box-shadow:0 1px 3px rgba(15,23,42,0.05);min-width:90px;
+}
+.fl-step-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.fl-step-name{font-size:12px;font-weight:700;color:var(--text);margin-top:2px}
+.fl-step-btn{font-size:10px;color:var(--orange);font-weight:700;margin-top:3px}
+.fl-arr{font-size:16px;color:var(--border);flex-shrink:0}
+.fl-step-act{background:var(--navy);border-color:var(--orange)}
+.fl-step-act .fl-step-name{color:#fff}
+.fl-step-act .fl-step-lbl{color:var(--orange)}
+.fl-step-won{background:var(--green-lt);border-color:var(--green-bd)}
+.fl-step-won .fl-step-name{color:var(--green)}
+.fl-step-lost{background:var(--red-lt);border-color:var(--red-bd)}
+.fl-step-lost .fl-step-name{color:#dc2626}
+
+/* ===== STAGE STRIP ===== */
+.stages{display:flex;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);margin-bottom:18px}
+.stage{flex:1;padding:12px 6px;text-align:center;border-right:1px solid var(--border);background:var(--white)}
+.stage:last-child{border-right:none}
+.stage-lbl{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--muted);letter-spacing:.05em}
+.stage-name{font-size:11px;font-weight:700;color:var(--text);margin-top:3px}
+.s-act{background:var(--navy)}.s-act .stage-name{color:#fff}.s-act .stage-lbl{color:var(--orange)}
+.s-won{background:var(--green-lt)}.s-won .stage-name{color:var(--green)}
+.s-lost{background:var(--red-lt)}.s-lost .stage-name{color:#dc2626}
+
+/* ===== FIELD TABLE ===== */
+.ft{width:100%;border-collapse:collapse;font-size:13px;background:var(--white);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);margin-bottom:18px}
+.ft th{background:#f8fafc;color:var(--muted);font-size:10.5px;font-weight:700;padding:10px 14px;text-align:left;letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+.ft td{padding:11px 14px;border-bottom:1px solid var(--border);color:#334155;vertical-align:top;line-height:1.55}
+.ft tr:last-child td{border-bottom:none}
+.fn{font-weight:600;color:var(--text);font-family:'SF Mono',Consolas,monospace;font-size:12px}
+
+/* ===== FAQ ===== */
+details{background:var(--white);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px}
+summary{
+  padding:14px 18px;font-size:14px;font-weight:600;color:var(--text);
+  cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;user-select:none;
+}
+summary::after{content:'+';font-size:18px;font-weight:300;color:var(--muted);flex-shrink:0;margin-left:12px}
+details[open] summary{color:var(--orange)}
+details[open] summary::after{content:'-';color:var(--orange)}
+.faq-ans{padding:0 18px 15px;font-size:13px;color:#475569;line-height:1.7}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside id="sb">
+  <div class="sb-logo">
+    <div class="sb-logo-badge">DE</div>
+    <div class="sb-logo-name">Digital Edge</div>
+    <div class="sb-logo-sub">Data Centers · Connectivity</div>
+    <div class="sb-logo-guide">CRM User Guide</div>
+  </div>
+  <nav>
+    <div class="nav-section">Getting Started</div>
+    <a href="#home" onclick="setActive(this)"><span class="nav-ico">🏠</span>Home &amp; Dashboard</a>
+    <a href="#nav-sf" onclick="setActive(this)"><span class="nav-ico">🧭</span>Navigating the CRM</a>
+
+    <div class="nav-section">Leads</div>
+    <a href="#leads" onclick="setActive(this)"><span class="nav-ico">📥</span>Finding &amp; Working a Lead</a>
+    <a href="#lead-status" onclick="setActive(this)"><span class="nav-ico">✅</span>Approving or Disqualifying</a>
+    <a href="#convert" onclick="setActive(this)"><span class="nav-ico">⚡</span>Converting a Lead</a>
+
+    <div class="nav-section">Opportunities</div>
+    <a href="#accounts" onclick="setActive(this)"><span class="nav-ico">🏢</span>Accounts &amp; Contacts</a>
+    <a href="#opps" onclick="setActive(this)"><span class="nav-ico">💼</span>The Opportunity Record</a>
+    <a href="#stages" onclick="setActive(this)"><span class="nav-ico">🚦</span>Stages &amp; Gate Requirements</a>
+
+    <div class="nav-section">Quoting &amp; Closing</div>
+    <a href="#quotes" onclick="setActive(this)"><span class="nav-ico">📄</span>Building &amp; Sending a Quote</a>
+    <a href="#accept" onclick="setActive(this)"><span class="nav-ico">🏆</span>Accepting a Quote (SOF Signed)</a>
+    <a href="#contracts" onclick="setActive(this)"><span class="nav-ico">📋</span>Contracts &amp; Orders</a>
+
+    <div class="nav-section">Help</div>
+    <a href="#faq" onclick="setActive(this)"><span class="nav-ico">❓</span>Common Questions</a>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<div id="main">
+<div id="phdr">
+  <div class="phdr-label">Digital Edge CRM</div>
+  <div class="phdr-title">User Guide</div>
+  <div class="phdr-desc">A step-by-step guide for every stage of your sales process. Each section tells you exactly which button to click and what to fill in.</div>
+</div>
+<div id="content">
+
+
+<!-- HOME -->
+<div class="section" id="home">
+  <div class="sec-hdr">
+    <div class="sec-num">1</div>
+    <div><div class="sec-title">Home &amp; Dashboard</div><div class="sec-sub">The first screen after you log in</div></div>
+  </div>
+
+  <div class="callout">
+    <div class="cl-tag">What you see first</div>
+    <div class="cl-title">The Welcome Card</div>
+    <div class="cl-body">At the top of your Home screen is a card with your name and a greeting. Below it is your task list for today - anything due today appears here. Overdue tasks show in red. The <strong>dark/light toggle</strong> in the card switches your display theme and saves automatically.</div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">📋 Today's Tasks</div>
+      <div class="cb">Everything due today is listed here. Click any task title to open the deal or record it belongs to. Overdue tasks appear in red - deal with those first.</div>
+    </div>
+    <div class="card">
+      <div class="ct">🔔 Notifications</div>
+      <div class="cb">The bell icon at the top right shows system alerts - deal review requests, Finance approval decisions, and MEDDPICC reminders. Check it at the start of each day.</div>
+    </div>
+  </div>
+
+  <div class="note note-tip">
+    <span class="ni2">💡</span>
+    <div><strong>Morning habit</strong>Check Home first. Clear any overdue tasks. Open Opportunities and review your pipeline. The whole thing takes 5 minutes if your records are up to date.</div>
+  </div>
+</div>
+
+
+<!-- NAVIGATION -->
+<div class="section" id="nav-sf">
+  <div class="sec-hdr">
+    <div class="sec-num">2</div>
+    <div><div class="sec-title">Navigating the CRM</div><div class="sec-sub">How to get around and find what you need</div></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">📌 The tabs at the top of every page</div>
+    <div class="cb">
+      <p><strong>Leads</strong> - new prospects not yet converted to a deal<br>
+      <strong>Accounts</strong> - companies you do business with<br>
+      <strong>Contacts</strong> - individuals at those companies<br>
+      <strong>Opportunities</strong> - your active deals<br>
+      <strong>Quotes</strong> - pricing proposals you've built or sent<br>
+      <strong>Contracts</strong> - signed agreements linked to closed deals<br>
+      <strong>Orders</strong> - what gets delivered after a contract is signed</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">🔍 Finding anything fast</div>
+      <div class="cb">Click the search bar at the top. Type a company name, a person's name, or an opportunity. Results appear instantly. Click to open.</div>
+    </div>
+    <div class="card">
+      <div class="ct">📌 Set your default list view</div>
+      <div class="cb">Go to Opportunities. Click the list view dropdown next to the list name. Select "My Open Opportunities". Click the pin icon. This view opens by default from now on.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- WORKING A LEAD -->
+<div class="section" id="leads">
+  <div class="sec-hdr">
+    <div class="sec-num">3</div>
+    <div><div class="sec-title">Finding &amp; Working a Lead</div><div class="sec-sub">A new prospect has come in - here's what to do</div></div>
+  </div>
+
+  <div class="callout">
+    <div class="cl-tag">What is a Lead?</div>
+    <div class="cl-title">A Lead is a prospect - not yet a deal</div>
+    <div class="cl-body">Leads come from web forms, marketing campaigns, or are added manually. They sit in a queue until a rep picks them up. At this stage there is <strong>no Account, no Contact, and no Opportunity</strong> - those are created when you convert. Your job on a Lead is to qualify it: find out if it's a real opportunity worth pursuing.</div>
+  </div>
+
+  <ul class="steps">
+    <li class="step">
+      <div class="sn">1</div>
+      <div class="sb2">
+        <div class="st">Open the Leads tab and find the queue</div>
+        <div class="sd">Click <strong>Leads</strong> in the top navigation. Click the list view dropdown (next to the list name) and switch to <strong>"All Open Leads"</strong> or your team's queue view. These are leads waiting to be claimed.</div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="sn">2</div>
+      <div class="sb2">
+        <div class="st">Open a Lead and read it</div>
+        <div class="sd">Click the lead's name to open it. Read the <f class="f">Company</f>, <f class="f">Lead Source</f>, <f class="f">Product Interest</f>, and any notes already logged in the Activity timeline at the bottom.</div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="sn">3</div>
+      <div class="sb2">
+        <div class="st">Click "Working" to claim it and start qualifying</div>
+        <div class="sd">Click the <span class="do">Working</span> button in the action bar near the top of the Lead. A form pops up. Fill in everything you know right now:<br><br>
+          <f class="f">Customer Type</f> - the type of customer (Colocation, Hyperscaler, etc.)<br>
+          <f class="f">Segment</f> and <f class="f">Sub-Segment</f><br>
+          <f class="f">Target Country</f> - where they want space<br>
+          <f class="f">Product Interest</f> - what they're looking for<br>
+          <f class="f">Capacity (kW)</f> - power requirement if known<br>
+          <f class="f">Notes</f> - anything else relevant<br><br>
+          Clicking Working assigns the lead to you and sets the status to "Working".
+        </div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="sn">4</div>
+      <div class="sb2">
+        <div class="st">Make contact and log the conversation</div>
+        <div class="sd">Call or email the prospect. After the call, scroll to the <strong>Activity</strong> section at the bottom of the Lead and click <span class="do">Log a Call</span>. Write what was discussed and what the next step is. Save. This creates a permanent record of every interaction.</div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="sn">5</div>
+      <div class="sb2">
+        <div class="st">Set a follow-up task</div>
+        <div class="sd">In the Activity section, click <span class="do">New Task</span>. Set a Subject ("Follow up call - [Company]"), a Due Date, assign it to yourself. Save. This task will appear on your Home screen on that date so you don't forget.</div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="sn">6</div>
+      <div class="sb2">
+        <div class="st">Keep qualifying - repeat steps 4 and 5</div>
+        <div class="sd">Each time you speak to the prospect, log the call and set the next task. Update the lead fields as you learn more. The Activity timeline builds up a full history of every touchpoint. Continue this loop until you know whether this is a real opportunity or not.</div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="note note-info">
+    <span class="ni2">ℹ️</span>
+    <div><strong>Use Send Email too</strong> - You can also click <span class="do">Send Email</span> in the activity bar to send an email directly from the Lead record. It gets logged automatically in the timeline - no need to log it separately.</div>
+  </div>
+</div>
+
+
+<!-- APPROVE OR DISQUALIFY -->
+<div class="section" id="lead-status">
+  <div class="sec-hdr">
+    <div class="sec-num">4</div>
+    <div><div class="sec-title">Approving or Disqualifying a Lead</div><div class="sec-sub">Once you've qualified it - here's the decision</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card" style="border-top:3px solid var(--orange)">
+      <div class="ct">✅ It's a real opportunity - click "Sales Approved"</div>
+      <div class="cb">
+        <p>When you're confident this prospect is worth pursuing, click <span class="do">Sales Approved</span> on the Lead. A form opens. Fill in:</p>
+        <p>
+          <f class="f">GoLive Target Date</f> - required - when they want to go live<br>
+          <f class="f">Target Site</f> - required - which DE facility they're interested in<br>
+          <f class="f">Finance Check Status</f> - initial finance assessment<br>
+          <f class="f">Sales Team</f> - confirm the right team
+        </p>
+        <p>Save. The Lead status moves to "Sales Approved". You're ready to convert.</p>
+      </div>
+    </div>
+    <div class="card" style="border-top:3px solid #94a3b8">
+      <div class="ct">❌ Not a real opportunity - click "Disqualify"</div>
+      <div class="cb">
+        <p>If after your conversations it's clear this isn't going anywhere, click <span class="do">Disqualify</span> on the Lead. A form opens. Fill in:</p>
+        <p>
+          <f class="f">Disqualification Reason</f> - why it's not moving forward<br>
+          <f class="f">Notes</f> - any extra context
+        </p>
+        <p>Save. The Lead is closed. This keeps your pipeline clean and gives the team data on why leads don't convert.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="note note-warn">
+    <span class="ni2">⚠️</span>
+    <div><strong>Don't rush to Sales Approved</strong> - Only approve a lead when you've confirmed genuine interest and have a real target date and site in mind. A premature conversion creates noise in the pipeline. If in doubt, keep working the lead.</div>
+  </div>
+</div>
+
+
+<!-- CONVERT -->
+<div class="section" id="convert">
+  <div class="sec-hdr">
+    <div class="sec-num">5</div>
+    <div><div class="sec-title">Converting a Lead</div><div class="sec-sub">Turning a qualified lead into an Account, Contact, and Opportunity</div></div>
+  </div>
+
+  <div class="note note-tip">
+    <span class="ni2">💡</span>
+    <div><strong>What does Convert do?</strong> It creates an Account (the company), a Contact (the person), and one or more Opportunities - one for each target country the prospect mentioned. All three are linked together automatically. After conversion, the Lead is marked "Converted" and you work from the Opportunity forward.</div>
+  </div>
+
+  <ul class="steps">
+    <li class="step">
+      <div class="sn">1</div>
+      <div class="sb2">
+        <div class="st">Click Convert on the Lead</div>
+        <div class="sd">Open the Lead record. Click <span class="do">Convert</span> in the action bar. A guided step-by-step flow opens in a popup. Follow the screens - it walks you through everything.</div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="sn">2</div>
+      <div class="sb2">
+        <div class="st">Check if the company already exists</div>
+        <div class="sd">The system automatically searches for an Account with the same company name.<br><br>
+          <strong>Match found:</strong> You'll see the existing Account. Click to link to it - this prevents creating a duplicate company.<br><br>
+          <strong>No match:</strong> A new Account will be created. Check the spelling of the company name before continuing.
+        </div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="sn">3</div>
+      <div class="sb2">
+        <div class="st">Confirm Account classification</div>
+        <div class="sd">The flow asks for a few fields that go on the Account record:<br><br>
+          <f class="f">Segment</f> - Enterprise, SMB, Hyperscaler, etc.<br>
+          <f class="f">Sub-Segment</f><br>
+          <f class="f">Operation Country</f><br>
+          <f class="f">Sales Team</f><br>
+          <f class="f">Strategic Account</f> - tick if this is a high-priority account<br>
+          <f class="f">Tax ID</f> - if available
+        </div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="sn">4</div>
+      <div class="sb2">
+        <div class="st">Review and convert</div>
+        <div class="sd">The summary screen shows what will be created. Check the Account name, Contact name, and email. Click <span class="do">Convert</span>. The system creates the Account, Contact, and Opportunities automatically.</div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="sn">5</div>
+      <div class="sb2">
+        <div class="st">Open your new Opportunity</div>
+        <div class="sd">The confirmation screen shows links to everything created. Click the Opportunity link to open it - this is where your deal work begins. If the prospect has multiple target countries, you'll see one Opportunity per country.</div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="note note-ok">
+    <span class="ni2">✅</span>
+    <div><strong>After conversion</strong> - The Lead is marked Converted. The Account is created as Active. The Contact is linked to the Account. Each Opportunity starts at Stage 1-Suspect. Your next step is inside the Opportunity.</div>
+  </div>
+</div>
+
+
+<!-- ACCOUNTS -->
+<div class="section" id="accounts">
+  <div class="sec-hdr">
+    <div class="sec-num">6</div>
+    <div><div class="sec-title">Accounts &amp; Contacts</div><div class="sec-sub">The company and the people you're dealing with</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">🏢 Account</div>
+      <div class="cb">The Account is the company. All Contacts, Opportunities, Quotes, Contracts, and Orders belong to an Account. Before any deal can close, the Account needs to pass a Finance and KYC check.</div>
+    </div>
+    <div class="card">
+      <div class="ct">👤 Contact</div>
+      <div class="cb">A Contact is a person at the company. You can have multiple Contacts on one Account - the buyer, the technical evaluator, the legal contact. Link the right people to your Opportunity as the deal progresses.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">✅ Account Checklist - what Finance needs before you can close</div>
+    <div class="cb">
+      <p>On the Account record, there's an <strong>Account Checklist</strong> panel showing readiness gates. All must be green before a contract can be issued. The checklist shows:</p>
+      <p>
+        <strong>Finance Approval</strong> - Finance reviews and approves the account<br>
+        <strong>KYC (Know Your Customer)</strong> - compliance check<br>
+        <strong>Operation Country</strong> - must be populated<br>
+        <strong>Credit Block</strong> - must be clear<br>
+        <strong>Account Manager</strong> - must be assigned
+      </p>
+      <p>You can check the status at any time by looking at the checklist on the Account. Red means something is missing or outstanding. Green means done.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- OPPORTUNITIES -->
+<div class="section" id="opps">
+  <div class="sec-hdr">
+    <div class="sec-num">7</div>
+    <div><div class="sec-title">The Opportunity Record</div><div class="sec-sub">Where you track and progress your deal</div></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">📑 Tabs inside an Opportunity</div>
+    <div class="cb">
+      <p>When you open an Opportunity, tabs run across the top. Here is what each one is for:</p>
+      <p>
+        <strong>Overview</strong> - quick summary and a banner showing exactly what's required at this stage<br>
+        <strong>Capacity &amp; Site</strong> - power, space, and location requirements<br>
+        <strong>Pipeline</strong> - core deal fields: customer type, sales motion, site details<br>
+        <strong>MEDDPICC</strong> - your qualification fields and the Deal Health Panel<br>
+        <strong>Commission &amp; Channel</strong> - who gets paid and what percentage<br>
+        <strong>Deal Review &amp; Billing</strong> - approval status and billing info
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🏥 The Deal Health Panel (MEDDPICC tab)</div>
+    <div class="cb">
+      <p>On the MEDDPICC tab, there's a panel on the right side called the <strong>Deal Health Panel</strong>. It has two tabs:</p>
+      <p><strong>External</strong> - track the people involved in the decision: who they are, what role they play, what they care about. Fill this in as you learn more about the deal.</p>
+      <p><strong>Internal</strong> - commercial details for internal use: pricing, margin, deal team, splits, booking amounts. Your manager reviews this in deal reviews.</p>
+    </div>
+  </div>
+
+  <div class="note note-tip">
+    <span class="ni2">💡</span>
+    <div><strong>Click Qualify to advance the deal</strong> - Once you've had initial conversations and confirmed the prospect's requirements, click <span class="do">Qualify</span> on the Opportunity. This advances the stage to 2-Prospect and asks for the confirmed site, power requirements, and close date. Fill those in and save.</div>
+  </div>
+</div>
+
+
+<!-- STAGES -->
+<div class="section" id="stages">
+  <div class="sec-hdr">
+    <div class="sec-num">8</div>
+    <div><div class="sec-title">Stages &amp; Gate Requirements</div><div class="sec-sub">Where the deal is and what it needs to move forward</div></div>
+  </div>
+
+  <div class="stages">
+    <div class="stage"><div class="stage-lbl">Stage 1</div><div class="stage-name">Suspect</div></div>
+    <div class="stage"><div class="stage-lbl">Stage 2</div><div class="stage-name">Prospect</div></div>
+    <div class="stage s-act"><div class="stage-lbl">Stage 3</div><div class="stage-name">Quote</div></div>
+    <div class="stage"><div class="stage-lbl">Stage 4</div><div class="stage-name">Negotiate</div></div>
+    <div class="stage s-won"><div class="stage-lbl">Stage 5</div><div class="stage-name">Won</div></div>
+    <div class="stage s-lost"><div class="stage-lbl">Stage 9</div><div class="stage-name">Lost</div></div>
+  </div>
+
+  <table class="ft">
+    <thead><tr><th>Stage</th><th>What it means</th><th>How to move forward</th><th>Required fields</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="fn">1-Suspect</td>
+        <td>Early interest, just converted</td>
+        <td>Click <span class="do">Qualify</span></td>
+        <td>Site, power (kW), close date</td>
+      </tr>
+      <tr>
+        <td class="fn">2-Prospect</td>
+        <td>Requirements confirmed</td>
+        <td>Create a Quote (auto-advances)</td>
+        <td><f class="f">Decision Criteria</f> + Feasibility = Feasible or Conditional</td>
+      </tr>
+      <tr>
+        <td class="fn">3-Quote</td>
+        <td>Quote built and in progress</td>
+        <td>Send the Quote (auto-advances)</td>
+        <td><f class="f">Economic Buyer</f>, <f class="f">Decision Process</f>, <f class="f">Facilities Confirmed</f></td>
+      </tr>
+      <tr>
+        <td class="fn">4-Negotiate</td>
+        <td>Quote presented, in discussion</td>
+        <td>Get the customer to sign</td>
+        <td>MRC, NRC, forecast status</td>
+      </tr>
+      <tr>
+        <td class="fn">5-Won</td>
+        <td>Quote accepted, deal closed</td>
+        <td>Set automatically on Quote acceptance</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td class="fn">9-Lost</td>
+        <td>Deal did not close</td>
+        <td>Set manually</td>
+        <td><f class="f">Loss Reason</f> required</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note note-info">
+    <span class="ni2">ℹ️</span>
+    <div><strong>Stage changes are mostly automatic</strong> - Creating a Quote advances to 3-Quote. Sending the Quote can advance to 4-Negotiate. Accepting the Quote sets 5-Won. You only need to manually change the stage for 9-Lost. The system enforces the gate requirements and won't let you skip steps if required fields are missing.</div>
+  </div>
+</div>
+
+
+<!-- QUOTING -->
+<div class="section" id="quotes">
+  <div class="sec-hdr">
+    <div class="sec-num">9</div>
+    <div><div class="sec-title">Building &amp; Sending a Quote</div><div class="sec-sub">Creating the pricing proposal for the customer</div></div>
+  </div>
+
+  <div class="note note-warn">
+    <span class="ni2">⚠️</span>
+    <div><strong>Check these first</strong> - Before creating a Quote, the Opportunity must have <f class="f">Decision Criteria</f> filled in and <f class="f">Feasibility Status</f> set to either "Feasible" or "Conditional". If those aren't set, the stage won't advance when the Quote is created.</div>
+  </div>
+
+  <ul class="steps">
+    <li class="step">
+      <div class="sn">1</div>
+      <div class="sb2">
+        <div class="st">Click "New Quote" on the Opportunity</div>
+        <div class="sd">Open the Opportunity. Click <span class="do">New Quote</span> in the action bar. A form opens. Set the <f class="f">Quote Type</f> (required) and the <f class="f">Requested Delivery Date</f>. Save. The Opportunity stage moves to 3-Quote automatically.</div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="sn">2</div>
+      <div class="sb2">
+        <div class="st">Add products to the Quote</div>
+        <div class="sd">Open the Quote that was just created. Click <span class="do">Add Product</span>. A guided flow opens - search for the product, set the quantity, and confirm the pricing. Add each product or service as a separate line item. Save when done.</div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="sn">3</div>
+      <div class="sb2">
+        <div class="st">Send the Quote to the customer</div>
+        <div class="sd">On the Quote, click <span class="do">Send Quote to Customer</span>. A flow opens - review the summary and confirm the recipient. The Quote status changes to "Presented". If the Opportunity has <f class="f">Economic Buyer</f>, <f class="f">Decision Process</f>, and <f class="f">Facilities Confirmed</f> all filled in, the stage automatically advances to 4-Negotiate.</div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="note note-info">
+    <span class="ni2">ℹ️</span>
+    <div><strong>Didn't advance to 4-Negotiate?</strong> Open the Opportunity. Check that <f class="f">Economic Buyer</f> (a contact), <f class="f">Decision Process</f> (text), and <f class="f">Facilities Confirmed</f> (checkbox ticked) are all filled in. Once they are, you can manually click <span class="do">Advance to Negotiate</span> on the Opportunity if needed.</div>
+  </div>
+</div>
+
+
+<!-- ACCEPTING A QUOTE -->
+<div class="section" id="accept">
+  <div class="sec-hdr">
+    <div class="sec-num">10</div>
+    <div><div class="sec-title">Accepting a Quote (SOF Signed)</div><div class="sec-sub">The customer has agreed - here's what to do</div></div>
+  </div>
+
+  <div class="callout">
+    <div class="cl-tag">This is the most important button in the system</div>
+    <div class="cl-title">Accept Quote (SOF Signed) triggers everything</div>
+    <div class="cl-body">When you click Accept Quote (SOF Signed), the system does all of the following <strong>automatically</strong> in one step: sets the Opportunity to 5-Won, syncs the deal value to the Opportunity, creates an Order, and creates a Contract. You do not need to do any of those separately.</div>
+  </div>
+
+  <ul class="steps">
+    <li class="step">
+      <div class="sn">1</div>
+      <div class="sb2">
+        <div class="st">Open the Quote and click "Accept Quote (SOF Signed)"</div>
+        <div class="sd">Open the Quote the customer agreed to. Click <span class="do">Accept Quote (SOF Signed)</span> in the action bar. A guided flow opens.</div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="sn">2</div>
+      <div class="sb2">
+        <div class="st">Select or create the Master Service Agreement</div>
+        <div class="sd">The flow asks whether there is an existing MSA with this customer or whether a new one needs to be created. Select the right option and fill in the contract details the flow requests.</div>
+      </div>
+    </li>
+    <li class="step">
+      <div class="sn">3</div>
+      <div class="sb2">
+        <div class="st">Confirm and complete the flow</div>
+        <div class="sd">Review the summary screen. Click Confirm. The system automatically: sets Quote Status to "Accepted", sets Opportunity Stage to "5-Won", syncs MRC/NRC/Total Contract Value to the Opportunity, and creates the Order and Contract.</div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="note note-ok">
+    <span class="ni2">✅</span>
+    <div><strong>After acceptance</strong> - Your manager is notified. Finance and Operations receive alerts. The Order and Contract appear on the Account. Your pipeline shows the deal as Won. Make sure your Account and Contact records are complete - the handoff teams use that data.</div>
+  </div>
+</div>
+
+
+<!-- CONTRACTS AND ORDERS -->
+<div class="section" id="contracts">
+  <div class="sec-hdr">
+    <div class="sec-num">11</div>
+    <div><div class="sec-title">Contracts &amp; Orders</div><div class="sec-sub">What happens after the Quote is accepted</div></div>
+  </div>
+
+  <div class="note note-info">
+    <span class="ni2">ℹ️</span>
+    <div><strong>Both are created automatically</strong> - When you accept a Quote, the system creates both the Contract and the Order without you having to do it manually. Your job is to confirm the Order details and submit it for approval.</div>
+  </div>
+
+  <div class="card">
+    <div class="ct">📋 The Contract</div>
+    <div class="cb">
+      <p>The Contract is the signed legal agreement with the customer. It's linked to the Account and captures the agreed terms, start date, and duration. You can find it on the Account record under the Contracts related list, or by clicking <strong>Contracts</strong> in the top navigation.</p>
+      <p>The Contract is created automatically when the Quote is accepted. If it needs to be revised (e.g. terms change), you can do that from within the Contract record.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">📦 The Order - confirm and submit</div>
+    <div class="cb">
+      <p>The Order is the fulfillment record - it tells Operations what to deliver and Finance what to bill. After Quote acceptance, the Order is created automatically. You need to do two things:</p>
+      <p>
+        <strong>1. Confirm the Order:</strong> Open the Order. Click <span class="do">Confirm Order</span>. Review the details - make sure the products and dates are correct. Save.<br><br>
+        <strong>2. Submit for Approval:</strong> Click <span class="do">Submit for Approval</span>. This sends the Order to Finance and Operations for review. You'll get a notification when it's approved.
+      </p>
+      <p>After that, Operations takes over delivery. You may be contacted if there are questions about the order details.</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">🔍 Finding your Contracts</div>
+      <div class="cb">Click <strong>Contracts</strong> in the top navigation, or go to the Account record and scroll to the Contracts related list. You'll see all contracts linked to that customer.</div>
+    </div>
+    <div class="card">
+      <div class="ct">📦 Finding your Orders</div>
+      <div class="cb">Click <strong>Orders</strong> in the top navigation, or find them on the Account or Contract record in the Orders related list.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- FAQ -->
+<div class="section" id="faq">
+  <div class="sec-hdr">
+    <div class="sec-num">12</div>
+    <div><div class="sec-title">Common Questions</div><div class="sec-sub">Things that come up when you're getting started</div></div>
+  </div>
+
+  <details>
+    <summary>I can't find the Working / Sales Approved / Convert button</summary>
+    <div class="faq-ans">These buttons are in the action bar at the top of the Lead record, just below the record name and highlights panel. If they're not visible, look for a "More" dropdown at the end of the button bar - some actions are hidden there when there isn't enough screen space to show them all.</div>
+  </details>
+
+  <details>
+    <summary>The stage won't change when I try to advance it</summary>
+    <div class="faq-ans">Stages in Digital Edge have gate requirements. Look at the Overview tab on the Opportunity - there's a banner at the top showing exactly what's missing for the current stage. Fill in those fields and try again. Common missing fields are: Decision Criteria, Feasibility Status, Economic Buyer, Decision Process, and Facilities Confirmed.</div>
+  </details>
+
+  <details>
+    <summary>I converted a Lead but I can't find the Opportunity</summary>
+    <div class="faq-ans">Go to the Opportunities tab and search for the company name. The Opportunity name is usually "[Company Name] - [Target Country]". Alternatively, go to the Account that was created and scroll to the Opportunities related list - it will be there.</div>
+  </details>
+
+  <details>
+    <summary>I sent a Quote but the Opportunity didn't advance to 4-Negotiate</summary>
+    <div class="faq-ans">Three fields on the Opportunity must be filled in for this to happen: Economic Buyer (a linked Contact), Decision Process (text describing how they make decisions), and Facilities Confirmed (a checkbox that must be ticked). Open the Opportunity, fill those in, then the stage can advance - either automatically or by clicking Advance to Negotiate manually.</div>
+  </details>
+
+  <details>
+    <summary>Should I create a new Account, or use an existing one?</summary>
+    <div class="faq-ans">Always use an existing Account if one exists. Search for the company name before creating anything. Duplicate Accounts cause problems for Finance and reporting. If you're unsure, ask your manager before creating a new one.</div>
+  </details>
+
+  <details>
+    <summary>The customer is in multiple countries - do I need multiple Opportunities?</summary>
+    <div class="faq-ans">The system handles this automatically during Lead conversion. When you convert a Lead, it creates one Opportunity per target country from the lead record. You don't need to create them manually.</div>
+  </details>
+
+  <details>
+    <summary>How do I log a call or meeting?</summary>
+    <div class="faq-ans">Open the record you want to log against (Lead, Opportunity, Account, or Contact). Scroll to the Activity section. Click Log a Call. Fill in the Subject and a description of what was discussed. Save. It appears in the timeline permanently and is visible to anyone who opens the record.</div>
+  </details>
+
+  <details>
+    <summary>I accepted the Quote but I can't find the Contract or Order</summary>
+    <div class="faq-ans">Go to the Account record and scroll down. The Contracts and Orders related lists will show everything created automatically by the acceptance. You can also click Contracts or Orders in the top navigation to search for them by account name.</div>
+  </details>
+
+</div>
+
+</div>
+</div>
+
+<script>
+function setActive(el){
+  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
+  el.classList.add('active');
+}
+window.addEventListener('scroll',function(){
+  var secs=document.querySelectorAll('.section');
+  var links=document.querySelectorAll('nav a');
+  var y=window.scrollY+140;
+  secs.forEach(function(s){
+    if(s.offsetTop<=y&&(s.offsetTop+s.offsetHeight)>y){
+      var id=s.id;
+      links.forEach(function(a){
+        a.classList.remove('active');
+        if(a.getAttribute('href')==='#'+id)a.classList.add('active');
+      });
+    }
+  });
+},false);
+</script>
+</body>
+</html>

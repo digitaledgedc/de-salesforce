@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Flow Approval Buttons</masterLabel>
+    <description>Reusable Approve / Reject / Save / Cancel buttons for screen flows. Outputs the selected decision as a string.</description>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="approveLabel" type="String" label="Approve Button Label" default="Approve" />
+            <property name="rejectLabel"  type="String" label="Reject Button Label"  default="Reject" />
+            <property name="saveLabel"    type="String" label="Save Button Label"    default="Save Draft" />
+            <property name="decision"     type="String" label="Decision Output"      role="outputOnly" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

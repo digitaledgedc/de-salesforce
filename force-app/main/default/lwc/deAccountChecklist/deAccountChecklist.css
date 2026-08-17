@@ -1,0 +1,318 @@
+/* ═══════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   Status-driven color system: rose (blocker), amber (progress),
+   emerald (complete), slate (n/a).
+   ═══════════════════════════════════════════════════════════ */
+:host {
+    display: block;
+
+    --rose-tint:     #fdf2f2;
+    --rose-edge:     #f5c2c5;
+    --rose:          #c0334a;
+    --rose-deep:     #8a1726;
+
+    --amber-tint:    #fbf4e6;
+    --amber-edge:    #ecd9a0;
+    --amber:         #b8860b;
+    --amber-deep:    #7a5a04;
+
+    --emerald-tint:  #ecf6ee;
+    --emerald-edge:  #b8dcc0;
+    --emerald:       #0e7c44;
+    --emerald-deep:  #07522d;
+
+    --slate-tint:    #eef1f4;
+    --slate-edge:    #d7dde4;
+    --slate:         #4a5563;
+
+    --ink:           #0e1116;
+    --ink-soft:      #3a424d;
+    --ink-muted:     #6b7480;
+    --ink-faint:     #94a0ad;
+    --hairline:      #e6e2d8;
+    --hairline-soft: #f0ece2;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CARD
+   ═══════════════════════════════════════════════════════════ */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid var(--hairline);
+    box-shadow:
+        0 1px 2px rgba(15, 19, 26, 0.04),
+        0 4px 16px -4px rgba(15, 19, 26, 0.06);
+    overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════════════════════ */
+.card-header {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--hairline-soft);
+}
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.header-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+}
+
+/* ── Status pill ── */
+.sp {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+.sp-rose    { background: var(--rose-tint);    color: var(--rose-deep);    border: 1px solid var(--rose-edge); }
+.sp-amber   { background: var(--amber-tint);   color: var(--amber-deep);   border: 1px solid var(--amber-edge); }
+.sp-emerald { background: var(--emerald-tint); color: var(--emerald-deep); border: 1px solid var(--emerald-edge); }
+
+.pulse {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SUMMARY — ring + headline + breakdown
+   ═══════════════════════════════════════════════════════════ */
+.summary {
+    padding: 16px;
+    background: linear-gradient(180deg, #fbfaf6 0%, #fff 100%);
+    border-bottom: 1px solid var(--hairline-soft);
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+
+/* ── Progress ring (CSS conic-gradient) ── */
+.ring-wrap {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+}
+.ring-bg {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--ring-color, #c0334a) 0% var(--ring-pct, 0%),
+        var(--hairline) var(--ring-pct, 0%) 100%
+    );
+}
+.ring-center {
+    position: absolute;
+    top: 6px; left: 6px; right: 6px; bottom: 6px;
+    border-radius: 50%;
+    background: #fbfaf6;
+}
+.ring-label {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+.ring-number {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+.ring-pct {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    margin-left: 1px;
+}
+
+.summary-text {
+    flex: 1;
+    min-width: 0;
+}
+.summary-headline {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.35;
+}
+.summary-breakdown {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+}
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--ink-soft);
+}
+.chip strong {
+    color: var(--ink);
+    font-weight: 700;
+}
+.swatch {
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+.swatch-rose    { background: var(--rose); }
+.swatch-amber   { background: var(--amber); }
+.swatch-emerald { background: var(--emerald); }
+
+/* ═══════════════════════════════════════════════════════════
+   SECTIONS — grouped by status
+   ═══════════════════════════════════════════════════════════ */
+.section {
+    padding: 12px 16px 4px;
+}
+.section + .section {
+    border-top: 1px solid var(--hairline-soft);
+}
+.section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+.section-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+}
+.section-count {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-faint);
+}
+.dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.dot-rose    { background: var(--rose); }
+.dot-amber   { background: var(--amber); }
+.dot-emerald { background: var(--emerald); }
+
+/* ═══════════════════════════════════════════════════════════
+   ITEMS
+   ═══════════════════════════════════════════════════════════ */
+.item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--hairline-soft);
+}
+.item:last-child {
+    border-bottom: 0;
+}
+
+/* ── Icon containers ── */
+.ico {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.ico-rose    { background: var(--rose-tint); }
+.ico-amber   { background: var(--amber-tint); }
+.ico-emerald { background: var(--emerald-tint); }
+.ico-slate   { background: var(--slate-tint); }
+
+/* ── Item text ── */
+.item-text {
+    flex: 1;
+    min-width: 0;
+}
+.item-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+}
+.item-meta {
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-top: 1px;
+    line-height: 1.2;
+}
+.meta-rose {
+    color: var(--rose-deep);
+}
+
+/* ── Value pills ── */
+.pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+    max-width: 120px;
+    text-align: right;
+    line-height: 1.3;
+    word-break: break-word;
+}
+.pill-rose    { background: var(--rose-tint);    color: var(--rose-deep); }
+.pill-amber   { background: var(--amber-tint);   color: var(--amber-deep); }
+.pill-emerald { background: var(--emerald-tint); color: var(--emerald-deep); }
+.pill-slate   { background: var(--slate-tint);   color: var(--slate); }
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════ */
+.card-footer {
+    padding: 10px 16px;
+    background: #f7f6f3;
+    border-top: 1px solid var(--hairline-soft);
+}
+.footer-text {
+    font-size: 11px;
+    color: var(--ink-muted);
+}
+
+/* ── Error ── */
+.error-body {
+    padding: 16px;
+    color: var(--rose);
+    font-size: 13px;
+}

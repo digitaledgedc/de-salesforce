@@ -1,0 +1,12 @@
+<template>
+    <template lwc:if={showPicklist}>
+        <select class="slds-select attr-select" value={value} onchange={handleChange} onclick={stopPropagation}>
+            <template for:each={options} for:item="opt">
+                <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+            </template>
+        </select>
+    </template>
+    <template lwc:else>
+        <span class="slds-truncate"></span>
+    </template>
+</template>

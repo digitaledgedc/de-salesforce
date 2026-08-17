@@ -1,0 +1,52 @@
+<template>
+    <template if:true={hasAccess}>
+        <template if:true={isLoaded}>
+            <template if:true={isRejected}>
+                <div class="path-bg">
+                    <div class="slds-path">
+                        <div class="slds-grid slds-path__track">
+                            <div class="slds-grid slds-path__scroller-container">
+                                <div class="slds-path__scroller">
+                                    <div class="slds-path__scroller_inner" role="listbox">
+                                        <div class="slds-path__item slds-is-current slds-is-active rejected-step" role="option" aria-selected="true">
+                                            <a class="slds-path__link" tabindex="0">
+                                                <span class="slds-path__title">{rejectedLabel}</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template if:false={isRejected}>
+                <div class="path-bg">
+                    <div class="slds-path">
+                        <div class="slds-grid slds-path__track">
+                            <div class="slds-grid slds-path__scroller-container">
+                                <div class="slds-path__scroller">
+                                    <div class="slds-path__scroller_inner" role="listbox">
+                                        <template for:each={steps} for:item="step">
+                                            <div key={step.value} class={step.class} role="option"
+                                                 aria-selected={step.isActive}>
+                                                <a class="slds-path__link" tabindex="-1">
+                                                    <template if:true={step.isComplete}>
+                                                        <span class="slds-path__title check">&check;</span>
+                                                    </template>
+                                                    <template if:false={step.isComplete}>
+                                                        <span class="slds-path__title">{step.label}</span>
+                                                    </template>
+                                                </a>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </template>
+    </template>
+</template>

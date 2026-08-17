@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>DE Country Sales Support persona. 2026-07-02: added AE perm sets (Sales_User, DE_Sales_Rep, DE_Sales_Rep_Supplement, Terms_Condition) to match Account Executive access; Support extras (BAN Creator, Booking Manager, Support Access) retained.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE Sales Support</label>
+    <permissionSets>DE_Accept_Quote</permissionSets>
+    <permissionSets>DE_Apex_Access</permissionSets>
+    <permissionSets>DE_BAN_Creator</permissionSets>
+    <permissionSets>DE_Booking_Manager</permissionSets>
+    <permissionSets>DE_Flow_Access</permissionSets>
+    <permissionSets>DE_Lead_Conversion</permissionSets>
+    <permissionSets>DE_Sales_Reference_Read</permissionSets>
+    <permissionSets>DE_Sales_Rep</permissionSets>
+    <permissionSets>DE_Sales_Rep_Supplement</permissionSets>
+    <permissionSets>DE_Sales_Support_Access</permissionSets>
+    <permissionSets>Opportunity_Sales_Actions</permissionSets>
+    <permissionSets>Sales_User</permissionSets>
+    <permissionSets>Terms_Condition</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>

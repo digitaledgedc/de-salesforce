@@ -1,0 +1,50 @@
+<template>
+    <div class="apf-wrap">
+        <lightning-input
+            type="search"
+            label={label}
+            value={searchTerm}
+            placeholder="Search by name…"
+            onchange={handleSearch}
+        ></lightning-input>
+        <template if:true={isLoading}>
+            <lightning-spinner size="x-small" alternative-text="Searching"></lightning-spinner>
+        </template>
+        <template if:true={hasResults}>
+            <ul class="apf-list">
+                <template for:each={results} for:item="acc">
+                    <li key={acc.Id}
+                        class="apf-item"
+                        data-id={acc.Id}
+                        data-name={acc.Name}
+                        onclick={handlePick}>
+                        <span class="apf-acc-name">{acc.Name}</span>
+                        <span class="apf-acc-type">{acc.Type}</span>
+                    </li>
+                </template>
+                <template if:true={showCreateOption}>
+                    <li class="apf-item apf-item--create" onclick={handleCreate}>
+                        + Create "<strong>{searchTerm}</strong>" as new {recordTypeName}
+                    </li>
+                </template>
+            </ul>
+        </template>
+        <template if:false={hasResults}>
+            <template if:true={showCreateOption}>
+                <div class="apf-create-standalone" onclick={handleCreate}>
+                    + Create "<strong>{searchTerm}</strong>" as new {recordTypeName}
+                </div>
+            </template>
+        </template>
+        <template if:true={selectedName}>
+            <div class="apf-selected">
+                <lightning-icon icon-name="utility:check" size="x-small"></lightning-icon>
+                &nbsp;{selectedName}
+                <button class="apf-clear" onclick={handleClear} title="Clear selection">✕</button>
+            </div>
+        </template>
+        <template if:true={error}>
+            <p class="apf-error">{error}</p>
+        </template>
+    </div>
+</template>

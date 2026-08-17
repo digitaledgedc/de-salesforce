@@ -1,0 +1,27 @@
+<template>
+    <div class="slds-grid slds-grid_align-center slds-p-top_medium slds-p-bottom_small slds-border_top">
+        <lightning-button
+            label="Cancel"
+            variant="neutral"
+            onclick={handleCancel}
+            class="slds-m-right_small">
+        </lightning-button>
+        <lightning-button
+            label={saveLabel}
+            variant="neutral"
+            onclick={handleSave}
+            class="slds-m-right_small">
+        </lightning-button>
+        <lightning-button
+            label={rejectLabel}
+            variant="destructive"
+            onclick={handleReject}
+            class="slds-m-right_small">
+        </lightning-button>
+        <lightning-button
+            label={approveLabel}
+            variant="brand"
+            onclick={handleApprove}>
+        </lightning-button>
+    </div>
+</template>

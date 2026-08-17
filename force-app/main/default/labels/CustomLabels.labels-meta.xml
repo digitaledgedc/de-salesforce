@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>DE_Default_Pricebook_Approver_Id</fullName>
+        <categories>DE_Config</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Default Pricebook Approver User ID</shortDescription>
+        <value>005IW00000FwdghYAB</value>
+    </labels>
+    <labels>
+        <fullName>DE_OpenCorporates_Base_URL</fullName>
+        <categories>DE_Config</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>OpenCorporates API base URL for company screening</shortDescription>
+        <value>https://api.opencorporates.com/v0.4/companies/search?q=</value>
+    </labels>
+    <labels>
+        <fullName>DE_Salesforce_Base_URL</fullName>
+        <categories>Email</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Salesforce org base URL for email buttons</shortDescription>
+        <value>https://digital-edge.lightning.force.com</value>
+    </labels>
+    <labels>
+        <fullName>Footer_Page</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page</shortDescription>
+        <value>Page:</value>
+    </labels>
+    <labels>
+        <fullName>Header_Amended_Order</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Amended Order</shortDescription>
+        <value>Amended Order</value>
+    </labels>
+    <labels>
+        <fullName>Header_Attention</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Attention</shortDescription>
+        <value>Attn:</value>
+    </labels>
+    <labels>
+        <fullName>Header_Contracting_Entity</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Contracting Entity</shortDescription>
+        <value>Contracting Entity</value>
+    </labels>
+    <labels>
+        <fullName>Header_Currency</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Currency</shortDescription>
+        <value>Currency</value>
+    </labels>
+    <labels>
+        <fullName>Header_Customer_PO_Reference</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Customer PO Reference</shortDescription>
+        <value>Customer PO Ref</value>
+    </labels>
+    <labels>
+        <fullName>Header_Data_Center</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Data Center</shortDescription>
+        <value>Data Center</value>
+    </labels>
+    <labels>
+        <fullName>Header_End_Customer_Name</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>End Customer Name</shortDescription>
+        <value>End-Customer Name:</value>
+    </labels>
+    <labels>
+        <fullName>Header_Expiration</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Expiration</shortDescription>
+        <value>Expiration</value>
+    </labels>
+    <labels>
+        <fullName>Header_Initial_Term</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Initial Term</shortDescription>
+        <value>Initial Term</value>
+    </labels>
+    <labels>
+        <fullName>Header_Issued_Date</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Issued Date</shortDescription>
+        <value>Issued Date</value>
+    </labels>
+    <labels>
+        <fullName>Header_Order_Number</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Order Number</shortDescription>
+        <value>Order Number</value>
+    </labels>
+    <labels>
+        <fullName>Header_Quote_Number</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Quote Number</shortDescription>
+        <value>Quote Number</value>
+    </labels>
+    <labels>
+        <fullName>Header_Requested_Delivery_Date</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Requested Delivery Date</shortDescription>
+        <value>Requested Delivery Date</value>
+    </labels>
+    <labels>
+        <fullName>Heading_Network_Accessories</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Network Accessories</shortDescription>
+        <value>Network Accessories</value>
+    </labels>
+    <labels>
+        <fullName>Heading_Project_Overview</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Project Overview</shortDescription>
+        <value>Project Overview:</value>
+    </labels>
+    <labels>
+        <fullName>Heading_Scope_Of_Work</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Scope Of Work</shortDescription>
+        <value>Scope of Work:</value>
+    </labels>
+    <labels>
+        <fullName>Heading_Special_Note</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Special Note</shortDescription>
+        <value>Special Note:</value>
+    </labels>
+    <labels>
+        <fullName>Heading_Terms_Binding</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Binding Terms Heading</shortDescription>
+        <value>Terms and Conditions:</value>
+    </labels>
+    <labels>
+        <fullName>Heading_Terms_NonBinding</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Non-binding Terms Heading</shortDescription>
+        <value>Terms and Conditions:</value>
+    </labels>
+    <labels>
+        <fullName>OppNumber_StartingSequence</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Last used Opp sequence. Next Opp = value + 1. Set 0 to start from 000001.</shortDescription>
+        <value>0</value>
+    </labels>
+    <labels>
+        <fullName>PDF_NonBinding_Term_1</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Non-binding clause 1</shortDescription>
+        <value>This document does not constitute a formal offer and is non-binding and subject to contract.</value>
+    </labels>
+    <labels>
+        <fullName>PDF_NonBinding_Term_2</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Non-binding clause 2</shortDescription>
+        <value>All prices stated herein are net of applicable taxes.</value>
+    </labels>
+    <labels>
+        <fullName>PDF_NonBinding_Term_3</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Non-binding clause 3</shortDescription>
+        <value>The prices quoted herein are valid from the Issue Date up to and including the Expiration Date; however, capacity is subject to availability at time of formal contracting between the parties.</value>
+    </labels>
+    <labels>
+        <fullName>PDF_NonBinding_Term_4</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Non-binding clause 4</shortDescription>
+        <value>This document contains proprietary and/or confidential information belonging to Digital Edge.</value>
+    </labels>
+    <labels>
+        <fullName>PDF_Title_Change_Binding</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Change binding PDF title</shortDescription>
+        <value>Change Order</value>
+    </labels>
+    <labels>
+        <fullName>PDF_Title_Change_NonBinding</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Change non-binding PDF title</shortDescription>
+        <value>Change Quotation</value>
+    </labels>
+    <labels>
+        <fullName>PDF_Title_New_Binding</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>New binding PDF title</shortDescription>
+        <value>Service Order</value>
+    </labels>
+    <labels>
+        <fullName>PDF_Title_New_NonBinding</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>New non-binding PDF title</shortDescription>
+        <value>Quotation</value>
+    </labels>
+    <labels>
+        <fullName>Section_Monthly_Recurring_Charges</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Monthly Recurring Charges</shortDescription>
+        <value>Monthly Recurring Charges</value>
+    </labels>
+    <labels>
+        <fullName>Section_Non_Recurring_Charges</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Non Recurring Charges</shortDescription>
+        <value>Non Recurring Charges</value>
+    </labels>
+    <labels>
+        <fullName>Section_Ramp_All_Phases_Linked</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>All Phases Linked</shortDescription>
+        <value>All Phases Linked</value>
+    </labels>
+    <labels>
+        <fullName>Section_Ramp_Up_Orders</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Ramp Up Orders</shortDescription>
+        <value>Ramp-Up Orders</value>
+    </labels>
+    <labels>
+        <fullName>Signature_Accepted_And_Agreed</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Accepted And Agreed</shortDescription>
+        <value>Accepted and Agreed:</value>
+    </labels>
+    <labels>
+        <fullName>Signature_Authorized_Signatory</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Authorized Signatory</shortDescription>
+        <value>Authorized Signatory</value>
+    </labels>
+    <labels>
+        <fullName>Signature_Date</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Signature Date</shortDescription>
+        <value>Date:</value>
+    </labels>
+    <labels>
+        <fullName>Signature_Name</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Signature Name</shortDescription>
+        <value>Name:</value>
+    </labels>
+    <labels>
+        <fullName>Signature_Title</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Signature Title</shortDescription>
+        <value>Title:</value>
+    </labels>
+    <labels>
+        <fullName>Table_Additional_Quantity</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Additional Quantity</shortDescription>
+        <value>Additional Qty</value>
+    </labels>
+    <labels>
+        <fullName>Table_Amount_Excluding_Tax</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Amount Excluding Tax</shortDescription>
+        <value>Excl. Tax</value>
+    </labels>
+    <labels>
+        <fullName>Table_Discount_Percent</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Discount Percent</shortDescription>
+        <value>Disc.%</value>
+    </labels>
+    <labels>
+        <fullName>Table_Original_Price</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Original Price</shortDescription>
+        <value>Original Price</value>
+    </labels>
+    <labels>
+        <fullName>Table_Original_Product_Attribute</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Original Product Attribute</shortDescription>
+        <value>Original PA</value>
+    </labels>
+    <labels>
+        <fullName>Table_Product_Attribute</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Product Attribute</shortDescription>
+        <value>Product Attribute</value>
+    </labels>
+    <labels>
+        <fullName>Table_Product_Name</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Product Name</shortDescription>
+        <value>Product Name</value>
+    </labels>
+    <labels>
+        <fullName>Table_Quantity</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Quantity</shortDescription>
+        <value>Qty</value>
+    </labels>
+    <labels>
+        <fullName>Table_Remarks</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Remarks</shortDescription>
+        <value>Remarks</value>
+    </labels>
+    <labels>
+        <fullName>Table_Service_ID</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Service ID</shortDescription>
+        <value>Service ID</value>
+    </labels>
+    <labels>
+        <fullName>Table_Subtotal</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Subtotal</shortDescription>
+        <value>Subtotal</value>
+    </labels>
+    <labels>
+        <fullName>Table_Tax_Amount</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Tax Amount</shortDescription>
+        <value>Tax Amount</value>
+    </labels>
+    <labels>
+        <fullName>Table_Tax_Rate</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Tax Rate</shortDescription>
+        <value>Tax Rate</value>
+    </labels>
+    <labels>
+        <fullName>Table_Total</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Total</shortDescription>
+        <value>Total</value>
+    </labels>
+    <labels>
+        <fullName>Table_Unit</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Unit</shortDescription>
+        <value>Unit</value>
+    </labels>
+    <labels>
+        <fullName>Table_Unit_Charge</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Unit Charge</shortDescription>
+        <value>Unit Charge</value>
+    </labels>
+    <labels>
+        <fullName>Table_Unit_Cost</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Unit Cost</shortDescription>
+        <value>Unit Cost</value>
+    </labels>
+    <labels>
+        <fullName>Total_Grand_MRC</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Grand Total MRC</shortDescription>
+        <value>Grand Total (MRC)</value>
+    </labels>
+    <labels>
+        <fullName>Total_Grand_NRC</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Grand Total NRC</shortDescription>
+        <value>Grand Total (NRC)</value>
+    </labels>
+    <labels>
+        <fullName>Total_Grand_Total</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Grand Total</shortDescription>
+        <value>Grand Total</value>
+    </labels>
+    <labels>
+        <fullName>Total_Subtotal</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Total Subtotal</shortDescription>
+        <value>Subtotal</value>
+    </labels>
+    <labels>
+        <fullName>Total_Subtotal_MRC</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Subtotal MRC</shortDescription>
+        <value>Subtotal (MRC)</value>
+    </labels>
+    <labels>
+        <fullName>Total_Subtotal_NRC</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Subtotal NRC</shortDescription>
+        <value>Subtotal (NRC)</value>
+    </labels>
+    <labels>
+        <fullName>Total_Tax</fullName>
+        <categories>Quote PDF</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Total Tax</shortDescription>
+        <value>Total Tax (6%)</value>
+    </labels>
+</CustomLabels>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Grants ability to edit Inventory__c records in Sold or Installed status. Assigned via DE_Admin permission set. Used in Inventory_Edit_Lock validation rule. SDD §Internal Roles — Capacity Manager.</description>
+    <isLicensed>false</isLicensed>
+    <label>Inventory Admin</label>
+</CustomPermission>

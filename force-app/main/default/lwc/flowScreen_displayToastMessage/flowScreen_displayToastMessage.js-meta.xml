@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<isExposed>true</isExposed>
+	<apiVersion>66.0</apiVersion>
+	<masterLabel>flowScreen_displayToastMessage</masterLabel>
+	<description>flowScreen_displayToastMessage</description>
+	<targets>
+		<target>lightning__RecordPage</target>
+		<target>lightning__FlowScreen</target>
+		<target>lightning__RecordAction</target>
+	</targets>
+	<targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="title" label="Title" type="String" role="inputOnly" />
+            <property name="message" label="Message Text" type="String" role="inputOnly" />
+            <property name="urlLabel" label="Message Url Label" type="String" role="inputOnly" />
+            <property name="variant" label="Variant" type="String" role="inputOnly" description="Possible values: error, success, info, warning"/>
+            <property name="recordId" label="Object Record Id" type="String" role="inputOnly" />
+            <property name="triggerNavigationNextEvent" label="Triggers Next Navigation" type="Boolean" role="inputOnly" /> 
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

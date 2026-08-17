@@ -1,0 +1,250 @@
+<template>
+    <article class={cardClass}>
+        <!-- SPINNER -->
+        <div if:true={spinner} class="slds-spinner_inline spinner-padding" style="height: 10rem;">
+            <lightning-spinner variant="brand" alternative-text="Loading..." size="large"></lightning-spinner>
+        </div>
+
+        <!-- CONTENT -->
+        <div if:false={spinner} class="slds-spinner_inline spinner-padding">
+            <div class="slds-card__header slds-grid headerWrap">
+                <div class="topBar">
+                    <div class={welcomeTextClass}>Welcome</div>
+                    <lightning-input
+                        data-id="toggle1"
+                        type="toggle"
+                        label=""
+                        checked={toggleButtonn}
+                        onchange={changeToggle}
+                        message-toggle-active="Dark"
+                        message-toggle-inactive="Light">
+                    </lightning-input>
+                </div>
+                <div class={greetingClass}>
+                    {greeting}, {firstName}.
+                </div>
+            </div>
+
+            <div class={lineClass}></div>
+
+            <footer>
+                <div class="slds-card__body slds-card__body_inner">
+                    <div class={linksClass}>
+                        <template if:true={userGuideLink}>
+                            <div class="linkItem">
+                                <span class="linkIcon">📖</span>
+                                <a href={userGuideLink} target="_blank" class={linkColorClass}>User Guide</a>
+                            </div>
+                        </template>
+                        <template if:true={referenceVideoLink}>
+                            <div class="linkItem">
+                                <span class="linkIcon">🎬</span>
+                                <a href={referenceVideoLink} target="_blank" class={linkColorClass}>Reference Video</a>
+                            </div>
+                        </template>
+                        <template if:true={generalLink}>
+                            <div class="linkItem">
+                                <span class="linkIcon">🔗</span>
+                                <a href={generalLink} target="_blank" class={linkColorClass}>{generalLinkLabel}</a>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- System Admin only button -->
+                    <!-- <template if:true={isAdmin}>
+                        <div class="btnRow">
+                            <button class={tcBtnClass} onclick={openTCModal}>
+                                + New Terms &amp; Conditions
+                            </button>
+                        </div>
+                    </template> -->
+                </div>
+            </footer>
+        </div>
+    </article>
+
+    <!-- ── New T&C Modal ─────────────────────────────────────────────────── -->
+    <template if:true={showTCModal}>
+        <div class="tcBackdrop" onclick={handleBackdropClick}></div>
+
+        <div class={tcModalClass} role="dialog" aria-modal="true">
+
+            <!-- Header -->
+            <div class="tcHeader">
+                <div class="tcHeaderInner">
+                    <div class="tcHeaderIcon"></div>
+                    <div>
+                        <h2 class="tcTitle">New Terms &amp; Conditions</h2>
+                        <p class="tcSubtitle">Will be saved as <span class="tcBadge">New</span> and require approval</p>
+                    </div>
+                </div>
+                <button class="tcCloseBtn" onclick={closeTCModal} title="Close">✕</button>
+            </div>
+
+            <!-- Body -->
+            <div class="tcBody">
+
+                <!-- Name -->
+                <div class="tcField">
+                    <label class="tcLabel">Name <span class="tcRequired">*</span></label>
+                    <input
+                        type="text"
+                        class={inputClass}
+                        placeholder="Enter T&amp;C name"
+                        value={tcName}
+                        onchange={handleTcNameChange} />
+                </div>
+
+                <!-- Subscription Management -->
+                <div class="tcField">
+                    <label class="tcLabel">Subscription Management<span class="tcRequired">*</span></label>
+                    <div class="tcSelectWrap">
+                        <select class={selectClass} onchange={handleSubscriptionChange}>
+                            <option value="Creation" selected={isCreation}>Creation</option>
+                            <option value="Change Order" selected={isChangeOrder}>Change Order</option>
+                            <option value="Renewal" selected={isRenewal}>Renewal</option>
+                        </select>
+                        <span class="tcSelectArrow">▾</span>
+                    </div>
+                </div>
+
+                <!-- Customer -->
+                <div class="tcField">
+                    <label class="tcLabel">Customer</label>
+                    <p class="tcFieldHint">Search and select one or more customer accounts</p>
+
+                    <template if:true={hasSelectedCustomers}>
+                        <div class="tcPillRow">
+                            <template for:each={selectedCustomers} for:item="acc">
+                                <span key={acc.id} class="tcPill">
+                                    {acc.name}
+                                    <button
+                                        class="tcPillRemove"
+                                        data-id={acc.id}
+                                        data-field="customer"
+                                        onclick={removePill}>✕</button>
+                                </span>
+                            </template>
+                        </div>
+                    </template>
+
+                    <div class="tcLookupWrap">
+                        <span class="tcSearchIcon"></span>
+                        <input
+                            type="text"
+                            class={lookupInputClass}
+                            placeholder="Type account name..."
+                            value={customerSearch}
+                            onchange={handleCustomerSearch}
+                            onfocus={handleCustomerFocus}
+                            onblur={handleCustomerBlur} />
+                    </div>
+                    <template if:true={showCustomerDropdown}>
+                        <div class={dropdownClass}>
+                            <template if:true={customerResults.length}>
+                                <template for:each={customerResults} for:item="acc">
+                                    <div key={acc.id}
+                                         class="tcDropItem"
+                                         data-id={acc.id}
+                                         data-name={acc.name}
+                                         data-field="customer"
+                                         onmousedown={selectAccount}>
+                                        <span class="tcDropIcon"></span> {acc.name}
+                                    </div>
+                                </template>
+                            </template>
+                            <template if:false={customerResults.length}>
+                                <div class="tcDropEmpty">No matching accounts found</div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Company -->
+                <div class="tcField">
+                    <label class="tcLabel">Company</label>
+                    <p class="tcFieldHint">Search and select one or more company accounts</p>
+
+                    <template if:true={hasSelectedCompanies}>
+                        <div class="tcPillRow">
+                            <template for:each={selectedCompanies} for:item="acc">
+                                <span key={acc.id} class="tcPill">
+                                    {acc.name}
+                                    <button
+                                        class="tcPillRemove"
+                                        data-id={acc.id}
+                                        data-field="company"
+                                        onclick={removePill}>✕</button>
+                                </span>
+                            </template>
+                        </div>
+                    </template>
+
+                    <div class="tcLookupWrap">
+                        <span class="tcSearchIcon"></span>
+                        <input
+                            type="text"
+                            class={lookupInputClass}
+                            placeholder="Type account name..."
+                            value={companySearch}
+                            onchange={handleCompanySearch}
+                            onfocus={handleCompanyFocus}
+                            onblur={handleCompanyBlur} />
+                    </div>
+                    <template if:true={showCompanyDropdown}>
+                        <div class={dropdownClass}>
+                            <template if:true={companyResults.length}>
+                                <template for:each={companyResults} for:item="acc">
+                                    <div key={acc.id}
+                                         class="tcDropItem"
+                                         data-id={acc.id}
+                                         data-name={acc.name}
+                                         data-field="company"
+                                         onmousedown={selectAccount}>
+                                        <span class="tcDropIcon"></span> {acc.name}
+                                    </div>
+                                </template>
+                            </template>
+                            <template if:false={companyResults.length}>
+                                <div class="tcDropEmpty">No matching accounts found</div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Terms Text -->
+                <div class="tcField">
+                    <label class="tcLabel">Terms Text</label>
+                    <p class="tcFieldHint">Paste or type the HTML content for this T&amp;C template</p>
+                    <textarea
+                        class={textareaClass}
+                        placeholder="Enter terms and conditions HTML content..."
+                        onchange={handleTermsTextChange}
+                        rows="5"></textarea>
+                </div>
+
+                <!-- Error -->
+                <template if:true={tcError}>
+                    <div class="tcError"> {tcError}</div>
+                </template>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="tcFooter">
+                <button class="tcCancelBtn" onclick={closeTCModal} disabled={tcSaving}>Cancel</button>
+                <button class={tcSubmitBtnClass} onclick={submitTC} disabled={tcSaving}>
+                    <template if:true={tcSaving}>
+                        <lightning-spinner size="x-small" variant="inverse" alternative-text="Saving"></lightning-spinner>
+                        &nbsp;Saving...
+                    </template>
+                    <template if:false={tcSaving}>
+                        Submit for Approval
+                    </template>
+                </button>
+            </div>
+
+        </div>
+    </template>
+
+</template>

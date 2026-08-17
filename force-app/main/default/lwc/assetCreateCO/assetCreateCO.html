@@ -1,0 +1,8 @@
+<template>
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+    </template>
+    <template if:true={error}>
+        <div class="slds-p-around_medium slds-text-color_error">{error}</div>
+    </template>
+</template>

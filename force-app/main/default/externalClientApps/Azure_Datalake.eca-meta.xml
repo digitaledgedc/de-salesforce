@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExternalClientApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>freda.ho@digitaledgedc.com</contactEmail>
+    <distributionState>Local</distributionState>
+    <isProtected>false</isProtected>
+    <label>Azure Datalake</label>
+    <orgScopedExternalApp>00DIW0000021Fwj:Azure_Datalake</orgScopedExternalApp>
+</ExternalClientApplication>

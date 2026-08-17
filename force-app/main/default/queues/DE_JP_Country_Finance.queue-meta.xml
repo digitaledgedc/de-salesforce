@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesIncludeBosses>true</doesIncludeBosses>
+    <doesSendEmailToMembers>true</doesSendEmailToMembers>
+    <name>DE JP Country Finance</name>
+    <queueMembers>
+        <users>
+            <user>harry.ho@digitaledgedc.com</user>
+            <user>ken.oka@digitaledgedc.com</user>
+            <user>mayumi.watanabe@digitaledgedc.com</user>
+            <user>naohide.nomoto@digitaledgedc.com</user>
+            <user>yoshie.oishi@digitaledgedc.com</user>
+        </users>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>BillingAccount__c</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>Special_Instruction__c</sobjectType>
+    </queueSobject>
+</Queue>

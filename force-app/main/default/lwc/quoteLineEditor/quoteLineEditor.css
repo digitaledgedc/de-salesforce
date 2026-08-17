@@ -1,0 +1,2823 @@
+/* ═══════════════════════════════════════════════════════════════
+   quoteLineEditor — Quote Lines table + side panel
+   Prefix: qle-
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Outer wrapper ─── */
+.qle-outer {
+    display: block;
+    position: relative;
+}
+
+/* ─── Main card ─── */
+.qle-card {
+    border-radius: 0.625rem;
+    border: 1px solid #e0e5ee;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    background: #fff;
+    overflow: visible;
+}
+
+/* ─── Toolbar ─── */
+.qle-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    background: #fff;
+    border-bottom: 1px solid #e8ecf1;
+}
+
+.qle-toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.qle-toolbar-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #181818;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.qle-toolbar-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.35rem;
+    border-radius: 0.625rem;
+    background: #0176d3;
+    color: #fff;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+.qle-pb-label {
+    margin-left: 0.5rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    background: #f3f3f3;
+    color: #514f4d;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.qle-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-shrink: 0;
+}
+
+/* ─── Inline product search ─── */
+.qle-inline-search-wrap {
+    position: relative;
+    width: 210px;
+}
+
+.qle-search-input {
+    height: 1.85rem;
+    font-size: 0.8125rem;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-radius: 0.375rem;
+}
+
+.slds-combobox .slds-dropdown,
+.qle-search-dropdown {
+    position: absolute;
+    right: 0;
+    left: auto;
+    z-index: 9001;
+    min-width: 320px;
+    max-height: 18rem;
+    overflow-y: auto;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+    border-radius: 0.375rem;
+}
+
+.slds-listbox__item:hover .slds-listbox__option {
+    background-color: #f3f2f2;
+    cursor: pointer;
+}
+
+/* ─── Column picker ─── */
+.qle-col-picker-wrap {
+    position: relative;
+}
+
+.qle-picker-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9001;
+    background: transparent;
+}
+
+.qle-col-picker-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    z-index: 9002;
+    background: #fff;
+    border: 1px solid #e0e5ee;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+    min-width: 160px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.qle-col-picker-item {
+    padding: 0.2rem 0.75rem;
+}
+
+/* ─── Error bar ─── */
+.qle-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #fde8e0;
+    color: #c23934;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    border-bottom: 1px solid #f5c6bd;
+}
+
+.qle-error-ic {
+    flex-shrink: 0;
+}
+
+/* ─── Billing group header ─── */
+.qle-group-header {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #f8f9fb 0%, #f3f5f8 100%);
+    border-top: 1px solid #e0e5ee;
+    border-left: 3px solid #b0b7c3;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: all 0.15s ease;
+}
+
+.qle-group-header:hover {
+    background: linear-gradient(135deg, #eef1f6 0%, #e8ecf2 100%);
+}
+
+.qle-group-header:focus {
+    outline: 2px solid #0176d3;
+    outline-offset: -2px;
+}
+
+/* Color-coded left accents per billing type */
+.qle-grp-monthly   { border-left-color: #0176d3; }
+.qle-grp-quarterly { border-left-color: #2e844a; }
+.qle-grp-annual    { border-left-color: #5c4d7a; }
+.qle-grp-nrc       { border-left-color: #e87600; }
+.qle-grp-mrc       { border-left-color: #0176d3; }
+
+.qle-grp-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.qle-grp-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #3e3e3c;
+}
+
+.qle-grp-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.1rem;
+    height: 1.1rem;
+    padding: 0 0.3rem;
+    border-radius: 0.55rem;
+    background: #e0e5ee;
+    color: #54698d;
+    font-size: 0.625rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.qle-grp-subtotal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: auto;
+}
+
+.qle-grp-sub-lbl {
+    font-size: 0.5625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #706e6b;
+    line-height: 1.2;
+}
+
+.qle-grp-sub-val {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #181818;
+    line-height: 1.3;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ─── Table area + loading overlay ─── */
+.qle-table-area {
+    position: relative;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #c9cdd5 transparent;
+}
+
+.qle-table-area::-webkit-scrollbar {
+    height: 6px;
+}
+
+.qle-table-area::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.qle-table-area::-webkit-scrollbar-thumb {
+    background: #c9cdd5;
+    border-radius: 3px;
+}
+
+.qle-table-area::-webkit-scrollbar-thumb:hover {
+    background: #a0a8b4;
+}
+
+.qle-table-inner {
+    min-width: 800px;
+}
+
+.qle-table-overlay {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    pointer-events: none;
+}
+
+.qle-chevron {
+    flex-shrink: 0;
+}
+
+/* ─── Group content wrapper ─── */
+.qle-group-content {
+    overflow: hidden;
+}
+
+.qle-subgroup-content {
+    overflow: hidden;
+}
+
+/* ─── Family sub-group header ─── */
+.qle-subgroup-section {
+    border-top: 1px solid #e8ecf1;
+    overflow: hidden;
+}
+
+.qle-group-content > .qle-subgroup-section:first-child {
+    border-top: none;
+}
+
+.qle-subgrp-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 1rem 0.3rem 1.75rem;
+    background: #fafbfc;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background 0.12s;
+}
+
+.qle-subgrp-header:hover {
+    background: #f3f4f6;
+}
+
+.qle-subgrp-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #54698d;
+    letter-spacing: 0.02em;
+}
+
+.qle-subgrp-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1rem;
+    height: 1rem;
+    padding: 0 0.25rem;
+    border-radius: 0.5rem;
+    background: #e8ecf1;
+    color: #706e6b;
+    font-size: 0.5625rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.qle-subgrp-subtotal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: auto;
+    padding-left: 1rem;
+}
+
+.qle-subgrp-sub-val {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #3e3e3c;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ─── Datatable visual integration ─── */
+.qle-group-section {
+    background: #fff;
+    border-radius: 0;
+    overflow: hidden;
+    border: 1px solid #e8ecf1;
+    border-left: none;
+    border-right: none;
+}
+
+.qle-group-section + .qle-group-section {
+    margin-top: 0.75rem;
+}
+
+.qle-group-section,
+.qle-subgroup-section {
+    --slds-c-data-table-color-background: #fff;
+    --slds-c-data-table-color-background-alt: #fff;
+    --lwc-colorBackground: #fff;
+    --lwc-colorBackgroundAlt: #fff;
+}
+
+.qle-subgroup-section lightning-datatable {
+    display: block;
+}
+
+/* ─── Footer ─── */
+/* ─── Unified draft bar ─── */
+.qle-unified-draft-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+    border-top: 1px solid #fde68a;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+}
+.qle-draft-label {
+    margin-right: auto;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #92400e;
+}
+.qle-draft-cancel {
+    padding: 0.375rem 1rem;
+    border: 1px solid #d8dde6;
+    border-radius: 0.375rem;
+    background: #fff;
+    color: #3e3e3c;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.qle-draft-cancel:hover {
+    background: #f3f5f8;
+    border-color: #b0b7c3;
+}
+.qle-draft-save {
+    padding: 0.375rem 1rem;
+    border: none;
+    border-radius: 0.375rem;
+    background: #0176d3;
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 1px 3px rgba(1, 118, 211, 0.3);
+}
+.qle-draft-save:hover {
+    background: #014486;
+    box-shadow: 0 2px 6px rgba(1, 118, 211, 0.35);
+}
+
+.qle-footer {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-top: 2px solid #e0e5ee;
+    background: linear-gradient(135deg, #f7f8fa 0%, #f0f2f5 100%);
+}
+
+.qle-footer-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #706e6b;
+}
+
+.qle-footer-value {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: #181818;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+}
+
+/* ─── Empty state ─── */
+.qle-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem 1rem;
+}
+
+.qle-empty-ic {
+    opacity: 0.2;
+    margin-bottom: 0.75rem;
+}
+
+.qle-empty-h {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #3e3e3c;
+    margin: 0 0 0.25rem;
+}
+
+.qle-empty-p {
+    font-size: 0.8125rem;
+    color: #706e6b;
+    margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Detail Panel — Fixed right-side drawer
+   ═══════════════════════════════════════════════════════════════ */
+
+.qle-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 8998;
+}
+
+.qle-detail-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 400px;
+    z-index: 8999;
+    background: #fff;
+    border-left: 1px solid #e0e5ee;
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.10);
+    display: flex;
+    flex-direction: column;
+    animation: qle-slide-in 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes qle-slide-in {
+    from { transform: translateX(100%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* ─── Panel header ─── */
+.qle-dp-header {
+    flex-shrink: 0;
+    border-bottom: 1px solid #e0e5ee;
+    background: #fff;
+}
+
+.qle-dp-top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 0.75rem;
+    min-height: 2.5rem;
+}
+
+.qle-dp-ic {
+    flex-shrink: 0;
+}
+
+.qle-dp-title {
+    flex: 1;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #181818;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.qle-dp-edit-btn {
+    flex-shrink: 0;
+}
+
+.qle-dp-close-btn {
+    flex-shrink: 0;
+    margin-left: 0.125rem;
+}
+
+/* ─── Panel navigation (segment control) ─── */
+.qle-pn {
+    display: flex;
+    gap: 2px;
+    padding: 0.375rem 0.75rem 0.5rem;
+    background: #f7f8fa;
+}
+
+.qle-pn-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.375rem 0.5rem;
+    border: 1px solid #d8dde6;
+    border-radius: 0.375rem;
+    background: #fff;
+    color: #54698d;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+.qle-pn-btn:hover {
+    background: #eef1f6;
+    border-color: #b0b7c3;
+    color: #3e3e3c;
+}
+
+.qle-pn-btn-on {
+    background: #0176d3;
+    border-color: #0176d3;
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(1, 118, 211, 0.25);
+}
+
+.qle-pn-btn-on:hover {
+    background: #014486;
+    border-color: #014486;
+    color: #fff;
+}
+
+.qle-pn-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1rem;
+    height: 1rem;
+    padding: 0 0.25rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.25);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Badge in inactive state */
+.qle-pn-btn:not(.qle-pn-btn-on) .qle-pn-badge {
+    background: #0176d3;
+    color: #fff;
+}
+
+/* ─── Panel body ─── */
+.qle-dp-body {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #d8dde6 transparent;
+}
+
+.qle-dp-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.qle-dp-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.qle-dp-body::-webkit-scrollbar-thumb {
+    background: #d8dde6;
+    border-radius: 2px;
+}
+
+/* ─── Panel sections (Details tab) ─── */
+.qle-ps {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.qle-ps:last-of-type {
+    border-bottom: none;
+}
+
+.qle-ps-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.875rem 0.2rem;
+    background: #f7f8fa;
+}
+
+.qle-ps-title {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #0176d3;
+}
+
+.qle-ps-body {
+    padding: 0.25rem 0.875rem 0.625rem;
+}
+
+.qle-ps-body .slds-form-element {
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.25rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.qle-ps-body .slds-form-element__label {
+    font-size: 0.75rem;
+    color: #444;
+    margin-bottom: 0.125rem;
+    display: block;
+}
+
+.qle-ps-body .slds-form-element__static {
+    font-size: 0.8125rem;
+    color: #181818;
+}
+
+/* ─── Cross Connect Assets section ─── */
+.qle-xc {
+    margin: 0.75rem 0.875rem 0.5rem;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid #d4e5ff;
+    border-left: 3px solid #0176d3;
+    border-radius: 0.375rem;
+    background: linear-gradient(135deg, #f8fbff 0%, #f0f6ff 100%);
+    animation: qle-xc-fade 0.25s ease;
+}
+
+@keyframes qle-xc-fade {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.qle-xc-head {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.25rem;
+}
+
+.qle-xc-ic {
+    flex-shrink: 0;
+    --slds-c-icon-color-foreground-default: #0176d3;
+}
+
+.qle-xc-title {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #0176d3;
+}
+
+.qle-xc-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: 0.5625rem;
+    font-weight: 700;
+    padding: 0.125rem 0.45rem;
+    border-radius: 1rem;
+    margin-left: auto;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+
+.qle-xc-badge_done {
+    background: #e5f5e0;
+    color: #2a6830;
+}
+
+.qle-xc-badge_done .qle-xc-badge-ic {
+    --slds-c-icon-color-foreground-default: #2a6830;
+}
+
+.qle-xc-badge_pending {
+    background: #fde8e0;
+    color: #c23934;
+    animation: qle-xc-pulse 2s ease-in-out infinite;
+}
+
+@keyframes qle-xc-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.7; }
+}
+
+.qle-xc-hint {
+    font-size: 0.75rem;
+    color: #706e6b;
+    margin: 0 0 0.5rem;
+    line-height: 1.4;
+}
+
+.qle-xc-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 0.5rem;
+    border-top: 1px solid #d4e5ff;
+    margin-top: 0.375rem;
+    --slds-c-button-radius-border: 0.25rem;
+}
+
+/* ─── Warning icon tint for cross connect rows in datatable ─── */
+c-quote-line-datatable lightning-icon[icon-name="utility:warning"] {
+    --slds-c-icon-color-foreground-default: #e87600;
+}
+
+/* ─── Per-section edit button (pencil icon) ─── */
+.qle-ps-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: none;
+    border-radius: 0.25rem;
+    background: transparent;
+    color: #706e6b;
+    cursor: pointer;
+    transition: all 0.12s;
+    padding: 0;
+}
+
+.qle-ps-edit-btn:hover {
+    background: #e0e5ee;
+    color: #0176d3;
+}
+
+.qle-ps-head-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+}
+
+/* Section save/cancel bar */
+.qle-ps-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0.375rem 0.875rem 0.5rem;
+    --slds-c-button-radius-border: 0.25rem;
+}
+
+/* Editing state highlight */
+.qle-ps-editing {
+    border-left: 3px solid #0176d3;
+    background: #fafcff;
+}
+
+/* Record link in panel header */
+.qle-dp-link-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.25rem;
+    color: #706e6b;
+    text-decoration: none;
+    transition: all 0.12s;
+    flex-shrink: 0;
+}
+
+.qle-dp-link-btn:hover {
+    background: #e0e5ee;
+    color: #0176d3;
+}
+
+/* Product context in edit mode */
+.qle-edit-product-ctx {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.15rem 0 0.35rem;
+}
+
+.qle-edit-product-name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #181818;
+}
+
+.qle-edit-product-code {
+    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-size: 0.6875rem;
+    color: #54698d;
+    background: #eef1f6;
+    padding: 0.08rem 0.35rem;
+    border-radius: 0.2rem;
+}
+
+/* Edit mode action bar */
+.qle-dp-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    border-top: 1px solid #e0e5ee;
+    background: #f7f8fa;
+}
+
+/* ─── Panel footer ─── */
+.qle-dp-footer {
+    padding: 0.625rem 0.75rem;
+    border-top: 1px solid #e0e5ee;
+    flex-shrink: 0;
+    background: #f7f8fa;
+}
+
+.qle-dp-create-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #0176d3;
+    border-radius: 0.375rem;
+    background: #0176d3;
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.qle-dp-create-btn:hover {
+    background: #014486;
+    border-color: #014486;
+}
+
+.qle-dp-create-ic {
+    flex-shrink: 0;
+}
+
+/* ─── Inventory section ─── */
+.qle-inv-wrap {
+    padding: 0.625rem 0.875rem;
+}
+
+.qle-inv-progress {
+    padding: 0.25rem 0 0.5rem;
+}
+
+.qle-inv-progress-top {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.25rem;
+}
+
+.qle-inv-progress-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #3e3e3c;
+}
+
+.qle-inv-progress-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: #e8ecf1;
+    overflow: hidden;
+}
+
+.qle-inv-progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: #0176d3;
+    transition: width 0.3s ease;
+    min-width: 0;
+}
+
+.qle-inv-progress-fill_complete {
+    background: #2e844a;
+}
+
+/* Section labels */
+.qle-inv-section-label {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #706e6b;
+    margin: 0.75rem 0 0.25rem;
+    padding: 0;
+}
+
+/* Inventory row — compact card */
+.qle-inv-row {
+    display: grid;
+    grid-template-columns: 20px 1fr auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 0.375rem;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid #e0e5ee;
+    border-radius: 0.375rem;
+    margin-bottom: 0.3rem;
+    background: #fff;
+    transition: border-color 0.12s, box-shadow 0.12s;
+    position: relative;
+}
+
+.qle-inv-row:hover {
+    border-color: #b0b7c3;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.qle-inv-row_assigned {
+    grid-template-columns: 1fr;
+    border-left: 3px solid #5c4d7a;
+    background: #faf8ff;
+}
+
+.qle-inv-row_assigned .qle-inv-row-meta {
+    grid-column: 1 / -1;
+}
+
+.qle-inv-row_available {
+    background: #fafbfc;
+}
+
+.qle-inv-row-main {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.qle-inv-name {
+    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #181818;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+}
+
+.qle-inv-row-meta {
+    grid-column: 2 / -1;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding-top: 0.1rem;
+}
+
+.qle-inv-meta-text {
+    font-size: 0.6875rem;
+    color: #706e6b;
+}
+
+.qle-inv-meta-sep {
+    font-size: 0.6rem;
+    color: #b0adab;
+}
+
+/* Status badges */
+.qle-inv-status {
+    font-size: 0.5625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.1rem 0.35rem;
+    border-radius: 1rem;
+    white-space: nowrap;
+    background: #ecebea;
+    color: #706e6b;
+    flex-shrink: 0;
+}
+
+.qle-inv-status_available {
+    background: #e5f5e0;
+    color: #2a6830;
+}
+
+.qle-inv-status_held {
+    background: #f4e8ff;
+    color: #5c4d7a;
+}
+
+.qle-inv-status_sold {
+    background: #d4e5ff;
+    color: #014486;
+}
+
+/* Type badge */
+.qle-inv-type-badge {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.08rem 0.3rem;
+    border-radius: 1rem;
+    background: #e1e5eb;
+    color: #54698d;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.qle-inv-type-badge_breaker {
+    background: #fde8e0;
+    color: #c23934;
+}
+
+/* Action buttons inside rows */
+.qle-inv-release-btn,
+.qle-inv-assign-btn {
+    flex-shrink: 0;
+    margin-left: auto;
+    position: absolute;
+    right: 0.35rem;
+    top: 0.35rem;
+}
+
+/* Search + filter */
+.qle-inv-search-wrap {
+    margin-bottom: 0.5rem;
+}
+
+.qle-inv-search {
+    height: 1.75rem;
+    font-size: 0.78rem;
+    padding: 0 0.5rem;
+    border-radius: 0.375rem;
+}
+
+.qle-inv-filter-row {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.4rem;
+}
+
+.qle-inv-pill {
+    padding: 0.15rem 0.45rem;
+    border: 1px solid #d8dde6;
+    border-radius: 2rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    background: #fff;
+    color: #54698d;
+    cursor: pointer;
+    transition: all 0.12s;
+    white-space: nowrap;
+}
+
+.qle-inv-pill:hover {
+    border-color: #b0b7c3;
+    color: #3e3e3c;
+}
+
+.qle-inv-pill-active {
+    background: #181818;
+    border-color: #181818;
+    color: #fff;
+}
+
+.qle-inv-pill-active:hover {
+    background: #333;
+    border-color: #333;
+    color: #fff;
+}
+
+.qle-inv-available-list {
+    padding-right: 2px;
+}
+
+.qle-inv-bulk-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    margin-bottom: 0.25rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.qle-inv-select-all-label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    color: #3e3e3c;
+    cursor: pointer;
+}
+
+.qle-inv-checkbox {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px !important;
+    min-height: 16px !important;
+    border: 1.5px solid #706e6b !important;
+    border-radius: 3px !important;
+    background: #fff !important;
+    cursor: pointer;
+    margin: 0 !important;
+    opacity: 1 !important;
+    position: relative !important;
+    pointer-events: auto !important;
+    outline: none;
+    grid-row: 1 / -1;
+    align-self: center;
+}
+.qle-inv-checkbox:checked {
+    background: #0176d3 !important;
+    border-color: #0176d3 !important;
+}
+.qle-inv-checkbox:checked::after {
+    content: '' !important;
+    display: block !important;
+    position: absolute;
+    left: 4.5px;
+    top: 1px;
+    width: 5px;
+    height: 9px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+.qle-inv-checkbox:hover {
+    border-color: #0176d3 !important;
+}
+
+.qle-inv-bulk-assign-btn {
+    padding: 0.2rem 0.5rem;
+    border: 1px solid #0b5394;
+    border-radius: 0.25rem;
+    background: #0b5394;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.qle-inv-bulk-assign-btn:hover {
+    background: #094078;
+    border-color: #094078;
+}
+
+.qle-inv-bulk-assign-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.qle-inv-empty-text {
+    font-size: 0.78rem;
+    color: #706e6b;
+    padding: 0.5rem 0;
+}
+
+/* ─── Ramp section ─── */
+.qle-ramp-wrap {
+    padding: 0.625rem 0.875rem;
+}
+
+.qle-ramp-info {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+/* Ramp summary table (read-only view) */
+.qle-ramp-summary {
+    margin-bottom: 0.625rem;
+}
+.qle-ramp-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #e2e2e2;
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 0.75rem;
+}
+.qle-ramp-table thead th {
+    padding: 0.35rem 0.5rem;
+    background: #f8f8f8;
+    border-bottom: 1px solid #e2e2e2;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #666;
+    font-size: 0.625rem;
+    text-align: left;
+    white-space: nowrap;
+}
+.qle-ramp-table tbody td {
+    padding: 0.375rem 0.5rem;
+    border-bottom: 1px solid #efefef;
+    color: #181818;
+    white-space: nowrap;
+}
+.qle-ramp-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.qle-ramp-table tbody tr:hover td {
+    background: #f8f8f8;
+}
+.qle-ramp-td-phase {
+    font-weight: 700;
+    color: #0176d3;
+    text-align: center;
+}
+.qle-ramp-th-right,
+.qle-ramp-td-right {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+.qle-ramp-nrc-note {
+    font-size: 0.6875rem;
+    color: #706e6b;
+    margin: 0.25rem 0 0.5rem;
+    padding-left: 0.25rem;
+}
+
+/* Ramp view — phase dates in header */
+.qle-ramp-phase-dates {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: #706e6b;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+/* Ramp view — product row within a phase card */
+.qle-ramp-prod-row {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+.qle-ramp-prod-row:last-child {
+    border-bottom: none;
+}
+.qle-ramp-prod-code {
+    font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: #181818;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.qle-ramp-prod-attr {
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: #0070f3;
+    background: #f0f7ff;
+    padding: 1px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+.qle-ramp-prod-qty {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #54698d;
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+.qle-ramp-prod-price {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #181818;
+    font-variant-numeric: tabular-nums;
+    min-width: 60px;
+    text-align: right;
+}
+
+.qle-ramp-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.25rem;
+    background: #eef1f6;
+    color: #0176d3;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Ramp type selector — segment pills */
+.qle-ramp-types {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 0.625rem;
+}
+
+.qle-ramp-type-btn {
+    flex: 1;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid #d8dde6;
+    border-radius: 0.375rem;
+    background: #fff;
+    color: #54698d;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+}
+
+.qle-ramp-type-btn:hover {
+    background: #eef1f6;
+    border-color: #b0b7c3;
+}
+
+.qle-ramp-type-on {
+    background: #0176d3;
+    border-color: #0176d3;
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(1, 118, 211, 0.2);
+}
+
+.qle-ramp-type-on:hover {
+    background: #014486;
+    border-color: #014486;
+    color: #fff;
+}
+
+.qle-ramp-status {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.375rem;
+    margin-bottom: 0.625rem;
+    line-height: 1.4;
+    background: #eef1f6;
+    color: #54698d;
+}
+
+.qle-ramp-status_warning {
+    background: #fff3e0;
+    color: #7c4f00;
+}
+
+.qle-ramp-status_success {
+    background: #e5f5e0;
+    color: #2a6830;
+}
+
+.qle-ramp-status_error {
+    background: #fde8e0;
+    color: #c23934;
+}
+
+.qle-ramp-phase {
+    padding: 0.5rem 0.625rem;
+    border: 1px solid #e0e5ee;
+    border-radius: 0.375rem;
+    margin-bottom: 0.4rem;
+    background: #fafbfc;
+}
+
+.qle-ramp-phase-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}
+
+.qle-ramp-phase-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #3e3e3c;
+}
+
+.qle-ramp-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.625rem;
+    border: 1px dashed #b0b7c3;
+    border-radius: 0.375rem;
+    background: #fafbfc;
+    color: #54698d;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 0.625rem;
+    width: 100%;
+    justify-content: center;
+}
+
+.qle-ramp-add-btn:hover {
+    border-color: #0176d3;
+    background: #f0f7ff;
+    color: #0176d3;
+}
+
+.qle-ramp-add-ic {
+    flex-shrink: 0;
+}
+
+.qle-ramp-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #e0e5ee;
+    margin-top: 0.25rem;
+}
+
+/* ─── Create Inventory Modal ─── */
+.qle-create-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 9100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qle-create-modal {
+    background: #fff;
+    border-radius: 0.625rem;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+    width: 26rem;
+    max-width: 90vw;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.qle-create-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e0e5ee;
+}
+
+.qle-create-title {
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: #181818;
+}
+
+.qle-create-body {
+    padding: 1rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.qle-create-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #e0e5ee;
+}
+
+/* ─── Flatten inner table corners ─── */
+.qle-group-section c-quote-line-datatable,
+.qle-subgroup-section c-quote-line-datatable {
+    --slds-c-datatable-radius-border: 0;
+    --lwc-borderRadiusMedium: 0;
+    border-radius: 0;
+}
+
+.qle-group-section c-quote-line-datatable table,
+.qle-subgroup-section c-quote-line-datatable table {
+    border-radius: 0;
+}
+
+/* ─── Approval status bar ─── */
+.qle-approval-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border-bottom: 1px solid #fde68a;
+    font-size: 0.8125rem;
+}
+.qle-approval-lock {
+    flex-shrink: 0;
+    --sds-c-icon-color-foreground-default: #92400e;
+}
+.qle-approval-label {
+    font-weight: 600;
+    color: #92400e;
+    white-space: nowrap;
+}
+.qle-approval-badges {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+    margin-left: 0.25rem;
+}
+
+/* Approval badges */
+.qle-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1875rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    line-height: 1.3;
+}
+.qle-badge_pending {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+.qle-badge_info {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Multi-Product Ramp Modal — v4 (deInventoryManager design system)
+   ═══════════════════════════════════════════════════════════════ */
+
+.qle-ramp-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 9100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: qle-ramp-fade 0.15s ease;
+}
+
+@keyframes qle-ramp-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.qle-ramp-modal {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    animation: qle-ramp-enter 0.2s ease;
+}
+
+@keyframes qle-ramp-enter {
+    from { transform: translateY(16px) scale(0.98); opacity: 0; }
+    to   { transform: translateY(0) scale(1);       opacity: 1; }
+}
+
+/* ─ Header ─ */
+.qle-ramp-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid #e2e2e2;
+}
+
+.qle-ramp-modal-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.qle-ramp-modal-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+    letter-spacing: 0.01em;
+}
+
+.qle-ramp-modal-header lightning-button-icon {
+    --slds-c-button-icon-color-foreground: #888;
+}
+
+/* ─ Config ─ */
+.qle-ramp-config {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid #efefef;
+    background: #f8f8f8;
+}
+
+.qle-ramp-config-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.qle-ramp-config-products {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.qle-ramp-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    background: #fff;
+    color: #111;
+    border: 1px solid #e2e2e2;
+}
+
+.qle-ramp-chip_mrc { /* inherits base */ }
+
+/* Chip attribute inline badge */
+.qle-ramp-chip-attr {
+    color: #0070f3;
+    margin-left: 2px;
+}
+
+/* Chip remove × button */
+.qle-ramp-chip-x {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    margin-left: 4px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #888;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.12s;
+    padding: 0;
+}
+.qle-ramp-chip-x:hover {
+    background: #fef0f0;
+    color: #e00;
+}
+
+.qle-ramp-nrc-label {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: #888;
+}
+
+/* Add more lines — button + popover */
+.qle-ramp-add-wrap {
+    position: relative;
+}
+
+.qle-ramp-add-line-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border: 1px dashed #c5c5c5;
+    border-radius: 6px;
+    background: transparent;
+    color: #555;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.12s;
+    white-space: nowrap;
+}
+.qle-ramp-add-line-btn:hover {
+    border-color: #0070f3;
+    color: #0070f3;
+    background: #f0f7ff;
+}
+
+.qle-ramp-add-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9200;
+    background: transparent;
+}
+
+.qle-ramp-add-popover {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 9201;
+    background: #fff;
+    border: 1px solid #e2e2e2;
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    min-width: 200px;
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+.qle-ramp-add-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.12s;
+    text-align: left;
+}
+.qle-ramp-add-item:hover {
+    background: #f5f5f5;
+}
+
+.qle-ramp-add-code {
+    font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: #111;
+}
+
+.qle-ramp-add-attr {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: #0070f3;
+    background: #f0f7ff;
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+.qle-ramp-add-qty {
+    font-size: 12px;
+    color: #888;
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+}
+
+.qle-ramp-config-group {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.qle-ramp-config-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    white-space: nowrap;
+}
+
+/* Phase count — segmented control (dim toggle pattern) */
+.qle-ramp-count-pills {
+    display: inline-flex;
+    flex-wrap: wrap;
+    background: #fff;
+    border: 1px solid #e2e2e2;
+    border-radius: 6px;
+    padding: 2px;
+    gap: 1px;
+}
+
+/* Phase stepper — carries the count past the quick-pick row, up to 30 (SFDC-208) */
+.qle-ramp-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 0.5rem;
+    background: #fff;
+    border: 1px solid #e2e2e2;
+    border-radius: 6px;
+    padding: 2px;
+}
+.qle-ramp-step-btn {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: #555;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+.qle-ramp-step-btn:hover:not(:disabled) { background: #f0f0f0; color: #111; }
+.qle-ramp-step-btn:disabled { color: #ccc; cursor: not-allowed; }
+.qle-ramp-step-value {
+    min-width: 1.75rem;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: #888;
+    font-variant-numeric: tabular-nums;
+}
+/* Highlighted only when the stepper is the control actually in use, i.e. past the row */
+.qle-ramp-step-value_active {
+    color: #111;
+    font-weight: 600;
+}
+
+.qle-ramp-count-pill {
+    width: 1.75rem;
+    height: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: #888;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.12s;
+}
+
+.qle-ramp-count-pill:hover {
+    color: #111;
+    background: #f5f5f5;
+}
+
+.qle-ramp-count-pill_on {
+    background: #000;
+    color: #fff;
+    font-weight: 600;
+}
+
+.qle-ramp-count-pill_on:hover {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.qle-ramp-count-pill_plus {
+    font-size: 15px;
+    font-weight: 600;
+    color: #555;
+}
+.qle-ramp-count-pill_plus:hover {
+    color: #0070f3;
+    background: #f0f7ff;
+}
+
+/* Ramp type — segmented control (dim toggle pattern) */
+.qle-ramp-config .qle-ramp-types {
+    display: inline-flex;
+    background: #fff;
+    border: 1px solid #e2e2e2;
+    border-radius: 6px;
+    padding: 2px;
+    gap: 1px;
+}
+
+.qle-ramp-config .qle-ramp-type-btn {
+    flex: none;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.12s;
+}
+
+.qle-ramp-config .qle-ramp-type-btn:hover {
+    color: #111;
+    background: #f5f5f5;
+}
+
+.qle-ramp-config .qle-ramp-type-on {
+    background: #000;
+    color: #fff;
+    font-weight: 600;
+}
+
+.qle-ramp-config .qle-ramp-type-on:hover {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+/* SLDS button overrides */
+.qle-ramp-modal lightning-button {
+    --slds-c-button-radius-border: 6px;
+    --lwc-borderRadiusMedium: 6px;
+}
+
+/* ─ Body ─ */
+.qle-ramp-modal-body {
+    flex: 1;
+    /* Vertical only. The grid owns the horizontal scroll, and with 30 phases two nested
+       sideways scrollbars means users grab the wrong one. Link menus are position:fixed,
+       so hiding overflow-x here cannot clip them. */
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1.25rem;
+    scrollbar-width: thin;
+    scrollbar-color: #d4d4d4 transparent;
+}
+
+.qle-ramp-modal-body::-webkit-scrollbar { width: 4px; height: 6px; }
+.qle-ramp-modal-body::-webkit-scrollbar-track { background: transparent; }
+.qle-ramp-modal-body::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 2px; }
+.qle-ramp-modal-body::-webkit-scrollbar-thumb:hover { background: #a3a3a3; }
+
+/* Extra padding for combobox dropdown room in attribute ramp */
+.qle-ramp-modal-body { padding-bottom: 12rem; }
+
+/* Loading overlay inside ramp modal */
+.qle-ramp-modal-loading {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9300;
+    border-radius: 12px;
+}
+
+/* ─ Grid ─ */
+.qle-ramp-grid {
+    display: grid;
+    gap: 0;
+    border: 1px solid #e2e2e2;
+    border-radius: 8px;
+    overflow-x: auto;
+    overflow-y: visible;
+    position: relative;
+}
+.qle-ramp-grid::-webkit-scrollbar { height: 6px; }
+.qle-ramp-grid::-webkit-scrollbar-track { background: transparent; }
+.qle-ramp-grid::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 3px; }
+.qle-ramp-grid::-webkit-scrollbar-thumb:hover { background: #a3a3a3; }
+
+/* Corner — sticky left */
+.qle-ramp-grid-corner {
+    display: flex;
+    align-items: flex-end;
+    padding: 0 0.75rem 0.5rem;
+    background: #f8f8f8;
+    border-bottom: 1px solid #e2e2e2;
+    border-top-left-radius: 8px;
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    box-shadow: 2px 0 4px rgba(0,0,0,0.06);
+    clip-path: inset(0 -6px 0 0);
+}
+
+.qle-ramp-grid-corner-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #888;
+}
+
+/* Column headers */
+.qle-ramp-grid-col-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.5rem;
+    background: #f8f8f8;
+    border-bottom: 1px solid #e2e2e2;
+    border-left: 1px solid #efefef;
+}
+
+.qle-ramp-grid-phase-num {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: #111;
+}
+
+.qle-ramp-grid-date {
+    width: 100%;
+    --slds-c-input-radius-border: 6px;
+    --slds-c-input-color-border: #e2e2e2;
+    --slds-c-input-shadow: none;
+}
+
+/* Product cells — sticky left */
+.qle-ramp-grid-product {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    padding: 0.5rem 0.75rem;
+    background: #fff;
+    border-bottom: 2px solid #E5E7EB;
+    border-right: 1px solid #F3F4F6;
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    box-shadow: 2px 0 4px rgba(0,0,0,0.06);
+    clip-path: inset(0 -6px 0 0);
+}
+.qle-ramp-grid-product-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.qle-ramp-grid-code {
+    font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+}
+
+.qle-ramp-grid-attr {
+    display: inline-block;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: #0070f3;
+    background: #f0f7ff;
+    padding: 1px 8px;
+    border-radius: 6px;
+    width: fit-content;
+    white-space: nowrap;
+}
+
+.qle-ramp-grid-qty {
+    font-size: 12px;
+    color: #888;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Data cells */
+.qle-ramp-grid-cell {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 0.5rem 0.375rem;
+    border-bottom: 2px solid #E5E7EB;
+    border-left: 1px solid #F3F4F6;
+    background: #fff;
+    align-items: end;
+    min-width: 0;
+    overflow: visible;
+    position: relative;
+}
+
+/* Attribute & custom value span full width; qty+price sit side by side */
+.qle-ramp-grid-cell > lightning-combobox,
+.qle-ramp-grid-cell > .qle-ramp-grid-full {
+    grid-column: 1 / -1;
+}
+
+.qle-ramp-grid-cell:hover {
+    background: #F0F7FF;
+}
+
+/* ─── Alternating column tint for visual rhythm ─── */
+/* Odd phases (1,3,5) get green tint, even phases (2,4,6) stay white — applied via JS-computed class */
+.qle-ramp-col-tint { background: #E8F5E9 !important; }
+.qle-ramp-col-tint:hover { background: #C8E6C9 !important; }
+
+/* ─── Phase actions: link + exclude ─── */
+.qle-ramp-phase-actions {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+    grid-column: 1 / -1;
+    align-items: stretch;
+    min-width: 0;
+}
+.qle-ramp-phase-actions .qle-ramp-pill-wrap { flex: 1; margin-top: 0; }
+.qle-ramp-exclude-btn {
+    width: 24px; height: 24px;
+    border: 1px solid #E5E7EB; border-radius: 6px;
+    background: #F9FAFB; color: #9CA3AF;
+    font-size: 11px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s; flex-shrink: 0;
+    opacity: 0;
+}
+.qle-ramp-grid-cell:hover .qle-ramp-exclude-btn { opacity: 1; }
+.qle-ramp-exclude-btn:hover { background: #FEE2E2; border-color: #EF4444; color: #EF4444; }
+
+/* Excluded cell state */
+.qle-ramp-excluded {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 6px;
+    padding: 8px 4px; grid-column: 1 / -1;
+    min-height: 60px;
+}
+.qle-ramp-excluded-label { font-size: 10px; color: #9CA3AF; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+.qle-ramp-include-btn {
+    padding: 2px 10px; border: 1px solid #D1D5DB; border-radius: 4px;
+    background: #fff; color: #374151; font-size: 10px; font-weight: 500;
+    cursor: pointer; transition: all 0.12s;
+}
+.qle-ramp-include-btn:hover { background: #DBEAFE; border-color: #3B82F6; color: #1D4ED8; }
+
+/* ─── Phase link pill ─── */
+.qle-ramp-pill-wrap {
+    position: relative;
+    margin-top: 4px;
+    grid-column: 1 / -1;
+    min-width: 0;
+}
+.qle-ramp-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 24px;
+    padding: 0 6px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    background: #F9FAFB;
+    color: #9CA3AF;
+    font-size: 9px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.qle-ramp-pill:hover {
+    border-color: #A5B4FC;
+    color: #6366F1;
+    background: #EEF2FF;
+}
+/* Hidden by default, appears on cell hover */
+.qle-ramp-pill-hover {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+.qle-ramp-grid-cell:hover .qle-ramp-pill-hover {
+    opacity: 1;
+}
+.qle-ramp-pill-linked {
+    border-color: #6366F1;
+    background: #6366F1;
+    color: #fff;
+}
+.qle-ramp-pill-linked:hover {
+    background: #4F46E5;
+    border-color: #4F46E5;
+}
+/* Locked: a later phase inherited from this one, so the link cannot be cleared here.
+   Muted rather than greyed out — the link is still in force, just not editable yet. */
+.qle-ramp-pill-locked,
+.qle-ramp-pill-locked:hover {
+    background: #A5B4FC;
+    border-color: #A5B4FC;
+    color: #fff;
+    cursor: not-allowed;
+    opacity: 1;
+}
+/* Sits just under the menu (9999) so an outside click closes it instead of falling
+   through to a grid input — the add-line popover uses the same trick */
+.qle-ramp-pill-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: transparent;
+}
+.qle-ramp-pill-menu {
+    position: fixed;
+    min-width: 130px;
+    /* One option per earlier phase: at 30 phases that is 30+ rows, which ran off the
+       bottom of the screen with no way to reach the last ones. Scroll inside instead. */
+    max-height: 40vh;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 9999;
+    padding: 4px;
+}
+.qle-ramp-pill-opt {
+    display: block;
+    width: 100%;
+    padding: 5px 10px;
+    border: none;
+    background: none;
+    font-size: 11px; font-weight: 500;
+    color: #374151;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.1s;
+}
+.qle-ramp-pill-opt:hover {
+    background: #EEF2FF;
+    color: #4338CA;
+}
+.qle-ramp-pill-opt-sel {
+    background: #6366F1;
+    color: #fff;
+}
+.qle-ramp-pill-opt-sel:hover {
+    background: #4F46E5;
+    color: #fff;
+}
+/* Fixed-width gutter so labels line up whether or not the row has a checkbox */
+.qle-ramp-pill-mark {
+    display: inline-block;
+    width: 12px;
+    margin-right: 6px;
+    text-align: center;
+}
+/* Shortcut + dismiss rows are separated from the per-phase toggles above them */
+.qle-ramp-pill-opt-all,
+.qle-ramp-pill-opt-done {
+    border-top: 1px solid #F3F4F6;
+    margin-top: 2px;
+    padding-top: 6px;
+}
+.qle-ramp-pill-opt-done {
+    color: #6366F1;
+    font-weight: 600;
+}
+
+/* ─── Connector track row ─── */
+.qle-ramp-track-corner {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #fff;
+    min-height: 20px;
+}
+.qle-ramp-track-cell {
+    position: relative;
+    min-height: 20px;
+    border-left: 1px solid #F3F4F6;
+}
+.qle-ramp-track-node {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #6366F1;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #6366F1;
+    z-index: 2;
+}
+.qle-ramp-track-node-src {
+    background: #818CF8;
+    box-shadow: 0 0 0 1px #818CF8;
+}
+.qle-ramp-track-leg {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1.5px;
+    height: 50%;
+    background: #C7D2FE;
+    transform: translateX(-50%);
+}
+.qle-ramp-track-hline {
+    position: absolute;
+}
+
+/* Base qty editor in product column */
+.qle-ramp-grid-base-qty {
+    display: inline-flex; align-items: center; gap: 4px;
+}
+.qle-ramp-grid-base-label {
+    font-size: 9px; font-weight: 600; color: #9CA3AF;
+    text-transform: uppercase; letter-spacing: 0.04em;
+}
+.qle-ramp-grid-base-input {
+    width: 56px; height: 22px; padding: 0 4px;
+    border: 1px solid #E5E7EB; border-radius: 4px;
+    font-size: 11px; font-weight: 600; color: #374151;
+    text-align: center; background: #F9FAFB;
+    font-variant-numeric: tabular-nums;
+}
+.qle-ramp-grid-base-input:focus {
+    border-color: #0070f3; outline: none;
+    background: #fff;
+    box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.12);
+}
+
+.qle-ramp-grid-agg {
+    display: inline-block; margin-top: 4px;
+    font-size: 8px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 1px 5px; border-radius: 3px;
+}
+.qle-ramp-grid-agg_yes { background: #EDE9FE; color: #6D28D9; }
+.qle-ramp-grid-agg_no  { background: #F0F9FF; color: #0369A1; }
+
+/* Modal inline error */
+.qle-ramp-modal-error {
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0.75rem; padding: 10px 14px;
+    background: #FEF2F2; border: 1px solid #FECACA;
+    border-radius: 6px; color: #991B1B;
+    font-size: 13px; font-weight: 500; line-height: 1.4;
+}
+
+/* Missing data highlight — same amber everywhere, overrides column tint */
+.qle-ramp-col-missing { background: #FEF3C7 !important; }
+.qle-ramp-cell-empty { background: #FEF3C7 !important; }
+
+/* Sticky product column */
+.qle-ramp-grid-product {
+    position: sticky; left: 0; z-index: 2;
+}
+
+.qle-ramp-grid-input {
+    width: 100%;
+    --slds-c-input-radius-border: 6px;
+    --slds-c-input-color-border: #e2e2e2;
+    --slds-c-input-shadow: none;
+}
+
+.qle-ramp-grid-input:focus-within {
+    --slds-c-input-color-border: #0070f3;
+    --slds-c-input-shadow: 0 0 0 2px rgba(0, 112, 243, 0.1);
+}
+
+/* Phase notes input in column header */
+.qle-ramp-grid-notes {
+    width: 100%;
+    height: 24px;
+    padding: 0 6px;
+    margin-top: 4px;
+    border: 1px solid #e2e2e2;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    color: #334155;
+    outline: none;
+    background: #fff;
+}
+.qle-ramp-grid-notes:focus {
+    border-color: #0070f3;
+    box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.1);
+}
+.qle-ramp-grid-notes::placeholder {
+    color: #94a3b8;
+    font-style: italic;
+}
+
+/* Invoice display combo in ramp config */
+.qle-ramp-invoice-combo {
+    max-width: 180px;
+}
+
+/* ─ Validation ─ */
+.qle-ramp-validation {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    background: #fefaed;
+    border: 1px solid #e2e2e2;
+    border-left: 3px solid #f5a623;
+    border-radius: 8px;
+}
+
+.qle-ramp-validation-ic {
+    flex-shrink: 0;
+    margin-top: 1px;
+    --sds-c-icon-color-foreground-default: #f5a623;
+}
+
+.qle-ramp-validation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.qle-ramp-validation-msg {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+}
+
+/* ─ Footer ─ */
+.qle-ramp-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid #e2e2e2;
+    background: #f8f8f8;
+    border-radius: 0 0 12px 12px;
+}
+
+.qle-ramp-modal-footer-info {
+    margin-right: auto;
+    font-size: 13px;
+    font-weight: 500;
+    color: #888;
+}
+
+/* Footer primary button override — black accent */
+.qle-ramp-modal-footer lightning-button[variant="brand"] {
+    --slds-c-button-brand-color-background: #000;
+    --slds-c-button-brand-color-border: #000;
+    --slds-c-button-brand-color-background-hover: #1a1a1a;
+    --slds-c-button-brand-color-border-hover: #1a1a1a;
+    --slds-c-button-text-color: #fff;
+}
+
+/* Footer cancel button override */
+.qle-ramp-modal-footer lightning-button:not([variant]) {
+    --slds-c-button-neutral-color-background: #fff;
+    --slds-c-button-neutral-color-border: #e2e2e2;
+    --slds-c-button-neutral-color-background-hover: #f5f5f5;
+    --slds-c-button-neutral-color-border-hover: #c5c5c5;
+}
+
+/* Header icon tint */
+.qle-ramp-modal-header-left lightning-icon {
+    --slds-c-icon-color-foreground-default: #111;
+}
+
+/* Close button hover — dim red pattern */
+.qle-ramp-modal-header lightning-button-icon:hover {
+    --slds-c-button-icon-color-foreground: #e00;
+}
+
+/* Grid last row — remove bottom border */
+.qle-ramp-grid-product:last-of-type {
+    border-bottom: none;
+}
+
+/* Input focus ring within grid */
+.qle-ramp-grid lightning-input:focus-within,
+.qle-ramp-grid lightning-combobox:focus-within {
+    --slds-c-input-color-border: #0070f3;
+    --slds-c-input-shadow: 0 0 0 2px rgba(0, 112, 243, 0.1);
+}
+
+/* Combobox dropdown override */
+.qle-ramp-grid lightning-combobox {
+    --slds-c-input-radius-border: 6px;
+    --slds-c-input-color-border: #e2e2e2;
+}
+
+/* ─── Compact mode (7-9 phases) ─── */
+.qle-ramp-compact .qle-ramp-grid-phase-num { font-size: 11px; }
+.qle-ramp-compact .qle-ramp-grid-col-header { padding: 0.375rem 0.375rem; }
+.qle-ramp-compact .qle-ramp-grid-cell { padding: 0.375rem 0.25rem; }
+.qle-ramp-compact .qle-ramp-pill { font-size: 8px; height: 20px; padding: 0 4px; }
+.qle-ramp-compact .qle-ramp-exclude-btn { width: 20px; height: 20px; font-size: 9px; }
+
+/* ─── Dense mode (10+ phases) ─── */
+.qle-ramp-dense .qle-ramp-grid-phase-num { font-size: 10px; }
+.qle-ramp-dense .qle-ramp-grid-col-header { padding: 0.25rem 0.25rem; gap: 0.125rem; }
+.qle-ramp-dense .qle-ramp-grid-cell { padding: 0.375rem 0.1875rem; gap: 2px; }
+.qle-ramp-dense .qle-ramp-pill { font-size: 6px; height: 16px; padding: 0 3px; letter-spacing: 0; }
+.qle-ramp-dense .qle-ramp-exclude-btn { width: 18px; height: 18px; font-size: 8px; }
+.qle-ramp-dense .qle-ramp-grid-code { font-size: 10px; }
+.qle-ramp-dense .qle-ramp-grid-attr { font-size: 0.625rem; padding: 1px 5px; }
+.qle-ramp-dense .qle-ramp-grid-notes { font-size: 10px; padding: 3px 4px; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Main tab navigation (Lines | Ramp Schedule)
+   ═══════════════════════════════════════════════════════════════════ */
+.qle-main-nav {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-left: 1rem;
+    border-bottom: 2px solid transparent;
+}
+.qle-main-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.375rem 0.875rem;
+    border: none;
+    background: transparent;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+    font-family: inherit;
+}
+.qle-main-nav-btn:hover {
+    color: #334155;
+}
+.qle-main-nav-active {
+    color: #0176d3;
+    border-bottom-color: #0176d3;
+}
+.qle-main-nav-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: #dbeafe;
+    color: #0176d3;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Ramp Schedule tab
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   Ramp Schedule — research-driven redesign
+   Warm neutrals, luminance hierarchy, WCAG AA compliant
+   ═══════════════════════════════════════════════════════════════════ */
+.qle-rs-wrap {
+    padding: 1rem;
+    background: #fff;
+}
+
+/* ─── Top bar ─── */
+.qle-rs-bar {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+.qle-rs-bar-summary {
+    font-size: 13px; font-weight: 600; color: #111;
+}
+.qle-rs-bar-dot {
+    width: 3px; height: 3px; border-radius: 50%;
+    background: #d4d4d4; flex-shrink: 0;
+}
+.qle-rs-bar-actions {
+    display: flex; gap: 8px; margin-left: auto;
+}
+.qle-rs-btn {
+    padding: 7px 16px; border-radius: 6px; font-size: 13px;
+    font-weight: 600; cursor: pointer; border: 1px solid #e2e2e2;
+    font-family: inherit; transition: all 0.15s; white-space: nowrap;
+    background: #fff; color: #111;
+}
+.qle-rs-btn:hover { border-color: #c5c5c5; background: #f8f8f8; }
+.qle-rs-btn-edit {
+    color: #fff; background: #000; border-color: #000;
+}
+.qle-rs-btn-edit:hover { background: #1a1a1a; }
+.qle-rs-btn-remove { color: #888; display: inline-flex; align-items: center; gap: 4px; }
+.qle-rs-btn-remove:hover { color: #e00; border-color: #e00; background: #fef0f0; }
+.qle-rs-btn-remove:disabled { opacity: 0.7; cursor: wait; }
+.qle-rs-spinner {
+    display: inline-block; width: 12px; height: 12px;
+    border: 2px solid #ccc; border-top-color: #e00;
+    border-radius: 50%; animation: qle-rs-spin 0.6s linear infinite;
+}
+@keyframes qle-rs-spin { to { transform: rotate(360deg); } }
+
+/* ─── Collapsible phase sections ─── */
+.qle-rs-sections {
+    display: flex; flex-direction: column; gap: 8px;
+}
+.qle-rs-section {
+    border: 1px solid #e2e2e2; border-radius: 10px;
+    overflow: hidden; background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* Section header — clickable */
+.qle-rs-sec-hdr {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; padding: 14px 16px;
+    border: none; background: linear-gradient(180deg, #f8f9fa 0%, #f3f4f6 100%);
+    cursor: pointer; user-select: none;
+    font-family: inherit; text-align: left;
+    transition: background 0.12s;
+}
+.qle-rs-sec-hdr:hover { background: #eef0f3; }
+
+.qle-rs-sec-chevron {
+    width: 0; height: 0; flex-shrink: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 5px solid #aaa;
+    transition: transform 0.15s ease;
+}
+.qle-rs-section-open .qle-rs-sec-chevron {
+    transform: rotate(90deg);
+    border-left-color: #111;
+}
+
+.qle-rs-sec-left {
+    display: flex; align-items: center; gap: 10px;
+    flex: 1; min-width: 0;
+}
+.qle-rs-sec-title {
+    font-size: 14px; font-weight: 700; color: #000;
+    white-space: nowrap;
+}
+.qle-rs-sec-date {
+    font-size: 12px; font-weight: 600; color: #555;
+    white-space: nowrap;
+}
+.qle-rs-sec-products {
+    font-size: 11px; font-weight: 500; color: #aaa;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.qle-rs-sec-right {
+    display: flex; align-items: baseline; gap: 10px; flex-shrink: 0;
+}
+.qle-rs-sec-mrc {
+    font-size: 15px; font-weight: 800; color: #000;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+}
+.qle-rs-sec-nrc {
+    font-size: 12px; font-weight: 600; color: #888;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Section body — hidden when collapsed */
+.qle-rs-sec-body {
+    display: none; padding: 0;
+    border-top: 1px solid #e5e7eb;
+}
+.qle-rs-section-open .qle-rs-sec-body {
+    display: block;
+}
+
+/* Product items inside section */
+.qle-rs-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; border-bottom: 1px solid #f3f4f6;
+    gap: 10px;
+}
+.qle-rs-item:last-child { border-bottom: none; }
+.qle-rs-item-left {
+    display: flex; align-items: center; gap: 8px;
+    flex: 1; min-width: 0;
+}
+.qle-rs-item-name {
+    font-size: 13px; font-weight: 600; color: #111;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.qle-rs-item-right {
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
+.qle-rs-item-qty {
+    font-size: 14px; font-weight: 800; color: #000;
+    font-variant-numeric: tabular-nums; min-width: 28px; text-align: right;
+}
+.qle-rs-item-price {
+    font-size: 13px; font-weight: 500; color: #555;
+    font-variant-numeric: tabular-nums; min-width: 90px; text-align: right;
+}
+.qle-rs-item-attr {
+    font-size: 11px; font-weight: 700; color: #047857;
+    background: #ecfdf5; padding: 2px 10px; border-radius: 10px;
+    white-space: nowrap; letter-spacing: 0.01em;
+}
+.qle-rs-item-id {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; padding: 3px 8px; border-radius: 4px;
+    white-space: nowrap;
+}
+.qle-rs-item-id_new { color: #0070f3; background: #f0f7ff; }
+.qle-rs-item-id_change { color: #7928ca; background: #f6f0fe; }
+.qle-rs-item-id_pricechange { color: #b45309; background: #fefaed; }
+.qle-rs-item-id_existing { color: #059669; background: #ecfdf5; }
+
+/* NRC item row */
+.qle-rs-item-nrc {
+    background: transparent; border-top: none;
+    padding: 4px 16px 8px 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.qle-rs-nrc-name { color: #888; font-size: 12px; font-weight: 500; }
+.qle-rs-nrc-badge {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; padding: 3px 8px; border-radius: 4px;
+    color: #92400e; background: #fefaed; white-space: nowrap;
+}
+
+/* Notes inside section */
+.qle-rs-sec-notes {
+    padding: 8px 16px; background: #f0faf0; border-top: 1px solid #d1e7d1;
+    font-size: 12px; color: #2d6a2d; font-style: italic;
+}
+
+/* Grand total */
+.qle-rs-grand {
+    display: flex; align-items: baseline; justify-content: flex-end;
+    gap: 12px; padding: 16px 16px 4px; margin-top: 10px;
+    border-top: 2px solid #111;
+}
+.qle-rs-grand-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: #888;
+}
+.qle-rs-grand-val {
+    font-size: 22px; font-weight: 800; color: #000;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+}
+
+@keyframes qle-fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+    .qle-detail-panel {
+        width: 100%;
+    }
+
+    .qle-toolbar {
+        flex-wrap: wrap;
+    }
+}

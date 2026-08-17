@@ -1,0 +1,200 @@
+.cpt-wrap {
+    padding: 0 2px;
+}
+
+.cpt-search {
+    margin-bottom: 10px;
+    display: block;
+}
+
+.cpt-hint {
+    font-size: 13px;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 8px 2px;
+    margin: 0;
+}
+
+.cpt-loading {
+    padding: 16px 0;
+    text-align: center;
+}
+
+.cpt-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.cpt-th {
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    padding: 7px 10px;
+    border-bottom: 2px solid #e5e7eb;
+    background: #f9fafb;
+    white-space: nowrap;
+}
+
+.cpt-th--sel {
+    width: 28px;
+}
+
+.cpt-row {
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.cpt-row:hover {
+    background: #f0f4ff;
+}
+
+.cpt-row--sel {
+    background: #eef2ff;
+}
+
+.cpt-row--sel:hover {
+    background: #e0e7ff;
+}
+
+.cpt-td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #111827;
+    vertical-align: middle;
+}
+
+.cpt-td--sel {
+    text-align: center;
+    width: 28px;
+}
+
+.cpt-td--name {
+    font-weight: 500;
+}
+
+/* Custom radio indicator */
+.cpt-radio {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #9ca3af;
+    background: #fff;
+    vertical-align: middle;
+}
+
+.cpt-radio--checked {
+    border-color: #3b50d6;
+    background: #3b50d6;
+    box-shadow: inset 0 0 0 3px #fff;
+}
+
+.cpt-empty,
+.cpt-error {
+    font-size: 13px;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 8px 2px;
+    margin: 0;
+}
+
+.cpt-error {
+    color: #dc2626;
+    font-style: normal;
+}
+
+.cpt-create-btn {
+    margin-top: 10px;
+    background: none;
+    border: 1px solid #0070d2;
+    color: #0070d2;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cpt-create-btn:hover {
+    background: #eef2ff;
+}
+
+/* ── Inline create form ─────────────────────────────────────────────────── */
+.cpt-create-form {
+    margin-top: 12px;
+    padding: 14px;
+    border: 1px solid #d0dce8;
+    border-radius: 6px;
+    background: #f8fafc;
+}
+
+.cpt-form-heading {
+    font-size: 12px;
+    color: #5a6b7a;
+    margin: 0 0 10px;
+}
+
+.cpt-form-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.cpt-form-field {
+    flex: 1;
+}
+
+.cpt-form-field--full {
+    flex: 1 1 100%;
+}
+
+.cpt-role-section {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.cpt-role-heading {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.cpt-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.cpt-cancel-btn {
+    background: none;
+    border: 1px solid #9aacbb;
+    color: #444;
+    font-size: 13px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cpt-cancel-btn:hover { background: #f0f0f0; }
+
+.cpt-save-btn {
+    background: #0070d2;
+    border: 1px solid #0057a8;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cpt-save-btn:hover:not([disabled]) { background: #005fb2; }
+.cpt-save-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+.cpt-spinner { margin-left: 4px; }

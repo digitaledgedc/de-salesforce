@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customMetadataTypeAccesses>
+        <enabled>true</enabled>
+        <name>Product_Attribute_Variant__mdt</name>
+    </customMetadataTypeAccesses>
+    <customMetadataTypeAccesses>
+        <enabled>true</enabled>
+        <name>Product_Pricing_Tier__mdt</name>
+    </customMetadataTypeAccesses>
+    <customMetadataTypeAccesses>
+        <enabled>true</enabled>
+        <name>kVA_Draw_Pricing__mdt</name>
+    </customMetadataTypeAccesses>
+    <description>Designed to update Custom metadat for products pricing and will be assigned only for Indra.
+Location of use: From DeProductManager LWC which is used to update products pricing which involces various custom metadata records update.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE Modify Metadata for Product</label>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ModifyMetadata</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ViewRoles</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ViewSetup</name>
+    </userPermissions>
+</PermissionSet>

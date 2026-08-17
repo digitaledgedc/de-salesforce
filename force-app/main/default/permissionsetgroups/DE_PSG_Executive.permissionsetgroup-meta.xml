@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Executive / CEO read-only persona (Sheet4: All read, no edit on every object).</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE PSG Executive</label>
+    <permissionSets>DE_Apex_Access</permissionSets>
+    <permissionSets>DE_Executive_Access</permissionSets>
+    <permissionSets>DE_Executive_Read_All</permissionSets>
+    <permissionSets>DE_Flow_Access</permissionSets>
+    <permissionSets>DE_Sales_Reference_Read</permissionSets>
+    <permissionSets>Document_Upload</permissionSets>
+    <permissionSets>User_Greeting_Component</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>

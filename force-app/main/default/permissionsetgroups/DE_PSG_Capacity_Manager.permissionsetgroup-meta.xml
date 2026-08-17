@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Assign to DE Capacity Manager profile users. Grants Inventory CRUD, Operating_Site capacity field editing, and read-only access to Quotes (Space/Breaker ID context) and Orders. Opens DE Operations Console as default app.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE Capacity Manager</label>
+    <permissionSets>DE_Apex_Access</permissionSets>
+    <permissionSets>DE_Capacity_Admin</permissionSets>
+    <permissionSets>DE_Capacity_Manager</permissionSets>
+    <permissionSets>DE_Flow_Access</permissionSets>
+    <permissionSets>DE_Inventory_Edit_Create</permissionSets>
+    <permissionSets>Lead_Capacity_kW</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>

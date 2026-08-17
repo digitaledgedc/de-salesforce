@@ -1,0 +1,132 @@
+.sld-wrap {
+    padding: 0 2px 8px;
+}
+
+.sld-hdr {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.sld-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.sld-th {
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    padding: 6px 10px;
+    border-bottom: 2px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.sld-row:nth-child(even) {
+    background: #f9fafb;
+}
+
+.sld-td {
+    padding: 7px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #111827;
+    vertical-align: middle;
+}
+
+.sld-td--name {
+    font-weight: 500;
+}
+
+.sld-primary {
+    color: #3b82f6;
+    margin-left: 5px;
+    font-size: 10px;
+}
+
+.sld-eng-pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.sld-th--act {
+    width: 28px;
+}
+
+.sld-td--act {
+    width: 28px;
+    text-align: center;
+}
+
+/* Clickable read values */
+.sld-edit-val {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+}
+.sld-edit-val:hover {
+    text-decoration: underline;
+    color: #1d4ed8;
+}
+
+/* Inline combobox + cancel */
+.sld-inline-edit {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sld-combo {
+    flex: 1;
+    min-width: 0;
+}
+
+.sld-x-btn {
+    background: none;
+    border: none;
+    padding: 2px 4px;
+    cursor: pointer;
+    color: #9ca3af;
+    font-size: 11px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.sld-x-btn:hover { color: #dc2626; }
+
+/* Delete button */
+.sld-del-btn {
+    background: none;
+    border: none;
+    padding: 2px 4px;
+    cursor: pointer;
+    color: #d1d5db;
+    font-size: 11px;
+    line-height: 1;
+}
+.sld-del-btn:hover { color: #dc2626; }
+
+.sld-empty {
+    font-size: 13px;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 6px 2px 12px;
+}
+
+.sld-error {
+    font-size: 12px;
+    color: #dc2626;
+    padding: 4px 2px;
+}

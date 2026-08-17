@@ -1,0 +1,682 @@
+<!-- dealHealthPanel.html  -  v6: layout fix + delete + MRC/NRC -->
+<template>
+<div class="dhp">
+
+    <!-- ══ HEADER ════════════════════════════════════════════════ -->
+    <div class="dhp-hdr">
+        <div class="dhp-hdr-row">
+            <div class="dhp-hdr-left">
+                <div class="dhp-title-row">
+                    <span class="dhp-eyebrow">Deal Health</span>
+                    <template if:true={showInternalTab}>
+                        <div class="dhp-mode-pill">
+                            <button class={btnExtClass} onclick={handleModeExt} type="button">External</button>
+                            <button class={btnIntClass} onclick={handleModeInt} type="button">Internal</button>
+                        </div>
+                    </template>
+                </div>
+                <span class="dhp-tagline">Qualify every circle - deals that are fully qualified close at higher rates.</span>
+            </div>
+            <div class="dhp-score-group">
+                <div class="dhp-donut-wrap">
+                    <svg class="dhp-donut" viewBox="0 0 36 36" aria-hidden="true">
+                        <circle class="dhp-donut-track" cx="18" cy="18" r="15.5"/>
+                        <circle class="dhp-donut-arc"   cx="18" cy="18" r="15.5" style={donutArcStyle}/>
+                    </svg>
+                    <span class="dhp-donut-num">{donutLabel}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ EXTERNAL ══════════════════════════════════════════════ -->
+    <template if:true={isExternal}>
+
+        <!-- MEDDPICC overview (always shown at top) -->
+        <p class="dhp-meddpicc-intro">MEDDPICC is an 8-element B2B sales qualification and deal management framework. It provides a structured approach to qualifying opportunities and managing complex sales cycles. Each letter represents a critical element of the framework:</p>
+
+        <!-- Coverage bubbles — always visible, no collapse toggle -->
+        <div class="dhp-cov-section">
+            <div class="shp-row">
+                <template for:each={meddpiccBubbles} for:item="mb">
+                    <button key={mb.id} class={mb.wrapClass}
+                            data-id={mb.id} onclick={handleMeddpiccBubbleClick}
+                            title={mb.hoverLabel} type="button">
+                        <div class="shp-circle" style={mb.bubbleStyle}>{mb.letter}</div>
+                        <span class="shp-lbl">{mb.shortLabel}</span>
+                        <span class={mb.guidanceClass}>{mb.guidance}</span>
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        <!-- Bubble popup (click existing stakeholder bubble → view/edit) -->
+        <template if:true={showBubblePopup}>
+            <div class="dhp-popup">
+                <div class="dhp-popup-hdr">
+                    <span class="dhp-popup-title">{popupTitle}</span>
+                    <template if:true={activeStakeTitleHelp}><lightning-helptext content={activeStakeTitleHelp} class="dhp-title-help"></lightning-helptext></template>
+                    <button class="dhp-form-close" onclick={handlePopupClose} type="button">&#10005;</button>
+                </div>
+                <template if:true={activeStakeDesc}>
+                    <p class="dhp-form-desc">{activeStakeDesc}</p>
+                </template>
+                <div class="dhp-popup-person">
+                    <div class="dhp-avatar" style={popupAvatarStyle}>{popupInitials}</div>
+                    <div class="dhp-popup-info">
+                        <div class="dhp-popup-name">{popupContactName}</div>
+                        <template if:true={popupContactTitle}>
+                            <div class="dhp-popup-sub">{popupContactTitle}</div>
+                        </template>
+                    </div>
+                </div>
+                <lightning-combobox label="Role" value={_popupRoleVal}
+                    options={roleOptions} onchange={handlePopupRoleChange}
+                    class="dhp-fld"></lightning-combobox>
+                <lightning-combobox label="Engagement Status" value={_popupEngVal}
+                    options={statusOptions} onchange={handlePopupEngChange}
+                    class="dhp-fld"></lightning-combobox>
+                <lightning-combobox label={popupMeddpiccStatusLabel} field-level-help={activeStakeStatusHelp} value={_popupMeddpiccStatus}
+                    options={meddpiccStatusOptions} onchange={handlePopupMeddpiccStatusChange}
+                    class="dhp-fld"></lightning-combobox>
+                <div class="dhp-popup-actions">
+                    <button class="dhp-btn-action" onclick={handlePopupLogTask} type="button"
+                            title="Log a task for this contact">
+                        <lightning-icon icon-name="utility:task" size="xx-small"
+                                        class="dhp-action-icon"></lightning-icon>
+                        Log Task
+                    </button>
+                    <button class="dhp-btn-action" onclick={handlePopupEmail} type="button"
+                            title="Log an email for this contact">
+                        <lightning-icon icon-name="utility:email" size="xx-small"
+                                        class="dhp-action-icon"></lightning-icon>
+                        Email
+                    </button>
+                </div>
+                <div class="dhp-popup-foot">
+                    <button class="dhp-btn-del" data-role-id={_popupRoleId}
+                            onclick={handlePopupDelete} type="button">Remove</button>
+                    <button class="dhp-btn-save" onclick={handlePopupSave}
+                            disabled={popupSaveDisabled} type="button">{popupSaveLabel}</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- Add stakeholder form (click empty role bubble → opens with role pre-set) -->
+        <template if:true={showAddForm}>
+            <div class="dhp-form-panel">
+                <div class="dhp-form-hdr">
+                    <span class="dhp-form-title">{addFormTitle}</span>
+                    <template if:true={activeStakeTitleHelp}><lightning-helptext content={activeStakeTitleHelp} class="dhp-title-help"></lightning-helptext></template>
+                    <button class="dhp-form-close" onclick={handleAddCancel}
+                            type="button" title="Cancel">&#10005;</button>
+                </div>
+                <template if:true={activeStakeDesc}>
+                    <p class="dhp-form-desc">{activeStakeDesc}</p>
+                </template>
+
+                <!-- Phase 1: contact search (before contact selected) -->
+                <template if:false={_contactSelected}>
+                    <div class="dhp-form-section">
+                        <lightning-input type="search" label="Search contacts"
+                            variant="label-hidden"
+                            placeholder="Type a name or title…"
+                            value={cptSearch} onchange={handleCptSearch}
+                            class="dhp-search-input">
+                        </lightning-input>
+                        <template if:true={cptShowHint}>
+                            <p class="dhp-cpt-hint">Type a name to search contacts for this account.</p>
+                        </template>
+                        <template if:true={cptHasResults}>
+                            <ul class="dhp-contact-list">
+                                <template for:each={cptFilteredContacts} for:item="c">
+                                    <li key={c.value} class="dhp-contact-item"
+                                        data-id={c.value} data-label={c.label}
+                                        onclick={handlePickContact}>
+                                        {c.label}
+                                    </li>
+                                </template>
+                            </ul>
+                        </template>
+                        <template if:true={cptNoResults}>
+                            <p class="dhp-cpt-hint">No contacts match &ldquo;{cptSearch}&rdquo;.</p>
+                            <button class="dhp-nc-link" onclick={handleNewContactMode} type="button">
+                                + Create new contact
+                            </button>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- Phase 1b: new contact form -->
+                <template if:true={_showNewContact}>
+                    <div class="dhp-form-section">
+                        <div class="dhp-nc-hdr">
+                            <span class="dhp-nc-label">New Contact</span>
+                            <button class="dhp-nc-back" onclick={handleClearContact}
+                                    type="button">&#8592; Back to search</button>
+                        </div>
+                        <div class="dhp-nc-grid">
+                            <lightning-input class="dhp-nc-fld" label="First Name"
+                                value={ncFirst} onchange={handleNcFirstChange}></lightning-input>
+                            <lightning-input class="dhp-nc-fld" label="Last Name *"
+                                value={ncLast} onchange={handleNcLastChange}></lightning-input>
+                            <lightning-input class="dhp-nc-fld" label="Title"
+                                value={ncTitle} onchange={handleNcTitleChange}></lightning-input>
+                            <lightning-input class="dhp-nc-fld" label="Email" type="email"
+                                value={ncEmail} onchange={handleNcEmailChange}></lightning-input>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Phase 2: picked contact display -->
+                <template if:true={showPickedContact}>
+                    <div class="dhp-selected-contact">
+                        <span class="dhp-selected-name">{_addContactLabel}</span>
+                        <button class="dhp-nc-back" onclick={handleClearContact} type="button">Change</button>
+                    </div>
+                </template>
+
+                <!-- Phase 3: role + engagement (only after contact is selected or being created) -->
+                <template if:true={_contactSelected}>
+                    <div class="dhp-form-row">
+                        <template if:true={showRoleField}>
+                            <lightning-combobox class="dhp-fld dhp-fld--half" label="Role"
+                                placeholder="Select role…" value={addRole}
+                                options={roleOptions} onchange={handleAddRoleChange}>
+                            </lightning-combobox>
+                        </template>
+                        <lightning-combobox class="dhp-fld dhp-fld--half" label="Engagement"
+                            value={addStatus} options={statusOptions}
+                            onchange={handleAddStatusChange}>
+                        </lightning-combobox>
+                    </div>
+                    <lightning-combobox class="dhp-fld" label="Reports To"
+                        placeholder="Select contact they report to…"
+                        value={_addReportsToId} options={reportsToOptions}
+                        onchange={handleAddReportsToChange}>
+                    </lightning-combobox>
+                    <template if:true={showAddMeddpiccStatus}>
+                        <lightning-combobox class="dhp-fld" label={addMeddpiccStatusLabel} field-level-help={activeStakeStatusHelp}
+                            placeholder="Select status…" value={_addMeddpiccStatus}
+                            options={meddpiccStatusOptions} onchange={handleAddMeddpiccStatusChange}>
+                        </lightning-combobox>
+                    </template>
+                    <div class="dhp-form-foot">
+                        <button class="dhp-btn-save" disabled={saveDisabled}
+                                onclick={handleSaveAdd} type="button">{saveBtnLabel}</button>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- M - Metrics form -->
+        <template if:true={showMetricForm}>
+            <div class="dhp-form-panel">
+                <div class="dhp-form-hdr">
+                    <span class="dhp-form-title">Metrics (MEDDPICC - M)</span>
+                    <template if:true={activeFormTitleHelp}><lightning-helptext content={activeFormTitleHelp} class="dhp-title-help"></lightning-helptext></template>
+                    <button class="dhp-form-close" onclick={handleMetricCancel} type="button">&#10005;</button>
+                </div>
+                <template if:true={activeFormDesc}>
+                    <p class="dhp-form-desc">{activeFormDesc}</p>
+                </template>
+                <div class="dhp-form-section">
+                    <lightning-checkbox-group
+                        label="Metric Category" name="metricCat"
+                        options={metricCategoryOptions} value={_metricCategories}
+                        onchange={handleMetricCatChange}
+                        class="dhp-fld dhp-fld--full">
+                    </lightning-checkbox-group>
+                    <lightning-textarea label="Metrics"
+                        value={_metricDesc} rows="3" onchange={handleMetricDescChange}
+                        class="dhp-fld dhp-fld--full">
+                    </lightning-textarea>
+                    <lightning-combobox label="Metrics Status" field-level-help={activeFormStatusHelp}
+                        value={_metricStatus} options={metricStatusOptions}
+                        onchange={handleMetricStatusChange} class="dhp-fld">
+                    </lightning-combobox>
+                </div>
+                <div class="dhp-form-foot">
+                    <button class="dhp-btn-save" disabled={metricSaveDisabled}
+                            onclick={handleSaveMetric} type="button">{metricSaveBtnLabel}</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- D1 - Decision Criteria form -->
+        <template if:true={showD1Form}>
+            <div class="dhp-form-panel">
+                <div class="dhp-form-hdr">
+                    <span class="dhp-form-title">Decision Criteria (MEDDPICC - D)</span>
+                    <template if:true={activeFormTitleHelp}><lightning-helptext content={activeFormTitleHelp} class="dhp-title-help"></lightning-helptext></template>
+                    <button class="dhp-form-close" onclick={handleD1Cancel} type="button">&#10005;</button>
+                </div>
+                <template if:true={activeFormDesc}>
+                    <p class="dhp-form-desc">{activeFormDesc}</p>
+                </template>
+                <div class="dhp-form-section">
+                    <lightning-checkbox-group
+                        label="Decision Criteria - Key Factors" name="d1Options"
+                        options={d1OptionsOptions} value={_d1Options}
+                        onchange={handleD1OptionsChange}
+                        class="dhp-fld dhp-fld--full">
+                    </lightning-checkbox-group>
+                    <lightning-textarea label="Decision Criteria"
+                        value={_d1Desc} rows="3" onchange={handleD1DescChange}
+                        class="dhp-fld dhp-fld--full">
+                    </lightning-textarea>
+                    <lightning-combobox label="Decision Criteria Status" field-level-help={activeFormStatusHelp}
+                        value={_d1Status} options={meddpiccStatusOptions}
+                        onchange={handleD1StatusChange} class="dhp-fld">
+                    </lightning-combobox>
+                </div>
+                <div class="dhp-form-foot">
+                    <button class="dhp-btn-save" disabled={d1SaveDisabled}
+                            onclick={handleSaveD1} type="button">{d1SaveBtnLabel}</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- D2 - Decision Process form -->
+        <template if:true={showD2Form}>
+            <div class="dhp-form-panel">
+                <div class="dhp-form-hdr">
+                    <span class="dhp-form-title">Decision Process (MEDDPICC - D)</span>
+                    <template if:true={activeFormTitleHelp}><lightning-helptext content={activeFormTitleHelp} class="dhp-title-help"></lightning-helptext></template>
+                    <button class="dhp-form-close" onclick={handleD2Cancel} type="button">&#10005;</button>
+                </div>
+                <template if:true={activeFormDesc}>
+                    <p class="dhp-form-desc">{activeFormDesc}</p>
+                </template>
+                <div class="dhp-form-section">
+                    <lightning-checkbox-group
+                        label="Decision Process - Stages" name="d2Stages"
+                        options={d2StagesOptions} value={_d2Stages}
+                        onchange={handleD2StagesChange}
+                        class="dhp-fld dhp-fld--full">
+                    </lightning-checkbox-group>
+                    <lightning-textarea label="Decision Process"
+                        value={_d2Desc} rows="3" onchange={handleD2DescChange}
+                        class="dhp-fld dhp-fld--full">
+                    </lightning-textarea>
+                    <lightning-combobox label="Decision Process Status" field-level-help={activeFormStatusHelp}
+                        value={_d2Status} options={meddpiccStatusOptions}
+                        onchange={handleD2StatusChange} class="dhp-fld">
+                    </lightning-combobox>
+                </div>
+                <div class="dhp-form-foot">
+                    <button class="dhp-btn-save" disabled={d2SaveDisabled}
+                            onclick={handleSaveD2} type="button">{d2SaveBtnLabel}</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- P - Paper Process form -->
+        <template if:true={showPForm}>
+            <div class="dhp-form-panel">
+                <div class="dhp-form-hdr">
+                    <span class="dhp-form-title">Paper Process (MEDDPICC - P)</span>
+                    <template if:true={activeFormTitleHelp}><lightning-helptext content={activeFormTitleHelp} class="dhp-title-help"></lightning-helptext></template>
+                    <button class="dhp-form-close" onclick={handlePCancel} type="button">&#10005;</button>
+                </div>
+                <template if:true={activeFormDesc}>
+                    <p class="dhp-form-desc">{activeFormDesc}</p>
+                </template>
+                <div class="dhp-form-section">
+                    <lightning-checkbox-group
+                        label="Paper Process - Steps" name="pSteps"
+                        options={pStepsOptions} value={_pSteps}
+                        onchange={handlePStepsChange}
+                        class="dhp-fld dhp-fld--full">
+                    </lightning-checkbox-group>
+                    <lightning-textarea label="Paper Process"
+                        value={_pDesc} rows="3" onchange={handlePDescChange}
+                        class="dhp-fld dhp-fld--full">
+                    </lightning-textarea>
+                    <lightning-combobox label="Paper Process Status" field-level-help={activeFormStatusHelp}
+                        value={_pStatus} options={meddpiccStatusOptions}
+                        onchange={handlePStatusChange} class="dhp-fld">
+                    </lightning-combobox>
+                </div>
+                <div class="dhp-form-foot">
+                    <button class="dhp-btn-save" disabled={pSaveDisabled}
+                            onclick={handleSaveP} type="button">{pSaveBtnLabel}</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- I - Identify Pain form -->
+        <template if:true={showIForm}>
+            <div class="dhp-form-panel">
+                <div class="dhp-form-hdr">
+                    <span class="dhp-form-title">Identify Pain (MEDDPICC - I)</span>
+                    <template if:true={activeFormTitleHelp}><lightning-helptext content={activeFormTitleHelp} class="dhp-title-help"></lightning-helptext></template>
+                    <button class="dhp-form-close" onclick={handleICancel} type="button">&#10005;</button>
+                </div>
+                <template if:true={activeFormDesc}>
+                    <p class="dhp-form-desc">{activeFormDesc}</p>
+                </template>
+                <div class="dhp-form-section">
+                    <lightning-textarea label="Identify Pain"
+                        value={_iDesc} rows="4" onchange={handleIDescChange}
+                        class="dhp-fld dhp-fld--full">
+                    </lightning-textarea>
+                    <lightning-combobox label="Identify Pain Status" field-level-help={activeFormStatusHelp}
+                        value={_iStatus} options={meddpiccStatusOptions}
+                        onchange={handleIStatusChange} class="dhp-fld">
+                    </lightning-combobox>
+                </div>
+                <div class="dhp-form-foot">
+                    <button class="dhp-btn-save" disabled={iSaveDisabled}
+                            onclick={handleSaveI} type="button">{iSaveBtnLabel}</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- C2 - Competition form -->
+        <template if:true={showC2Form}>
+            <div class="dhp-form-panel">
+                <div class="dhp-form-hdr">
+                    <span class="dhp-form-title">Competition (MEDDPICC - C)</span>
+                    <template if:true={activeFormTitleHelp}><lightning-helptext content={activeFormTitleHelp} class="dhp-title-help"></lightning-helptext></template>
+                    <button class="dhp-form-close" onclick={handleC2Cancel} type="button">&#10005;</button>
+                </div>
+                <template if:true={activeFormDesc}>
+                    <p class="dhp-form-desc">{activeFormDesc}</p>
+                </template>
+                <div class="dhp-form-section">
+
+                    <!-- Competitor Account search -->
+                    <template if:true={c2ShowSearch}>
+                        <lightning-input type="search" label="Competitor Account"
+                            placeholder="Search by name..."
+                            value={c2AccountSearch} onchange={handleC2AccountSearch}
+                            class="dhp-fld dhp-fld--full">
+                        </lightning-input>
+                        <template if:true={c2AccountShowHint}>
+                            <p class="dhp-cpt-hint">Type a name to search competitor accounts.</p>
+                        </template>
+                        <template if:true={c2AccountHasResults}>
+                            <ul class="dhp-contact-list">
+                                <template for:each={_c2AccountResults} for:item="ac">
+                                    <li key={ac.value} class="dhp-contact-item"
+                                        data-id={ac.value} data-label={ac.label}
+                                        onclick={handlePickC2Account}>
+                                        {ac.label}
+                                    </li>
+                                </template>
+                            </ul>
+                        </template>
+                        <template if:true={c2AccountNoResults}>
+                            <p class="dhp-cpt-hint">No competitor accounts found.</p>
+                            <button class="dhp-nc-link" onclick={handleNewCompetitorMode} type="button">
+                                + Create new competitor
+                            </button>
+                        </template>
+                    </template>
+                    <!-- New competitor account form -->
+                    <template if:true={c2ShowNewAccountForm}>
+                        <div class="dhp-nc-hdr">
+                            <span class="dhp-nc-label">New Competitor</span>
+                            <button class="dhp-nc-back" onclick={handleClearC2Account}
+                                    type="button">&#8592; Back to search</button>
+                        </div>
+                        <lightning-input class="dhp-fld dhp-fld--full" label="Competitor Name *"
+                            value={_c2NewAccountName} onchange={handleC2NewNameChange}>
+                        </lightning-input>
+                    </template>
+                    <!-- Selected competitor display -->
+                    <template if:true={c2ShowPickedAccount}>
+                        <div class="dhp-selected-contact">
+                            <span class="dhp-selected-name">{_c2AccountName}</span>
+                            <button class="dhp-nc-back" onclick={handleClearC2Account} type="button">Change</button>
+                        </div>
+                    </template>
+
+                    <lightning-combobox label="Competition Status" field-level-help={activeFormStatusHelp}
+                        value={_c2Status} options={meddpiccStatusOptions}
+                        onchange={handleC2StatusChange} class="dhp-fld">
+                    </lightning-combobox>
+                    <lightning-textarea label="Competition"
+                        value={_c2Desc} rows="3" onchange={handleC2DescChange}
+                        class="dhp-fld dhp-fld--full">
+                    </lightning-textarea>
+                </div>
+                <div class="dhp-form-foot">
+                    <button class="dhp-btn-save" disabled={c2SaveDisabled}
+                            onclick={handleSaveC2} type="button">{c2SaveBtnLabel}</button>
+                </div>
+            </div>
+        </template>
+
+    </template>
+
+    <!-- ══ INTERNAL ══════════════════════════════════════════════ -->
+    <template if:true={isInternal}>
+        <lightning-record-edit-form
+            record-id={recordId}
+            object-api-name="Opportunity"
+            onsuccess={handleInternalSaveSuccess}
+            onchange={handleInternalFieldChange}
+            class="dhp-int-form">
+
+            <lightning-messages class="dhp-int-msgs"></lightning-messages>
+
+            <!-- DEAL TEAM ─────────────────────────────────────── -->
+            <div class="dhp-int-section">
+                <button class="dhp-int-section-hdr-btn" onclick={handleToggleDealTeam} type="button">
+                    <span class="dhp-int-section-label">Deal Team &amp; Splits</span>
+                    <span class="dhp-cov-chevron">{dealTeamChevron}</span>
+                </button>
+                <template if:false={_dealTeamCollapsed}>
+
+                <!-- SP1 - owner -->
+                <div class="dhp-sp-block">
+                    <div class="dhp-sp-identity">
+                        <div class="dhp-avatar dhp-avatar--sm" style="background:#DD6B20;">{ownerInitials}</div>
+                        <div class="dhp-sp-info">
+                            <span class="dhp-sp-name">{ownerName}</span>
+                            <span class="dhp-sp-tag">SP1 · Deal Owner</span>
+                        </div>
+                    </div>
+                    <div class="slds-grid dhp-pct-row">
+                        <div class="slds-col slds-size_1-of-2 dhp-pct-item">
+                            <span class="dhp-pct-lbl">Split %</span>
+                            <lightning-input-field field-name="SP1_Split_Pct__c"
+                                value={_sp1Split} onchange={handleSP1SplitChange}
+                                variant="label-hidden" class="dhp-pct-fld"></lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 dhp-pct-item">
+                            <span class="dhp-pct-lbl">QR %</span>
+                            <lightning-input-field field-name="SP1_QR_Pct__c"
+                                value={_sp1QR} onchange={handleSP1QRChange}
+                                variant="label-hidden" class="dhp-pct-fld"></lightning-input-field>
+                        </div>
+                    </div>
+                    <template if:true={sp1Metrics}>
+                        <div class="dhp-rep-metrics">
+                            <template if:true={sp1Metrics.quotaCredit}>
+                                <div class="dhp-rm-item">
+                                    <span class="dhp-rm-label">Quota Credit</span>
+                                    <span class="dhp-rm-value">{sp1Metrics.quotaCredit}</span>
+                                </div>
+                            </template>
+                            <template if:true={sp1Metrics.commEligible}>
+                                <div class="dhp-rm-item">
+                                    <span class="dhp-rm-label">Commission</span>
+                                    <span class="dhp-rm-value">{sp1Metrics.commEligible}</span>
+                                </div>
+                            </template>
+                            <template if:true={sp1Metrics.hint}>
+                                <p class="dhp-rm-hint">{sp1Metrics.hint}</p>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- + Add SP2 -->
+                <template if:true={showAddSP2}>
+                    <button class="dhp-add-sp-btn" onclick={handleShowSP2} type="button">
+                        + Add Salesperson
+                    </button>
+                </template>
+
+                <!-- SP2 -->
+                <template if:true={showSP2}>
+                    <div class="dhp-sp-block">
+                        <lightning-input-field field-name="Salesperson_2__c"
+                            class="dhp-sp-lookup-fld"></lightning-input-field>
+                        <div class="slds-grid dhp-pct-row">
+                            <div class="slds-col slds-size_1-of-2 dhp-pct-item">
+                                <span class="dhp-pct-lbl">Split %</span>
+                                <lightning-input-field field-name="SP2_Split_Pct__c"
+                                    value={_sp2Split} onchange={handleSP2SplitChange}
+                                    variant="label-hidden" class="dhp-pct-fld"></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 dhp-pct-item">
+                                <span class="dhp-pct-lbl">QR %</span>
+                                <lightning-input-field field-name="SP2_QR_Pct__c"
+                                    value={_sp2QR} onchange={handleSP2QRChange}
+                                    variant="label-hidden" class="dhp-pct-fld"></lightning-input-field>
+                            </div>
+                        </div>
+                        <template if:true={sp2Metrics}>
+                            <div class="dhp-rep-metrics">
+                                <template if:true={sp2Metrics.quotaCredit}>
+                                    <div class="dhp-rm-item">
+                                        <span class="dhp-rm-label">Quota Credit</span>
+                                        <span class="dhp-rm-value">{sp2Metrics.quotaCredit}</span>
+                                    </div>
+                                </template>
+                                <template if:true={sp2Metrics.commEligible}>
+                                    <div class="dhp-rm-item">
+                                        <span class="dhp-rm-label">Commission</span>
+                                        <span class="dhp-rm-value">{sp2Metrics.commEligible}</span>
+                                    </div>
+                                </template>
+                                <template if:true={sp2Metrics.hint}>
+                                    <p class="dhp-rm-hint">{sp2Metrics.hint}</p>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- + Add SP3 -->
+                <template if:true={showAddSP3}>
+                    <button class="dhp-add-sp-btn" onclick={handleShowSP3} type="button">
+                        + Add 3rd Salesperson
+                    </button>
+                </template>
+
+                <!-- SP3 -->
+                <template if:true={showSP3}>
+                    <div class="dhp-sp-block">
+                        <lightning-input-field field-name="Salesperson_3__c"
+                            class="dhp-sp-lookup-fld"></lightning-input-field>
+                        <div class="slds-grid dhp-pct-row">
+                            <div class="slds-col slds-size_1-of-2 dhp-pct-item">
+                                <span class="dhp-pct-lbl">Split %</span>
+                                <lightning-input-field field-name="SP3_Split_Pct__c"
+                                    value={_sp3Split} onchange={handleSP3SplitChange}
+                                    variant="label-hidden" class="dhp-pct-fld"></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 dhp-pct-item">
+                                <span class="dhp-pct-lbl">QR %</span>
+                                <lightning-input-field field-name="SP3_QR_Pct__c"
+                                    value={_sp3QR} onchange={handleSP3QRChange}
+                                    variant="label-hidden" class="dhp-pct-fld"></lightning-input-field>
+                            </div>
+                        </div>
+                        <template if:true={sp3Metrics}>
+                            <div class="dhp-rep-metrics">
+                                <template if:true={sp3Metrics.quotaCredit}>
+                                    <div class="dhp-rm-item">
+                                        <span class="dhp-rm-label">Quota Credit</span>
+                                        <span class="dhp-rm-value">{sp3Metrics.quotaCredit}</span>
+                                    </div>
+                                </template>
+                                <template if:true={sp3Metrics.commEligible}>
+                                    <div class="dhp-rm-item">
+                                        <span class="dhp-rm-label">Commission</span>
+                                        <span class="dhp-rm-value">{sp3Metrics.commEligible}</span>
+                                    </div>
+                                </template>
+                                <template if:true={sp3Metrics.hint}>
+                                    <p class="dhp-rm-hint">{sp3Metrics.hint}</p>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- Split total -->
+                <template if:true={splitTotalLabel}>
+                    <div class={splitTotalClass}>{splitTotalLabel}</div>
+                </template>
+
+                <!-- Payout method -->
+                <lightning-input-field field-name="Commission_Payout_Method__c"
+                    class="dhp-if dhp-if--mt"></lightning-input-field>
+
+                </template><!-- /dealTeam -->
+            </div>
+
+            <!-- BOOKING ───────────────────────────────────────── -->
+            <div class="dhp-int-section">
+                <button class="dhp-int-section-hdr-btn" onclick={handleToggleBooking} type="button">
+                    <span class="dhp-int-section-label">Booking</span>
+                    <span class="dhp-cov-chevron">{bookingChevron}</span>
+                </button>
+                <template if:false={_bookingCollapsed}>
+                <div class="dhp-if-row">
+                    <lightning-input-field field-name="MRC__c"
+                        class="dhp-if dhp-if--half"></lightning-input-field>
+                    <lightning-input-field field-name="NRC__c"
+                        class="dhp-if dhp-if--half"></lightning-input-field>
+                </div>
+                <div class="dhp-if-row">
+                    <lightning-input-field field-name="Booking_Amount__c"
+                        onchange={handleBookingAmountChange}
+                        class="dhp-if dhp-if--half"></lightning-input-field>
+                    <lightning-input-field field-name="Booking_Bucket__c"
+                        class="dhp-if dhp-if--half"></lightning-input-field>
+                </div>
+                <lightning-input-field field-name="Booking_Override_Reason__c"
+                    class="dhp-if"></lightning-input-field>
+                <lightning-input-field field-name="Commission_Pct__c"
+                    onchange={handleCommPctChange}
+                    class="dhp-if dhp-if--mt"></lightning-input-field>
+
+                </template><!-- /booking -->
+            </div>
+
+            <!-- FORECAST ──────────────────────────────────────── -->
+            <div class="dhp-int-section dhp-int-section--last">
+                <button class="dhp-int-section-hdr-btn" onclick={handleToggleForecast} type="button">
+                    <span class="dhp-int-section-label">Forecast</span>
+                    <span class="dhp-cov-chevron">{forecastChevron}</span>
+                </button>
+                <template if:false={_forecastCollapsed}>
+                <div class="dhp-if-row">
+                    <lightning-input-field field-name="CloseDate"
+                        class="dhp-if dhp-if--half"></lightning-input-field>
+                    <lightning-input-field field-name="Probability"
+                        class="dhp-if dhp-if--half"></lightning-input-field>
+                </div>
+                <div class="dhp-if-row">
+                    <lightning-input-field field-name="ForecastCategoryName"
+                        class="dhp-if dhp-if--half"></lightning-input-field>
+                    <lightning-input-field field-name="DR_Status__c"
+                        class="dhp-if dhp-if--half"></lightning-input-field>
+                </div>
+
+                </template><!-- /forecast -->
+            </div>
+
+        </lightning-record-edit-form>
+
+    </template>
+
+</div>
+</template>

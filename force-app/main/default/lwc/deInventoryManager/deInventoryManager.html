@@ -1,0 +1,1384 @@
+<template>
+    <div class="dim-shell">
+
+        <!-- ═══════════════════════════════════════════════
+             LOADING
+             ═══════════════════════════════════════════════ -->
+        <template if:true={sitesLoading}>
+            <div class="dim-loading">
+                <div class="dim-spinner"></div>
+            </div>
+        </template>
+
+        <template if:false={sitesLoading}>
+
+            <!-- ─── Site cards section ─── -->
+            <template if:true={hasSites}>
+
+                <!-- Country filter pills (hide when site selected) -->
+                <template if:false={hasSite}>
+                <div class="dim-country-bar">
+                    <template for:each={countryPills} for:item="cp">
+                        <button key={cp.value} class={cp.cls}
+                            data-value={cp.value}
+                            onclick={handleCountry}>{cp.label}</button>
+                    </template>
+                </div>
+                </template>
+
+                <!-- Site cards (full when browsing, compact breadcrumb when drilled in) -->
+                <template if:false={hasSite}>
+                    <div class="dim-tier">
+                        <div class="dim-tier-track">
+                            <template for:each={siteCards} for:item="sc">
+                                <div key={sc.id} class={sc.cls}
+                                    data-id={sc.id}
+                                    onclick={handleSiteCard}>
+                                    <span class="dim-sc-code">{sc.code}</span>
+                                    <div class="dim-sc-bar-wrap">
+                                        <div class="dim-sc-bar">
+                                            <div class="dim-sc-fill" style={sc.utilStyle}></div>
+                                        </div>
+                                        <span class="dim-sc-pct">{sc.spaceAvail} spaces avail</span>
+                                    </div>
+                                    <div class="dim-sc-nums">
+                                        <span class="dim-sc-total">{sc.spaceTotal}</span>
+                                        <span class="dim-sc-unit">spaces</span>
+                                    </div>
+                                    <div class="dim-sc-bd">
+                                        <template if:true={sc.sold}>
+                                            <span class="dim-bd-s">{sc.sold} sold</span>
+                                        </template>
+                                        <template if:true={sc.installed}>
+                                            <span class="dim-bd-x">{sc.installed} installed</span>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </template>
+
+            <!-- ═══════════════════════════════════════════════
+                 NO SITE SELECTED — Global metrics
+                 ═══════════════════════════════════════════════ -->
+            <template if:false={hasSite}>
+                <div class="dim-view-toggle">
+                    <button class={inventoryToggleCls} data-view="inventory" onclick={handleViewToggle}>
+                        <svg class="dim-toggle-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        Overview
+                    </button>
+                    <button class={assignmentsToggleCls} data-view="assignments" onclick={handleViewToggle}>
+                        <svg class="dim-toggle-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                        Assignments
+                    </button>
+                </div>
+
+                <template if:true={isInventoryView}>
+                    <div class="dim-metrics">
+                        <div class="dim-metrics-row">
+                            <div class="dim-metric-card">
+                                <span class="dim-metric-v">{globalSiteCount}</span>
+                                <span class="dim-metric-l">Sites</span>
+                            </div>
+                            <div class="dim-metric-card dim-metric-card-action" onclick={handleOpenExport} title="Export all inventory">
+                                <span class="dim-metric-v">{globalTotal}</span>
+                                <span class="dim-metric-l">Total Inventory
+                                    <svg class="dim-ic" width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-left:4px; vertical-align:middle; opacity:0.5;"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2M8 2v8M5 7l3 3 3-3"/></svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:true={isAssignmentsView}>
+                    <template if:true={_assignmentsLoading}>
+                        <div class="dim-loading"><div class="dim-spinner"></div></div>
+                    </template>
+                    <template if:false={_assignmentsLoading}>
+                        <template if:true={hasAssignments}>
+                            <div class="dim-asgn-metrics">
+                                <div class="dim-asgn-metric">
+                                    <span class="dim-asgn-metric-v">{asgnTotalDemand}</span>
+                                    <span class="dim-asgn-metric-l">Demand Lines</span>
+                                </div>
+                                <div class="dim-asgn-metric">
+                                    <span class="dim-asgn-metric-v dim-asgn-fulfilled">{asgnFulfilled}</span>
+                                    <span class="dim-asgn-metric-l">Fulfilled</span>
+                                </div>
+                                <div class="dim-asgn-metric">
+                                    <span class="dim-asgn-metric-v dim-asgn-unfulfilled">{asgnUnfulfilled}</span>
+                                    <span class="dim-asgn-metric-l">Unfulfilled</span>
+                                </div>
+                                <div class="dim-asgn-metric">
+                                    <span class="dim-asgn-metric-v">{asgnSiteCount}</span>
+                                    <span class="dim-asgn-metric-l">Sites</span>
+                                </div>
+                                <div class="dim-asgn-metric">
+                                    <span class="dim-asgn-metric-v">{asgnQuoteCount}</span>
+                                    <span class="dim-asgn-metric-l">Active Quotes</span>
+                                </div>
+                            </div>
+                            <div class="dim-asgn-filter-bar">
+                                <span class="dim-asgn-filter-label">Stage</span>
+                                <template for:each={asgnStatusPills} for:item="sp">
+                                    <button key={sp.value} class={sp.cls} data-value={sp.value} onclick={handleAsgnStatusPill}>{sp.label}</button>
+                                </template>
+                                <div class="dim-card-search-bar dim-asgn-search-bar">
+                                    <svg class="dim-card-search-ic" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="6.5" r="4"/><path d="M10 10l3.5 3.5"/></svg>
+                                    <input type="text"
+                                        class="dim-card-search-input"
+                                        placeholder="Search Account or Order..."
+                                        oninput={handleAsgnSearch}
+                                        value={_asgnSearch} />
+                                    <template if:true={hasAsgnSearch}>
+                                        <span class="dim-card-search-count">{asgnSearchCount}</span>
+                                        <button class="dim-card-search-clear" onclick={clearAsgnSearch}>&times;</button>
+                                    </template>
+                                </div>
+                            </div>
+                            <template if:true={hasFilteredAssignments}>
+                            <template for:each={assignmentGroups} for:item="qg">
+                                <div key={qg.quoteId} class="dim-asgn-quote">
+                                    <div class="dim-asgn-quote-head" data-key={qg.quoteId} onclick={handleAssgnToggle}>
+                                        <div class="dim-asgn-quote-left">
+                                            <span class={qg.chevronCls}>&#8250;</span>
+                                            <template if:true={qg.hasSiteCode}><span class="dim-asgn-site-tag">{qg.siteCode}</span></template>
+                                            <span class="dim-asgn-qnum" data-id={qg.quoteId} onclick={handleQuoteNav}>{qg.quoteNumber}</span>
+                                            <span class="dim-asgn-account">{qg.accountName}</span>
+                                            <span class={qg.statusCls}>{qg.quoteStatus}</span>
+                                        </div>
+                                        <div class="dim-asgn-quote-right">
+                                            <template if:true={qg.hasRdd}><span class="dim-asgn-rdd">RDD: {qg.rdd}</span></template>
+                                            <span class={qg.fulfillCls}>{qg.fulfillLabel}</span>
+                                        </div>
+                                    </div>
+                                    <template if:true={qg.isOpen}>
+                                    <div class="dim-tbl-wrap">
+                                        <table class="dim-tbl">
+                                            <thead><tr><th>Product</th><th class="dim-num-c">Qty</th><th>Reserved</th><th>Space</th><th>Breaker</th><th class="dim-num-c">kVA</th><th class="dim-num-c">CabE</th></tr></thead>
+                                            <tbody>
+                                                <template for:each={qg.lines} for:item="ln">
+                                                    <tr key={ln.id} class="dim-row">
+                                                        <td>{ln.productName}</td><td class="dim-num-c">{ln.quantity}</td>
+                                                        <td><span class={ln.reservedCls}>{ln.reserved}</span></td>
+                                                        <td>{ln.spaceName}</td><td>{ln.breakerName}</td>
+                                                        <td class="dim-num-c">{ln.powerLabel}</td><td class="dim-num-c">{ln.cabeLabel}</td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    </template>
+                                </div>
+                            </template>
+                            </template>
+                            <template if:false={hasFilteredAssignments}>
+                                <p class="dim-det-empty">No quotes match the selected filter.</p>
+                            </template>
+                        </template>
+                        <template if:false={hasAssignments}>
+                            <div class="dim-asgn-empty">
+                                <svg class="dim-asgn-empty-ic" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M12 11v6M9 14h6"/></svg>
+                                <h3 class="dim-asgn-empty-h">No Active Assignments</h3>
+                                <p class="dim-asgn-empty-p">No quotes in review or presented across any site.</p>
+                            </div>
+                        </template>
+                    </template>
+                </template>
+            </template>
+
+            <!-- ═══════════════════════════════════════════════
+                 SITE SELECTED — Dashboard
+                 ═══════════════════════════════════════════════ -->
+            <template if:true={hasSite}>
+
+                <!-- Overview card -->
+                <div class="dim-overview">
+                    <div class="dim-ov-head">
+                        <div class="dim-ov-left">
+                            <button class="dim-ov-back" onclick={handleDeselectSite} title="Back to all sites">
+                                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+                                All Sites
+                            </button>
+                            <span class="dim-ov-code">
+                                {selectedSiteCode}</span>
+                            <span class="dim-ov-name">
+                                {selectedSiteName}</span>
+                        </div>
+                        <div class="dim-ov-actions">
+                            <button class="dim-btn dim-btn-exp"
+                                onclick={handleOpenExport}>
+                                <svg class="dim-btn-ic" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2h10v-2M8 2v7.5m0 0L5 6.5m3 3L11 6.5"/></svg>
+                                Export
+                            </button>
+                            <button class="dim-btn dim-btn-imp"
+                                onclick={handleOpenImport}>
+                                <svg class="dim-btn-ic" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2h10v-2M8 9.5V2m0 0L5 5m3-3l3 3"/></svg>
+                                Import
+                            </button>
+                            <span class="dim-ov-pct">
+                                {utilPct}% utilized</span>
+                        </div>
+                    </div>
+                    <div class="dim-ov-bar">
+                        <div class="dim-ov-fill"
+                            style={utilStyle}></div>
+                    </div>
+                    <div class="dim-ov-row">
+                        <span class="dim-ov-stat">
+                            <span class="dim-ov-v">{installedCount}</span>
+                            <span class="dim-ov-l dim-l-inst">installed</span>
+                        </span>
+                        <span class="dim-ov-dot"></span>
+                        <span class="dim-ov-stat">
+                            <span class="dim-ov-v">{reservedCount}</span>
+                            <span class="dim-ov-l dim-l-held">assigned</span>
+                        </span>
+                        <span class="dim-ov-dot"></span>
+                        <span class="dim-ov-stat">
+                            <span class="dim-ov-v">{spaceTotal}</span>
+                            <span class="dim-ov-l">spaces</span>
+                        </span>
+                        <span class="dim-ov-dot"></span>
+                        <span class="dim-ov-stat">
+                            <span class="dim-ov-v">{breakerTotal}</span>
+                            <span class="dim-ov-l">breakers</span>
+                        </span>
+                        <span class="dim-ov-dot"></span>
+                        <span class="dim-ov-stat">
+                            <span class="dim-ov-v">{floorCount}</span>
+                            <span class="dim-ov-l">floors</span>
+                        </span>
+                        <span class="dim-ov-dot"></span>
+                        <span class="dim-ov-stat">
+                            <span class="dim-ov-v">{hallCount}</span>
+                            <span class="dim-ov-l">data halls</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- View toggle -->
+                <div class="dim-view-toggle">
+                    <button class={inventoryToggleCls} data-view="inventory" onclick={handleViewToggle}>
+                        <svg class="dim-toggle-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        Inventory
+                    </button>
+                    <button class={assignmentsToggleCls} data-view="assignments" onclick={handleViewToggle}>
+                        <svg class="dim-toggle-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                        Assignments
+                    </button>
+                </div>
+
+                <!-- ═══ INVENTORY VIEW ═══ -->
+                <template if:true={isInventoryView}>
+
+                <!-- Dashboard loading -->
+                <template if:true={dashLoading}>
+                    <div class="dim-loading">
+                        <div class="dim-spinner"></div>
+                    </div>
+                </template>
+
+                <template if:false={dashLoading}>
+
+                    <!-- ─── Floor/Hall card row (hidden during create) ─── -->
+                    <template if:true={showCardRow}>
+                    <template if:true={hasCards}>
+                        <template if:true={showCardControls}>
+                        <div class="dim-card-search-bar">
+                            <svg class="dim-card-search-ic" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="6.5" r="4"/><path d="M10 10l3.5 3.5"/></svg>
+                            <input type="text"
+                                class="dim-card-search-input"
+                                placeholder="Search floors..."
+                                oninput={handleCardSearch}
+                                value={_cardSearch} />
+                            <template if:true={hasCardSearch}>
+                                <span class="dim-card-search-count">
+                                    {cardSearchCount}</span>
+                                <button class="dim-card-search-clear"
+                                    onclick={clearCardSearch}>&times;</button>
+                            </template>
+                        </div>
+                        </template>
+                        <div class="dim-tier">
+                            <div class="dim-tier-track">
+                                <!-- Back to all sites card -->
+                                <template if:false={_selectedKey}>
+                                    <div class="dim-card-nav"
+                                        onclick={handleDeselectSite}>
+                                        <div class="dim-nav-inner">
+                                            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+                                            <span class="dim-nav-label">All Sites</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={_selectedKey}>
+                                    <div class="dim-card-nav"
+                                        onclick={handleDeselectCard}>
+                                        <div class="dim-nav-inner">
+                                            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+                                            <span class="dim-nav-label">All Halls</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template for:each={filteredCards}
+                                    for:item="card">
+                                    <div key={card.key}
+                                        class={card.cls}
+                                        data-key={card.key}
+                                        onclick={handleCard}>
+                                        <button class="dim-card-action"
+                                            data-floor-id={card.floorId}
+                                            onclick={handleAddHallFromCard}
+                                            disabled={creating}
+                                            title="Add hall">+</button>
+                                        <div class="dim-card-top">
+                                            <span class="dim-card-floor">{card.floorLabel}</span>
+                                            <span class="dim-card-hall">{card.hallLabel}</span>
+                                        </div>
+                                        <div class="dim-card-bar">
+                                            <div class="dim-card-track">
+                                                <div class="dim-card-fill" style={card.utilStyle}></div>
+                                            </div>
+                                            <span class="dim-card-pct">{card.availLabel}</span>
+                                        </div>
+                                        <div class="dim-card-total">
+                                            {card.totalLabel}
+                                            <span class="dim-card-unit">spaces</span>
+                                        </div>
+                                        <div class="dim-card-bd">
+                                            <template for:each={card.breakdownParts} for:item="bp">
+                                                <span key={bp.k} class={bp.c}>{bp.t}</span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- No cards -->
+                    <template if:false={hasCards}>
+                        <div class="dim-back-row">
+                            <button class="dim-back-btn" onclick={handleDeselectSite} title="Back to all sites">
+                                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+                                All Sites
+                            </button>
+                        </div>
+                        <div class="dim-empty dim-empty-sm">
+                            <svg class="dim-empty-ic" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                            <h3 class="dim-empty-h">No Floors</h3>
+                            <p class="dim-empty-p">This site has no floors yet.</p>
+                        </div>
+                    </template>
+                    </template><!-- /showCardRow -->
+
+                    <!-- ═══════════════════════════════════════
+                         DETAIL PANEL (floor context)
+                         ═══════════════════════════════════════ -->
+                    <template if:true={hasDetailPanel}>
+                        <div class="dim-detail">
+
+                            <!-- Header -->
+                            <div class="dim-det-head">
+                                <div class="dim-det-left">
+                                    <button class="dim-ov-back" onclick={handleDeselectCard} title="Back to all halls">
+                                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+                                        All Halls
+                                    </button>
+                                    <h3 class="dim-det-title">{detailTitle}</h3>
+                                    <template if:true={isDetailMode}>
+                                        <span class="dim-det-cnt">{detailTotal} units</span>
+                                    </template>
+                                    <template if:true={isTypeSelect}>
+                                        <span class="dim-det-cnt">Add Inventory</span>
+                                    </template>
+                                    <template if:true={isInvCreate}>
+                                        <span class="dim-det-cnt">New {invTypeLabel}</span>
+                                    </template>
+                                </div>
+                                <div class="dim-det-right">
+                                    <template if:true={isDetailMode}>
+                                        <div class="dim-search-wrap">
+                                            <svg class="dim-search-ic" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="6.5" r="4"/><path d="M10 10l3.5 3.5"/></svg>
+                                            <input type="text" class="dim-search-input" placeholder="Search..." oninput={handleSearch} value={_detailSearch} />
+                                        </div>
+                                        <button class="dim-btn dim-btn-primary" onclick={handleAddInv}>
+                                            <svg class="dim-btn-ic" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+                                            Add Inventory
+                                        </button>
+                                    </template>
+                                    <template if:true={isInvCreate}>
+                                        <button class="dim-cr-change" onclick={handleAddInv}>Change type</button>
+                                    </template>
+                                    <template if:true={isNotDetail}>
+                                        <button class="dim-btn dim-btn-ghost" onclick={handleBackToDetail}>
+                                            <svg class="dim-btn-ic" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3L5 8l5 5"/></svg>
+                                            Back
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Bulk action bar -->
+                            <template if:true={hasSelected}>
+                                <div class="dim-bulk-bar">
+                                    <span class="dim-bulk-count">{selectedCount} selected</span>
+                                    <button class="dim-btn dim-btn-rel"
+                                        onclick={handleBulkRelease}
+                                        disabled={creating}>
+                                        Release Selected
+                                    </button>
+                                    <button class="dim-btn dim-btn-archive"
+                                        onclick={handleBulkDecommission}
+                                        disabled={creating}>
+                                        Archive Selected
+                                    </button>
+                                </div>
+                            </template>
+
+                            <!-- MODE: Detail (table) -->
+                            <template if:true={isDetailMode}>
+                                <div class="dim-det-pills">
+                                    <template for:each={detailPills} for:item="p">
+                                        <button key={p.value} class={p.cls}
+                                            data-value={p.value}
+                                            onclick={handlePill}>{p.label}</button>
+                                    </template>
+                                    <span class="dim-det-shown">{detailShown} shown</span>
+                                </div>
+
+                                <template if:true={detailLoading}>
+                                    <div class="dim-loading dim-loading-sm">
+                                        <div class="dim-spinner"></div>
+                                    </div>
+                                </template>
+
+                                <template if:false={detailLoading}>
+                                    <template if:true={hasDetail}>
+                                        <template for:each={groupedDetail} for:item="g">
+                                        <div key={g.key} class="dim-section-group">
+                                            <div class="dim-section-hdr-row" data-key={g.key} onclick={handleSectionToggle}>
+                                                <span class={g.chevronCls}>&#8250;</span>
+                                                <span class="dim-section-label">{g.label}</span>
+                                                <span class="dim-section-count">{g.count}</span>
+                                            </div>
+                                            <template if:true={g.isOpen}>
+                                            <div class="dim-tbl-wrap">
+                                                <table class="dim-tbl">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="dim-th-chk">
+                                                                <input type="checkbox"
+                                                                    checked={isAllSelected}
+                                                                    onchange={handleSelectAll}
+                                                                    class="dim-chk">
+                                                            </th>
+                                                            <th class="dim-th-bar"></th>
+                                                            <th>Name</th>
+                                                            <template if:true={g.isSpace}>
+                                                                <th>Space Type</th>
+                                                                <th class="dim-num-c">Avg Power/Cab (kVA)</th>
+                                                                <th class="dim-num-c">Contracted Power (kVA)</th>
+                                                                <th>Other Inventory Name</th>
+                                                            </template>
+                                                            <template if:true={g.isBreaker}>
+                                                                <th>Breaker Type</th>
+                                                                <th>Voltage</th>
+                                                                <th>Current</th>
+                                                                <th>Other Inventory Name</th>
+                                                            </template>
+                                                            <th>Status</th>
+                                                            <th>Customer</th>
+                                                            <th class="dim-th-act"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <template for:each={g.rows} for:item="r">
+                                                            <tr key={r.Id} class={r.rowCls}>
+                                                                <td class="dim-td-chk">
+                                                                    <input type="checkbox"
+                                                                        checked={r.isChecked}
+                                                                        data-id={r.Id}
+                                                                        onchange={handleRowCheck}
+                                                                        class="dim-chk">
+                                                                </td>
+                                                                <td class="dim-bar" style={r.barStyle}></td>
+                                                                <td class="dim-id" data-id={r.Id} onclick={handleNav}>{r.Name}</td>
+                                                                <template if:true={g.isSpace}>
+                                                                    <td>
+                                                                        <select class="dim-inline-sel" data-id={r.Id} data-field="Space_Type__c" onchange={handleInlineSave}>
+                                                                            <template for:each={r.spaceTypeOpts} for:item="o">
+                                                                                <option key={o.v} value={o.v} selected={o.s}>{o.l}</option>
+                                                                            </template>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td class="dim-num-c"><input type="number" class="dim-inline-input" value={r.powerVal} data-id={r.Id} data-field="Total_Capacity_kVA__c" onchange={handleInlineSave} /></td>
+                                                                    <td class="dim-num-c"><input type="number" class="dim-inline-input" value={r.contractedVal} data-id={r.Id} data-field="Total_IT_Power_kVA__c" onchange={handleInlineSave} /></td>
+                                                                    <td><input type="text" class="dim-inline-input" value={r.unitRefLabel} data-id={r.Id} data-field="Unit_Reference__c" onchange={handleInlineSave} /></td>
+                                                                </template>
+                                                                <template if:true={g.isBreaker}>
+                                                                    <td>
+                                                                        <select class="dim-inline-sel" data-id={r.Id} data-field="Breaker_Type__c" onchange={handleInlineSave}>
+                                                                            <template for:each={r.breakerTypeOpts} for:item="o">
+                                                                                <option key={o.v} value={o.v} selected={o.s}>{o.l}</option>
+                                                                            </template>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td>
+                                                                        <select class="dim-inline-sel" data-id={r.Id} data-field="Voltage_Rating__c" onchange={handleInlineSave}>
+                                                                            <template for:each={r.voltageOpts} for:item="o">
+                                                                                <option key={o.v} value={o.v} selected={o.s}>{o.l}</option>
+                                                                            </template>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td>
+                                                                        <select class="dim-inline-sel" data-id={r.Id} data-field="Current_Rating__c" onchange={handleInlineSave}>
+                                                                            <template for:each={r.currentOpts} for:item="o">
+                                                                                <option key={o.v} value={o.v} selected={o.s}>{o.l}</option>
+                                                                            </template>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td><input type="text" class="dim-inline-input" value={r.unitRefLabel} data-id={r.Id} data-field="Unit_Reference__c" onchange={handleInlineSave} /></td>
+                                                                </template>
+                                                                <td>
+                                                                    <select class={r.statusSelCls}
+                                                                        data-id={r.Id}
+                                                                        data-field="Status__c"
+                                                                        onchange={handleInlineSave}>
+                                                                        <template for:each={r.statusOpts} for:item="so">
+                                                                            <option key={so.v} value={so.v} selected={so.s}>{so.l}</option>
+                                                                        </template>
+                                                                    </select>
+                                                                </td>
+                                                                <td class="dim-trunc">{r.customerLabel}</td>
+                                                                <td class="dim-act">
+                                                                    <button class="dim-view-btn"
+                                                                        data-id={r.Id}
+                                                                        onclick={handleNav}
+                                                                        title="View record">
+                                                                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 8s2.5-4.5 6.5-4.5S14.5 8 14.5 8s-2.5 4.5-6.5 4.5S1.5 8 1.5 8z"/><circle cx="8" cy="8" r="1.5"/></svg>
+                                                                    </button>
+                                                                    <button class="dim-view-btn dim-decom-btn"
+                                                                        data-id={r.Id}
+                                                                        data-name={r.Name}
+                                                                        onclick={handleDecommission}
+                                                                        title="Decommission">
+                                                                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 10h8l1-10"/></svg>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            </template>
+                                        </div>
+                                        </template>
+                                    </template>
+                                    <template if:false={hasDetail}>
+                                        <p class="dim-det-empty">No records match the current filters.</p>
+                                    </template>
+                                </template>
+                            </template>
+
+                            <!-- MODE: Type selection -->
+                            <template if:true={isTypeSelect}>
+                                <div class="dim-type-body">
+                                    <h4 class="dim-type-title">Choose Inventory Type</h4>
+                                    <div class="dim-type-grid">
+                                        <div class="dim-type-card" data-type="Space" onclick={handleTypeSelect}>
+                                            <div class="dim-type-icon dim-type-cabinet">
+                                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
+                                            </div>
+                                            <span class="dim-type-name">Space</span>
+                                            <span class="dim-type-desc">Colocation space unit</span>
+                                        </div>
+                                        <div class="dim-type-card" data-type="Breaker" onclick={handleTypeSelect}>
+                                            <div class="dim-type-icon dim-type-breaker">
+                                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+                                            </div>
+                                            <span class="dim-type-name">Breaker</span>
+                                            <span class="dim-type-desc">Power circuit / breaker</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- MODE: Inventory creation — inline dense form -->
+                            <template if:true={isInvCreate}>
+                                <div class="dim-cr-compact">
+                                    <div class="dim-cr-form">
+                                        <!-- Name hero bar (Space only) -->
+                                        <template if:true={isSpace}>
+                                        <div class="dim-name-hero">
+                                            <div class="dim-name-hero-left">
+                                                <span class="dim-name-hero-label">ID</span>
+                                                <span class="dim-name-hero-value">{createNamePreview}</span>
+                                            </div>
+                                            <span class="dim-name-hero-ctx">{createContextBreadcrumb}</span>
+                                        </div>
+                                        </template>
+
+                                        <!-- Duplicate warning (Space only) -->
+                                        <template if:true={_duplicateWarning}>
+                                            <div class="dim-dup-warning">
+                                                <svg class="dim-dup-ic" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.13 2.5L1.5 12.5h13L8.87 2.5a1 1 0 00-1.74 0z"/><path d="M8 6.5v3M8 11.5h.01"/></svg>
+                                                <span>Duplicate — choose a different row/column.</span>
+                                            </div>
+                                        </template>
+
+                                        <!-- Position inputs — Hall#/Unit#/Row/Col for Space, free text for Breaker -->
+                                        <template if:true={isSpace}>
+                                        <div class="dim-cr-pos-hero">
+                                            <div class="dim-pos-block">
+                                                <label class="dim-label">Hall #</label>
+                                                <input type="text" class="dim-pos-lg"
+                                                    value={_createHallNumber}
+                                                    readonly
+                                                    placeholder="—" />
+                                            </div>
+                                            <div class="dim-pos-block">
+                                                <label class="dim-label">Unit #</label>
+                                                <input type="text" class="dim-pos-lg"
+                                                    value={_createUnitNum}
+                                                    oninput={handleUnitNum}
+                                                    onblur={handleUnitNumBlur}
+                                                    placeholder="01" maxlength="2"
+                                                    inputmode="numeric" pattern="[0-9]*" />
+                                            </div>
+                                            <template if:true={needsRowCol}>
+                                            <div class="dim-pos-block">
+                                                <label class="dim-label">Row</label>
+                                                <input type="text" class="dim-pos-lg"
+                                                    value={_createRow}
+                                                    oninput={handleCreateRow}
+                                                    onblur={handleCreateRowBlur}
+                                                    placeholder="00" maxlength="2"
+                                                    inputmode="numeric" pattern="[0-9]*" />
+                                            </div>
+                                            <div class="dim-pos-block">
+                                                <label class="dim-label">Col</label>
+                                                <input type="text" class="dim-pos-lg"
+                                                    value={_createCol}
+                                                    oninput={handleCreateCol}
+                                                    onblur={handleCreateColBlur}
+                                                    placeholder="00" maxlength="2"
+                                                    inputmode="numeric" pattern="[0-9]*" />
+                                            </div>
+                                            <template if:true={needsSubPos}>
+                                            <div class="dim-pos-block">
+                                                <label class="dim-label">Sub</label>
+                                                <select class="dim-pos-lg" onchange={handleSubPos}>
+                                                    <template for:each={subPosOptions} for:item="sp">
+                                                        <option key={sp.value} value={sp.value}>{sp.label}</option>
+                                                    </template>
+                                                </select>
+                                            </div>
+                                            </template>
+                                            </template>
+                                        </div>
+                                        </template>
+                                        <template if:true={isBreaker}>
+                                        <div class="dim-cr-pos-hero">
+                                            <div class="dim-pos-block">
+                                                <label class="dim-label">Hall #</label>
+                                                <input type="text" class="dim-pos-lg"
+                                                    value={_createHallNumber}
+                                                    readonly
+                                                    placeholder="—" />
+                                            </div>
+                                            <div class="dim-pos-block" style="flex:1">
+                                                <label class="dim-label">Breaker Name</label>
+                                                <input type="text" class="dim-input"
+                                                    value={_createBreakerName}
+                                                    oninput={handleBreakerName}
+                                                    placeholder="e.g. BRK01" />
+                                            </div>
+                                        </div>
+                                        </template>
+
+                                        <!-- Secondary fields -->
+                                        <div class="dim-cr-grid">
+                                            <template if:true={isSpace}>
+                                                <div class="dim-field">
+                                                    <label class="dim-label">Space Type <abbr class="dim-req">*</abbr></label>
+                                                    <select class="dim-select" onchange={handleCST} required>
+                                                        <option value="">Select...</option>
+                                                        <template for:each={spaceTypeOptions} for:item="opt">
+                                                            <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                                <template if:true={showUsageType}>
+                                                    <div class="dim-field">
+                                                        <label class="dim-label">Usage Type</label>
+                                                        <select class="dim-select" onchange={handleUsageType}>
+                                                            <template for:each={usageTypeOptions} for:item="opt">
+                                                                <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                                            </template>
+                                                        </select>
+                                                    </div>
+                                                </template>
+                                                <template if:true={showCageHallRef}>
+                                                    <div class="dim-field">
+                                                        <label class="dim-label">{cageHallRefLabel}</label>
+                                                        <select class="dim-select" onchange={handleCageHallRef}>
+                                                            <option value="">-- Select --</option>
+                                                            <template for:each={cageHallRefOptions} for:item="opt">
+                                                                <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                                            </template>
+                                                        </select>
+                                                    </div>
+                                                </template>
+                                                <template if:true={showCabEFields}>
+                                                <div class="dim-field">
+                                                    <label class="dim-label">CabE Size <abbr class="dim-req">*</abbr></label>
+                                                    <select class="dim-select" onchange={handleCCS} required>
+                                                        <template for:each={cabeSizeOptions} for:item="opt">
+                                                            <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                                <div class="dim-field">
+                                                    <label class="dim-label">Avg Power per Cab (kVA) <abbr class="dim-req">*</abbr></label>
+                                                    <input type="number" class="dim-input" value={createTotalCapKva} oninput={handleCTC} step="0.01" required />
+                                                </div>
+                                                </template>
+                                                <div class="dim-field">
+                                                    <label class="dim-label">Status <abbr class="dim-req">*</abbr></label>
+                                                    <select class="dim-select" onchange={handleCreateStatus} required>
+                                                        <template for:each={statusOptions} for:item="opt">
+                                                            <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                                <div class="dim-field">
+                                                    <label class="dim-label">Contracted Power (kVA)</label>
+                                                    <input type="number" class="dim-input" value={createContractedPower} oninput={handleContractedPower} step="0.01" />
+                                                </div>
+                                                <div class="dim-sla-row">
+                                                    <div class="dim-sla-block">
+                                                        <label class="dim-label">SLA Temperature</label>
+                                                        <div class="dim-sla-pair">
+                                                            <div class="dim-sla-cell">
+                                                                <span class="dim-sla-sub">Min</span>
+                                                                <select class="dim-select dim-select-sm" onchange={handleSLATempMin}>
+                                                                    <template for:each={slaTempMinOptions} for:item="opt">
+                                                                        <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                                                    </template>
+                                                                </select>
+                                                            </div>
+                                                            <div class="dim-sla-cell">
+                                                                <span class="dim-sla-sub">Max</span>
+                                                                <select class="dim-select dim-select-sm" onchange={handleSLATempMax}>
+                                                                    <template for:each={slaTempMaxOptions} for:item="opt">
+                                                                        <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                                                    </template>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dim-sla-block">
+                                                        <label class="dim-label">SLA Humidity</label>
+                                                        <div class="dim-sla-pair">
+                                                            <div class="dim-sla-cell">
+                                                                <span class="dim-sla-sub">Min</span>
+                                                                <select class="dim-select dim-select-sm" onchange={handleSLAHumMin}>
+                                                                    <template for:each={slaHumMinOptions} for:item="opt">
+                                                                        <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                                                    </template>
+                                                                </select>
+                                                            </div>
+                                                            <div class="dim-sla-cell">
+                                                                <span class="dim-sla-sub">Max</span>
+                                                                <select class="dim-select dim-select-sm" onchange={handleSLAHumMax}>
+                                                                    <template for:each={slaHumMaxOptions} for:item="opt">
+                                                                        <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                                                    </template>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dim-sla-block">
+                                                        <label class="dim-label">SLA Availability</label>
+                                                        <select class="dim-select dim-select-sm" onchange={handleSLAAvail}>
+                                                            <template for:each={slaAvailabilityOptions} for:item="opt">
+                                                                <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                                            </template>
+                                                        </select>
+                                                    </div>
+                                                    <div class="dim-sla-block">
+                                                        <label class="dim-label">Other Inventory Name</label>
+                                                        <input type="text" class="dim-input"
+                                                            value={createUnitRef}
+                                                            oninput={handleCUR}
+                                                            placeholder="Optional" />
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <template if:true={isBreaker}>
+                                                <div class="dim-field">
+                                                    <label class="dim-label">Breaker Type <abbr class="dim-req">*</abbr></label>
+                                                    <select class="dim-select" onchange={handleCBT} required>
+                                                        <option value="">Select...</option>
+                                                        <template for:each={breakerTypeOptions} for:item="opt">
+                                                            <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                                <div class="dim-field">
+                                                    <label class="dim-label">Voltage (V) <abbr class="dim-req">*</abbr></label>
+                                                    <select class="dim-select" onchange={handleCVR} required>
+                                                        <option value="">Select...</option>
+                                                        <template for:each={voltageOptions} for:item="opt">
+                                                            <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                                <div class="dim-field">
+                                                    <label class="dim-label">Current (A) <abbr class="dim-req">*</abbr></label>
+                                                    <select class="dim-select" onchange={handleCCR} required>
+                                                        <option value="">Select...</option>
+                                                        <template for:each={currentOptions} for:item="opt">
+                                                            <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                                <div class="dim-field">
+                                                    <label class="dim-label">Other Inventory Name</label>
+                                                    <input type="text" class="dim-input"
+                                                        value={createUnitRef}
+                                                        oninput={handleCUR}
+                                                        placeholder="Optional" />
+                                                </div>
+                                            </template>
+                                        </div>
+
+                                        <!-- Quantity (bulk creation only) + Notes -->
+                                        <div class="dim-cr-inline">
+                                            <template if:true={showBulkQty}>
+                                                <div class="dim-field" style="width: 80px;">
+                                                    <label class="dim-label">Quantity</label>
+                                                    <input type="number" class="dim-input" min="1"
+                                                        value={createQty} oninput={handleCreateQtyChange} />
+                                                </div>
+                                            </template>
+                                            <div class="dim-field dim-cr-fld-grow">
+                                                <label class="dim-label">Remarks</label>
+                                                <input type="text" class="dim-input"
+                                                    value={createNotes} oninput={handleCN}
+                                                    placeholder="Optional" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dim-cr-foot">
+                                        <button class="dim-btn dim-btn-primary"
+                                            disabled={invCreateOff}
+                                            onclick={handleInvSubmit}>
+                                            <template if:true={creating}>
+                                                <div class="dim-spinner dim-spinner-sm dim-spinner-inv dim-btn-ic"></div>
+                                            </template>
+                                            Create {invTypeLabel}
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+
+                        </div>
+                    </template>
+
+                    <!-- ═══════════════════════════════════════
+                         FLOOR CREATION PANEL
+                         ═══════════════════════════════════════ -->
+                    <template if:true={showFloorPanel}>
+                        <div class="dim-detail dim-detail-create">
+                            <div class="dim-det-head">
+                                <div class="dim-det-left">
+                                    <h3 class="dim-det-title">New Floor</h3>
+                                    <template if:true={_newFloorNum}>
+                                        <span class="dim-det-cnt">{floorNamePreview}</span>
+                                    </template>
+                                </div>
+                                <button class="dim-btn dim-btn-ghost" onclick={handleCloseFloor}>
+                                    <svg class="dim-btn-ic" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3L5 8l5 5"/></svg>
+                                    Back
+                                </button>
+                            </div>
+                            <div class="dim-cr-split">
+                                <!-- Left: Floor card -->
+                                <div class="dim-cr-left">
+                                    <div class="dim-type-card dim-type-card-chosen dim-type-card-floor">
+                                        <div class="dim-type-icon dim-type-floor">
+                                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                                        </div>
+                                        <span class="dim-type-name">Floor</span>
+                                        <span class="dim-type-desc">Building level + halls</span>
+                                    </div>
+                                </div>
+                                <!-- Right: form -->
+                                <div class="dim-cr-right">
+                                    <div class="dim-cr-form">
+                                        <span class="dim-cr-lbl">Floor</span>
+                                        <div class="dim-cr-row">
+                                            <div class="dim-field">
+                                                <label class="dim-label">Floor Number</label>
+                                                <input type="text" class="dim-input"
+                                                    value={_newFloorNum}
+                                                    oninput={handleFloorNum}
+                                                    placeholder="e.g. 12"
+                                                    required />
+                                            </div>
+                                            <div class="dim-floor-preview-wrap">
+                                                <template if:true={_newFloorNum}>
+                                                    <span class="dim-cr-lbl">Preview</span>
+                                                    <span class="dim-floor-preview">{floorNamePreview}</span>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <span class="dim-cr-lbl">Data Halls</span>
+                                        <div class="dim-halls-list">
+                                            <template for:each={newFloorHalls} for:item="h">
+                                                <div key={h.key} class="dim-hall-row">
+                                                    <span class="dim-hall-name">{h.name}</span>
+                                                    <template if:true={h.canRemove}>
+                                                        <button class="dim-hall-rm"
+                                                            data-key={h.key}
+                                                            onclick={handleRemoveHall}>&times;</button>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                            <button class="dim-btn dim-btn-ghost dim-hall-add"
+                                                onclick={handleAddHall}>
+                                                <svg class="dim-btn-ic" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+                                                Add Hall
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="dim-cr-foot">
+                                        <button class="dim-btn dim-btn-primary"
+                                            disabled={floorCreateOff}
+                                            onclick={handleFloorSubmit}>
+                                            <template if:true={creating}>
+                                                <div class="dim-spinner dim-spinner-sm dim-spinner-inv dim-btn-ic"></div>
+                                            </template>
+                                            Create Floor
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                </template>
+                </template>
+
+                <!-- ═══ ASSIGNMENTS VIEW ═══ -->
+                <template if:true={isAssignmentsView}>
+                    <template if:true={_assignmentsLoading}>
+                        <div class="dim-loading">
+                            <div class="dim-spinner"></div>
+                        </div>
+                    </template>
+                    <template if:false={_assignmentsLoading}>
+                        <template if:true={hasAssignments}>
+                            <!-- Summary metrics -->
+                            <div class="dim-asgn-metrics">
+                                <div class="dim-asgn-metric">
+                                    <span class="dim-asgn-metric-v">{asgnTotalDemand}</span>
+                                    <span class="dim-asgn-metric-l">Demand Lines</span>
+                                </div>
+                                <div class="dim-asgn-metric">
+                                    <span class="dim-asgn-metric-v dim-asgn-fulfilled">{asgnFulfilled}</span>
+                                    <span class="dim-asgn-metric-l">Fulfilled</span>
+                                </div>
+                                <div class="dim-asgn-metric">
+                                    <span class="dim-asgn-metric-v dim-asgn-unfulfilled">{asgnUnfulfilled}</span>
+                                    <span class="dim-asgn-metric-l">Unfulfilled</span>
+                                </div>
+                                <div class="dim-asgn-metric">
+                                    <span class="dim-asgn-metric-v dim-asgn-spaces">{asgnAvailSpaces}</span>
+                                    <span class="dim-asgn-metric-l">Spaces Avail</span>
+                                </div>
+                                <div class="dim-asgn-metric">
+                                    <span class="dim-asgn-metric-v dim-asgn-breakers">{asgnAvailBreakers}</span>
+                                    <span class="dim-asgn-metric-l">Breakers Avail</span>
+                                </div>
+                                <div class="dim-asgn-metric">
+                                    <span class="dim-asgn-metric-v">{asgnQuoteCount}</span>
+                                    <span class="dim-asgn-metric-l">Active Quotes</span>
+                                </div>
+                            </div>
+
+                            <!-- Status filter -->
+                            <div class="dim-asgn-filter-bar">
+                                <span class="dim-asgn-filter-label">Stage</span>
+                                <template for:each={asgnStatusPills} for:item="sp">
+                                    <button key={sp.value} class={sp.cls}
+                                        data-value={sp.value}
+                                        onclick={handleAsgnStatusPill}>{sp.label}</button>
+                                </template>
+                                <div class="dim-card-search-bar dim-asgn-search-bar">
+                                    <svg class="dim-card-search-ic" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="6.5" r="4"/><path d="M10 10l3.5 3.5"/></svg>
+                                    <input type="text"
+                                        class="dim-card-search-input"
+                                        placeholder="Search Account or Order..."
+                                        oninput={handleAsgnSearch}
+                                        value={_asgnSearch} />
+                                    <template if:true={hasAsgnSearch}>
+                                        <span class="dim-card-search-count">{asgnSearchCount}</span>
+                                        <button class="dim-card-search-clear" onclick={clearAsgnSearch}>&times;</button>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Quote groups -->
+                            <template if:true={hasFilteredAssignments}>
+                            <template for:each={assignmentGroups} for:item="qg">
+                                <div key={qg.quoteId} class="dim-asgn-quote">
+                                    <div class="dim-asgn-quote-head" data-key={qg.quoteId} onclick={handleAssgnToggle}>
+                                        <div class="dim-asgn-quote-left">
+                                            <span class={qg.chevronCls}>&#8250;</span>
+                                            <span class="dim-asgn-qnum" data-id={qg.quoteId} onclick={handleQuoteNav}>{qg.quoteNumber}</span>
+                                            <span class="dim-asgn-account">{qg.accountName}</span>
+                                            <span class={qg.statusCls}>{qg.quoteStatus}</span>
+                                        </div>
+                                        <div class="dim-asgn-quote-right">
+                                            <template if:true={qg.hasRdd}>
+                                                <span class="dim-asgn-rdd">RDD: {qg.rdd}</span>
+                                            </template>
+                                            <span class={qg.fulfillCls}>{qg.fulfillLabel}</span>
+                                        </div>
+                                    </div>
+                                    <template if:true={qg.isOpen}>
+                                    <div class="dim-tbl-wrap">
+                                        <table class="dim-tbl">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th class="dim-num-c">Qty</th>
+                                                    <th>Reserved</th>
+                                                    <th>Space</th>
+                                                    <th>Breaker</th>
+                                                    <th class="dim-num-c">kVA</th>
+                                                    <th class="dim-num-c">CabE</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template for:each={qg.lines} for:item="ln">
+                                                    <tr key={ln.id} class="dim-row">
+                                                        <td>{ln.productName}</td>
+                                                        <td class="dim-num-c">{ln.quantity}</td>
+                                                        <td><span class={ln.reservedCls}>{ln.reserved}</span></td>
+                                                        <td>{ln.spaceName}</td>
+                                                        <td>{ln.breakerName}</td>
+                                                        <td class="dim-num-c">{ln.powerLabel}</td>
+                                                        <td class="dim-num-c">{ln.cabeLabel}</td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    </template>
+                                </div>
+                            </template>
+                            </template>
+                            <template if:false={hasFilteredAssignments}>
+                                <p class="dim-det-empty">No quotes match the selected filter.</p>
+                            </template>
+                        </template>
+
+                        <template if:false={hasAssignments}>
+                            <div class="dim-asgn-empty">
+                                <svg class="dim-asgn-empty-ic" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M12 11v6M9 14h6"/></svg>
+                                <h3 class="dim-asgn-empty-h">No Active Assignments</h3>
+                                <p class="dim-asgn-empty-p">No quotes with demand are currently targeting this site.</p>
+                            </div>
+                        </template>
+                    </template>
+                </template>
+
+            </template>
+
+        </template>
+
+        <!-- ═══════════════════════════════════════════════
+             EXPORT MODAL
+             ═══════════════════════════════════════════════ -->
+        <template if:true={_showExportModal}>
+            <div class="dim-modal-overlay" onclick={handleCloseExport}>
+                <div class="dim-modal" onclick={handleModalStop}>
+                    <div class="dim-modal-head">
+                        <h3 class="dim-modal-title">Export Inventory</h3>
+                        <button class="dim-modal-close" onclick={handleCloseExport}>&times;</button>
+                    </div>
+                    <div class="dim-modal-body dim-modal-body--visible">
+                        <template if:true={isExportGlobal}>
+                            <p class="dim-modal-desc">Export inventory across all sites. Select countries to filter.</p>
+                            <div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:12px;">
+                                <template for:each={exportCountryPills} for:item="cp">
+                                    <button key={cp.value} class={cp.cls} data-value={cp.value} onclick={handleExportCountryToggle}>{cp.label}</button>
+                                </template>
+                            </div>
+                        </template>
+                        <template if:false={isExportGlobal}>
+                            <p class="dim-modal-desc">Export inventory data for <strong>{selectedSiteCode}</strong> as CSV.</p>
+                        </template>
+                        <div class="dim-exp-filters">
+                            <template if:false={isExportGlobal}>
+                                <div class="dim-field">
+                                    <label class="dim-label">Data Hall</label>
+                                    <select class="dim-select" onchange={handleExpHall}>
+                                        <template for:each={exportHallOptions} for:item="opt">
+                                            <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </template>
+                            <div class="dim-field">
+                                <label class="dim-label">Status</label>
+                                <select class="dim-select" onchange={handleExpStatus}>
+                                    <template for:each={exportStatusOptions} for:item="opt">
+                                        <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div class="dim-field">
+                                <label class="dim-label">Record Type</label>
+                                <select class="dim-select" onchange={handleExpType}>
+                                    <template for:each={exportTypeOptions} for:item="opt">
+                                        <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                        <p class="dim-export-count">{exportCountText}</p>
+                    </div>
+                    <div class="dim-modal-foot">
+                        <button class="dim-btn" onclick={handleCloseExport}>Cancel</button>
+                        <button class="dim-btn dim-btn-primary"
+                            onclick={handleExportDownload}
+                            disabled={_exportLoading}>
+                            <template if:true={_exportLoading}>
+                                <div class="dim-spinner dim-spinner-sm dim-spinner-inv dim-btn-ic"></div>
+                            </template>
+                            <template if:false={_exportLoading}>
+                                <svg class="dim-btn-ic" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2h10v-2M8 2v7.5m0 0L5 6.5m3 3L11 6.5"/></svg>
+                            </template>
+                            Export CSV
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ═══════════════════════════════════════════════
+             IMPORT MODAL (Redesigned: Setup → Upload → Preview → Result)
+             ═══════════════════════════════════════════════ -->
+        <template if:true={_showImportModal}>
+            <div class="dim-modal-overlay" onclick={handleCloseImport}>
+                <div class="dim-modal dim-modal-lg" onclick={handleModalStop}>
+                    <div class="dim-modal-head">
+                        <h3 class="dim-modal-title">Import Inventory — {selectedSiteCode}</h3>
+                        <button class="dim-modal-close" onclick={handleCloseImport}>&times;</button>
+                    </div>
+                    <div class="dim-modal-body">
+
+                        <!-- Step 1: Setup — pick RT + hall -->
+                        <template if:true={isImportSetup}>
+                            <p class="dim-modal-desc">Select record type and target hall, then download the template or upload your CSV.</p>
+
+                            <div class="dim-field" style="margin-bottom:12px;">
+                                <label class="dim-label">Record Type</label>
+                                <div style="display:flex; gap:8px;">
+                                    <button class={importSpaceBtnCls} data-value="Inventory_Space" onclick={handleImportRTSelect}>Space</button>
+                                    <button class={importBreakerBtnCls} data-value="Inventory_Breaker" onclick={handleImportRTSelect}>Breaker</button>
+                                </div>
+                            </div>
+
+                            <div class="dim-field" style="margin-bottom:12px;">
+                                <label class="dim-label">Target Hall</label>
+                                <select class="dim-select" value={_importHallId} onchange={handleImportHallSelect}>
+                                    <option value="">-- Select Hall --</option>
+                                    <template for:each={importHallOptions} for:item="opt">
+                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <button class="dim-btn dim-btn-ghost" onclick={handleDownloadTemplate}
+                                    disabled={importSetupIncomplete}>
+                                <svg class="dim-ic" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11v2h10v-2M8 2v8M5 7l3 3 3-3"/></svg>
+                                Download Template
+                            </button>
+                        </template>
+
+                        <!-- Step 2: Upload CSV -->
+                        <template if:true={isImportUpload}>
+                            <p class="dim-modal-desc">Upload a CSV for <strong>{importRTLabel}</strong> records into <strong>{importHallLabel}</strong>. Leave "Id" blank to create new records, or paste an existing record's Salesforce ID (e.g. from an export) to update it instead. Leave "Inventory ID" blank to auto-generate a name for new records, or fill it in to use your own.</p>
+                            <div class={dropZoneCls}
+                                ondragover={handleDragOver}
+                                ondragleave={handleDragLeave}
+                                ondrop={handleDrop}>
+                                <svg class="dim-drop-ic" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 14V4m0 0l-4 4m4-4l4 4"/></svg>
+                                <p class="dim-drop-text">Drop a CSV file here<br/>or click to browse</p>
+                                <input type="file" accept=".csv" class="dim-drop-input" onchange={handleFileSelect} />
+                            </div>
+                        </template>
+
+                        <!-- Step 3: Preview + Validate -->
+                        <template if:true={isImportConfirm}>
+                            <div class={importNoticeCls}>
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 7v4M8 5h.01"/></svg>
+                                <span>{importConfirmMsg}</span>
+                            </div>
+                            <template if:true={hasUnrecognizedHeaders}>
+                                <div class="dim-import-notice dim-import-notice-warn" style="margin-bottom:8px;">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5l7 12.5H1z"/><path d="M8 6.5v3.5M8 12h.01"/></svg>
+                                    <span>{unrecognizedHeadersText}</span>
+                                </div>
+                            </template>
+                            <template if:true={hasImportValidationErrors}>
+                                <div class="dim-import-errors" style="margin-bottom:8px;">
+                                    <p class="dim-import-err-title">Validation Errors:</p>
+                                    <ul class="dim-import-err-list">
+                                        <template for:each={importValidationErrors} for:item="err">
+                                            <li key={err}>{err}</li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </template>
+                            <p class="dim-import-legend">
+                                <strong>Id</strong> = existing record's Salesforce ID (blank = create new, filled = update that record).
+                                <strong>Inventory ID</strong> = the record's name (blank = auto-generated).
+                            </p>
+                            <div class="dim-import-preview">
+                                <table class="dim-tbl">
+                                    <thead>
+                                        <tr>
+                                            <template for:each={importPreviewHeaders} for:item="h">
+                                                <th key={h.key}>{h.label}</th>
+                                            </template>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={importPreviewRows} for:item="row">
+                                            <tr key={row.key}>
+                                                <template for:each={row.cells} for:item="cell">
+                                                    <td key={cell.key} class={cell.cls}>{cell.val}</td>
+                                                </template>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                                <template if:true={hasMoreImportRows}>
+                                    <p class="dim-import-more">and {importRemainingCount} more row(s)...</p>
+                                </template>
+                            </div>
+                        </template>
+
+                        <!-- Step 4: Result -->
+                        <template if:true={isImportResult}>
+                            <div class="dim-import-summary">
+                                <svg class="dim-import-ok-ic" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l2 2 3.5-3.5"/></svg>
+                                <span class="dim-import-ok-text">{importResultSummary}</span>
+                            </div>
+                            <template if:true={hasImportErrors}>
+                                <div class="dim-import-errors">
+                                    <p class="dim-import-err-title">Errors:</p>
+                                    <ul class="dim-import-err-list">
+                                        <template for:each={importResultErrors} for:item="err">
+                                            <li key={err}>{err}</li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </template>
+                            <template if:true={hasRecentIds}>
+                                <div style="margin-top:12px;">
+                                    <button class="dim-btn dim-btn-ghost" onclick={handleCheckSyncStatus} disabled={_syncStatusLoading}>
+                                        <template if:true={_syncStatusLoading}>
+                                            <div class="dim-spinner dim-spinner-sm dim-btn-ic"></div>
+                                        </template>
+                                        Check Odoo Sync Status
+                                    </button>
+                                    <p class="dim-modal-desc" style="margin-top:4px;">Odoo sync runs in the background after this Salesforce import — it may take a few seconds to complete.</p>
+                                    <template if:true={hasSyncStatus}>
+                                        <div class={syncStatusCls} style="margin-top:8px;">
+                                            <span>{syncStatusText}</span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+
+                    <div class="dim-modal-foot">
+                        <template if:true={isImportSetup}>
+                            <button class="dim-btn" onclick={handleCloseImport}>Cancel</button>
+                            <button class="dim-btn dim-btn-primary" disabled={importSetupIncomplete} onclick={handleImportNext}>Next</button>
+                        </template>
+                        <template if:true={isImportUpload}>
+                            <button class="dim-btn" onclick={handleImportBackToSetup}>Back</button>
+                        </template>
+                        <template if:true={isImportConfirm}>
+                            <button class="dim-btn" onclick={handleImportBack}>Back</button>
+                            <button class="dim-btn dim-btn-primary"
+                                onclick={handleImportConfirmBulk}
+                                disabled={importConfirmSubmitDisabled}
+                                title={importValidationBlockedTitle}>
+                                <template if:true={_importLoading}>
+                                    <div class="dim-spinner dim-spinner-sm dim-spinner-inv dim-btn-ic"></div>
+                                </template>
+                                Import {_importRows.length} Records
+                            </button>
+                        </template>
+                        <template if:true={isImportResult}>
+                            <template if:true={canDownloadImportResults}>
+                                <button class="dim-btn" onclick={handleDownloadResults}>Download Results</button>
+                            </template>
+                            <button class="dim-btn dim-btn-primary" onclick={handleCloseImport}>Close</button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ═══════════════════════════════════════════════
+             SITE PICKER OVERLAY (from list view buttons)
+             ═══════════════════════════════════════════════ -->
+        <template if:true={_showSitePicker}>
+            <div class="dim-modal-overlay" onclick={handleSitePickerClose}>
+                <div class="dim-modal" onclick={handleModalStop}>
+                    <div class="dim-modal-head">
+                        <h3 class="dim-modal-title">Select Site</h3>
+                        <button class="dim-modal-close" onclick={handleSitePickerClose}>&times;</button>
+                    </div>
+                    <div class="dim-modal-body dim-modal-body--visible">
+                        <p class="dim-modal-desc">Choose a site to continue with the inventory tool.</p>
+                        <div class="dim-field">
+                            <label class="dim-label">Site</label>
+                            <select class="dim-select" onchange={handleSitePickerChange}>
+                                <option value="">Select a site...</option>
+                                <template for:each={sitePickerOptions} for:item="opt">
+                                    <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="dim-modal-foot">
+                        <button class="dim-btn" onclick={handleSitePickerClose}>Cancel</button>
+                        <button class="dim-btn dim-btn-primary"
+                            disabled={sitePickerNotReady}
+                            onclick={handleSitePickerContinue}>
+                            Continue
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+    </div>
+</template>

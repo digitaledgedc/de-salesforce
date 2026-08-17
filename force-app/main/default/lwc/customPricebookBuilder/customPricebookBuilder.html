@@ -1,0 +1,211 @@
+<template>
+    <!-- Loading -->
+    <template lwc:if={isLoading}>
+        <div class="slds-is-relative cpb-loading">
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </div>
+    </template>
+
+    <template lwc:else>
+
+        <!-- ── Context header ── -->
+        <div class="cpb-context slds-p-horizontal_medium slds-p-top_small slds-p-bottom_x-small">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col">
+                    <span class="cpb-context-label">Account</span>
+                    <span class="cpb-context-value">{accountName}</span>
+                </div>
+                <div class="slds-col">
+                    <span class="cpb-context-label">Currency</span>
+                    <span class="cpb-context-value">{currencyCode}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Existing pricebook notice ── -->
+        <template lwc:if={hasExistingPb}>
+            <div class="cpb-existing-banner slds-p-horizontal_medium slds-p-vertical_x-small">
+                <lightning-icon icon-name="utility:info" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                <span>
+                    This account already has custom pricing: <strong>{existingPbName}</strong> ({existingPbProductCount} products).
+                    Submitting a new request will replace it.
+                </span>
+            </div>
+        </template>
+
+        <!-- ── Selected Products table ── -->
+        <div class="cpb-selected slds-p-horizontal_medium slds-p-top_x-small slds-p-bottom_small">
+            <h3 class="slds-text-heading_small slds-m-bottom_x-small">Selected Products</h3>
+            <template lwc:if={hasLines}>
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th scope="col"><div class="slds-truncate">Product</div></th>
+                            <th scope="col" class="cpb-col-code"><div class="slds-truncate">Code</div></th>
+                            <th scope="col" class="cpb-col-attr"><div class="slds-truncate">Variant</div></th>
+                            <th scope="col" class="cpb-col-price"><div class="slds-truncate">List Price</div></th>
+                            <th scope="col" class="cpb-col-price"><div class="slds-truncate">Custom Price</div></th>
+                            <th scope="col" class="cpb-col-remove"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={validLines} for:item="line">
+                            <tr key={line.key}>
+                                <td data-label="Product">{line.productName}</td>
+                                <td data-label="Code" class="cpb-col-code">{line.productCode}</td>
+                                <td data-label="Variant" class="cpb-col-attr">{line.attributeValue}</td>
+                                <td data-label="List Price" class="cpb-col-price">{line.listPriceFormatted}</td>
+                                <td data-label="Custom Price" class="cpb-col-price">
+                                    <lightning-input
+                                        type="number"
+                                        data-key={line.key}
+                                        value={line.unitPrice}
+                                        step="0.01"
+                                        min="0"
+                                        formatter="currency"
+                                        onchange={handlePriceChange}
+                                        variant="label-hidden"
+                                        label="Price"
+                                        class="cpb-price-input">
+                                    </lightning-input>
+                                </td>
+                                <td class="cpb-col-remove">
+                                    <lightning-button-icon
+                                        icon-name="utility:close"
+                                        alternative-text="Remove"
+                                        variant="bare"
+                                        size="small"
+                                        data-key={line.key}
+                                        onclick={handleRemoveLine}>
+                                    </lightning-button-icon>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </template>
+            <template lwc:else>
+                <p class="slds-text-color_weak slds-text-body_small">No products added yet. Search and add products below.</p>
+            </template>
+        </div>
+
+        <div class="cpb-divider"></div>
+
+        <!-- ── Product Catalog ── -->
+        <div class="slds-p-horizontal_medium slds-p-top_small slds-p-bottom_x-small">
+
+            <!-- Search bar -->
+            <lightning-input
+                type="search"
+                label="Search"
+                variant="label-hidden"
+                placeholder="Filter by name or product code..."
+                value={searchTerm}
+                onchange={handleSearchChange}>
+            </lightning-input>
+
+            <!-- Category pills -->
+            <div class="cat-pill-bar slds-m-top_x-small">
+                <template for:each={categories} for:item="cat">
+                    <button
+                        key={cat.value}
+                        class={cat.cssClass}
+                        data-value={cat.value}
+                        onclick={handleCategoryClick}>
+                        {cat.label}
+                    </button>
+                </template>
+            </div>
+
+            <!-- Status line -->
+            <div class="slds-m-top_x-small slds-m-bottom_x-small">
+                <span class="slds-text-body_small slds-text-color_weak">{catalogStatusLabel}</span>
+            </div>
+
+            <!-- Loading catalog -->
+            <template lwc:if={isCatalogLoading}>
+                <div class="slds-align_absolute-center slds-p-vertical_medium">
+                    <lightning-spinner size="small" alternative-text="Loading products..."></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Product groups -->
+            <template lwc:elseif={hasFilteredProducts}>
+                <div class="cat-sections">
+                    <template for:each={groupedProducts} for:item="group">
+                        <div key={group.category} class={group.sectionClass}>
+                            <div class="cat-section-header"
+                                 data-category={group.category}
+                                 onclick={handleSectionToggle}>
+                                <span class="cat-section-chevron"></span>
+                                <span class="cat-section-title">{group.category}</span>
+                                <span class="cat-section-count">{group.count}</span>
+                            </div>
+                            <div class="cat-section-body">
+                                <table class="slds-table slds-table_cell-buffer">
+                                    <tbody>
+                                        <template for:each={group.products} for:item="prod">
+                                            <tr key={prod.id} class={prod.rowClass}>
+                                                <td>{prod.name}</td>
+                                                <td class="cpb-cat-code">{prod.code}</td>
+                                                <td class="cpb-cat-price">{prod.priceFormatted}</td>
+                                                <td class="cpb-cat-add">
+                                                    <lightning-button-icon
+                                                        icon-name="utility:add"
+                                                        alternative-text="Add"
+                                                        variant="bare"
+                                                        size="small"
+                                                        disabled={prod.alreadyAdded}
+                                                        title={prod.addTitle}
+                                                        data-id={prod.id}
+                                                        data-name={prod.name}
+                                                        data-code={prod.code}
+                                                        data-price={prod.listPrice}
+                                                        onclick={handleAddProduct}>
+                                                    </lightning-button-icon>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template lwc:elseif={isCatalogLoaded}>
+                <div class="slds-align_absolute-center slds-p-vertical_medium">
+                    <p class="slds-text-body_regular slds-text-color_weak">
+                        No products match your search. Try a different term.
+                    </p>
+                </div>
+            </template>
+
+        </div>
+
+        <!-- ── Error ── -->
+        <template lwc:if={errorMessage}>
+            <div class="slds-p-horizontal_medium slds-m-top_x-small">
+                <p class="slds-text-color_error slds-text-body_small">{errorMessage}</p>
+            </div>
+        </template>
+
+        <!-- Approver is defaulted to Indra Lim — hidden from UI -->
+
+        <!-- ── Footer ── -->
+        <div class="cpb-footer">
+            <lightning-button
+                label="Previous"
+                onclick={handleBack}>
+            </lightning-button>
+            <lightning-button
+                label="Create &amp; Submit for Approval"
+                variant="brand"
+                onclick={handleSubmit}
+                disabled={isSubmitting}>
+            </lightning-button>
+        </div>
+
+    </template>
+</template>

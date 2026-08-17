@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="pricebookId" type="String" label="Pricebook Id"
+                description="Id of the Quote's active pricebook. Input and output - updated if user changes pricebook." />
+            <property name="accountId" type="String" label="Account Id" role="inputOnly"
+                description="Quote's Account Id - used to filter available pricebooks to account-specific approved custom pricebooks." />
+            <property name="quoteId" type="String" label="Quote Id" role="inputOnly"
+                description="The Quote record Id - used to update Quote.Pricebook2Id when the user changes pricebook." />
+            <property name="currencyIsoCode" type="String" label="Currency ISO Code" role="inputOnly"
+                description="Quote's currency (e.g. USD, JPY) - filters PricebookEntries to matching currency only." />
+            <property name="invoiceFrequency" type="String" label="Invoice Frequency" role="inputOnly"
+                description="Quote's Invoice Frequency - filters products to those matching this frequency." />
+            <property name="value" type="String" label="Selected Product IDs"
+                description="Semicolon-delimited Product2 IDs selected by the user." />
+            <property name="mode" type="String" label="Mode" role="outputOnly"
+                description="Output: customPricebook when user chose the custom pricebook path; empty for standard Add to Quote." />
+            <property name="attributeMap" type="String" label="Attribute Map JSON" role="outputOnly"
+                description="JSON map of Product2Id to selected attribute value for products with configurable attributes." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

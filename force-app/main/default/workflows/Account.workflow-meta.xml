@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fieldUpdates>
+        <fullName>Acct_RevertPaymentTerms</fullName>
+        <description>Revert Payment Terms to 30 Days when the payment terms approval request is rejected or recalled.</description>
+        <field>Payment_Terms__c</field>
+        <literalValue>30 Days</literalValue>
+        <name>Revert Payment Terms to 30 Days</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>FA_SD_Date_Today</fullName>
+        <description>Set Finance Approved Date to today when Sales Director grants approval.</description>
+        <field>Finance_Approved_Date__c</field>
+        <formula>TODAY()</formula>
+        <name>Set Finance Approved Date</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>FA_SD_Entity_Locked</fullName>
+        <description>Lock the billing entity fields when Sales Director grants final approval.</description>
+        <field>Entity_Locked__c</field>
+        <literalValue>1</literalValue>
+        <name>Lock Entity Fields</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>FA_SD_Phase_Approved</fullName>
+        <description>Set Finance Approval Phase to Approved when Sales Director grants approval.</description>
+        <field>Finance_Approval_Phase__c</field>
+        <literalValue>Approved</literalValue>
+        <name>Set Phase to Approved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>FA_SD_Status_Approved</fullName>
+        <description>Set Finance Approval Phase to Approved when Sales Director grants approval.</description>
+        <field>Finance_Approval_Phase__c</field>
+        <literalValue>Approved</literalValue>
+        <name>Set Phase to Approved (SD)</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+</Workflow>

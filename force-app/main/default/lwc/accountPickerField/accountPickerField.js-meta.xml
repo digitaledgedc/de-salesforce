@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="label"             type="String"  label="Field Label"                  role="inputOnly" />
+            <property name="recordTypeName"    type="String"  label="Record Type Developer Name"   role="inputOnly" />
+            <property name="allowCreate"       type="Boolean" label="Allow Create New"             role="inputOnly" />
+            <property name="selectedAccountId" type="String"  label="Selected Account Id"          role="outputOnly" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

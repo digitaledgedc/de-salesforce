@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Atomic object PS: Read on DataHall__c + read FLS on all 3 permissionable fields. No view/modify all (sharing-owned).</description>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>DataHall__c.Room_Description__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>DataHall__c.Sequence__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE Data Hall Read</label>
+</PermissionSet>

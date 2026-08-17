@@ -1,0 +1,334 @@
+<template>
+    <template if:true={isLoaded}>
+        <!-- Header with phase indicator -->
+        <div class="modal-header">
+            <div class="slds-p-horizontal_medium slds-p-vertical_small">
+                <h2 class="slds-text-heading_small">Finance Approval</h2>
+                <template if:false={isTerminal}>
+                    <p class="phase-badge">{phaseLabel}</p>
+                </template>
+            </div>
+        </div>
+
+        <!-- ═══ TERMINAL STATE ═══ -->
+        <template if:true={isTerminal}>
+            <div class="slds-p-around_medium">
+                <p class="slds-text-body_regular">{terminalMessage}</p>
+            </div>
+            <div class="footer slds-p-around_small">
+                <span></span>
+                <lightning-button label="Close" onclick={handleCancel}></lightning-button>
+            </div>
+        </template>
+
+        <!-- ═══ PHASE 1: CUSTOMER MASTER VALIDATION ═══ -->
+        <template if:true={isDnb}>
+            <div class="context-panel">
+                <template for:each={contextRows} for:item="row">
+                    <div key={row.label} class="context-row">
+                        <span class="context-label">{row.label}</span>
+                        <span class="context-value">{row.value}</span>
+                    </div>
+                </template>
+                <template if:true={hasSourceQuote}>
+                    <div class="context-row">
+                        <span class="context-label">Source Quote</span>
+                        <span class="context-value"><a class="quote-link" onclick={handleQuoteNav}>{sourceQuoteLabel}</a></span>
+                    </div>
+                </template>
+            </div>
+            <div class="form-body">
+                <div class="slds-grid slds-gutters_small">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input label="DUNS Number" value={duns} onchange={handleDuns}
+                            field-level-help="9-digit identifier from Dun &amp; Bradstreet. Leave blank if not required.">
+                        </lightning-input>
+                        <a href="https://www.dnb.com/duns/duns-lookup.html" target="_blank" rel="noopener" class="ext-link">
+                            <lightning-icon icon-name="utility:new_window" size="xx-small" alternative-text="Open"></lightning-icon>
+                            Look up on D&amp;B
+                        </a>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input label="D&amp;B Rating" value={rating} onchange={handleRating}>
+                        </lightning-input>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters_small slds-m-top_small">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input type="date" label="Check Date" value={checkDate}
+                            onchange={handleDate} required>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input label="Tax ID" value={taxId} onchange={handleTaxId} required>
+                        </lightning-input>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters_small slds-m-top_small">
+                    <div class={legalEntityColClass}>
+                        <lightning-input label="Legal Entity Name (English)" value={legalEntity}
+                            onchange={handleLegalEntity}>
+                        </lightning-input>
+                    </div>
+                    <template lwc:if={showLocalEntity}>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-input label="Local Entity Name" value={localEntity}
+                                onchange={handleLocalEntity} required>
+                            </lightning-input>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-m-top_small">
+                    <lightning-textarea label="Registered Office Address" value={regAddress}
+                        onchange={handleRegAddress} max-length="500" required>
+                    </lightning-textarea>
+                </div>
+                <template lwc:if={showLocalEntity}>
+                    <div class="slds-m-top_small">
+                        <lightning-textarea label="Local Registered Office Address" value={localAddress}
+                            onchange={handleLocalAddr} max-length="500" required>
+                        </lightning-textarea>
+                    </div>
+                </template>
+                <div class="slds-m-top_small">
+                    <lightning-textarea label="Review Notes" value={notes}
+                        onchange={handleNotes} max-length="1000">
+                    </lightning-textarea>
+                </div>
+                <div class="slds-m-top_small upload-wrapper">
+                    <c-record-file-upload record-id={recordId}
+                        card-title="Customer Documents"
+                        card-subtitle="Upload D&amp;B reports, tax certificates, and compliance documents"
+                        object-api-name="Account">
+                    </c-record-file-upload>
+                </div>
+            </div>
+            <div class="footer slds-p-horizontal_medium slds-p-vertical_small">
+                <lightning-button label="Cancel" onclick={handleCancel}></lightning-button>
+                <div class="footer-actions">
+                    <lightning-button label="Save Draft" variant="neutral"
+                        onclick={handleDnbSave} disabled={saving}></lightning-button>
+                    <lightning-button label="Reject" variant="destructive"
+                        onclick={handleDnbReject} disabled={saving}></lightning-button>
+                    <lightning-button label="Approve &amp; Continue" variant="brand"
+                        onclick={handleDnbApprove} disabled={saving}></lightning-button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ═══ PHASE 1 CONFIRM ═══ -->
+        <template if:true={isDnbConfirm}>
+            <div class="form-body">
+                <template if:true={hasConfirmWarnings}>
+                    <div class="error-panel slds-m-bottom_small">
+                        <p class="warning-title">Missing Information</p>
+                        <p class="warning-text">Some required fields are not filled. You may still proceed, but this will be recorded.</p>
+                    </div>
+                </template>
+                <template if:false={hasConfirmWarnings}>
+                    <div class="warning-panel slds-m-bottom_small">
+                        <p class="warning-title">Review and Confirm</p>
+                        <p class="warning-text">Verify the details below are correct before proceeding to KYC.</p>
+                    </div>
+                </template>
+                <div class="confirm-summary">
+                    <template for:each={confirmSummaryRows} for:item="r">
+                        <div key={r.label} class="context-row">
+                            <span class="context-label">{r.label}</span>
+                            <span class={r.cls}>{r.value}</span>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-m-top_small">
+                    <lightning-input type="checkbox" label="I confirm the customer master record has been validated and is finance-compliant"
+                        checked={dnbConfirmed} onchange={handleDnbConfirm}>
+                    </lightning-input>
+                </div>
+            </div>
+            <div class="footer slds-p-horizontal_medium slds-p-vertical_small">
+                <lightning-button label="Back" onclick={handleDnbConfirmBack}></lightning-button>
+                <lightning-button label="Proceed to KYC" variant="brand"
+                    onclick={handleDnbConfirmProceed} disabled={saving}></lightning-button>
+            </div>
+        </template>
+
+        <!-- ═══ PHASE 2: KYC REVIEW ═══ -->
+        <template if:true={isKyc}>
+            <div class="context-panel">
+                <template for:each={contextRows} for:item="row">
+                    <div key={row.label} class="context-row">
+                        <span class="context-label">{row.label}</span>
+                        <span class="context-value">{row.value}</span>
+                    </div>
+                </template>
+                <template if:true={hasSourceQuote}>
+                    <div class="context-row">
+                        <span class="context-label">Source Quote</span>
+                        <span class="context-value"><a class="quote-link" onclick={handleQuoteNav}>{sourceQuoteLabel}</a></span>
+                    </div>
+                </template>
+            </div>
+            <div class="form-body">
+                <div class="slds-grid slds-gutters_small">
+                    <div class={legalEntityColClass}>
+                        <lightning-input label="Legal Entity Name (English)" value={legalEntity}
+                            onchange={handleLegalEntity}>
+                        </lightning-input>
+                    </div>
+                    <template lwc:if={showLocalEntity}>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-input label="Local Entity Name" value={localEntity}
+                                onchange={handleLocalEntity}>
+                            </lightning-input>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-grid slds-gutters_small slds-m-top_small">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input label="Tax ID" value={taxId} onchange={handleTaxId} required></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-textarea label="Registered Office Address" value={regAddress}
+                            onchange={handleRegAddress} max-length="500" required>
+                        </lightning-textarea>
+                    </div>
+                </div>
+                <template lwc:if={showLocalEntity}>
+                    <div class="slds-m-top_small">
+                        <lightning-textarea label="Local Registered Office Address" value={localAddress}
+                            onchange={handleLocalAddr} max-length="500" required>
+                        </lightning-textarea>
+                    </div>
+                </template>
+
+                <div class="section-divider">
+                    <span class="section-label">Due Diligence Checks</span>
+                    <span class="section-hint">Confirm each check. Upload supporting documents below.</span>
+                </div>
+                <div class="kyc-checks">
+                    <div class="kyc-check-row">
+                        <div class="kyc-check-with-link">
+                            <lightning-input type="checkbox" label="Transparency International (TPI) check completed"
+                                checked={kycTpiDone} onchange={handleKycTpi}></lightning-input>
+                            <a href="https://www.transparency.org/en/cpi" target="_blank" rel="noopener" class="ext-link">
+                                <lightning-icon icon-name="utility:new_window" size="xx-small" alternative-text="Open"></lightning-icon>
+                                Open TPI
+                            </a>
+                        </div>
+                    </div>
+                    <div class="kyc-check-row">
+                        <div class="kyc-check-with-link">
+                            <lightning-input type="checkbox" label="Sanctions screening completed (OFAC and applicable lists)"
+                                checked={kycSanctionsDone} onchange={handleKycSanctions}></lightning-input>
+                            <a href="https://sanctionssearch.ofac.treas.gov" target="_blank" rel="noopener" class="ext-link">
+                                <lightning-icon icon-name="utility:new_window" size="xx-small" alternative-text="Open"></lightning-icon>
+                                Open OFAC
+                            </a>
+                        </div>
+                    </div>
+                    <div class="kyc-check-row">
+                        <div class="kyc-check-with-link">
+                            <lightning-input type="checkbox" label="Background verification completed (public records, media)"
+                                checked={kycBackgroundDone} onchange={handleKycBackground}></lightning-input>
+                            <a href="https://opensanctions.org/search/" target="_blank" rel="noopener" class="ext-link">
+                                <lightning-icon icon-name="utility:new_window" size="xx-small" alternative-text="Open"></lightning-icon>
+                                Open Sanctions DB
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-m-top_small">
+                    <lightning-textarea label="Rejection Reason (required if rejecting)" value={kycRejectReason}
+                        onchange={handleKycRejectReason} max-length="2000">
+                    </lightning-textarea>
+                </div>
+
+                <div class="slds-m-top_small upload-wrapper">
+                    <c-record-file-upload record-id={recordId}
+                        card-title="KYC Documents"
+                        card-subtitle="Upload TPI reports, sanctions screening results, and background verification"
+                        object-api-name="Account">
+                    </c-record-file-upload>
+                </div>
+            </div>
+            <div class="footer slds-p-horizontal_medium slds-p-vertical_small">
+                <lightning-button label="Cancel" onclick={handleCancel}></lightning-button>
+                <div class="footer-actions">
+                    <lightning-button label="Save Draft" variant="neutral"
+                        onclick={handleKycSave} disabled={saving}></lightning-button>
+                    <lightning-button label="Reject → Legal" variant="destructive"
+                        onclick={handleKycReject} disabled={saving}></lightning-button>
+                    <lightning-button label="Approve &amp; Continue" variant="brand"
+                        onclick={handleKycApprove} disabled={saving}></lightning-button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ═══ KYC WARNING ═══ -->
+        <template if:true={isKycWarn}>
+            <div class="form-body">
+                <div class="error-panel">
+                    <p class="warning-title">Due Diligence Incomplete</p>
+                    <p class="warning-text">You have not confirmed all KYC due diligence checks. Are you sure you want to proceed? This will be recorded for audit purposes.</p>
+                </div>
+                <div class="slds-m-top_medium">
+                    <lightning-input type="checkbox"
+                        label="Yes, I want to proceed without completing all due diligence checks"
+                        checked={kycProceedAnyway} onchange={handleKycProceedAnyway}>
+                    </lightning-input>
+                </div>
+            </div>
+            <div class="footer slds-p-horizontal_medium slds-p-vertical_small">
+                <lightning-button label="Back to KYC" onclick={handleKycWarnBack}></lightning-button>
+                <lightning-button label="Proceed Anyway" variant="brand"
+                    onclick={handleKycWarnProceed} disabled={saving}></lightning-button>
+            </div>
+        </template>
+
+        <!-- ═══ PHASE 3: CREDIT DECISION ═══ -->
+        <template if:true={isCredit}>
+            <div class="context-panel">
+                <template for:each={contextRows} for:item="row">
+                    <div key={row.label} class="context-row">
+                        <span class="context-label">{row.label}</span>
+                        <span class="context-value">{row.value}</span>
+                    </div>
+                </template>
+                <template if:true={hasSourceQuote}>
+                    <div class="context-row">
+                        <span class="context-label">Source Quote</span>
+                        <span class="context-value"><a class="quote-link" onclick={handleQuoteNav}>{sourceQuoteLabel}</a></span>
+                    </div>
+                </template>
+            </div>
+            <div class="form-body">
+                <p class="section-hint slds-m-bottom_small">Set credit limits below. Defaults are pre-populated — override only if required.</p>
+                <div class="slds-grid slds-gutters_small">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input type="number" label="Credit Limit MRC (USD)" value={creditMRC}
+                            onchange={handleCreditMRC} required formatter="currency" step="1">
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input type="number" label="Credit Limit NRC (USD)" value={creditNRC}
+                            onchange={handleCreditNRC} required formatter="currency" step="1">
+                        </lightning-input>
+                    </div>
+                </div>
+            </div>
+            <div class="footer slds-p-horizontal_medium slds-p-vertical_small">
+                <lightning-button label="Cancel" onclick={handleCancel}></lightning-button>
+                <lightning-button label="Finalise Approval" variant="brand"
+                    onclick={handleCreditApprove} disabled={saving}></lightning-button>
+            </div>
+        </template>
+    </template>
+
+    <!-- Loading -->
+    <template if:false={isLoaded}>
+        <div class="slds-p-around_medium slds-is-relative" style="min-height: 6rem">
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </div>
+    </template>
+</template>

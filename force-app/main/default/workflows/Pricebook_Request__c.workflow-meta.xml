@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fieldUpdates>
+        <fullName>PricebookRequest_SetApproved</fullName>
+        <description>Set Status to Approved on Pricebook Request - triggers the pricebook materialisation trigger.</description>
+        <field>Status__c</field>
+        <literalValue>Approved</literalValue>
+        <name>Set Status to Approved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>PricebookRequest_SetRecalled</fullName>
+        <description>Set Status back to Draft when a Pricebook Request is recalled.</description>
+        <field>Status__c</field>
+        <literalValue>Draft</literalValue>
+        <name>Set Status to Draft on Recall</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>PricebookRequest_SetRejected</fullName>
+        <description>Set Status to Rejected on Pricebook Request.</description>
+        <field>Status__c</field>
+        <literalValue>Rejected</literalValue>
+        <name>Set Status to Rejected</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+</Workflow>

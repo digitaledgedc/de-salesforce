@@ -1,0 +1,144 @@
+<template>
+    <div class="psc-wrap">
+
+        <!-- Search -->
+        <lightning-input type="search" label="Search" variant="label-hidden"
+            placeholder="Filter by name or code..." value={searchTerm}
+            onchange={handleSearchChange} class="psc-search"></lightning-input>
+
+        <!-- Category pills -->
+        <div class="psc-pills">
+            <template for:each={categories} for:item="cat">
+                <button key={cat.value} class={cat.cssClass} data-value={cat.value}
+                    onclick={handleCategoryClick}>{cat.label}</button>
+            </template>
+        </div>
+
+        <!-- Status -->
+        <div class="psc-status">
+            <span class="psc-status-label">{statusLabel}</span>
+            <template lwc:if={hasSelection}>
+                <span class="psc-badge">{selectedCount} selected</span>
+            </template>
+        </div>
+
+        <!-- Loading -->
+        <template lwc:if={isLoading}>
+            <div class="psc-center"><lightning-spinner size="small" alternative-text="Loading"></lightning-spinner></div>
+        </template>
+
+        <!-- Product tree -->
+        <template lwc:elseif={hasFilteredProducts}>
+            <div class="psc-tree">
+                <template for:each={groupedProducts} for:item="group">
+                    <div key={group.category} class={group.sectionClass}>
+                        <!-- Category header -->
+                        <div class="psc-cat-header" data-category={group.category} onclick={handleSectionToggle}>
+                            <span class="psc-chevron"></span>
+                            <span class="psc-cat-name">{group.category}</span>
+                            <span class="psc-cat-count">{group.count}</span>
+                        </div>
+                        <!-- Product rows -->
+                        <template lwc:if={group.isOpen}>
+                            <div class="psc-product-list">
+                                <template for:each={group.products} for:item="prod">
+                                    <div key={prod.id} class={prod.rowClass}>
+                                        <div class="psc-row-main">
+                                            <input type="checkbox" checked={prod.isSelected}
+                                                data-id={prod.id} onchange={handleProductCheck}
+                                                class="psc-check" />
+                                            <span class="psc-prod-name">{prod.name}</span>
+                                            <span class="psc-prod-code">{prod.code}</span>
+                                        </div>
+                                        <!-- CHANGE 2026-07-10 — Attribute dropdown overlap/click fix (REVERTABLE).
+                                             Inline attribute dropdown - shows when product is checked and has attributes.
+                                             Custom dropdown (not lightning-combobox) so the open menu reliably stacks
+                                             above the next selected row and its option clicks are not retargeted to
+                                             the combobox underneath it.
+                                             ORIGINAL was a single <lightning-combobox label={prod.attrType}
+                                             options={prod.attrPicklistOptions} value={prod.selectedAttr}
+                                             data-id={prod.id} onchange={handleAttrChange} variant="label-stacked"
+                                             placeholder={prod.attrPlaceholder} class="psc-attr-combo"> inside
+                                             <div class="psc-attr-row">. -->
+                                        <template lwc:if={prod.isSelected}>
+                                            <template lwc:if={prod.hasAttr}>
+                                                <div class={prod.attrRowClass}>
+                                                    <label class="psc-attr-label">{prod.attrType}</label>
+                                                    <div class="psc-select">
+                                                        <button type="button" class={prod.attrBtnClass}
+                                                                data-id={prod.id} onclick={handleAttrToggle}>
+                                                            <span class={prod.attrValClass}>{prod.attrDisplay}</span>
+                                                            <span class="psc-select-caret"></span>
+                                                        </button>
+                                                        <template lwc:if={prod.attrMenuOpen}>
+                                                            <ul class="psc-select-menu" role="listbox">
+                                                                <template for:each={prod.attrPicklistOptions} for:item="opt">
+                                                                    <li key={opt.value} role="option"
+                                                                        class={opt.itemClass}
+                                                                        data-id={prod.id} data-value={opt.value}
+                                                                        onclick={handleAttrSelect}>{opt.label}</li>
+                                                                </template>
+                                                            </ul>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- No results -->
+        <template lwc:elseif={isLoaded}>
+            <div class="psc-center"><p class="psc-empty">No products match your search.</p></div>
+        </template>
+
+        <!-- Errors -->
+        <template lwc:if={loadError}>
+            <p class="psc-error">{loadError}</p>
+        </template>
+        <template lwc:if={validationError}>
+            <p class="psc-error">{validationError}</p>
+        </template>
+
+        <p class="psc-hint">Products are added with quantity 1 - adjust per line in the table after.</p>
+
+        <!-- Pricebook picker -->
+        <template lwc:if={showPricebookPicker}>
+            <div class="pb-picker">
+                <template for:each={availablePricebooks} for:item="pb">
+                    <button key={pb.id} class={pb.cssClass} data-id={pb.id}
+                        onclick={handlePricebookSelect} disabled={isChangingPricebook}>
+                        {pb.name}
+                        <template lwc:if={pb.isStandard}><span class="pb-badge">Standard</span></template>
+                        <template lwc:else><span class="pb-badge pb-badge_custom">Custom</span></template>
+                    </button>
+                </template>
+                <template lwc:if={pricebookChangeError}>
+                    <p class="psc-error">{pricebookChangeError}</p>
+                </template>
+            </div>
+        </template>
+
+        <!-- Footer -->
+        <div class="psc-footer">
+            <button class="cpb-btn cpb-btn_neutral" onclick={togglePricebookPicker}>
+                <lightning-icon icon-name="utility:price_book" size="x-small" class="cpb-btn-icon"></lightning-icon>
+                Change Pricebook
+            </button>
+            <div class="psc-footer-right">
+                <button class="cpb-btn cpb-btn_neutral" onclick={handleAddToCustomPricebook}>
+                    <lightning-icon icon-name="utility:custom_apps" size="x-small" class="cpb-btn-icon"></lightning-icon>
+                    Request Custom Pricebook
+                </button>
+                <button class="cpb-btn cpb-btn_brand" onclick={handleAddToQuote}>Add to Quote</button>
+            </div>
+        </div>
+
+    </div>
+</template>

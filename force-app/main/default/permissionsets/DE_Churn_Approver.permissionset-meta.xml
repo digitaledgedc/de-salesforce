@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Approve Churn Orders. Grants R/W on Order.Churn_Approved__c. Assign to Country Finance and Group Finance. Required by G-11.</description>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Order.Churn_Approved__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Order.QuoteId</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Product2.Invoice_Frequency__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE Churn Approver</label>
+    <license>Salesforce</license>
+</PermissionSet>

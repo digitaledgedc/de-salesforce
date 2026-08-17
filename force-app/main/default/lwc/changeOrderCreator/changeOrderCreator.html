@@ -1,0 +1,425 @@
+<template>
+    <div class="co">
+
+        <!-- Loading -->
+        <template lwc:if={isLoading}>
+            <div class="co-loading">
+                <lightning-spinner size="medium" alternative-text="Loading"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:elseif={isChangeOrder}>
+            <div class="co-error">
+                <p><strong>Not available on Change Orders.</strong></p>
+                <p>This action can only be used on original (non-CO) orders. Please navigate to the original order.</p>
+            </div>
+        </template>
+
+        <template lwc:elseif={loadError}>
+            <div class="co-error">{loadError}</div>
+        </template>
+
+        <template lwc:elseif={isReady}>
+
+            <!-- ── Saving overlay ────────────────────────────── -->
+            <template lwc:if={isSaving}>
+                <div class="co-overlay">
+                    <div class="co-overlay-card">
+                        <lightning-spinner size="medium" alternative-text="Creating"></lightning-spinner>
+                        <span class="co-overlay-text">{savingLabel}</span>
+                    </div>
+                </div>
+            </template>
+
+            <!-- ── Confirmation Modal ─────────────────────────── -->
+            <template lwc:if={showModal}>
+                <div class="co-modal-overlay">
+                    <div class="co-modal">
+                        <div class="co-modal-header">
+                            <h3 class="co-modal-title">Create Blank Change Order?</h3>
+                            <button class="co-modal-close" onclick={handleModalCancel} type="button">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 6l12 12M6 18L18 6"/></svg>
+                            </button>
+                        </div>
+                        <div class="co-modal-body">
+                            <p class="co-modal-message">You haven't made any changes to this order. Are you sure you
+                                want to create a blank change order?</p>
+                            <p class="co-modal-sub">This will create a draft change order with no modifications.</p>
+                        </div>
+                        <div class="co-modal-footer">
+                            <button class="co-btn" onclick={handleModalCancel} type="button">Cancel</button>
+                            <button class="co-btn co-btn_primary" onclick={handleModalConfirm} type="button">
+                                Continue
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- ══════════════════════════════════════════════════
+                 STEP 0 — Intent Picker (Only for non-change mode)
+                 ══════════════════════════════════════════════════ -->
+            <template lwc:if={isStep0}>
+                <header class="co-hdr">
+                    <div class="co-hdr-left">
+                        <span class="co-eyebrow">Change Order</span>
+                        <h2 class="co-title">What would you like to do?</h2>
+                    </div>
+                    <button class="co-close" onclick={handleCancel} type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 6l12 12M6 18L18 6"/></svg>
+                    </button>
+                </header>
+
+                <div class="co-step0-panels">
+                    <!-- Renewal Card -->
+                    <div class="co-panel" data-intent="renewal" onclick={handleIntentSelect}>
+                        <div class="co-panel-icon co-panel-icon_renewal">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 4v6h6M23 20v-6h-6" />
+                                <path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15" />
+                            </svg>
+                        </div>
+                        <span class="co-panel-label">Renewal</span>
+                        <p class="co-panel-desc">Extend the contract for a new term with updated pricing. Services not
+                            selected will continue as-is.</p>
+                    </div>
+
+                    <!-- Termination Card -->
+                    <div class="co-panel" data-intent="termination" onclick={handleIntentSelect}>
+                        <div class="co-panel-icon co-panel-icon_termination">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 6L6 18M6 6l12 12" />
+                            </svg>
+                        </div>
+                        <span class="co-panel-label">Termination</span>
+                        <p class="co-panel-desc">End specific services or all services on this order. Services not
+                            selected will continue as-is.</p>
+                    </div>
+                </div>
+
+                <!-- Context Panel -->
+                <div class="co-step0-context">
+                    <div class="co-ctx-header">Order Details</div>
+                    <div class="co-ctx-grid">
+                        <div>
+                            <template if:true={orderNumber}>
+                                <div class="co-ctx-row">
+                                    <span class="co-ctx-k">Order</span><span class="co-ctx-v">{orderNumber}</span></div>
+                            </template>
+                            <template if:true={orderSite}>
+                                <div class="co-ctx-row">
+                                    <span class="co-ctx-k">Site</span><span class="co-ctx-v">{orderSite}</span></div>
+                            </template>
+                            <div class="co-ctx-row">
+                                <span class="co-ctx-k">Active Services</span><span class="co-ctx-v">{totalRows}</span>
+                            </div>
+                            <div class="co-ctx-row">
+                                <span class="co-ctx-k">Products</span><span class="co-ctx-v">{uniqueProductCount}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="co-ctx-row">
+                                <span class="co-ctx-k">Monthly MRC</span><span class="co-ctx-v">{currentTotalMrc}</span>
+                            </div>
+                            <div class="co-ctx-row">
+                                <span class="co-ctx-k">Currency</span><span class="co-ctx-v">{currencyCode}</span></div>
+                            <template if:true={orderDate}>
+                                <div class="co-ctx-row">
+                                    <span class="co-ctx-k">Start Date</span><span class="co-ctx-v">{orderDate}</span>
+                                </div>
+                            </template>
+                            <template if:true={orderTerm}>
+                                <div class="co-ctx-row">
+                                    <span class="co-ctx-k">Contract</span><span class="co-ctx-v">{orderTerm} months</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- ══════════════════════════════════════════════════
+                 STEP 1 — Scope Selector (Renewal / Termination)
+                 ══════════════════════════════════════════════════ -->
+            <template lwc:if={isStep1}>
+                <header class="co-hdr">
+                    <div class="co-hdr-left">
+                        <span class="co-eyebrow">{intentLabel}</span>
+                        <h2 class="co-title">{scopeQuestion}</h2>
+                    </div>
+                    <button class="co-close" onclick={handleCancel} type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 6l12 12M6 18L18 6"/></svg>
+                    </button>
+                </header>
+
+                <div class="co-step1-panels">
+                    <div class="co-panel" data-scope="all" onclick={handleScopeSelect}>
+                        <div class="co-panel-icon co-panel-icon_all">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                <path d="M9 12l2 2 4-4" />
+                            </svg>
+                        </div>
+                        <span class="co-panel-label">All Items</span>
+                        <p class="co-panel-desc">{allItemsDesc}</p>
+                    </div>
+                    <div class="co-panel" data-scope="select" onclick={handleScopeSelect}>
+                        <div class="co-panel-icon co-panel-icon_select">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M14 14l7 7M3 8V3h5" />
+                            </svg>
+                        </div>
+                        <span class="co-panel-label">Select Items</span>
+                        <p class="co-panel-desc">{selectItemsDesc}</p>
+                    </div>
+                </div>
+
+                <div class="co-step0-context">
+                    <div class="co-ctx-header">Order Details</div>
+                    <div class="co-ctx-grid">
+                        <div>
+                            <template if:true={orderNumber}>
+                                <div class="co-ctx-row">
+                                    <span class="co-ctx-k">Order</span><span class="co-ctx-v">{orderNumber}</span></div>
+                            </template>
+                            <template if:true={orderSite}>
+                                <div class="co-ctx-row">
+                                    <span class="co-ctx-k">Site</span><span class="co-ctx-v">{orderSite}</span></div>
+                            </template>
+                            <div class="co-ctx-row">
+                                <span class="co-ctx-k">Active Services</span><span class="co-ctx-v">{totalRows}</span>
+                            </div>
+                            <div class="co-ctx-row">
+                                <span class="co-ctx-k">Products</span><span class="co-ctx-v">{uniqueProductCount}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="co-ctx-row">
+                                <span class="co-ctx-k">Monthly MRC</span><span class="co-ctx-v">{currentTotalMrc}</span>
+                            </div>
+                            <div class="co-ctx-row">
+                                <span class="co-ctx-k">Currency</span><span class="co-ctx-v">{currencyCode}</span></div>
+                            <template if:true={orderDate}>
+                                <div class="co-ctx-row">
+                                    <span class="co-ctx-k">Start Date</span><span class="co-ctx-v">{orderDate}</span>
+                                </div>
+                            </template>
+                            <template if:true={orderTerm}>
+                                <div class="co-ctx-row">
+                                    <span class="co-ctx-k">Contract</span><span class="co-ctx-v">{orderTerm} months</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="co-foot">
+                    <button class="co-btn" onclick={handleBackToStep0} type="button">Back</button>
+                    <div></div>
+                </footer>
+            </template>
+
+            <!-- ══════════════════════════════════════════════════
+                 STEP 2 — Service Grid (shared across all intents)
+                 ══════════════════════════════════════════════════ -->
+            <template lwc:if={isStep2}>
+
+                <!-- ── Header ─────────────────────────────────────── -->
+                <header class="co-hdr">
+                    <div class="co-hdr-left">
+                        <span class="co-eyebrow">{intentLabel}</span>
+                        <h2 class="co-title">{gridTitle}</h2>
+                    </div>
+                    <button class="co-close" onclick={handleCancel} type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 6l12 12M6 18L18 6"/></svg>
+                    </button>
+                </header>
+
+                <!-- ── Config fields ──────────────────────────── -->
+                <div class="co-config-row">
+                    <lightning-input type="date" label="Requested Delivery Date" value={coDate}
+                        onchange={handleDateChange} required class="co-config-field"
+                        field-level-help="Requested Delivery Date"></lightning-input>
+
+                    <!-- Renewal-specific fields -->
+                    <template lwc:if={showRenewalFields}>
+                        <lightning-input type="number" label="Contract Term (months)" value={renewalTerm} min="1"
+                            step="1" onchange={handleTermChange} class="co-config-field"></lightning-input>
+                        <lightning-combobox label="Renewal Type" value={renewalType} options={renewalTypeOptions}
+                            onchange={handleRenewalTypeChange} class="co-config-field"></lightning-combobox>
+                        <lightning-input type="number" label="% Increase" value={bulkPriceIncrease} step="0.1"
+                            formatter="percent-fixed" onchange={handleBulkPriceApply} class="co-config-field">
+                        </lightning-input>
+                    </template>
+
+                    <!-- Search -->
+                    <lightning-input type="search" label="Search" variant="label-hidden"
+                        placeholder="Filter services..." value={searchTerm} onchange={handleSearch}
+                        class="co-config-field co-config-search"></lightning-input>
+                    <span class="co-stats">{statsLabel}</span>
+                </div>
+
+                <!-- ── Service list ───────────────────────────────── -->
+                <div class="co-list">
+                    <template for:each={groupedRows} for:item="group">
+                        <div key={group.groupKey} class="co-group">
+
+                            <!-- Group header (collapsible) -->
+                            <div class="co-ghdr" onclick={handleGroupToggle} data-group-key={group.groupKey}>
+                                <span class="co-ghdr-chevron">{group.chevron}</span>
+                                <span class="co-ghdr-name">{group.groupLabel}</span>
+                                <span class="co-ghdr-ct">{group.count}</span>
+                                <template lwc:if={group.hasChanges}>
+                                    <span class="co-ghdr-changed">{group.changed} changed</span>
+                                </template>
+                                <span class="co-ghdr-mrc">{group.mrcFmt}</span>
+                            </div>
+
+                            <!-- Service rows (only when expanded) -->
+                            <template lwc:if={group.isExpanded}>
+                                <template for:each={group.items} for:item="row">
+                                    <div key={row.rowId} class={row.rowClass}>
+
+                                        <div class="co-row-main">
+                                            <div class="co-row-info">
+                                                <div class="co-row-primary">
+                                                    <span class="co-row-code">{row.codeLabel}</span>
+                                                    <span class="co-row-name">{row.displayName}</span>
+                                                </div>
+                                                <template lwc:if={row.metaLabel}>
+                                                    <span class="co-row-meta">{row.metaLabel}</span>
+                                                </template>
+                                            </div>
+                                            <span class="co-row-mrc">{row.curMrcFmt}<span class="co-row-per">/mo</span></span>
+                                            <div class="co-row-actions">
+                                                <!-- Upsell mode: Change + Remove -->
+                                                <template lwc:if={isUpsellIntent}>
+                                                    <template lwc:if={row.showChange}>
+                                                        <button class={row.changeClass} data-row-id={row.rowId} data-value="CHANGE" onclick={handleActionClick} type="button">Change</button>
+                                                    </template>
+                                                    <button class={row.removeClass} data-row-id={row.rowId} data-value="DELETE" onclick={handleActionClick} type="button">Remove</button>
+                                                    <template lwc:if={row.isNew}>
+                                                        <button class="co-act co-act_x" data-row-id={row.rowId} onclick={handleRemoveNew} type="button">&times;</button>
+                                                    </template>
+                                                </template>
+
+                                                <!-- Renewal mode: Renew + Terminate -->
+                                                <template lwc:if={isRenewalIntent}>
+                                                    <button class={row.renewClass} data-row-id={row.rowId} data-value="RENEW" onclick={handleActionClick} type="button">Renew</button>
+                                                    <button class={row.removeClass} data-row-id={row.rowId} data-value="DELETE" onclick={handleActionClick} type="button">Terminate</button>
+                                                </template>
+
+                                                <!-- Termination mode: Terminate only -->
+                                                <template lwc:if={isTerminationIntent}>
+                                                    <button class={row.removeClass} data-row-id={row.rowId} data-value="DELETE" onclick={handleActionClick} type="button">Terminate</button>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                        <!-- Inline edit -->
+                                        <template lwc:if={row.showEdit}>
+                                            <div class="co-row-edit">
+                                                <!-- New service quantity (upsell only) -->
+                                                <template lwc:if={row.isNew}>
+                                                    <lightning-input type="number" label="QTY" value={row.newQuantity}
+                                                        min="1" step="1" data-row-id={row.rowId}
+                                                        data-field="newQuantity" onchange={handleLineFieldChange}
+                                                        class="co-edit-field"></lightning-input>
+                                                </template>
+
+                                                <!-- Existing service quantity (read-only for changes) -->
+                                                <template lwc:elseif={isUpsellIntent}>
+                                                    <template lwc:if={row.showChange}>
+                                                        <div class="co-edit-field co-edit-field_ro">
+                                                            <span class="co-edit-ro-label">Qty</span>
+                                                            <span class="co-edit-ro-val">{row.quantity}</span>
+                                                        </div>
+                                                    </template>
+                                                </template>
+
+                                                <!-- Attributes -->
+                                                <template lwc:if={row.hasAttribute}>
+                                                    <lightning-combobox label="Attribute" value={row.newAttribute}
+                                                        options={row.attributeOptions} data-row-id={row.rowId}
+                                                        data-field="newAttribute" onchange={handleLineFieldChange}
+                                                        class="co-edit-field co-edit-field_attr"></lightning-combobox>
+                                                </template>
+
+                                                <!-- Price edit -->
+                                                <div class="co-edit-field-wrapper">
+                                                    <label class="co-edit-label">New price</label>
+                                                    <div class="co-edit-field co-edit-field_currency">
+                                                        <span class="co-currency-symbol">{currencySymbol}</span>
+                                                        <lightning-input type="number" value={row.newUnitPrice} min="0"
+                                                            step="0.01" data-row-id={row.rowId}
+                                                            data-field="newUnitPrice" onchange={handleLineFieldChange}
+                                                            class="co-edit-input" variant="label-hidden">
+                                                        </lightning-input>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Result preview -->
+                                                <div class="co-edit-result">
+                                                    <span class="co-edit-arrow">&#8594;</span>
+                                                    <span class="co-edit-new">{row.newMrcFmt}/mo</span>
+                                                    <template lwc:if={row.deltaFmt}>
+                                                        <span class={row.deltaClass}>{row.deltaFmt}</span>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <!-- Remove/terminate label -->
+                                        <template lwc:if={row.showRemoveLabel}>
+                                            <div class="co-row-removed">{row.removeLabel}</div>
+                                        </template>
+
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template lwc:if={noFilteredRows}>
+                        <div class="co-empty">No services match your search.</div>
+                    </template>
+                </div>
+
+                <!-- ── Add new service (upsell only) ──────────────── -->
+
+
+                <!-- ── Validation ─────────────────────────────────── -->
+                <template lwc:if={validationError}>
+                    <div class="co-val-error">{validationError}</div>
+                </template>
+
+                <!-- ── Footer ─────────────────────────────────────── -->
+                <!-- ── Footer ─────────────────────────────────────── -->
+                <footer class="co-foot">
+                    <div class="co-net">
+                        <span class="co-net-lbl">Net impact</span>
+                        <span class="co-net-val">{netImpactFormatted}</span>
+                        <template lwc:if={netImpactIsPositive}>
+                            <span class="co-net-dir co-net-dir_up">&#8593; recurring</span>
+                        </template>
+                        <template lwc:if={netImpactIsNegative}>
+                            <span class="co-net-dir co-net-dir_down">&#8595; recurring</span>
+                        </template>
+                    </div>
+                    <div class="co-foot-actions">
+                        <template lwc:if={isUpsellIntent}>
+                            <button class="co-btn" onclick={handleCancel} type="button">Cancel</button>
+                        </template>
+                        <template lwc:else>
+                            <button class="co-btn" onclick={handleBackFromGrid} type="button">Back</button>
+                        </template>
+                        <button class="co-btn co-btn_primary" onclick={handleSubmit} disabled={isSaving} type="button">
+            {submitLabel}
+        </button>
+                    </div>
+                </footer>
+
+            </template>
+        </template>
+    </div>
+</template>

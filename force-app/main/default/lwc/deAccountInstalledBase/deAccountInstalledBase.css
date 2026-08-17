@@ -1,0 +1,60 @@
+:host {
+    display: block;
+}
+
+/* ── Summary stats ─────────────────────────────────────────────────────── */
+.aib-summary {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-size: 13px;
+    color: #444;
+}
+
+.aib-stat-val {
+    font-weight: 700;
+    color: #111;
+}
+
+/* ── Toolbar ───────────────────────────────────────────────────────────── */
+.aib-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.aib-search {
+    --slds-c-input-sizing-height: 32px;
+    min-width: 200px;
+    flex: 1;
+}
+
+.aib-status-filter {
+    min-width: 140px;
+}
+
+/* ── Category pills ────────────────────────────────────────────────────── */
+.aib-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.aib-pill {
+    padding: 2px 10px;
+    border-radius: 12px;
+    border: 1px solid var(--slds-g-color-border-base-1, #ddd);
+    background: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    color: #444;
+    transition: background 0.15s, color 0.15s;
+}
+.aib-pill:hover     { background: #f3f3f3; }
+.aib-pill_active    { background: #0070d2; color: #fff; border-color: #0070d2; }
+
+/* ── Filter bar ────────────────────────────────────────────────────────── */
+.aib-filter-bar {
+    border-bottom: 1px solid var(--slds-g-color-border-base-1, #e5e5e5);
+    padding-bottom: 6px;
+}

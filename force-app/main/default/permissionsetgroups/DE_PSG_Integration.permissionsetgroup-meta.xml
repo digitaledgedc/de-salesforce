@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Assign to Odoo Integration User, Edit access on Account, Asset and Orders</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE PSG Integration</label>
+    <permissionSets>DE_Odoo_Integration_Permission</permissionSets>
+    <permissionSets>Odoo_Apex_Access</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>

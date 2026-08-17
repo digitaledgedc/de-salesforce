@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Edit_BAN_Currency</name>
+    </customPermissions>
+    <description>Grants the Edit_BAN_Currency custom permission, allowing the holder to change a tagged BAN&apos;s currency (bypasses VR_BAN_Currency_Locked). Assign to admins / RevOps only.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>BAN Currency Override</label>
+</PermissionSet>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Assign to DE Product profile users. Platform-level product catalog management with full Product2 and PricebookEntry access, read-only pipeline for context.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE Product</label>
+    <permissionSets>DE_Apex_Access</permissionSets>
+    <permissionSets>DE_Flow_Access</permissionSets>
+    <permissionSets>DE_Product_Manager</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>

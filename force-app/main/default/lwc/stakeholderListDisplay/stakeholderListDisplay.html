@@ -1,0 +1,100 @@
+<template>
+    <div class="sld-wrap">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={hasRows}>
+                <div class="sld-hdr">Current Stakeholders</div>
+                <table class="sld-table">
+                    <thead>
+                        <tr>
+                            <th class="sld-th">Contact</th>
+                            <th class="sld-th">Role</th>
+                            <th class="sld-th">Engagement</th>
+                            <th class="sld-th sld-th--act"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={rows} for:item="r">
+                            <tr key={r.id} class="sld-row">
+
+                                <!-- Contact (read-only) -->
+                                <td class="sld-td sld-td--name">
+                                    {r.name}
+                                    <template if:true={r.isPrimary}>
+                                        <span class="sld-primary" title="Primary contact">&bull;</span>
+                                    </template>
+                                </td>
+
+                                <!-- Role — click to edit -->
+                                <td class="sld-td">
+                                    <template if:false={r.isEditingRole}>
+                                        <button class="sld-edit-val" data-id={r.id}
+                                                onclick={handleEditRole} type="button"
+                                                title="Click to edit role">{r.role}</button>
+                                    </template>
+                                    <template if:true={r.isEditingRole}>
+                                        <div class="sld-inline-edit">
+                                            <lightning-combobox
+                                                label="" variant="label-hidden"
+                                                value={r.editRoleVal}
+                                                options={roleOptions}
+                                                data-id={r.id}
+                                                onchange={handleRoleChange}
+                                                class="sld-combo">
+                                            </lightning-combobox>
+                                            <button class="sld-x-btn" data-id={r.id}
+                                                    onclick={handleCancelRole} type="button">&#10005;</button>
+                                        </div>
+                                    </template>
+                                </td>
+
+                                <!-- Engagement — click pill to edit -->
+                                <td class="sld-td">
+                                    <template if:false={r.isEditingEng}>
+                                        <button class="sld-eng-pill" style={r.pillStyle}
+                                                data-id={r.id} onclick={handleEditEng}
+                                                type="button" title="Click to update engagement">
+                                            {r.status}
+                                        </button>
+                                    </template>
+                                    <template if:true={r.isEditingEng}>
+                                        <div class="sld-inline-edit">
+                                            <lightning-combobox
+                                                label="" variant="label-hidden"
+                                                value={r.editEngVal}
+                                                options={engOptions}
+                                                data-id={r.id}
+                                                onchange={handleEngChange}
+                                                class="sld-combo">
+                                            </lightning-combobox>
+                                            <button class="sld-x-btn" data-id={r.id}
+                                                    onclick={handleCancelEng} type="button">&#10005;</button>
+                                        </div>
+                                    </template>
+                                </td>
+
+                                <!-- Delete -->
+                                <td class="sld-td sld-td--act">
+                                    <button class="sld-del-btn" data-id={r.id}
+                                            onclick={handleDelete} type="button"
+                                            title="Remove stakeholder">&#10005;</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </template>
+
+            <template if:false={hasRows}>
+                <div class="sld-empty">No stakeholders mapped yet — add one below.</div>
+            </template>
+        </template>
+
+        <template if:true={errorMessage}>
+            <div class="sld-error">{errorMessage}</div>
+        </template>
+    </div>
+</template>

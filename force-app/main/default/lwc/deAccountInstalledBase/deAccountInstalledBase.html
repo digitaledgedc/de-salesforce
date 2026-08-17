@@ -1,0 +1,90 @@
+<template>
+    <lightning-card title="Installed Base" icon-name="standard:asset_object">
+
+        <!-- Summary bar -->
+        <div class="aib-summary" slot="actions">
+            <span class="aib-stat">
+                <span class="aib-stat-val">{totalCount}</span> Assets
+            </span>
+            <span class="aib-stat">
+                Active MRC: <span class="aib-stat-val">{totalMrcFmt}</span>
+            </span>
+        </div>
+
+        <!-- Loading -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+
+        <!-- Error -->
+        <template if:true={hasError}>
+            <div class="slds-p-around_medium">
+                <lightning-icon icon-name="utility:error" variant="error" size="small"></lightning-icon>
+                <span class="slds-m-left_x-small">{errorMessage}</span>
+            </div>
+        </template>
+
+        <!-- Content -->
+        <template if:false={isLoading}>
+            <!-- Toolbar -->
+            <div class="aib-toolbar slds-p-horizontal_medium slds-p-vertical_x-small">
+                <lightning-input
+                    type="search"
+                    placeholder="Search assets..."
+                    value={searchTerm}
+                    onchange={handleSearch}
+                    class="aib-search"
+                    variant="label-hidden"
+                ></lightning-input>
+                <lightning-combobox
+                    label="Status"
+                    value={activeStatus}
+                    options={statusOptions}
+                    onchange={handleStatusChange}
+                    variant="label-hidden"
+                    class="aib-status-filter slds-m-left_small"
+                ></lightning-combobox>
+            </div>
+
+            <!-- Category pills -->
+            <template if:true={hasCategoryPills}>
+                <div class="aib-pills slds-p-horizontal_medium slds-p-bottom_x-small">
+                    <template for:each={categoryPills} for:item="pill">
+                        <span key={pill.value}
+                              class={pill.cssClass}
+                              data-value={pill.value}
+                              onclick={handleCategoryFilter}>
+                            {pill.label} ({pill.count})
+                        </span>
+                    </template>
+                </div>
+            </template>
+
+            <!-- Filtered count -->
+            <div class="aib-filter-bar slds-p-horizontal_medium slds-p-bottom_x-small">
+                <span class="slds-text-body_small slds-text-color_weak">
+                    Showing {filteredCount} of {totalCount} &bull; Filtered MRC: {filteredMrc}
+                </span>
+            </div>
+
+            <!-- Data table -->
+            <template if:true={hasAssets}>
+                <lightning-datatable
+                    key-field="Id"
+                    data={filteredAssets}
+                    columns={columns}
+                    hide-checkbox-column
+                    onrowaction={handleRowAction}
+                    show-row-number-column
+                ></lightning-datatable>
+            </template>
+
+            <!-- Empty state -->
+            <template if:true={isEmpty}>
+                <div class="slds-p-around_large slds-align_absolute-center slds-text-color_weak">
+                    No assets found for this account.
+                </div>
+            </template>
+        </template>
+    </lightning-card>
+</template>

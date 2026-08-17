@@ -1,0 +1,630 @@
+/* ================================================================
+   EMAIL QUOTE ACTION  —  Component Styles
+   ================================================================ */
+
+/* ── Wrapper ────────────────────────────────────────────────────── */
+/* Fixed height so the header and footer stay pinned while the body
+   (both panes together) scrolls inside. */
+.eqa-wrap {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 80vh;
+    max-height: 80vh;
+    overflow: hidden;
+    background: #fff;
+}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+.eqa-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 2.5px solid #D95C1F;
+    flex-shrink: 0;
+}
+
+.eqa-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+}
+
+.eqa-logo-mark {
+    font-size: 7pt;
+    color: #D95C1F;
+    letter-spacing: 1pt;
+    font-weight: 700;
+}
+
+.eqa-logo-name {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #D95C1F;
+    letter-spacing: -0.3pt;
+}
+
+.eqa-logo-sup {
+    font-size: 6pt;
+    vertical-align: super;
+    color: #D95C1F;
+    font-weight: 700;
+}
+
+.eqa-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #181818;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+/* ── Two-pane body ──────────────────────────────────────────────── */
+/* Single scroll region: both the preview pane and the form pane scroll
+   together here, while the header/footer stay pinned. */
+.eqa-body {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+/* ── LEFT: PDF preview pane ─────────────────────────────────────── */
+.eqa-preview-pane {
+    flex: 2;
+    min-width: 480px;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+    background: #f9fafb;
+}
+
+.eqa-pane-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.eqa-pane-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06rem;
+    color: #706e6b;
+    margin: 0;
+}
+
+.eqa-download-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.25rem;
+    color: #706e6b;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+
+.eqa-download-btn:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.eqa-preview-frame {
+    display: block;
+    width: 100%;
+    height: 750px;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    background: #fff;
+}
+
+.eqa-preview-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    height: 750px;
+    border: 1px dashed #d1d5db;
+    border-radius: 0.25rem;
+    background: #fff;
+    color: #706e6b;
+    font-size: 0.875rem;
+    text-align: center;
+    padding: 2rem;
+}
+
+.eqa-preview-placeholder p { margin: 0; }
+
+/* ── RIGHT: Form pane ───────────────────────────────────────────── */
+/* No independent scroll — scrolling happens on .eqa-body so both panes
+   move together. The JS still closes any open combobox on scroll (see
+   renderedCallback) so its fixed-position dropdown can't hang detached. */
+.eqa-form-pane {
+    flex: 1;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.eqa-field {
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+/* ── Loading / Sending states ───────────────────────────────────── */
+.eqa-state-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 3rem 0;
+    flex: 1;
+}
+
+.eqa-state-label {
+    font-size: 0.8125rem;
+    color: #706e6b;
+    margin: 0;
+}
+
+/* ── Error banner ───────────────────────────────────────────────── */
+.eqa-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    background: #fff1f0;
+    border: 1px solid #fca5a5;
+    border-left: 3px solid #dc2626;
+    border-radius: 0.25rem;
+    color: #7f1d1d;
+    font-size: 0.8125rem;
+    margin-bottom: 0.875rem;
+    line-height: 1.4;
+}
+
+/* FB-739 START — "no products" warning notice (amber, matches error-banner layout) */
+.eqa-warn {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-left: 3px solid #d97706;
+    border-radius: 0.25rem;
+    color: #78350f;
+    font-size: 0.8125rem;
+    margin: 0 1rem 0.5rem 1rem;
+    line-height: 1.4;
+}
+/* FB-739 END */
+
+/* ── Read-only info strip ───────────────────────────────────────── */
+/* Shows Company (DE_Entity), Quote Type, Subscription Management   */
+.eqa-info-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.625rem 0.875rem;
+    background: #f0f4ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 0.375rem;
+    margin-bottom: 0.875rem;
+}
+
+.eqa-info-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.eqa-info-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    color: #4338ca;
+    min-width: 10.5rem;
+    flex-shrink: 0;
+}
+
+.eqa-info-value {
+    font-size: 0.8125rem;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+/* ── Shared section block ───────────────────────────────────────── */
+/* Used by Special Notes and Terms & Conditions sections            */
+.eqa-special-notes-section,
+.eqa-terms-section {
+    margin-bottom: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+    background: #fafafa;
+}
+
+/* Section header row (icon + title) */
+.eqa-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-bottom: 0.625rem;
+}
+
+.eqa-section-icon {
+    flex-shrink: 0;
+    color: #D95C1F;
+}
+
+.eqa-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    color: #374151;
+}
+
+/* ── Saving inline label ────────────────────────────────────────── */
+.eqa-saving-label {
+    font-size: 0.75rem;
+    color: #706e6b;
+    font-style: italic;
+}
+
+/* ── Status badge (success / error) ────────────────────────────── */
+.eqa-terms-status {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    margin-top: 0.375rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.eqa-terms-status-success {
+    color: #166534;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+.eqa-terms-status-error {
+    color: #7f1d1d;
+    background: #fff1f0;
+    border: 1px solid #fca5a5;
+}
+
+/* ── Binding toggle ─────────────────────────────────────────────── */
+.eqa-binding-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    background: #fef9f3;
+    border: 1px solid #f3d5b5;
+    border-radius: 0.375rem;
+}
+
+/* ── Terms loading spinner row ──────────────────────────────────── */
+.eqa-terms-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+}
+
+.eqa-terms-loading-label {
+    font-size: 0.8125rem;
+    color: #706e6b;
+}
+
+/* ── T&C plain-text preview snippet ────────────────────────────── */
+.eqa-terms-preview {
+    margin-top: 0.625rem;
+    padding: 0.5rem 0.625rem;
+    background: #fff;
+    border: 1px dashed #d1d5db;
+    border-radius: 0.25rem;
+}
+
+.eqa-terms-preview-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.04rem;
+    margin: 0 0 0.25rem 0;
+}
+
+.eqa-terms-preview-text {
+    font-size: 0.75rem;
+    color: #4b5563;
+    line-height: 1.5;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+/* ── Attachment notice ──────────────────────────────────────────── */
+.eqa-attach {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    margin-top: 0.75rem;
+}
+
+.eqa-attach-icon { flex-shrink: 0; }
+
+.eqa-attach-text {
+    font-size: 0.75rem;
+    color: #706e6b;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────── */
+.eqa-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+    flex-shrink: 0;
+}
+
+/* ================================================================
+   NEW T&C CREATION MODAL
+   ================================================================ */
+
+.ntc-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 9000;
+}
+
+.ntc-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9500;
+    width: 90%;
+    max-width: 520px;
+    max-height: 90vh;
+    border-radius: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 2px 3px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
+/* Header — matches eqa-header style with DE orange accent */
+.ntc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 2.5px solid #D95C1F;
+    background: #ffffff;
+    flex-shrink: 0;
+}
+
+.ntc-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+.ntc-header-icon { color: #D95C1F; }
+
+.ntc-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #181818;
+    margin: 0 0 1px 0;
+}
+
+.ntc-subtitle {
+    font-size: 0.75rem;
+    color: #706e6b;
+    margin: 0;
+}
+
+.ntc-badge {
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 0.25rem;
+    padding: 0 0.375rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03rem;
+}
+
+.ntc-close-btn {
+    background: transparent;
+    border: 1px solid #dddbda;
+    color: #706e6b;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+}
+
+.ntc-close-btn:hover {
+    background: #f3f3f3;
+    color: #181818;
+}
+
+/* Body */
+.ntc-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.ntc-field { display: block; margin-bottom: 0.75rem; }
+
+/* Lookup field block — matches SLDS form-element style */
+.ntc-lookup-field {
+    margin-bottom: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.ntc-lookup-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #3e3e3c;
+    line-height: 1.5;
+}
+
+/* Lookup input — matches SLDS input */
+.ntc-lookup-wrap { position: relative; }
+
+.ntc-lookup-input {
+    width: 100%;
+    height: 1.875rem;
+    padding: 0 0.75rem;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    font-size: 0.8125rem;
+    background: #ffffff;
+    color: #3e3e3c;
+    box-sizing: border-box;
+    outline: none;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    transition: border 0.1s linear, box-shadow 0.1s linear;
+}
+
+.ntc-lookup-input:focus {
+    border-color: #1b5297;
+    box-shadow: 0 0 3px #0176d3;
+}
+
+/* Dropdown */
+.ntc-dropdown {
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    right: 0;
+    z-index: 9600;
+    background: #ffffff;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    overflow: hidden;
+    max-height: 150px;
+    overflow-y: auto;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.15);
+}
+
+.ntc-drop-item {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    color: #3e3e3c;
+    transition: background 0.1s;
+}
+
+.ntc-drop-item:hover {
+    background: #f3f3f3;
+    color: #D95C1F;
+}
+
+.ntc-drop-empty {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    font-style: italic;
+    color: #706e6b;
+}
+
+/* Pills — SLDS pill style */
+.ntc-pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.ntc-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: #f4f6fe;
+    color: #16325c;
+    border: 1px solid #d8dde6;
+    border-radius: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.ntc-pill-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.625rem;
+    font-weight: 700;
+    opacity: 0.5;
+    color: inherit;
+    padding: 0;
+    line-height: 1;
+}
+
+.ntc-pill-remove:hover { opacity: 1; }
+
+/* Error */
+.ntc-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #fff1f0;
+    border: 1px solid #fca5a5;
+    border-left: 3px solid #dc2626;
+    border-radius: 0.25rem;
+    color: #7f1d1d;
+    font-size: 0.8125rem;
+    margin-top: 0.25rem;
+}
+
+/* Footer — matches eqa-footer */
+.ntc-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+    flex-shrink: 0;
+}

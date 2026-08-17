@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>None</fullName>
+        <default>false</default>
+        <label>None</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Cross Connect</fullName>
+        <default>false</default>
+        <label>Cross Connect</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Interconnect</fullName>
+        <default>false</default>
+        <label>Interconnect</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Managed Services</fullName>
+        <default>false</default>
+        <label>Managed Services</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Network Services</fullName>
+        <default>false</default>
+        <label>Network Services</label>
+    </standardValue>
+    <standardValue>
+        <fullName>IP &amp; Internet</fullName>
+        <default>false</default>
+        <label>IP &amp; Internet</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Managed Connectivity</fullName>
+        <default>false</default>
+        <label>Managed Connectivity</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Office Services</fullName>
+        <default>false</default>
+        <label>Office Services</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Other</fullName>
+        <default>false</default>
+        <label>Other</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Power</fullName>
+        <default>false</default>
+        <label>Power</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Professional Services</fullName>
+        <default>false</default>
+        <label>Professional Services</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Remote Hands</fullName>
+        <default>false</default>
+        <label>Remote Hands</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Reports</fullName>
+        <default>false</default>
+        <label>Reports</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Space</fullName>
+        <default>false</default>
+        <label>Space</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Storage</fullName>
+        <default>false</default>
+        <label>Storage</label>
+    </standardValue>
+</StandardValueSet>

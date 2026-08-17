@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesIncludeBosses>false</doesIncludeBosses>
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <name>T&amp;C Approval Group</name>
+    <queueMembers>
+        <publicGroups>
+            <publicGroup>DE_T_C_Approval_Group</publicGroup>
+        </publicGroups>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>Special_Instruction__c</sobjectType>
+    </queueSobject>
+</Queue>

@@ -1,0 +1,126 @@
+<template>
+    <div class="qld-table-wrap">
+        <table class="qld-table">
+            <thead>
+                <tr>
+                    <th class="qld-th-check">
+                        <input type="checkbox" checked={allSelected} onchange={handleSelectAll} class="qld-check" />
+                    </th>
+                    <template lwc:if={viewBtnCol}>
+                        <th class="qld-th-action"></th>
+                    </template>
+                    <template for:each={headerCols} for:item="hcol">
+                        <th key={hcol.fieldName} class={hcol.headerClass} data-field={hcol.fieldName}
+                            onclick={handleSort} style={hcol.colStyle}>
+                            {hcol.label}
+                            <span class={hcol.sortClass}></span>
+                            <div class="qld-resize-handle" data-field={hcol.fieldName}
+                                 onmousedown={handleResizeStart} onclick={stopPropagation}></div>
+                        </th>
+                    </template>
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={rows} for:item="row">
+                    <tr key={row.key} class={row.rowClass}>
+                        <td class="qld-td-check">
+                            <input type="checkbox" checked={row.isSelected} data-id={row.rowId}
+                                   onchange={handleRowCheck} class="qld-check" disabled={row.isReadOnly} />
+                        </td>
+                        <template lwc:if={viewBtnCol}>
+                            <td class="qld-td-action">
+                                <button class="qld-eye-btn" data-id={row.rowId} onclick={handleViewClick}
+                                        title={row.viewTitle} type="button">
+                                    <template lwc:if={row.isWarning}>
+                                        <lightning-icon icon-name="utility:warning" size="xx-small"
+                                                        alternative-text="Warning"></lightning-icon>
+                                    </template>
+                                    <template lwc:else>
+                                        <lightning-icon icon-name="utility:preview" size="xx-small"
+                                                        alternative-text="View"></lightning-icon>
+                                    </template>
+                                </button>
+                            </td>
+                        </template>
+                        <template for:each={row.cells} for:item="cell">
+                            <td key={cell.key} class={cell.cellClass} data-id={row.rowId}
+                                data-field={cell.fieldName} onclick={handleCellClick}>
+                                <!-- Inline edit mode -->
+                                <template lwc:if={cell.isEditing}>
+                                    <!-- Picklist edit (select) -->
+                                    <template lwc:if={cell.hasEditOptions}>
+                                        <select class="qld-edit-select"
+                                                data-edit-id={row.rowId} data-edit-field={cell.fieldName}
+                                                onchange={handleEditBlur} onblur={handleEditBlur}>
+                                            <template for:each={cell.editOptions} for:item="eopt">
+                                                <option key={eopt.value} value={eopt.value}
+                                                        selected={eopt.selected}>{eopt.label}</option>
+                                            </template>
+                                        </select>
+                                    </template>
+                                    <!-- Text/number edit (input) -->
+                                    <template lwc:else>
+                                        <input type={cell.inputType} step={cell.inputStep} value={cell.editValue}
+                                               data-edit-id={row.rowId} data-edit-field={cell.fieldName}
+                                               onblur={handleEditBlur} onkeydown={handleEditKeydown}
+                                               class="qld-edit-input" />
+                                    </template>
+                                </template>
+                                <!-- Display mode -->
+                                <template lwc:else>
+                                    <template lwc:if={cell.isUrl}>
+                                        <a href={cell.urlHref} target={cell.urlTarget}
+                                           class="qld-link">{cell.urlLabel}</a>
+                                    </template>
+                                    <template lwc:elseif={cell.isAttributePicklist}>
+                                        <template lwc:if={cell.showPicklist}>
+                                            <select class="qld-attr-select" data-rowid={cell.picklistRowId}
+                                                    onchange={handlePicklistChange} onclick={stopPropagation}
+                                                    disabled={cell.attrDisabled}>
+                                                <template for:each={cell.picklistOptions} for:item="opt">
+                                                    <option key={opt.value} value={opt.value}
+                                                            selected={opt.selected}>{opt.label}</option>
+                                                </template>
+                                            </select>
+                                        </template>
+                                        <template lwc:elseif={cell.showCustomInput}>
+                                            <input type={cell.customInputType} step="any" class="qld-attr-select" value={cell.customAttrValue}
+                                                   data-rowid={cell.picklistRowId}
+                                                   onchange={handleCustomAttrChange} onclick={stopPropagation}>
+                                        </template>
+                                        <template lwc:else>
+                                            <span class="qld-cell-text">{cell.displayValue}</span>
+                                        </template>
+                                    </template>
+                                    <template lwc:elseif={cell.hasEditOptions}>
+                                        <template lwc:if={row.isReadOnly}>
+                                            <span class="qld-cell-text">{cell.displayValue}</span>
+                                        </template>
+                                        <template lwc:else>
+                                            <select class="qld-attr-select" data-id={row.rowId} data-field={cell.fieldName}
+                                                    onchange={handleEditOptionChange} onclick={stopPropagation}>
+                                                <template for:each={cell.editOptions} for:item="eopt">
+                                                    <option key={eopt.value} value={eopt.value}
+                                                            selected={eopt.selected}>{eopt.label}</option>
+                                                </template>
+                                            </select>
+                                        </template>
+                                    </template>
+                                    <template lwc:else>
+                                        <span class="qld-cell-text">{cell.displayValue}</span>
+                                    </template>
+                                </template>
+                            </td>
+                        </template>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+    <template lwc:if={showDraftBar}>
+        <div class="qld-draft-bar">
+            <button class="qld-btn-cancel" onclick={handleCancelDrafts} type="button">Cancel</button>
+            <button class="qld-btn-save" onclick={handleSaveDrafts} type="button">Save</button>
+        </div>
+    </template>
+</template>

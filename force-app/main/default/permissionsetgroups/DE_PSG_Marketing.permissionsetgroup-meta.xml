@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Marketing persona PSG. Holds DE_Marketing_Access (matrix + migrated FLS) + Apex/Flow. Assign Marketing users here (off Marketing User profile).</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE Marketing</label>
+    <permissionSets>DE_Apex_Access</permissionSets>
+    <permissionSets>DE_Flow_Access</permissionSets>
+    <permissionSets>DE_Marketing_Access</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>

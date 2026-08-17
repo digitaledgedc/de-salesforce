@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Exempts holder from VR_ACC_10 (can edit Accounts after finance approval starts). Assign only as a deliberate exception, e.g. an integration user running as a DE Sales user.</description>
+    <isLicensed>false</isLicensed>
+    <label>Account Edit - Finance Lock Bypass</label>
+</CustomPermission>

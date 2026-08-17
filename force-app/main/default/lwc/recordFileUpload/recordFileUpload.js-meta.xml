@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<isExposed>true</isExposed>
+	<apiVersion>66.0</apiVersion>
+	<masterLabel>Record File Upload</masterLabel>
+	<description>Generic document upload component. Replaces object-specific file upload components. Configure card title, subtitle, and object API name from the App Builder property panel.</description>
+	<targets>
+		<target>lightning__AppPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightning__RecordPage</target>
+		<target>lightning__FlowScreen</target>
+	</targets>
+	<targetConfigs>
+		<targetConfig targets="lightning__FlowScreen">
+			<property name="recordId"     type="String" label="Record Id"     description="Id of the record to attach files to. Pass the flow's recordId variable."/>
+			<property name="cardTitle"    type="String" label="Card Title"    default="Documents"                          description="Header title shown on the component card."/>
+			<property name="cardSubtitle" type="String" label="Card Subtitle" default="Attach supporting documents"       description="Subtitle shown under the card title."/>
+			<property name="objectApiName" type="String" label="Object API Name" description="API name of the object (e.g. Account). Used to filter document types."/>
+		</targetConfig>
+		<targetConfig targets="lightning__RecordPage">
+			<property name="cardTitle"    type="String" label="Card Title"    default="Documents"                             description="Header title shown on the component card."/>
+			<property name="cardSubtitle" type="String" label="Card Subtitle" default="Manage attachments for this record"    description="Subtitle shown under the card title."/>
+			<property name="objectApiName" type="String" label="Object API Name" description="API name of the object this component is placed on (e.g. Site__c). Used to filter document types by object and profile."/>
+		</targetConfig>
+	</targetConfigs>
+</LightningComponentBundle>

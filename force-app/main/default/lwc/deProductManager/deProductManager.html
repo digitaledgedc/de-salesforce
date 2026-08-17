@@ -1,0 +1,2155 @@
+<template>
+    <div class="dpm-wrap">
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             Command bar: nav + stats
+             ═══════════════════════════════════════════════════════════════════ -->
+        <div class="dpm-cmd-bar">
+            <div class="dpm-nav">
+                <button class={queueNavClass} data-view="queue" onclick={handleViewChange}>
+                    Queue
+                    <template lwc:if={hasPendingRequests}>
+                        <span class="dpm-nav-badge">{pendingRequestCount}</span>
+                    </template>
+                </button>
+                <button class={catalogNavClass} data-view="catalog" onclick={handleViewChange}>Catalog</button>
+                <button class={pricingNavClass} data-view="pricing" onclick={handleViewChange}>Pricing</button>
+            </div>
+            <div class="dpm-cmd-stats">
+                <span class="dpm-cmd-stat">
+                    <span class="dpm-cmd-stat-val">{productCount}</span>
+                    <span class="dpm-cmd-stat-lbl">Products</span>
+                </span>
+                <span class="dpm-cmd-stat-dot"></span>
+                <span class="dpm-cmd-stat">
+                    <span class="dpm-cmd-stat-val">{pricebookCount}</span>
+                    <span class="dpm-cmd-stat-lbl">Pricebooks</span>
+                </span>
+                <button class="dpm-refresh-btn" onclick={handleRefreshAll} title="Refresh data">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 2v4h4M14.5 14v-4h-4"/><path d="M13.5 6A6 6 0 003.3 3.3L1.5 6M2.5 10a6 6 0 0010.2 2.7L14.5 10"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             Main row: content + optional detail panel
+             ═══════════════════════════════════════════════════════════════════ -->
+        <div class="dpm-main-row" onclick={handleMainRowClick}>
+
+            <!-- ── Content area ─────────────────────────────────────────────── -->
+            <div class="dpm-content">
+
+                <!-- ═══════════════════════════════════════════════════════════
+                     VIEW: QUEUE (default landing — action center)
+                     ═══════════════════════════════════════════════════════════ -->
+                <template lwc:if={isQueueView}>
+                    <div class="dpm-tab-body dpm-queue">
+
+                        <template lwc:if={requestsLoading}>
+                            <div class="dpm-loading">
+                                <lightning-spinner size="small" alternative-text="Loading requests..."></lightning-spinner>
+                            </div>
+                        </template>
+
+                        <template lwc:else>
+
+                            <!-- Pending requests — action cards -->
+                            <template lwc:if={hasPendingQueue}>
+                                <div class="dpm-queue-section">
+                                    <div class="dpm-queue-section-hdr">
+                                        <span class="dpm-queue-section-title">Needs Attention</span>
+                                        <span class="dpm-queue-badge">{pendingRequestCount}</span>
+                                    </div>
+                                    <div class="dpm-queue-cards">
+                                        <template for:each={pendingRequests} for:item="req">
+                                            <div key={req.Id} class="dpm-queue-card" data-id={req.Id} onclick={handleRequestEye}>
+                                                <div class="dpm-queue-card-top">
+                                                    <span class="dpm-queue-card-name">{req.Name}</span>
+                                                    <div class="dpm-queue-card-status">
+                                                        <span class={req.statusDotClass}></span>
+                                                        <span class="dpm-queue-card-status-lbl">Pending</span>
+                                                    </div>
+                                                </div>
+                                                <span class="dpm-queue-card-account">{req.accountName}</span>
+                                                <div class="dpm-queue-card-meta">
+                                                    <template lwc:if={req.hasQuote}>
+                                                        <span>{req.quoteName}</span>
+                                                        <span class="dpm-queue-meta-dot">·</span>
+                                                    </template>
+                                                    <span>{req.currencyCode}</span>
+                                                    <span class="dpm-queue-meta-dot">·</span>
+                                                    <span>{req.createdDateFormatted}</span>
+                                                </div>
+                                                <span class="dpm-queue-card-by">by {req.requestedByName}</span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- All clear state -->
+                            <template lwc:if={isQueueClear}>
+                                <div class="dpm-queue-clear">
+                                    <div class="dpm-queue-clear-check">
+                                        <lightning-icon icon-name="utility:check" size="medium"></lightning-icon>
+                                    </div>
+                                    <p class="dpm-queue-clear-h">All clear</p>
+                                    <p class="dpm-queue-clear-p">No pricing requests waiting for your review.</p>
+                                </div>
+                            </template>
+
+                            <!-- Recently processed -->
+                            <template lwc:if={hasProcessedRequests}>
+                                <div class="dpm-queue-section dpm-queue-section-recent">
+                                    <div class="dpm-queue-section-hdr">
+                                        <span class="dpm-queue-section-title">Recent</span>
+                                    </div>
+                                    <div class="dpm-queue-recent">
+                                        <template for:each={processedRequests} for:item="req">
+                                            <div key={req.Id} class="dpm-queue-recent-row" data-id={req.Id} onclick={handleRequestEye}>
+                                                <span class={req.statusDotClass}></span>
+                                                <span class="dpm-queue-recent-name">{req.Name}</span>
+                                                <span class="dpm-queue-recent-account">{req.accountName}</span>
+                                                <span class="dpm-queue-recent-date">{req.createdDateFormatted}</span>
+                                                <span class="dpm-queue-recent-status">{req.statusShort}</span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template lwc:if={requestsError}>
+                                <p class="slds-text-color_error slds-text-body_small slds-m-top_small slds-p-horizontal_medium">{requestsError}</p>
+                            </template>
+
+                        </template>
+
+                    </div>
+                </template>
+
+                <!-- ═══════════════════════════════════════════════════════════
+                     VIEW: CATALOG (progressive disclosure)
+                     ═══════════════════════════════════════════════════════════ -->
+                <template lwc:if={isCatalogView}>
+                    <div class="dpm-tab-body">
+
+                        <template lwc:if={productsLoading}>
+                            <div class="dpm-loading">
+                                <lightning-spinner size="small" alternative-text="Loading products..."></lightning-spinner>
+                            </div>
+                        </template>
+
+                        <template lwc:else>
+
+                            <!-- Search bar + actions (always visible) -->
+                            <div class="dpm-catalog-bar">
+                                <div class="dpm-lookup-wrap dpm-catalog-search">
+                                    <lightning-icon icon-name="utility:search" size="x-small" class="dpm-lookup-icon"></lightning-icon>
+                                    <input type="text" class="dpm-lookup-input"
+                                        placeholder="Search all products..."
+                                        value={productSearch}
+                                        oninput={handleProductSearch} />
+                                    <template lwc:if={productSearch}>
+                                        <button class="dpm-lookup-clear" onclick={handleClearProductSearch} title="Clear">&times;</button>
+                                    </template>
+                                </div>
+                                <button class="cpb-btn cpb-btn_neutral" onclick={handleExportCatalog}>
+                                    <svg class="cpb-btn-ic" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11v2h10v-2M8 2v8M5 7l3 3 3-3"/></svg>
+                                    Export
+                                </button>
+                                <button class="cpb-btn cpb-btn_brand" onclick={handleNewProduct}>
+                                    <span class="cpb-btn-plus">+</span> New Product
+                                </button>
+                            </div>
+
+                            <!-- Category cards (always visible) -->
+                            <div class="dpm-catalog-grid">
+                                <template for:each={catalogCategoryGrid} for:item="cat">
+                                    <button key={cat.value} class={cat.cardClass} data-value={cat.value} onclick={handleProductFamilyClick}>
+                                        <span class="dpm-catalog-card-name">{cat.label}</span>
+                                        <span class="dpm-catalog-card-count">{cat.count}</span>
+                                        <div class="dpm-catalog-card-meta">
+                                            <span class="dpm-catalog-card-active">{cat.activeCount} active</span>
+                                            <template lwc:if={cat.inactiveCount}>
+                                                <span class="dpm-queue-meta-dot">·</span>
+                                                <span class="dpm-catalog-card-inactive">{cat.inactiveCount} inactive</span>
+                                            </template>
+                                        </div>
+                                    </button>
+                                </template>
+                            </div>
+
+                            <!-- Inline detail: products table (appears below cards) -->
+                            <template lwc:if={showProductTable}>
+                                <div class="dpm-inline-detail">
+                                    <div class="dpm-inline-detail-bar">
+                                        <template lwc:if={showCatalogDrillIn}>
+                                            <span class="dpm-inline-detail-title">{activeFamily}</span>
+                                            <span class="dpm-inline-detail-sub">{catalogDrillInLabel}</span>
+                                        </template>
+                                        <template lwc:elseif={showCatalogSearch}>
+                                            <span class="dpm-inline-detail-sub">{productStatusLabel}</span>
+                                        </template>
+                                        <div class="dpm-inline-detail-actions">
+                                            <div class="dpm-col-toggle-wrap">
+                                                <button class="cpb-btn cpb-btn_neutral dpm-col-toggle-btn" onclick={handleToggleProductColumnMenu} title="Show/hide columns">
+                                                    <lightning-icon icon-name="utility:table" size="x-small" class="cpb-btn-icon"></lightning-icon>
+                                                    Columns
+                                                </button>
+                                                <template lwc:if={showProductColumnMenu}>
+                                                    <div class="dpm-col-menu">
+                                                        <template for:each={columnMenuProductOptions} for:item="col">
+                                                            <label key={col.fieldKey} class="dpm-col-menu-item">
+                                                                <input type="checkbox" checked={col.visible} data-key={col.key} onchange={handleToggleProductColumn} />
+                                                                {col.label}
+                                                            </label>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <template lwc:if={hasFilteredProducts}>
+                                        <div class="dpm-inline-tbl-wrap">
+                                            <table class="slds-table slds-table_cell-buffer dpm-prod-table dpm-inline-tbl">
+                                                <thead>
+                                                    <tr class="slds-line-height_reset">
+                                                        <th scope="col" class="dpm-col-row-num"></th>
+                                                        <th scope="col"><div class="slds-truncate">Product Name</div></th>
+                                                        <template lwc:if={showProdColCode}>
+                                                            <th scope="col" class="dpm-col-code"><div class="slds-truncate">Code</div></th>
+                                                        </template>
+                                                        <template lwc:if={showProdColChargeType}>
+                                                            <th scope="col" class="dpm-col-charge"><div class="slds-truncate">Type</div></th>
+                                                        </template>
+                                                        <template lwc:if={showProdColPricebooks}>
+                                                            <th scope="col" class="dpm-col-num dpm-th-center"><div class="slds-truncate">Pricebooks</div></th>
+                                                        </template>
+                                                        <template lwc:if={showProdColStatus}>
+                                                            <th scope="col" class="dpm-col-status-sm"><div class="slds-truncate">Status</div></th>
+                                                        </template>
+                                                        <th scope="col" class="dpm-col-actions"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <template for:each={flatProducts} for:item="prod">
+                                                        <tr key={prod.id} class="dpm-prod-row" onmouseenter={handleProdRowEnter} onmouseleave={handleProdRowLeave}>
+                                                            <td class="dpm-row-num-cell" data-id={prod.id} onclick={handleProductEye}>
+                                                                <span class="dpm-row-num">{prod.rowNum}</span>
+                                                                <span class="dpm-row-eye-wrap">
+                                                                    <lightning-icon icon-name="utility:preview" size="xx-small" alternative-text="View detail"></lightning-icon>
+                                                                </span>
+                                                            </td>
+                                                            <td data-label="Name">
+                                                                <span class="dpm-prod-name">{prod.name}</span>
+                                                                <template lwc:if={prod.description}>
+                                                                    <span class="dpm-prod-desc">{prod.description}</span>
+                                                                </template>
+                                                            </td>
+                                                            <template lwc:if={showProdColCode}>
+                                                                <td data-label="Code" class="dpm-col-code">
+                                                                    <span class="dpm-code-text">{prod.productCode}</span>
+                                                                </td>
+                                                            </template>
+                                                            <template lwc:if={showProdColChargeType}>
+                                                                <td data-label="Type" class="dpm-col-charge">
+                                                                    <template lwc:if={prod.hasChargeType}>
+                                                                        <span class={prod.chargeTypeBadge}>{prod.chargeTypeLabel}</span>
+                                                                    </template>
+                                                                    <template lwc:else>
+                                                                        <span class="dpm-charge-badge dpm-charge-none">—</span>
+                                                                    </template>
+                                                                </td>
+                                                            </template>
+                                                            <template lwc:if={showProdColPricebooks}>
+                                                                <td data-label="Pricebooks" class="dpm-col-num dpm-td-center">
+                                                                    <template lwc:if={prod.hasEntries}>
+                                                                        <button class="dpm-entry-badge dpm-entry-badge-link" data-id={prod.id} data-code={prod.productCode} onclick={handleGoToPricingForProduct} title="View pricebooks">
+                                                                            {prod.entryCount}
+                                                                        </button>
+                                                                    </template>
+                                                                    <template lwc:else>
+                                                                        <span class="dpm-entry-badge dpm-entry-badge-zero">0</span>
+                                                                    </template>
+                                                                </td>
+                                                            </template>
+                                                            <template lwc:if={showProdColStatus}>
+                                                                <td data-label="Status" class="dpm-col-status-sm">
+                                                                    <div class="dpm-status-dot-row">
+                                                                        <span class={prod.statusDotClass}></span>
+                                                                        <span class="dpm-status-dot-label">{prod.statusLabel}</span>
+                                                                    </div>
+                                                                </td>
+                                                            </template>
+                                                            <td class="dpm-col-actions-wide">
+                                                                <template lwc:if={prod.confirmDelete}>
+                                                                    <span class="dpm-confirm-delete">
+                                                                        Delete?
+                                                                        <button class="dpm-confirm-yes" data-id={prod.id} onclick={handleConfirmDeleteProduct}>Yes</button>
+                                                                        &nbsp;
+                                                                        <button class="dpm-confirm-no" onclick={handleCancelDeleteProduct}>No</button>
+                                                                    </span>
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    <div class="dpm-row-actions dpm-cat-actions">
+                                                                        <button class="dpm-icon-btn" data-id={prod.id} onclick={handleEditProductFromCatalog} title="Edit Product">
+                                                                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11.5 1.5l3 3L5 14H2v-3z"/></svg>
+                                                                        </button>
+                                                                        <button class="dpm-icon-btn" data-id={prod.id} onclick={handleOpenProduct} title="Open Record">
+                                                                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 2H2v12h12V9"/><path d="M9 1h6v6"/><path d="M15 1L8 8"/></svg>
+                                                                        </button>
+                                                                        <template lwc:if={prod.isActive}>
+                                                                            <button class="dpm-icon-btn dpm-icon-btn-warn" data-id={prod.id} data-active={prod.isActive} onclick={handleToggleProductActive} title="Deactivate" disabled={prod.isToggling}>
+                                                                                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v3"/><circle cx="8" cy="11" r="0.5" fill="currentColor"/></svg>
+                                                                            </button>
+                                                                        </template>
+                                                                        <template lwc:else>
+                                                                            <button class="dpm-icon-btn dpm-icon-btn-success" data-id={prod.id} data-active={prod.isActive} onclick={handleToggleProductActive} title="Activate" disabled={prod.isToggling}>
+                                                                                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 8.5l3.5 3.5L13 4"/></svg>
+                                                                            </button>
+                                                                        </template>
+                                                                        <template lwc:if={prod.hasEntries}>
+                                                                            <button class="dpm-minus-btn dpm-btn-disabled" title="Remove from pricebooks first" disabled>&#8722;</button>
+                                                                        </template>
+                                                                        <template lwc:else>
+                                                                            <button class="dpm-minus-btn" data-id={prod.id} onclick={handleDeleteProduct} title="Delete Product">&#8722;</button>
+                                                                        </template>
+                                                                    </div>
+                                                                </template>
+                                                            </td>
+                                                        </tr>
+                                                        <template lwc:if={prod.pbListExpanded}>
+                                                            <tr key={prod.pbExpandKey} class="dpm-pb-list-row">
+                                                                <td colspan="10" class="dpm-pb-list-cell">
+                                                                    <template lwc:if={prod.pbListLoading}>
+                                                                        <span class="dpm-pb-list-loading">Loading pricebooks...</span>
+                                                                    </template>
+                                                                    <template lwc:else>
+                                                                        <template lwc:if={prod.pbList.length}>
+                                                                            <div class="dpm-pb-list">
+                                                                                <template for:each={prod.pbList} for:item="pb">
+                                                                                    <button key={pb.id} class="dpm-pb-list-item" data-id={pb.id} data-name={pb.name} onclick={handlePbListClick}>
+                                                                                        {pb.name}
+                                                                                    </button>
+                                                                                </template>
+                                                                            </div>
+                                                                        </template>
+                                                                        <template lwc:else>
+                                                                            <span class="dpm-pb-list-empty">No active pricebook entries</span>
+                                                                        </template>
+                                                                    </template>
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </template>
+
+                                    <template lwc:else>
+                                        <div class="dpm-empty">
+                                            <lightning-icon icon-name="utility:search" size="small" class="dpm-empty-ic"></lightning-icon>
+                                            <template lwc:if={showCatalogSearch}>
+                                                <p class="dpm-empty-h">No products match "{productSearch}"</p>
+                                                <p class="dpm-empty-p">Try a different search term.</p>
+                                            </template>
+                                            <template lwc:else>
+                                                <p class="dpm-empty-h">No products in this category</p>
+                                                <p class="dpm-empty-p">All products may be filtered out or none exist yet.</p>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <template lwc:if={productsError}>
+                                <p class="slds-text-color_error slds-text-body_small slds-m-top_small">{productsError}</p>
+                            </template>
+                        </template>
+
+                    </div>
+                </template>
+
+                <!-- ═══════════════════════════════════════════════════════════
+                     VIEW: PRICING (progressive disclosure)
+                     ═══════════════════════════════════════════════════════════ -->
+                <template lwc:if={isPricingView}>
+                    <div class="dpm-tab-body">
+
+                        <template lwc:if={pricebooksLoading}>
+                            <div class="dpm-loading">
+                                <lightning-spinner size="small" alternative-text="Loading pricebooks..."></lightning-spinner>
+                            </div>
+                        </template>
+
+                        <template lwc:else>
+
+                            <!-- Header bar (always visible) -->
+                            <div class="dpm-pricing-bar">
+                                <span class="dpm-pricing-bar-label">{pricebookCount} pricebooks</span>
+                                <div class="dpm-pricing-bar-actions">
+                                    <button class="cpb-btn cpb-btn_neutral" onclick={handleExportPricebooks}>
+                                        <lightning-icon icon-name="utility:download" size="x-small" class="cpb-btn-icon"></lightning-icon>
+                                        Export
+                                    </button>
+                                    <button class="cpb-btn cpb-btn_brand" onclick={handleNewPricebook}>
+                                        <span class="cpb-btn-plus">+</span> New Pricebook
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Type selector strip (always visible — click to expand/collapse) -->
+                            <div class="dpm-type-strip">
+                                <template for:each={pricingTypeCards} for:item="tc">
+                                    <button key={tc.value} class={tc.typeStripClass} data-value={tc.value} onclick={handlePricebookTypeSelect}>
+                                        <span class="dpm-type-chip-label">{tc.label}</span>
+                                        <span class="dpm-type-chip-count">{tc.count}</span>
+                                    </button>
+                                </template>
+                            </div>
+
+                            <!-- Pricebook cards for selected type (below type strip) -->
+                            <template lwc:if={hasPricebookTypeSelected}>
+
+                                <!-- Pricebook card grid (hidden when one is selected) -->
+                                <template lwc:if={showTypePricebookGrid}>
+                                    <div class="dpm-pb-section-hdr dpm-anim-fade">
+                                        <span class="dpm-pb-section-title">{selectedPricebookTypeLabel}</span>
+                                        <span class="dpm-pb-section-count">{selectedTypeTotalCount}</span>
+                                        <div class="dpm-pb-section-right">
+                                            <template lwc:if={isSiteSpecificType}>
+                                                <button class="dpm-sync-btn" onclick={handleSyncSitePricebooks} title="Sync products across all site pricebooks based on country availability">
+                                                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 8a7 7 0 0113-3.5M15 8a7 7 0 01-13 3.5"/><path d="M14 1v4h-4M2 15v-4h4"/></svg>
+                                                    Sync Products
+                                                </button>
+                                            </template>
+                                            <lightning-input
+                                                type="search"
+                                                label="Filter pricebooks"
+                                                variant="label-hidden"
+                                                placeholder="Filter..."
+                                                value={pricebookFilter}
+                                                onchange={handlePricebookFilter}
+                                                class="dpm-pb-filter-input">
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                    <div class="dpm-pbgroup-cards dpm-type-cards-grid dpm-anim-fade">
+                                        <template for:each={selectedTypePricebooks} for:item="pb">
+                                            <button key={pb.id} class={pb.cardClass} data-id={pb.id} onclick={handlePricebookSelect}>
+                                                <div class="dpm-pbcard-top">
+                                                    <span class="dpm-pbcard-name">{pb.name}</span>
+                                                    <span class={pb.statusDotClass}></span>
+                                                </div>
+                                                <div class="dpm-pbcard-meta">
+                                                    <span>{pb.entryCount} products</span>
+                                                    <template lwc:if={pb.linkedTo}>
+                                                        <span class="dpm-queue-meta-dot">·</span>
+                                                        <span>{pb.linkedTo}</span>
+                                                    </template>
+                                                </div>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <!-- Selected pricebook + View All card (inventory manager pattern) -->
+                                <template lwc:if={showPricingDrillIn}>
+                                    <div class="dpm-pb-section-hdr dpm-anim-fade">
+                                        <span class="dpm-pb-section-title">{selectedPricebookTypeLabel}</span>
+                                    </div>
+                                    <div class="dpm-pbgroup-cards dpm-type-cards-grid dpm-anim-slide-right">
+                                        <!-- Selected pricebook card (highlighted) -->
+                                        <div class="dpm-pbcard dpm-pbcard-chosen">
+                                            <div class="dpm-pbcard-top">
+                                                <span class="dpm-pbcard-name">{selectedPricebook.name}</span>
+                                            </div>
+                                            <div class="dpm-pbcard-meta">
+                                                <span>{selectedPricebook.entryCount} products</span>
+                                                <template lwc:if={selectedPricebook.linkedTo}>
+                                                    <span class="dpm-queue-meta-dot">-</span>
+                                                    <span class="dpm-linked-label">{selectedPricebook.linkedTo}</span>
+                                                </template>
+                                            </div>
+                                            <template lwc:if={selectedPricebookCanLink}>
+                                                <div class="dpm-pbcard-link-row">
+                                                    <template lwc:if={_showLinkSearch}>
+                                                        <div class="dpm-link-search-wrap">
+                                                            <input type="text"
+                                                                class="dpm-link-text-input"
+                                                                placeholder={linkSearchPlaceholder}
+                                                                value={_linkSearchTerm}
+                                                                oninput={handleLinkSearchInput}
+                                                            />
+                                                            <template lwc:if={hasLinkSearchResults}>
+                                                                <div class="dpm-link-results">
+                                                                    <template for:each={linkSearchResults} for:item="lr">
+                                                                        <button key={lr.id} class="dpm-link-result-row" data-id={lr.id} onclick={handleLinkSelect}>
+                                                                            {lr.name}
+                                                                        </button>
+                                                                    </template>
+                                                                </div>
+                                                            </template>
+                                                            <div class="dpm-link-action-row">
+                                                                <button class="dpm-link-cancel" onclick={handleLinkCancel}>Cancel</button>
+                                                                <template lwc:if={selectedPricebook.linkedTo}>
+                                                                    <button class="dpm-link-unlink" onclick={handleUnlink}>Unlink</button>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <button class="dpm-link-btn" onclick={handleShowLinkSearch}>
+                                                            <lightning-icon icon-name="utility:link" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                            {linkButtonLabel}
+                                                        </button>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                        <!-- View All card (dashed, like Add Floor) -->
+                                        <div class="dpm-pbcard dpm-pbcard-viewall" onclick={handlePricingBack}>
+                                            <div class="dpm-viewall-inner">
+                                                <lightning-icon icon-name="utility:rows" size="small" class="dpm-viewall-ic"></lightning-icon>
+                                                <span class="dpm-viewall-label">View All {selectedPricebookTypeLabel}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <div class="dpm-inline-detail dpm-anim-fade">
+                                    <div class="dpm-inline-detail-bar">
+                                        <div class="dpm-inline-detail-actions">
+                                            <div class="dpm-entry-search-wrap">
+                                                <lightning-icon icon-name="utility:search" size="xx-small" class="dpm-entry-search-icon"></lightning-icon>
+                                                <input type="text"
+                                                    class="dpm-entry-search-input"
+                                                    placeholder="Filter products..."
+                                                    value={entrySearch}
+                                                    oninput={handleEntrySearch} />
+                                                <template lwc:if={entrySearch}>
+                                                    <button class="dpm-entry-search-clear" onclick={handleClearEntrySearch} title="Clear">&times;</button>
+                                                </template>
+                                            </div>
+                                            <div class="dpm-col-toggle-wrap">
+                                                <button class="cpb-btn cpb-btn_neutral dpm-col-toggle-btn" onclick={handleToggleColumnMenu} title="Show/hide columns">
+                                                    <lightning-icon icon-name="utility:table" size="x-small" class="cpb-btn-icon"></lightning-icon>
+                                                    Columns
+                                                </button>
+                                                <template lwc:if={showColumnMenu}>
+                                                    <div class="dpm-col-menu">
+                                                        <template for:each={columnMenuOptions} for:item="col">
+                                                            <button key={col.fieldKey} class="dpm-col-menu-item" data-key={col.key} onclick={handleToggleColumn}>
+                                                                <span class={col.tickCls}>&#10003;</span>
+                                                                {col.label}
+                                                            </button>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            <button class="dpm-icon-btn dpm-toolbar-btn" onclick={handleExportEntries} title="Export as CSV (includes pricing tiers)">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 2v8m0 0l-3-3m3 3l3-3"/><path d="M2 12v2h12v-2"/></svg>
+                                            </button>
+                                            <button class="dpm-icon-btn dpm-toolbar-btn" onclick={handleOpenImport} title="Import Pricing Tiers (CSV)">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 10V2m0 0l-3 3m3-3l3 3"/><path d="M2 12v2h12v-2"/></svg>
+                                            </button>
+                                            <button class="dpm-icon-btn dpm-toolbar-btn" data-id={selectedPricebook.id} onclick={handleOpenPricebook} title="Open Pricebook">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 2H2v12h12V9"/><path d="M9 1h6v6"/><path d="M15 1L8 8"/></svg>
+                                            </button>
+                                            <button class="dpm-icon-btn dpm-toolbar-btn" onclick={handleToggleAddProducts} title="Add Products to Pricebook">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Add products panel -->
+                                    <template lwc:if={showAddProductsPanel}>
+                                        <div class="dpm-add-panel">
+                                            <div class="dpm-add-panel-head">
+                                                <span class="dpm-add-panel-title">Add Products to Pricebook</span>
+                                                <button class="dpm-add-panel-close" onclick={handleToggleAddProducts}>&times;</button>
+                                            </div>
+                                            <div class="dpm-lookup-wrap">
+                                                <lightning-icon icon-name="utility:search" size="x-small" class="dpm-lookup-icon"></lightning-icon>
+                                                <input type="text" class="dpm-lookup-input"
+                                                    placeholder="Search products by name or code..."
+                                                    value={addProdSearch} oninput={handleAddProdSearch} />
+                                            </div>
+                                            <template lwc:if={showAddProdDrop}>
+                                                <div class="dpm-lookup-results">
+                                                    <template for:each={addProdResults} for:item="p">
+                                                        <button key={p.id} class="dpm-lookup-result-item" data-id={p.id} onclick={handleAddProdSelect}>
+                                                            <span class="dpm-lookup-result-name">{p.name}</span>
+                                                            <template lwc:if={p.productCode}>
+                                                                <span class="dpm-lookup-result-sub dpm-code-text">{p.productCode}</span>
+                                                            </template>
+                                                        </button>
+                                                    </template>
+                                                    <template lwc:if={showAddProdCreateNew}>
+                                                        <button class="dpm-lookup-result-item dpm-add-panel-create" onclick={handleNewProductFromAddPanel}>
+                                                            <span class="dpm-lookup-result-name">+ Create New Product</span>
+                                                            <span class="dpm-lookup-result-sub">No matches for "{addProdSearch}"</span>
+                                                        </button>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                            <div class="dpm-add-panel-currency">
+                                                <label class="dpm-add-panel-currency-label">Currency</label>
+                                                <lightning-combobox
+                                                    value={addProdCurrency}
+                                                    options={currencyOptions}
+                                                    variant="label-hidden"
+                                                    onchange={handleAddProdCurrencyChange}
+                                                    class="dpm-add-panel-currency-picker"
+                                                ></lightning-combobox>
+                                            </div>
+                                            <template lwc:if={hasAddProdSelections}>
+                                                <div class="dpm-add-panel-table-wrap">
+                                                    <table class="dpm-add-panel-tbl">
+                                                        <thead><tr>
+                                                            <th>Product</th>
+                                                            <th class="dpm-add-panel-th-price">List Price ({addProdCurrency})</th>
+                                                            <th class="dpm-add-panel-th-action"></th>
+                                                        </tr></thead>
+                                                        <tbody>
+                                                            <template for:each={addProdSelections} for:item="p">
+                                                                <tr key={p.id}>
+                                                                    <td>
+                                                                        <span class="dpm-add-panel-prod-name">{p.name}</span>
+                                                                        <template lwc:if={p.code}>
+                                                                            <span class="dpm-code-text">{p.code}</span>
+                                                                        </template>
+                                                                    </td>
+                                                                    <td class="dpm-add-panel-td-price">
+                                                                        <input type="number" class="dpm-price-input" value={p.unitPrice}
+                                                                            data-id={p.id} onchange={handleAddProdPriceChange}
+                                                                            min="0" step="0.01" />
+                                                                    </td>
+                                                                    <td class="dpm-add-panel-td-action">
+                                                                        <button class="dpm-icon-btn" data-id={p.id} onclick={handleRemoveAddProd} title="Remove">
+                                                                            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            </template>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="dpm-add-panel-foot">
+                                                    <button class="cpb-btn cpb-btn_brand" disabled={isAddingProducts} onclick={handleCommitAddProducts}>
+                                                        {addProductsButtonLabel}
+                                                    </button>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+
+                                    <!-- Mass update toolbar -->
+                                    <template lwc:if={hasMassSelection}>
+                                        <div class="dpm-mass-update-bar">
+                                            <span class="dpm-mass-count">{selectedEntryCount} selected</span>
+                                            <input
+                                                type="number"
+                                                class="dpm-price-input dpm-mass-price"
+                                                placeholder="New price..."
+                                                value={massUpdatePrice}
+                                                onchange={handleMassUpdatePriceChange}
+                                                min="0" step="0.01" />
+                                            <button class="cpb-btn cpb-btn_brand" disabled={_massUpdating} onclick={handleConfirmMassUpdate}>
+                                                {massUpdateButtonLabel}
+                                            </button>
+                                            <button class="cpb-btn cpb-btn_neutral" onclick={handleCancelMassUpdate}>Cancel</button>
+                                        </div>
+                                    </template>
+
+                                    <template lwc:if={entriesLoading}>
+                                        <div class="dpm-loading">
+                                            <lightning-spinner size="small" alternative-text="Loading entries..."></lightning-spinner>
+                                        </div>
+                                    </template>
+
+                                    <template lwc:else>
+                                        <template lwc:if={hasFilteredEntries}>
+                                            <div class="dpm-inline-tbl-wrap">
+                                                <table class="dpm-entry-table dpm-inline-tbl">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col" class="dpm-col-row-num"></th>
+                                                            <th scope="col" class="dpm-col-check">
+                                                                <input type="checkbox" class="dpm-check" checked={allEntriesSelected} onchange={handleSelectAllEntries} title="Select all" />
+                                                            </th>
+                                                            <th scope="col">Product</th>
+                                                            <template lwc:if={showColCode}>
+                                                                <th scope="col" class="dpm-col-code">Code</th>
+                                                            </template>
+                                                            <template lwc:if={showColChargeType}>
+                                                                <th scope="col" class="dpm-col-charge">Type</th>
+                                                            </template>
+                                                            <template lwc:if={showColFamily}>
+                                                                <th scope="col" class="dpm-col-fam">Family</th>
+                                                            </template>
+                                                            <th scope="col" class="dpm-col-price dpm-th-right">List Price</th>
+                                                            <template lwc:if={showColCurrency}>
+                                                                <th scope="col" class="dpm-col-curr">Ccy</th>
+                                                            </template>
+                                                            <template lwc:if={showColStatus}>
+                                                                <th scope="col" class="dpm-col-status-sm">Status</th>
+                                                            </template>
+                                                            <th scope="col" class="dpm-col-actions-wide"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <template for:each={displayList} for:item="entry">
+                                                            <template lwc:if={entry.showGroupHeader}>
+                                                                <tr key={entry.groupHeaderLabel} class="dpm-group-header-row" data-group={entry.groupHeaderLabel} onclick={handleToggleGroup}>
+                                                                    <td colspan="20" class="dpm-group-header-cell">
+                                                                        <template lwc:if={entry.groupOpen}>
+                                                                            <span class="dpm-group-chevron">&#9660;</span>
+                                                                        </template>
+                                                                        <template lwc:else>
+                                                                            <span class="dpm-group-chevron">&#9654;</span>
+                                                                        </template>
+                                                                        <span class="dpm-group-header-label">{entry.groupHeaderDisplay}</span>
+                                                                    </td>
+                                                                </tr>
+                                                            </template>
+                                                            <template lwc:if={entry.groupOpen}>
+                                                            <tr key={entry.id} class="dpm-entry-row" onmouseenter={handleEntryRowEnter} onmouseleave={handleEntryRowLeave}>
+                                                                <td class="dpm-row-num-cell" data-id={entry.id} onclick={handleEntryEye}>
+                                                                    <span class="dpm-row-num">{entry.rowNum}</span>
+                                                                    <span class="dpm-row-eye-wrap">
+                                                                        <lightning-icon icon-name="utility:preview" size="xx-small" alternative-text="View detail"></lightning-icon>
+                                                                    </span>
+                                                                </td>
+                                                                <td class="dpm-col-check">
+                                                                    <input type="checkbox" class="dpm-check" checked={entry.isSelected} data-id={entry.id} onchange={handleEntryToggleSelect} />
+                                                                </td>
+                                                                <td data-label="Product">
+                                                                    <div class="dpm-product-cell" data-id={entry.id} onclick={handleEntryKvaToggle}>
+                                                                        <span class="dpm-cell-primary">{entry.productName}</span>
+                                                                        <template lwc:if={entry.hasKvaTiers}>
+                                                                            <span class={entry.kvaExpandCls}>&#9654;</span>
+                                                                        </template>
+                                                                    </div>
+                                                                    <template lwc:if={entry.hasKvaTiers}>
+                                                                        <button class="dpm-tier-toggle" data-id={entry.id} onclick={handleEntryKvaToggle} title="Show attribute pricing">
+                                                                            <template lwc:if={entry.kvaOpen}>&#9660;</template>
+                                                                            <template lwc:else>&#9654;</template>
+                                                                            <span class="dpm-tier-toggle-label">{entry.kvaTiers.length} tiers</span>
+                                                                        </button>
+                                                                    </template>
+                                                                    <template lwc:if={entry.showCcyToggle}>
+                                                                        <button class="dpm-ccy-toggle" data-id={entry.id} onclick={handleToggleCcyRows} title="Show prices in other currencies">
+                                                                            <template lwc:if={entry.isCcyExpanded}>&#9660;</template>
+                                                                            <template lwc:else>&#9654;</template>
+                                                                            <span class="dpm-ccy-toggle-label">{entry.currencySubRows.length} currencies</span>
+                                                                        </button>
+                                                                        <template lwc:if={entry.isCcyExpanded}>
+                                                                            <button class="dpm-add-ccy-btn" data-id={entry.productId} onclick={handleOpenAddCurrency} title="Add currency price">+ Add Currency</button>
+                                                                        </template>
+                                                                    </template>
+                                                                    <template lwc:if={entry.hasCountryBadges}>
+                                                                        <div class="dpm-country-badges">
+                                                                            <template for:each={entry.countryBadges} for:item="cb">
+                                                                                <span key={cb.key} class="dpm-country-badge">{cb.label}</span>
+                                                                            </template>
+                                                                        </div>
+                                                                    </template>
+                                                                </td>
+                                                                <template lwc:if={showColCode}>
+                                                                    <td data-label="Code" class="dpm-col-code">
+                                                                        <span class="dpm-code-text">{entry.productCode}</span>
+                                                                    </td>
+                                                                </template>
+                                                                <template lwc:if={showColChargeType}>
+                                                                    <td data-label="Type" class="dpm-col-charge">
+                                                                        <template lwc:if={entry.hasChargeType}>
+                                                                            <span class={entry.chargeTypeBadge}>{entry.chargeTypeLabel}</span>
+                                                                        </template>
+                                                                        <template lwc:else>
+                                                                            <span class="dpm-charge-badge dpm-charge-none">—</span>
+                                                                        </template>
+                                                                    </td>
+                                                                </template>
+                                                                <template lwc:if={showColFamily}>
+                                                                    <td data-label="Family" class="dpm-col-fam">{entry.familyLabel}</td>
+                                                                </template>
+                                                                <td data-label="Price" class="dpm-col-price dpm-td-right dpm-price-cell" data-id={entry.id} onclick={handleEntryEditPrice}>
+                                                                    <template lwc:if={entry.isEditing}>
+                                                                        <input
+                                                                            type="number"
+                                                                            class="dpm-price-input"
+                                                                            value={entry.draftPrice}
+                                                                            data-id={entry.id}
+                                                                            onchange={handleDraftPriceChange}
+                                                                            onkeydown={handlePriceKeydown}
+                                                                            min="0" step="0.01" />
+                                                                    </template>
+                                                                    <template lwc:else>
+                                                                        <div class="dpm-price-view">
+                                                                            <span class={entry.priceTextClass}>{entry.unitPriceFormatted}</span>
+                                                                            <span class="dpm-price-edit-hint">
+                                                                                <lightning-icon icon-name="utility:edit" size="xx-small" class="dpm-price-edit-icon"></lightning-icon>
+                                                                            </span>
+                                                                        </div>
+                                                                    </template>
+                                                                </td>
+                                                                <template lwc:if={showColCurrency}>
+                                                                    <td data-label="Ccy" class="dpm-col-curr">{entry.currencyIsoCode}</td>
+                                                                </template>
+                                                                <template lwc:if={showColStatus}>
+                                                                    <td data-label="Status" class="dpm-col-status-sm">
+                                                                        <span class={entry.statusPillClass}>{entry.activeLabel}</span>
+                                                                    </td>
+                                                                </template>
+                                                                <td class="dpm-col-actions-wide">
+                                                                    <template lwc:if={entry.confirmDelete}>
+                                                                        <span class="dpm-delete-confirm">
+                                                                            Remove?&nbsp;
+                                                                            <button class="dpm-confirm-yes" data-id={entry.id} onclick={handleConfirmDeleteEntry}>Yes</button>
+                                                                            &nbsp;
+                                                                            <button class="dpm-confirm-no" onclick={handleCancelDeleteEntry}>No</button>
+                                                                        </span>
+                                                                    </template>
+                                                                    <template lwc:elseif={entry.isEditing}>
+                                                                        <div class="dpm-row-actions dpm-row-actions_editing">
+                                                                            <button class="dpm-action-save" disabled={entry.isSaving} data-id={entry.id} onclick={handleSaveEntryPrice}>Save</button>
+                                                                            <button class="dpm-action-cancel" onclick={handleCancelEntryEdit}>Cancel</button>
+                                                                        </div>
+                                                                    </template>
+                                                                    <template lwc:else>
+                                                                        <div class="dpm-row-actions">
+                                                                            <button class="dpm-icon-btn" data-id={entry.id} onclick={handleEntryEditPrice} title="Edit Price">
+                                                                                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11.5 1.5l3 3L5 14H2v-3z"/></svg>
+                                                                            </button>
+                                                                            <button class="dpm-icon-btn" data-id={entry.id} onclick={handleEntryEye} title="View Details">
+                                                                                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg>
+                                                                            </button>
+                                                                            <template lwc:if={entry.isActive}>
+                                                                                <button class="dpm-icon-btn dpm-icon-btn-warn" data-id={entry.id} data-active={entry.isActive} onclick={handleToggleEntryActive} title={entry.toggleTitle} disabled={entry.isToggling}>
+                                                                                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v3"/><circle cx="8" cy="11" r="0.5" fill="currentColor"/></svg>
+                                                                                </button>
+                                                                            </template>
+                                                                            <template lwc:else>
+                                                                                <button class="dpm-icon-btn dpm-icon-btn-success" data-id={entry.id} data-active={entry.isActive} onclick={handleToggleEntryActive} title={entry.toggleTitle} disabled={entry.isToggling}>
+                                                                                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 8.5l3.5 3.5L13 4"/></svg>
+                                                                                </button>
+                                                                            </template>
+                                                                            <button
+                                                                                class="dpm-minus-btn"
+                                                                                disabled={entry.isDeleting}
+                                                                                data-id={entry.id}
+                                                                                onclick={handleDeleteEntry}
+                                                                                title="Remove Entry">&#8722;</button>
+                                                                        </div>
+                                                                    </template>
+                                                                </td>
+                                                            </tr>
+                                                            <!-- Tier sub-rows removed: full-width tier table shows on kvaOpen -->
+                                                            <template lwc:if={entry.hasKvaTiers}>
+                                                                <template lwc:if={entry.kvaOpen}>
+                                                                    <tr key={entry.kvaTableKey} class="dpm-tier-expand-row">
+                                                                        <td colspan="20" class="dpm-tier-expand-cell">
+                                                                            <div class="dpm-tier-wrap">
+                                                                                <!-- Toolbar: site pills (only if tiers exist) + Add button -->
+                                                                                <div class="dpm-tier-toolbar">
+                                                                                    <template lwc:if={entry.hasTierSubRows}>
+                                                                                        <template lwc:if={entry.hasTierSites}>
+                                                                                            <div class="dpm-tier-site-pills">
+                                                                                                <template for:each={entry.tierSites} for:item="sp">
+                                                                                                    <span key={sp.key} class="dpm-tier-site-pill">{sp.label}</span>
+                                                                                                </template>
+                                                                                            </div>
+                                                                                        </template>
+                                                                                    </template>
+                                                                                    <template lwc:else>
+                                                                                        <span class="dpm-tier-empty-hint">No pricing tiers yet for this site</span>
+                                                                                    </template>
+                                                                                    <button class="dpm-tier-add-btn" data-code={entry.productCode} onclick={handleOpenCreateTier} title="Add pricing tier">+ Add Price</button>
+                                                                                </div>
+                                                                                <!-- kVA: multi-currency table -->
+                                                                                <template lwc:if={entry.isKvaTierMultiCcy}>
+                                                                                    <div class="dpm-tier-scroll">
+                                                                                        <table class="dpm-tier-tbl dpm-tier-tbl-wide">
+                                                                                            <thead>
+                                                                                                <tr>
+                                                                                                    <th class="dpm-tier-th-attr">Attribute</th>
+                                                                                                    <th class="dpm-tier-th-ccy">USD</th>
+                                                                                                    <th class="dpm-tier-th-ccy">JPY</th>
+                                                                                                    <th class="dpm-tier-th-ccy">SGD</th>
+                                                                                                    <th class="dpm-tier-th-ccy">HKD</th>
+                                                                                                    <th class="dpm-tier-th-ccy">IDR</th>
+                                                                                                    <th class="dpm-tier-th-ccy">KRW</th>
+                                                                                                    <th class="dpm-tier-th-ccy">CNY</th>
+                                                                                                    <th class="dpm-tier-th-ccy">PHP</th>
+                                                                                                    <th class="dpm-tier-th-action"></th>
+                                                                                                </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                                <template for:each={entry.kvaTiers} for:item="kv">
+                                                                                                    <tr key={kv.key} class="dpm-tier-row">
+                                                                                                        <td class="dpm-tier-attr-cell"><span class="dpm-tier-badge">{kv.attrLabel}</span></td>
+                                                                                                        <template lwc:if={kv.isEditing}>
+                                                                                                            <td class="dpm-tier-ccy-cell"><input type="number" class="dpm-tier-ccy-input" value={kv.dUSD} data-ccy="USD" onchange={handleKvaDraftChange} onkeydown={handleVariantKeydown} step="0.01" /></td>
+                                                                                                            <td class="dpm-tier-ccy-cell"><input type="number" class="dpm-tier-ccy-input" value={kv.dJPY} data-ccy="JPY" onchange={handleKvaDraftChange} onkeydown={handleVariantKeydown} step="1" /></td>
+                                                                                                            <td class="dpm-tier-ccy-cell"><input type="number" class="dpm-tier-ccy-input" value={kv.dSGD} data-ccy="SGD" onchange={handleKvaDraftChange} onkeydown={handleVariantKeydown} step="0.01" /></td>
+                                                                                                            <td class="dpm-tier-ccy-cell"><input type="number" class="dpm-tier-ccy-input" value={kv.dHKD} data-ccy="HKD" onchange={handleKvaDraftChange} onkeydown={handleVariantKeydown} step="0.01" /></td>
+                                                                                                            <td class="dpm-tier-ccy-cell"><input type="number" class="dpm-tier-ccy-input" value={kv.dIDR} data-ccy="IDR" onchange={handleKvaDraftChange} onkeydown={handleVariantKeydown} step="1" /></td>
+                                                                                                            <td class="dpm-tier-ccy-cell"><input type="number" class="dpm-tier-ccy-input" value={kv.dKRW} data-ccy="KRW" onchange={handleKvaDraftChange} onkeydown={handleVariantKeydown} step="1" /></td>
+                                                                                                            <td class="dpm-tier-ccy-cell"><input type="number" class="dpm-tier-ccy-input" value={kv.dCNY} data-ccy="CNY" onchange={handleKvaDraftChange} onkeydown={handleVariantKeydown} step="0.01" /></td>
+                                                                                                            <td class="dpm-tier-ccy-cell"><input type="number" class="dpm-tier-ccy-input" value={kv.dPHP} data-ccy="PHP" onchange={handleKvaDraftChange} onkeydown={handleVariantKeydown} step="0.01" /></td>
+                                                                                                            <td class="dpm-tier-action-cell">
+                                                                                                                <button class="dpm-tier-save" onclick={handleVariantSave} disabled={_savingVariant}>&#10003;</button>
+                                                                                                                <button class="dpm-tier-cancel" onclick={handleVariantCancel} disabled={_savingVariant}>&#10005;</button>
+                                                                                                            </td>
+                                                                                                        </template>
+                                                                                                        <template lwc:else>
+                                                                                                            <td class="dpm-tier-ccy-cell">{kv.priceUSD}</td>
+                                                                                                            <td class="dpm-tier-ccy-cell">{kv.priceJPY}</td>
+                                                                                                            <td class="dpm-tier-ccy-cell">{kv.priceSGD}</td>
+                                                                                                            <td class="dpm-tier-ccy-cell">{kv.priceHKD}</td>
+                                                                                                            <td class="dpm-tier-ccy-cell">{kv.priceIDR}</td>
+                                                                                                            <td class="dpm-tier-ccy-cell">{kv.priceKRW}</td>
+                                                                                                            <td class="dpm-tier-ccy-cell">{kv.priceCNY}</td>
+                                                                                                            <td class="dpm-tier-ccy-cell">{kv.pricePHP}</td>
+                                                                                                            <td class="dpm-tier-action-cell">
+                                                                                                                <button class="dpm-tier-edit-btn" data-key={kv.key} onclick={handleVariantEdit} title="Edit prices">
+                                                                                                                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11.5 1.5l3 3L5 14H2v-3z"/></svg>
+                                                                                                                </button>
+                                                                                                                <button class="dpm-tier-del-btn" data-devname={kv.developerName} onclick={handleDeleteTier} title="Remove tier">
+                                                                                                                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                                                                                                                </button>
+                                                                                                            </td>
+                                                                                                        </template>
+                                                                                                    </tr>
+                                                                                                </template>
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </template>
+                                                                                <!-- PAV: single-currency table -->
+                                                                                <template lwc:if={entry.isPavTierSingleCcy}>
+                                                                                    <table class="dpm-tier-tbl">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th class="dpm-tier-th-attr">Attribute</th>
+                                                                                                <th class="dpm-tier-th-price">Price ({entry.tierPriceCcyLabel})</th>
+                                                                                                <th class="dpm-tier-th-action"></th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            <template for:each={entry.kvaTiers} for:item="kv">
+                                                                                                <tr key={kv.key} class="dpm-tier-row">
+                                                                                                    <td class="dpm-tier-attr-cell"><span class="dpm-tier-badge">{kv.attrLabel}</span></td>
+                                                                                                    <td class="dpm-tier-price-cell">
+                                                                                                        <template lwc:if={kv.isEditing}>
+                                                                                                            <input type="number" class="dpm-tier-price-input"
+                                                                                                                value={kv.draftPrice}
+                                                                                                                data-key={kv.key}
+                                                                                                                onchange={handleVariantDraftChange}
+                                                                                                                onkeydown={handleVariantKeydown}
+                                                                                                                min="0" step="0.01" />
+                                                                                                        </template>
+                                                                                                        <template lwc:else>
+                                                                                                            <span class="dpm-tier-price">{kv.priceFormatted}</span>
+                                                                                                        </template>
+                                                                                                    </td>
+                                                                                                    <td class="dpm-tier-action-cell">
+                                                                                                        <template lwc:if={kv.isEditing}>
+                                                                                                            <button class="dpm-tier-save" data-key={kv.key} onclick={handleVariantSave} disabled={_savingVariant}>&#10003;</button>
+                                                                                                            <button class="dpm-tier-cancel" onclick={handleVariantCancel} disabled={_savingVariant}>&#10005;</button>
+                                                                                                        </template>
+                                                                                                        <template lwc:else>
+                                                                                                            <button class="dpm-tier-edit-btn" data-key={kv.key} data-price={kv.price} onclick={handleVariantEdit} title="Edit price">
+                                                                                                                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11.5 1.5l3 3L5 14H2v-3z"/></svg>
+                                                                                                            </button>
+                                                                                                            <button class="dpm-tier-del-btn" data-devname={kv.developerName} onclick={handleDeleteTier} title="Remove tier">
+                                                                                                                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                                                                                                            </button>
+                                                                                                        </template>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                            </template>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </template>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </template>
+                                                            </template>
+                                                            <!-- Currency sub-rows (only for products WITHOUT tiers) -->
+                                                            <template lwc:if={entry.showCcyToggle}>
+                                                                <template lwc:if={entry.isCcyExpanded}>
+                                                                    <template for:each={entry.currencySubRows} for:item="ccy">
+                                                                        <tr key={ccy.key} class="dpm-ccy-sub-row">
+                                                                            <td class="dpm-col-num"></td>
+                                                                            <td class="dpm-col-check"></td>
+                                                                            <td>
+                                                                                <span class="dpm-ccy-sub-label">{ccy.currencyIsoCode}</span>
+                                                                                <template lwc:if={ccy.isStandardEntry}>
+                                                                                    <span class="dpm-ccy-sub-source">Standard</span>
+                                                                                </template>
+                                                                            </td>
+                                                                            <template lwc:if={showColCode}><td></td></template>
+                                                                            <template lwc:if={showColChargeType}><td></td></template>
+                                                                            <template lwc:if={showColFamily}><td></td></template>
+                                                                            <td data-label="Price" class="dpm-col-price">
+                                                                                <template lwc:if={ccy.isEditing}>
+                                                                                    <div class="dpm-price-edit-wrap">
+                                                                                        <input type="number" class="dpm-price-input" value={ccy.draftPrice} data-id={ccy.id} onchange={handleDraftPriceChange} onkeydown={handlePriceKeydown} step="0.01" />
+                                                                                        <button class="dpm-save-btn" data-id={ccy.id} onclick={handleSaveEntryPrice}>&#10003;</button>
+                                                                                        <button class="dpm-cancel-btn" onclick={handleCancelEntryEdit}>&#10005;</button>
+                                                                                    </div>
+                                                                                </template>
+                                                                                <template lwc:else>
+                                                                                    <span class="dpm-ccy-price" data-id={ccy.id} onclick={handleEntryEditPrice}>{ccy.unitPriceFormatted}</span>
+                                                                                </template>
+                                                                            </td>
+                                                                            <template lwc:if={showColCurrency}><td class="dpm-ccy-sub-ccy">{ccy.currencyIsoCode}</td></template>
+                                                                            <template lwc:if={showColStatus}><td></td></template>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </template>
+                                                                </template>
+                                                            </template>
+                                                            </template><!-- /groupOpen -->
+                                                        </template><!-- /for:each -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="dpm-empty">
+                                                <lightning-icon icon-name="utility:search" size="small" class="dpm-empty-ic"></lightning-icon>
+                                                <p class="dpm-empty-h">No entries match your filter</p>
+                                                <p class="dpm-empty-p">Try adjusting your search term.</p>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+
+                                <!-- Per-variant pricing (Account pricebooks) -->
+                                <template lwc:if={hasVariantLines}>
+                                    <div class="dpm-variant-section">
+                                        <div class="dpm-variant-header">
+                                            <span class="dpm-variant-title">Account-Specific Pricing</span>
+                                            <span class="dpm-variant-count">{_variantLines.length}</span>
+                                        </div>
+                                        <table class="dpm-entry-table dpm-variant-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th class="dpm-col-code">Code</th>
+                                                    <th>Attribute</th>
+                                                    <th class="dpm-col-price dpm-th-right">Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template for:each={_variantLines} for:item="vl">
+                                                    <tr key={vl.id} class="dpm-entry-row">
+                                                        <td><span class="dpm-cell-primary">{vl.productName}</span></td>
+                                                        <td class="dpm-col-code"><span class="dpm-code-text">{vl.productCode}</span></td>
+                                                        <td><span class="dpm-variant-attr-badge">{vl.attributeValue}</span></td>
+                                                        <td class="dpm-col-price dpm-td-right"><span class="dpm-price-text">{vl.unitPriceFormatted}</span></td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </template>
+
+
+                            </template>
+
+                            </template>
+                        </template>
+
+                    </div>
+                </template>
+
+
+            </div>
+
+            <!-- ── Detail panel ──────────────────────────────────────────────── -->
+            <template lwc:if={showDetailPanel}>
+                <div class="dpm-detail-panel">
+
+                    <template lwc:if={_detailLoading}>
+                        <div class="dpm-loading">
+                            <lightning-spinner size="small" alternative-text="Loading..."></lightning-spinner>
+                            <span>Loading details…</span>
+                        </div>
+                    </template>
+
+                    <template lwc:else>
+
+                        <div class="dpm-panel-header">
+                            <div class="dpm-panel-header-text">
+                                <div class="dpm-panel-title-row">
+                                    <span class="dpm-panel-title">{detailTitle}</span>
+                                    <template lwc:if={isRequestDetail}>
+                                        <div class="dpm-panel-title-status">
+                                            <span class={detailData.statusDotClass}></span>
+                                            <span class="dpm-panel-status-lbl">{detailData.statusShort}</span>
+                                        </div>
+                                    </template>
+                                </div>
+                                <template lwc:if={isEntryDetail}>
+                                    <span class="dpm-panel-subtitle">{detailData.pricebookName}</span>
+                                </template>
+                            </div>
+                            <div class="dpm-panel-header-actions">
+                                <template lwc:if={isProductDetail}>
+                                    <button class="dpm-panel-edit-btn" onclick={handleEditProduct} title="Edit Product">
+                                        <lightning-icon icon-name="utility:edit" size="x-small"></lightning-icon>
+                                    </button>
+                                </template>
+                                <button class="dpm-panel-close" onclick={handleDetailClose} title="Close">
+                                    <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="dpm-panel-body">
+
+                            <!-- ═══ PRODUCT DETAIL PANEL ═══ -->
+                            <template lwc:if={isProductDetail}>
+                                <div class="dpm-panel-fields">
+                                    <div class="dpm-panel-field">
+                                        <span class="dpm-panel-field-label">Code</span>
+                                        <span class="dpm-code-text">{detailData.productCode}</span>
+                                    </div>
+                                    <div class="dpm-panel-field">
+                                        <span class="dpm-panel-field-label">Family</span>
+                                        <span>{detailData.familyLabel}</span>
+                                    </div>
+                                    <div class="dpm-panel-field">
+                                        <span class="dpm-panel-field-label">Charge Type</span>
+                                        <template lwc:if={detailData.hasChargeType}>
+                                            <span class={detailData.chargeTypeBadge}>{detailData.chargeTypeLabel}</span>
+                                        </template>
+                                        <template lwc:else>
+                                            <span>—</span>
+                                        </template>
+                                    </div>
+                                    <div class="dpm-panel-field">
+                                        <span class="dpm-panel-field-label">Status</span>
+                                        <span class={detailData.statusClass}>{detailData.statusLabel}</span>
+                                    </div>
+                                    <template lwc:if={detailData.description}>
+                                        <div class="dpm-panel-field dpm-panel-field_full">
+                                            <span class="dpm-panel-field-label">Description</span>
+                                            <span class="dpm-panel-field-desc">{detailData.description}</span>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- Configuration section -->
+                                <div class="dpm-panel-config-section">
+                                    <div class="dpm-panel-section-title">Configuration</div>
+                                    <div class="dpm-panel-fields dpm-panel-fields-config">
+                                        <div class="dpm-panel-field">
+                                            <span class="dpm-panel-field-label">Attribute Type</span>
+                                            <span>{detailData.attributeTypeLabel}</span>
+                                        </div>
+                                        <div class="dpm-panel-field">
+                                            <span class="dpm-panel-field-label">Show Custom Value</span>
+                                            <div class="dpm-config-check-row">
+                                                <lightning-icon icon-name={detailData.showCustomValueIcon} size="xx-small" class="dpm-config-check-icon"></lightning-icon>
+                                                <span>{detailData.showCustomValueLabel}</span>
+                                            </div>
+                                        </div>
+                                        <div class="dpm-panel-field">
+                                            <span class="dpm-panel-field-label">Capacity Assignment</span>
+                                            <span>{detailData.capacityAssignmentLabel}</span>
+                                        </div>
+                                        <div class="dpm-panel-field">
+                                            <span class="dpm-panel-field-label">UoM</span>
+                                            <span>{detailData.uomLabel}</span>
+                                        </div>
+                                        <div class="dpm-panel-field dpm-panel-field_full">
+                                            <span class="dpm-panel-field-label">Attribute Values</span>
+                                            <template lwc:if={detailData.hasAttributePills}>
+                                                <div class="dpm-attr-pills">
+                                                    <template for:each={detailData.attributePills} for:item="pill">
+                                                        <span key={pill.key} class="dpm-attr-pill">{pill.label}</span>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                            <template lwc:else>
+                                                <span>—</span>
+                                            </template>
+                                        </div>
+                                        <template lwc:if={detailData.hasAdditionalChargeOf}>
+                                            <div class="dpm-panel-field dpm-panel-field_full">
+                                                <span class="dpm-panel-field-label">Additional Charge Of</span>
+                                                <button class="dpm-paired-link" data-id={detailData.additionalChargeOfId} onclick={handleAdditionalChargeOfClick}>
+                                                    <span class="dpm-paired-name">{detailData.additionalChargeOfDisplay}</span>
+                                                </button>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <!-- kVA Attribute Pricing (filtered to this product) -->
+                                <template lwc:if={detailData.hasKvaRows}>
+                                    <div class="dpm-panel-kva-section">
+                                        <div class="dpm-panel-section-title">kVA Attribute Pricing</div>
+                                        <div class="dpm-kva-compact-wrap">
+                                            <template for:each={detailData.kvaRows} for:item="row">
+                                                <div key={row.key} class="dpm-kva-compact-row">
+                                                    <span class="dpm-kva-compact-tier">{row.kvaValue} kVA</span>
+                                                    <div class="dpm-kva-compact-prices">
+                                                        <span class="dpm-kva-compact-price" title="USD">{row.priceUSDFmt}</span>
+                                                        <span class="dpm-kva-compact-price" title="SGD">{row.priceSGDFmt}</span>
+                                                        <span class="dpm-kva-compact-price" title="JPY">{row.priceJPYFmt}</span>
+                                                        <span class="dpm-kva-compact-price" title="HKD">{row.priceHKDFmt}</span>
+                                                    </div>
+                                                    <template lwc:if={row.isGeneric}>
+                                                        <span class="dpm-kva-generic-tag">generic</span>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                        <div class="dpm-kva-note">
+                                            <lightning-icon icon-name="utility:info" size="x-small" class="dpm-kva-note-icon"></lightning-icon>
+                                            <span>Managed via Setup - Custom Metadata Types - kVA Draw Pricing</span>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- MRC ↔ NRC Product Pairing -->
+                                <div class="dpm-pairing-section">
+                                    <div class="dpm-pairing-header">
+                                        <span class="dpm-pairing-title">MRC ↔ NRC Pairing</span>
+                                    </div>
+
+                                    <template lwc:if={detailData.hasPairedProduct}>
+                                        <!-- Existing pair display -->
+                                        <div class="dpm-paired-product">
+                                            <span class="dpm-paired-label">{detailData.pairedLabel}</span>
+                                            <div class="dpm-paired-row">
+                                                <button class="dpm-paired-link" data-id={detailData.pairedProductId} onclick={handlePairedProductClick}>
+                                                    <span class="dpm-paired-name">{detailData.pairedProductName}</span>
+                                                    <span class="dpm-code-text dpm-paired-code">{detailData.pairedProductCode}</span>
+                                                </button>
+                                                <template lwc:if={detailData.isExplicitPair}>
+                                                    <button class="dpm-unlink-btn" disabled={_unlinkingProduct} onclick={handleUnlinkProduct} title="Remove pairing">
+                                                        <lightning-icon icon-name="utility:close" size="xx-small"></lightning-icon>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                            <template lwc:if={detailData.isCodeConvention}>
+                                                <span class="dpm-pairing-hint">Matched by code convention — link explicitly to lock this pairing.</span>
+                                            </template>
+                                        </div>
+                                    </template>
+
+                                    <!-- Search to link a new pair -->
+                                    <div class="dpm-pairing-search">
+                                        <template lwc:if={detailData.hasPairedProduct}>
+                                            <template lwc:if={detailData.isCodeConvention}>
+                                                <span class="dpm-pairing-search-label">Confirm or change pairing</span>
+                                            </template>
+                                        </template>
+                                        <template lwc:else>
+                                            <span class="dpm-pairing-search-label">Search products to pair</span>
+                                        </template>
+                                        <div class="dpm-lookup-wrap">
+                                            <lightning-icon icon-name="utility:search" size="x-small" class="dpm-lookup-icon"></lightning-icon>
+                                            <input
+                                                type="text"
+                                                class="dpm-lookup-input"
+                                                placeholder="Search by name or code..."
+                                                value={_pairingSearch}
+                                                oninput={handlePairingSearchInput} />
+                                        </div>
+                                        <template lwc:if={hasPairingSearchResults}>
+                                            <div class="dpm-lookup-results dpm-pairing-results">
+                                                <template for:each={_pairingSearchResults} for:item="p">
+                                                    <button key={p.id} class="dpm-lookup-result-item" data-id={p.id} onclick={handleLinkProduct}>
+                                                        <div class="dpm-pairing-result-top">
+                                                            <span class="dpm-lookup-result-name">{p.name}</span>
+                                                            <template lwc:if={p.chargeLabel}>
+                                                                <span class={p.chargeBadge}>{p.chargeLabel}</span>
+                                                            </template>
+                                                        </div>
+                                                        <template lwc:if={p.productCode}>
+                                                            <span class="dpm-lookup-result-sub dpm-code-text">{p.productCode}</span>
+                                                        </template>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <div class="dpm-panel-actions">
+                                    <button class="cpb-btn cpb-btn_neutral" onclick={handlePanelToggleProduct}>
+                                        {detailData.toggleTitle}
+                                    </button>
+                                    <button class="dpm-icon-btn" title="Open Product Record" data-id={detailData.id} onclick={handleOpenProduct}>
+                                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 2H2v12h12V9"/><path d="M9 1h6v6"/><path d="M15 1L8 8"/></svg>
+                                    </button>
+                                </div>
+
+                                <div class="dpm-panel-section-title">Pricing Across Pricebooks</div>
+                                <template lwc:if={detailData.hasPricingMatrix}>
+                                    <div class="dpm-matrix-wrap">
+                                        <template for:each={detailData.pricingMatrixGroups} for:item="grp">
+                                            <div key={grp.type} class="dpm-matrix-group">
+                                                <div class="dpm-matrix-group-hdr">
+                                                    <span class="dpm-matrix-group-lbl">{grp.label}</span>
+                                                    <span class="dpm-matrix-group-cnt">{grp.count}</span>
+                                                </div>
+                                                <template for:each={grp.items} for:item="row">
+                                                    <div key={row.entryId} class="dpm-matrix-row">
+                                                        <span class="dpm-matrix-pb-name" title={row.pricebookName}>{row.pricebookName}</span>
+                                                        <span class="dpm-matrix-price">{row.unitPriceFormatted}</span>
+                                                        <span class={row.activeDotClass} title={row.activeLabel}></span>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <p class="slds-text-body_small slds-text-color_weak slds-p-horizontal_medium">Not in any pricebook yet.</p>
+                                </template>
+                            </template>
+
+                            <!-- ═══ ENTRY DETAIL PANEL ═══ -->
+                            <template lwc:if={isEntryDetail}>
+                                <div class="dpm-panel-fields">
+                                    <div class="dpm-panel-field">
+                                        <span class="dpm-panel-field-label">Code</span>
+                                        <span class="dpm-code-text">{detailData.productCode}</span>
+                                    </div>
+                                    <div class="dpm-panel-field">
+                                        <span class="dpm-panel-field-label">Family</span>
+                                        <span>{detailData.familyLabel}</span>
+                                    </div>
+                                    <div class="dpm-panel-field">
+                                        <span class="dpm-panel-field-label">Currency</span>
+                                        <span>{detailData.currencyIsoCode}</span>
+                                    </div>
+                                    <div class="dpm-panel-field">
+                                        <span class="dpm-panel-field-label">Status</span>
+                                        <span class={detailData.activeClass}>{detailData.activeLabel}</span>
+                                    </div>
+                                </div>
+
+                                <div class="dpm-panel-price-block">
+                                    <span class="dpm-panel-field-label">List Price</span>
+                                    <template lwc:if={_panelEditPrice}>
+                                        <div class="dpm-panel-price-edit-row">
+                                            <input
+                                                type="number"
+                                                class="dpm-price-input"
+                                                value={_panelDraftPrice}
+                                                onchange={handlePanelDraftChange}
+                                                min="0" step="0.01" />
+                                            <button class="cpb-btn cpb-btn_brand slds-m-left_x-small"
+                                                    disabled={_panelSaving}
+                                                    onclick={handlePanelSavePrice}>Save</button>
+                                            <button class="cpb-btn cpb-btn_neutral slds-m-left_x-small"
+                                                    onclick={handlePanelCancelEdit}>Cancel</button>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <div class="dpm-panel-price-view-row">
+                                            <span class="dpm-panel-price-val">{detailData.unitPriceFormatted}</span>
+                                            <button class="cpb-btn cpb-btn_neutral slds-m-left_x-small" onclick={handlePanelStartEdit}>
+                                                <lightning-icon icon-name="utility:edit" size="x-small" class="cpb-btn-icon"></lightning-icon>
+                                                Edit
+                                            </button>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="dpm-panel-actions">
+                                    <button class="cpb-btn cpb-btn_neutral" onclick={handlePanelToggleEntry}>
+                                        {detailData.toggleTitle}
+                                    </button>
+                                    <button class="cpb-btn cpb-btn_danger" onclick={handlePanelDeleteEntry}>
+                                        Remove Entry
+                                    </button>
+                                </div>
+                            </template>
+
+                            <!-- ═══ REQUEST DETAIL PANEL ═══ -->
+                            <template lwc:if={isRequestDetail}>
+
+                                <!-- Request metadata fields -->
+                                <div class="dpm-panel-fields">
+                                    <div class="dpm-panel-field">
+                                        <span class="dpm-panel-field-label">Account</span>
+                                        <span class="dpm-panel-field-val">{detailData.accountName}</span>
+                                    </div>
+                                    <div class="dpm-panel-field">
+                                        <span class="dpm-panel-field-label">Currency</span>
+                                        <span class="dpm-panel-field-val">{detailData.currencyCode}</span>
+                                    </div>
+                                    <div class="dpm-panel-field">
+                                        <span class="dpm-panel-field-label">Quote</span>
+                                        <span class="dpm-panel-field-val">{detailData.quoteName}</span>
+                                    </div>
+                                    <div class="dpm-panel-field">
+                                        <span class="dpm-panel-field-label">Requested By</span>
+                                        <span class="dpm-panel-field-val">{detailData.requestedApproverName}</span>
+                                    </div>
+                                    <template lwc:if={detailData.pricebookName}>
+                                        <div class="dpm-panel-field dpm-panel-field_full">
+                                            <span class="dpm-panel-field-label">Created Pricebook</span>
+                                            <span class="dpm-panel-field-val">{detailData.pricebookName}</span>
+                                        </div>
+                                    </template>
+                                    <template lwc:if={detailData.approvalNotes}>
+                                        <div class="dpm-panel-field dpm-panel-field_full">
+                                            <span class="dpm-panel-field-label">Notes</span>
+                                            <span class="dpm-panel-field-desc">{detailData.approvalNotes}</span>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- Products requested section -->
+                                <div class="dpm-panel-section-title">
+                                    Products Requested
+                                    <span class="dpm-panel-section-count">{detailData.lines.length}</span>
+                                </div>
+
+                                <template lwc:if={detailData.lines.length}>
+                                    <table class="slds-table slds-table_cell-buffer dpm-panel-table">
+                                        <thead>
+                                            <tr>
+                                                <th><div class="slds-truncate">Product</div></th>
+                                                <th class="dpm-col-price dpm-th-right"><div class="slds-truncate">Price</div></th>
+                                                <th class="dpm-col-actions-wide"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={requestPanelLines} for:item="ln">
+                                                <tr key={ln.id}>
+                                                    <td>
+                                                        <template lwc:if={ln.isUnlinked}>
+                                                            <span class="dpm-prod-unlinked">Unlinked product</span>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            <span class="dpm-prod-name">{ln.displayName}</span>
+                                                        </template>
+                                                        <template lwc:if={ln.productCode}>
+                                                            <span class="dpm-code-text slds-m-left_x-small">{ln.productCode}</span>
+                                                        </template>
+                                                    </td>
+                                                    <td class="dpm-col-price dpm-td-right dpm-price-cell" data-id={ln.id} onclick={handleRequestLinePriceClick}>
+                                                        <template lwc:if={ln.isEditingPrice}>
+                                                            <input
+                                                                type="number"
+                                                                class="dpm-price-input"
+                                                                value={ln.draftPrice}
+                                                                data-id={ln.id}
+                                                                onchange={handleRequestLineDraftChange}
+                                                                onkeydown={handleRequestLinePriceKeydown}
+                                                                min="0" step="0.01" />
+                                                        </template>
+                                                        <template lwc:else>
+                                                            <div class="dpm-price-view">
+                                                                <span class={ln.priceTextClass}>{ln.unitPriceFormatted}</span>
+                                                                <span class="dpm-price-edit-hint">
+                                                                    <lightning-icon icon-name="utility:edit" size="xx-small" class="dpm-price-edit-icon"></lightning-icon>
+                                                                </span>
+                                                            </div>
+                                                        </template>
+                                                    </td>
+                                                    <td class="dpm-col-actions-wide">
+                                                        <template lwc:if={ln.isEditingPrice}>
+                                                            <div class="dpm-row-actions dpm-row-actions_editing">
+                                                                <button class="dpm-icon-btn dpm-icon-btn-success" title="Save Price" data-id={ln.id} onclick={handleSaveRequestLinePrice}>
+                                                                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8.5l3.5 3.5L13 4"/></svg>
+                                                                </button>
+                                                                <button class="dpm-icon-btn" title="Cancel" onclick={handleCancelRequestLinePrice}>
+                                                                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                                                                </button>
+                                                            </div>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            <button class="dpm-icon-btn dpm-icon-btn-warn" title="Remove Product" data-id={ln.id} onclick={handleDeleteRequestLine}>
+                                                                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                                                            </button>
+                                                        </template>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </template>
+                                <template lwc:else>
+                                    <p class="slds-text-body_small slds-text-color_weak slds-p-horizontal_medium slds-m-bottom_small">No products on this request yet.</p>
+                                </template>
+
+                                <!-- Add product search -->
+                                <div class="dpm-panel-add-product">
+                                    <div class="dpm-panel-field-label slds-m-bottom_xx-small">Add Product</div>
+                                    <lightning-input
+                                        type="search"
+                                        label="Add product"
+                                        variant="label-hidden"
+                                        placeholder="Search products to add..."
+                                        value={_requestLineSearch}
+                                        onchange={handleRequestLineSearch}>
+                                    </lightning-input>
+                                    <template lwc:if={hasRequestLineSearchResults}>
+                                        <div class="dpm-prod-search-dropdown">
+                                            <template for:each={requestLineSearchResults} for:item="p">
+                                                <button
+                                                    key={p.id}
+                                                    class="dpm-prod-search-item"
+                                                    data-id={p.id}
+                                                    data-name={p.name}
+                                                    onclick={handleAddRequestLine}>
+                                                    <span class="dpm-prod-name">{p.name}</span>
+                                                    <span class="dpm-code-text slds-m-left_x-small">{p.productCode}</span>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- Approval actions -->
+                                <template lwc:if={detailData.isPendingApproval}>
+                                    <div class="dpm-panel-approval-section">
+                                        <template lwc:if={_requestApproveInput}>
+                                            <div class="dpm-panel-approval-input">
+                                                <lightning-textarea
+                                                    label="Approval Notes (optional)"
+                                                    value={_requestNotes}
+                                                    onchange={handleRequestNotesChange}
+                                                    placeholder="Add notes for the requester...">
+                                                </lightning-textarea>
+                                                <div class="dpm-panel-approval-btns slds-m-top_x-small">
+                                                    <button class="cpb-btn cpb-btn_brand" disabled={_processingApproval} onclick={handleConfirmApprove}>Confirm Approve</button>
+                                                    <button class="cpb-btn cpb-btn_neutral slds-m-left_x-small" onclick={handleCancelApprovalInput}>Cancel</button>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:elseif={_requestRejectInput}>
+                                            <div class="dpm-panel-approval-input">
+                                                <lightning-textarea
+                                                    label="Rejection Reason"
+                                                    value={_requestNotes}
+                                                    onchange={handleRequestNotesChange}
+                                                    placeholder="State the reason for rejection...">
+                                                </lightning-textarea>
+                                                <div class="dpm-panel-approval-btns slds-m-top_x-small">
+                                                    <button class="cpb-btn cpb-btn_danger" disabled={_processingApproval} onclick={handleConfirmReject}>Confirm Reject</button>
+                                                    <button class="cpb-btn cpb-btn_neutral slds-m-left_x-small" onclick={handleCancelApprovalInput}>Cancel</button>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                            <div class="dpm-panel-approval-prompt">
+                                                <p class="dpm-panel-approval-prompt-text">This request is awaiting your approval.</p>
+                                                <div class="dpm-panel-approval-btns">
+                                                    <button class="cpb-btn cpb-btn_brand" onclick={handleShowApproveInput}>
+                                                        <lightning-icon icon-name="utility:check" size="x-small" class="cpb-btn-icon"></lightning-icon>
+                                                        Approve
+                                                    </button>
+                                                    <button class="cpb-btn cpb-btn_danger" onclick={handleShowRejectInput}>
+                                                        <lightning-icon icon-name="utility:close" size="x-small" class="cpb-btn-icon"></lightning-icon>
+                                                        Reject
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <!-- Open record footer -->
+                                <div class="dpm-panel-footer" data-id={detailData.id} onclick={handleOpenRequest} style="cursor:pointer">
+                                    <lightning-icon icon-name="utility:new_window" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                    <span class="dpm-panel-footer-text">Open record</span>
+                                </div>
+
+                            </template>
+
+                        </div>
+                    </template>
+
+                </div>
+            </template>
+
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             New Pricebook modal
+             ═══════════════════════════════════════════════════════════════════ -->
+        <template lwc:if={showNewPricebookModal}>
+            <section role="dialog" tabindex="-1" aria-modal="true"
+                     aria-labelledby="dpm-pb-modal-heading"
+                     class="slds-modal slds-fade-in-open dpm-modal-wide">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title="Close" onclick={handleModalClose}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        </button>
+                        <h2 id="dpm-pb-modal-heading" class="slds-modal__title">New Pricebook</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+
+                        <div class="dpm-modal-grid">
+                            <!-- Left column: basic details -->
+                            <div class="dpm-modal-col">
+                                <lightning-input
+                                    label="Pricebook Name"
+                                    value={newPricebookName}
+                                    onchange={handleNewPricebookName}
+                                    required
+                                    placeholder="e.g. DE TYO1 Price Book 2026">
+                                </lightning-input>
+                                <div class="slds-m-top_small">
+                                    <lightning-textarea
+                                        label="Description"
+                                        value={newPricebookDesc}
+                                        onchange={handleNewPricebookDesc}
+                                        placeholder="Optional description...">
+                                    </lightning-textarea>
+                                </div>
+
+                                <!-- Site lookup -->
+                                <div class="slds-m-top_small">
+                                    <label class="dpm-field-label">Assign to Site <span class="dpm-field-label-hint">(optional)</span></label>
+                                    <div class="dpm-lookup-wrap">
+                                        <lightning-icon icon-name="utility:search" size="x-small" class="dpm-lookup-icon"></lightning-icon>
+                                        <input
+                                            type="text"
+                                            class="dpm-lookup-input"
+                                            placeholder="Search site codes or names..."
+                                            value={siteSearchTerm}
+                                            oninput={handleSiteSearchInput} />
+                                        <template lwc:if={newPricebookSiteId}>
+                                            <button class="dpm-lookup-clear" onclick={handleSiteClear} title="Clear">×</button>
+                                        </template>
+                                    </div>
+                                    <template lwc:if={hasSiteResults}>
+                                        <div class="dpm-lookup-results">
+                                            <template for:each={siteSearchResults} for:item="site">
+                                                <button key={site.id} class="dpm-lookup-result-item" data-id={site.id} onclick={handleSiteResultSelect}>
+                                                    <span class="dpm-lookup-result-name">{site.name}</span>
+                                                    <template lwc:if={site.currentPricebookName}>
+                                                        <span class="dpm-lookup-result-sub">Current pricebook: {site.currentPricebookName}</span>
+                                                    </template>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </template>
+                                    <template lwc:if={newPricebookSiteId}>
+                                        <div class="dpm-lookup-selected">
+                                            <lightning-icon icon-name="utility:check" size="x-small"></lightning-icon>
+                                            <span>{siteSearchTerm}</span>
+                                        </div>
+                                    </template>
+                                    <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">
+                                        Linking a site means new quotes for that site automatically inherit this pricebook.
+                                    </p>
+                                </div>
+
+                                <!-- Account lookup -->
+                                <div class="slds-m-top_small">
+                                    <label class="dpm-field-label">Assign to Account <span class="dpm-field-label-hint">(optional — Named Account pricebook)</span></label>
+                                    <div class="dpm-lookup-wrap">
+                                        <lightning-icon icon-name="utility:search" size="x-small" class="dpm-lookup-icon"></lightning-icon>
+                                        <input
+                                            type="text"
+                                            class="dpm-lookup-input"
+                                            placeholder="Search account names..."
+                                            value={accountSearchTerm}
+                                            oninput={handleAccountSearchInput} />
+                                        <template lwc:if={newPricebookAccountId}>
+                                            <button class="dpm-lookup-clear" onclick={handleAccountClear} title="Clear">×</button>
+                                        </template>
+                                    </div>
+                                    <template lwc:if={hasAccountResults}>
+                                        <div class="dpm-lookup-results">
+                                            <template for:each={accountSearchResults} for:item="acct">
+                                                <button key={acct.id} class="dpm-lookup-result-item" data-id={acct.id} onclick={handleAccountResultSelect}>
+                                                    <span class="dpm-lookup-result-name">{acct.name}</span>
+                                                    <template lwc:if={acct.currentPricebook}>
+                                                        <span class="dpm-lookup-result-sub">Current: {acct.currentPricebook}</span>
+                                                    </template>
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </template>
+                                    <template lwc:if={newPricebookAccountId}>
+                                        <div class="dpm-lookup-selected">
+                                            <lightning-icon icon-name="utility:check" size="x-small"></lightning-icon>
+                                            <span>{accountSearchTerm}</span>
+                                        </div>
+                                    </template>
+                                    <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">
+                                        Links this pricebook to the account as their customer pricebook for named pricing.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Right column: initial products -->
+                            <div class="dpm-modal-col">
+                                <div class="dpm-modal-section-header">
+                                    <span class="dpm-modal-section-title">Initial Products</span>
+                                    <span class="slds-text-body_small slds-text-color_weak">Optional</span>
+                                </div>
+                                <div class="dpm-lookup-wrap slds-m-top_x-small">
+                                    <lightning-icon icon-name="utility:search" size="x-small" class="dpm-lookup-icon"></lightning-icon>
+                                    <input
+                                        type="text"
+                                        class="dpm-lookup-input"
+                                        placeholder="Search products to add..."
+                                        value={newPbProductSearch}
+                                        oninput={handleNewPbProductSearch} />
+                                </div>
+                                <template lwc:if={showNewPbProductDrop}>
+                                    <div class="dpm-lookup-results">
+                                        <template for:each={newPbProductResults} for:item="p">
+                                            <button key={p.id} class="dpm-lookup-result-item" data-id={p.id} onclick={handleAddNewPbProduct}>
+                                                <span class="dpm-lookup-result-name">{p.name}</span>
+                                                <template lwc:if={p.productCode}>
+                                                    <span class="dpm-lookup-result-sub dpm-code-text">{p.productCode}</span>
+                                                </template>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <template lwc:if={hasNewPbProducts}>
+                                    <table class="slds-table slds-table_cell-buffer dpm-modal-prod-table slds-m-top_x-small">
+                                        <thead>
+                                            <tr>
+                                                <th><div class="slds-truncate">Product</div></th>
+                                                <th class="dpm-th-right dpm-col-price"><div class="slds-truncate">List Price</div></th>
+                                                <th class="dpm-col-action"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={newPbProducts} for:item="p">
+                                                <tr key={p.id}>
+                                                    <td>
+                                                        <span class="dpm-prod-name">{p.name}</span>
+                                                        <template lwc:if={p.code}>
+                                                            <span class="dpm-code-text slds-m-left_xx-small">{p.code}</span>
+                                                        </template>
+                                                    </td>
+                                                    <td class="dpm-td-right dpm-col-price">
+                                                        <input
+                                                            type="number"
+                                                            class="dpm-price-input"
+                                                            value={p.unitPrice}
+                                                            data-id={p.id}
+                                                            onchange={handleNewPbProductPriceChange}
+                                                            min="0" step="0.01" />
+                                                    </td>
+                                                    <td class="dpm-col-action">
+                                                        <button class="dpm-icon-btn" title="Remove" data-id={p.id} onclick={handleRemoveNewPbProduct}>
+                                                            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </template>
+                                <template lwc:else>
+                                    <p class="slds-text-body_small slds-text-color_weak slds-m-top_small">
+                                        Search and add products above. Each product will have its own list price entry in this pricebook.
+                                    </p>
+                                </template>
+                            </div>
+                        </div>
+
+                        <template lwc:if={modalError}>
+                            <p class="slds-text-color_error slds-text-body_small slds-m-top_small">{modalError}</p>
+                        </template>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="Cancel" onclick={handleModalClose}></lightning-button>
+                        <lightning-button
+                            label="Create Pricebook"
+                            variant="brand"
+                            disabled={isCreatingPricebook}
+                            onclick={handleCreatePricebook}
+                            class="slds-m-left_x-small">
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             New Product modal
+             ═══════════════════════════════════════════════════════════════════ -->
+        <template lwc:if={showNewProductModal}>
+            <section role="dialog" tabindex="-1" aria-modal="true"
+                     aria-labelledby="dpm-np-modal-heading"
+                     class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container dpm-modal-wide">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title="Close" onclick={handleNewProductModalClose}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        </button>
+                        <h2 id="dpm-np-modal-heading" class="slds-modal__title">{newProductModalTitle}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <div class="dpm-modal-grid">
+                        <div class="dpm-modal-col">
+                        <lightning-input
+                            label="Product Name"
+                            value={newProductName}
+                            onchange={handleNewProductName}
+                            required
+                            placeholder="Enter product name...">
+                        </lightning-input>
+                        <div class="slds-m-top_small">
+                            <lightning-input
+                                label="Product Code"
+                                value={newProductCode}
+                                onchange={handleNewProductCode}
+                                placeholder="e.g. DE-SPACE-001">
+                            </lightning-input>
+                        </div>
+                        <div class="slds-m-top_small">
+                            <template lwc:if={hasProductFamilyOptions}>
+                                <lightning-combobox
+                                    label="Product Family"
+                                    value={newProductFamily}
+                                    options={productFamilyOptions}
+                                    onchange={handleNewProductFamily}>
+                                </lightning-combobox>
+                            </template>
+                            <template lwc:else>
+                                <lightning-input
+                                    label="Product Family"
+                                    value={newProductFamily}
+                                    onchange={handleNewProductFamily}
+                                    placeholder="e.g. Space, Power, Cross Connect...">
+                                </lightning-input>
+                            </template>
+                            <div class="dpm-manage-families-row slds-m-top_xx-small">
+                                <button class="dpm-link-btn" onclick={handleManageProductFamilies}>
+                                    Manage Product Families in Setup →
+                                </button>
+                            </div>
+                        </div>
+                        <div class="slds-m-top_small">
+                            <lightning-combobox
+                                label="Charge Type"
+                                value={newProductChargeType}
+                                options={chargeTypeOptions}
+                                onchange={handleNewProductChargeType}>
+                            </lightning-combobox>
+                        </div>
+                        <div class="slds-m-top_small">
+                            <lightning-combobox
+                                label="Product Attribute"
+                                value={newProductAttribute}
+                                options={productAttributeOptions}
+                                onchange={handleNewProductAttribute}
+                                placeholder="Select attribute type...">
+                            </lightning-combobox>
+                        </div>
+                        <template lwc:if={newProductAttribute}>
+                            <div class="slds-m-top_small">
+                                <lightning-textarea
+                                    label="Attribute Values"
+                                    value={newProductAttrValues}
+                                    onchange={handleNewProductAttrValues}
+                                    placeholder="Comma-separated values, e.g. 5Amps,10Amps,15Amps">
+                                </lightning-textarea>
+                                <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">Enter attribute values separated by commas</p>
+                            </div>
+                            <div class="slds-m-top_small">
+                                <lightning-input
+                                    type="checkbox"
+                                    label="Show Custom Attribute Value"
+                                    checked={newProductShowCustom}
+                                    onchange={handleNewProductShowCustom}>
+                                </lightning-input>
+                                <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">Allow users to enter a custom numeric value (e.g., PUE)</p>
+                            </div>
+                        </template>
+                        </div><!-- /left column -->
+                        <div class="dpm-modal-col">
+                            <lightning-dual-listbox
+                                label="Available Sites"
+                                source-label="All Sites"
+                                selected-label="Selected Sites"
+                                options={siteOptions}
+                                value={newProductSites}
+                                onchange={handleNewProductSites}>
+                            </lightning-dual-listbox>
+                            <div class="slds-m-top_small">
+                                <lightning-dual-listbox
+                                    label="Country Availability"
+                                    source-label="Available"
+                                    selected-label="Selected"
+                                    options={countryOptions}
+                                    value={newProductCountries}
+                                    onchange={handleNewProductCountries}>
+                                </lightning-dual-listbox>
+                                <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">Leave both empty for Global availability</p>
+                            </div>
+                            <div class="slds-m-top_small">
+                                <lightning-textarea
+                                    label="Description"
+                                    value={newProductDesc}
+                                    onchange={handleNewProductDesc}
+                                    placeholder="Optional product description...">
+                                </lightning-textarea>
+                            </div>
+                        </div><!-- /right column -->
+                        </div><!-- /dpm-modal-grid -->
+                        <template lwc:if={newProductError}>
+                            <p class="slds-text-color_error slds-text-body_small slds-m-top_small">{newProductError}</p>
+                        </template>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="Cancel" onclick={handleNewProductModalClose}></lightning-button>
+                        <lightning-button
+                            label={newProductSaveLabel}
+                            variant="brand"
+                            disabled={isCreatingProduct}
+                            onclick={handleSaveNewProduct}
+                            class="slds-m-left_x-small">
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             Edit Product modal
+             ═══════════════════════════════════════════════════════════════════ -->
+        <template lwc:if={showEditProductModal}>
+            <section role="dialog" tabindex="-1" aria-modal="true"
+                     aria-labelledby="dpm-ep-modal-heading"
+                     class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title="Close" onclick={handleEditProductModalClose}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        </button>
+                        <h2 id="dpm-ep-modal-heading" class="slds-modal__title">Edit Product</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <lightning-input
+                            label="Product Name"
+                            value={editProductName}
+                            onchange={handleEditProductName}
+                            required
+                            placeholder="Product name...">
+                        </lightning-input>
+                        <div class="slds-m-top_small">
+                            <lightning-textarea
+                                label="Description"
+                                value={editProductDesc}
+                                onchange={handleEditProductDesc}
+                                placeholder="Product description...">
+                            </lightning-textarea>
+                        </div>
+                        <div class="slds-m-top_small">
+                            <lightning-input
+                                label="Attribute Type"
+                                value={editProductAttrType}
+                                onchange={handleEditProductAttrType}
+                                placeholder="e.g. Size, Speed, Tier...">
+                            </lightning-input>
+                        </div>
+                        <div class="slds-m-top_small">
+                            <lightning-textarea
+                                label="Attribute Values (comma-separated)"
+                                value={editProductAttrValues}
+                                onchange={handleEditProductAttrValues}
+                                placeholder="e.g. Small, Medium, Large">
+                            </lightning-textarea>
+                        </div>
+                        <div class="slds-m-top_small">
+                            <lightning-input
+                                type="checkbox"
+                                label="Show Custom Value"
+                                checked={editProductShowCustom}
+                                onchange={handleEditProductShowCustom}>
+                            </lightning-input>
+                        </div>
+                        <div class="slds-m-top_small">
+                            <lightning-combobox
+                                label="Capacity Assignment"
+                                value={editProductCapAssign}
+                                options={capacityAssignmentOptions}
+                                onchange={handleEditProductCapAssign}>
+                            </lightning-combobox>
+                        </div>
+                        <div class="slds-m-top_small">
+                            <lightning-input
+                                label="Unit of Measure"
+                                value={editProductUom}
+                                onchange={handleEditProductUom}
+                                placeholder="e.g. kVA, Mbps, sqm...">
+                            </lightning-input>
+                        </div>
+                        <template lwc:if={editProductError}>
+                            <p class="slds-text-color_error slds-text-body_small slds-m-top_small">{editProductError}</p>
+                        </template>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="Cancel" onclick={handleEditProductModalClose}></lightning-button>
+                        <lightning-button
+                            label="Save"
+                            variant="brand"
+                            disabled={isSavingProduct}
+                            onclick={handleSaveEditProduct}
+                            class="slds-m-left_x-small">
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Create Pricing Tier Modal -->
+        <template lwc:if={_showCreateTier}>
+            <section class="slds-modal slds-fade-in-open slds-modal_small">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={handleCancelCreateTier}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        </button>
+                        <h2 class="slds-modal__title">Add Pricing Tier</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <div class="slds-form slds-form_stacked">
+                            <div class="slds-form-element"><label class="slds-form-element__label">Product Code</label>
+                                <div class="slds-form-element__control"><input type="text" class="slds-input" value={_createTierData.productCode} disabled /></div></div>
+                            <div class="slds-form-element slds-m-top_small">
+                                <lightning-combobox label="Attribute Value" required data-field="attributeValue"
+                                    value={_createTierData.attributeValue} options={createTierAttributeOptions}
+                                    onchange={handleCreateTierFieldChange} placeholder="Select attribute...">
+                                </lightning-combobox>
+                            </div>
+                            <template lwc:if={createTierNoAttributes}>
+                                <p class="slds-text-color_error slds-text-body_small slds-m-top_xx-small">Set Attribute Values on the product first (via Edit Product on Catalog tab)</p>
+                            </template>
+                            <div class="slds-form-element slds-m-top_small">
+                                <lightning-combobox label="Site Code" data-field="siteCode"
+                                    value={_createTierData.siteCode} options={createTierSiteOptions}
+                                    onchange={handleCreateTierFieldChange} placeholder="Select site...">
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-form-element slds-m-top_small">
+                                <lightning-combobox label="Currency" required data-field="currencyCode"
+                                    value={_createTierData.currencyCode} options={createTierCurrencyOptions}
+                                    onchange={handleCreateTierFieldChange} placeholder="Select currency...">
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-form-element"><label class="slds-form-element__label">Price *</label>
+                                <div class="slds-form-element__control"><input type="number" class="slds-input" data-field="price" value={_createTierData.price} onchange={handleCreateTierFieldChange} step="0.01" min="0" /></div></div>
+                            <div class="slds-form-element"><label class="slds-form-element__label">Odoo Combo ID</label>
+                                <div class="slds-form-element__control"><input type="number" class="slds-input" data-field="odooComboId" value={_createTierData.odooComboId} onchange={handleCreateTierFieldChange} /></div></div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={handleCancelCreateTier}>Cancel</button>
+                        <button class="slds-button slds-button_brand" onclick={handleConfirmCreateTier}>Create</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Add Currency Modal -->
+        <template lwc:if={_showAddCurrency}>
+            <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="max-width: 420px;">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleCancelAddCurrency}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        </button>
+                        <h2 class="slds-modal__title">Add Currency</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <lightning-combobox label="Currency" required data-field="currencyCode"
+                            value={_addCurrencyData.currencyCode} options={addCurrencyOptions}
+                            onchange={handleAddCurrencyFieldChange} placeholder="Select currency...">
+                        </lightning-combobox>
+                        <div class="slds-m-top_small">
+                            <lightning-input type="number" label="Price" data-field="price"
+                                value={_addCurrencyData.price} onchange={handleAddCurrencyFieldChange}
+                                step="0.01" min="0">
+                            </lightning-input>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="Cancel" onclick={handleCancelAddCurrency}></lightning-button>
+                        <lightning-button label="Add" variant="brand" onclick={handleConfirmAddCurrency}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Import Pricing Tiers Modal -->
+        <template lwc:if={_showImportModal}>
+            <section class="slds-modal slds-fade-in-open slds-modal_medium">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={handleCloseImport}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        </button>
+                        <h2 class="slds-modal__title">Import Pricing Tiers</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <template lwc:if={_importStepIsUpload}>
+                            <p class="slds-m-bottom_small">Upload a CSV file with pricing tier data. <a href="javascript:void(0)" onclick={handleDownloadTierTemplate}>Download template</a></p>
+                            <input type="file" accept=".csv" onchange={handleImportFileChange} />
+                        </template>
+                        <template lwc:if={_importStepIsPreview}>
+                            <p class="slds-m-bottom_small">{_importPreview.length} rows parsed.</p>
+                            <template lwc:if={_importHasErrors}>
+                                <div class="slds-notify slds-notify_alert slds-alert_error slds-m-bottom_small" role="alert">
+                                    <template for:each={_importErrors} for:item="err">
+                                        <p key={err}>{err}</p>
+                                    </template>
+                                </div>
+                            </template>
+                            <div style="max-height:300px;overflow:auto;">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                    <thead><tr>
+                                        <th>Product Code</th><th>Attribute</th><th>Site</th><th>Currency</th><th>Price</th><th>Odoo ID</th>
+                                    </tr></thead>
+                                    <tbody>
+                                        <template for:each={_importPreview} for:item="row">
+                                            <tr key={row.key}>
+                                                <td>{row.productCode}</td><td>{row.attributeValue}</td><td>{row.siteCode}</td><td>{row.currencyCode}</td><td>{row.price}</td><td>{row.odooComboId}</td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={handleCloseImport}>Cancel</button>
+                        <template lwc:if={_importStepIsPreview}>
+                            <button class="slds-button slds-button_brand" onclick={handleImportConfirm}>Import {_importPreview.length} Tiers</button>
+                        </template>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+    </div>
+</template>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Gates the Opportunity deal-progression buttons (Advance to Prospect/Quote/Negotiate, New Quote, Mark as Lost, Deal Review Memo) on the Opportunity Lightning page via Dynamic Actions ($Permission.Opportunity_Sales_Actions). For AE, Sales Support, RevOps.</description>
+    <isLicensed>false</isLicensed>
+    <label>Opportunity Sales Actions</label>
+</CustomPermission>

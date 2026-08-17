@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RevenueManagementSettings xmlns="http://soap.sforce.com/2006/04/metadata">
+    <enableAdvCreateOrdersFromQuote>true</enableAdvCreateOrdersFromQuote>
+    <enableAdvancedDetailLinePricing>false</enableAdvancedDetailLinePricing>
+    <enableAsIsRenewals>false</enableAsIsRenewals>
+    <enableAutoAddDerivedAsset>false</enableAutoAddDerivedAsset>
+    <enableConfigurePriceScale>false</enableConfigurePriceScale>
+    <enableCoreCPQ>true</enableCoreCPQ>
+    <enableDeltaPricing>false</enableDeltaPricing>
+    <enableFullEscalationHydration>false</enableFullEscalationHydration>
+    <enableGroupRampMultiSchedulePref>false</enableGroupRampMultiSchedulePref>
+    <enableGroupRampPref>false</enableGroupRampPref>
+    <enableRampDeal>false</enableRampDeal>
+    <enableRevInstPricingDefaultPref>false</enableRevInstPricingDefaultPref>
+    <enableRevUnifiedSetup>false</enableRevUnifiedSetup>
+    <enableRevenueAdjustment>true</enableRevenueAdjustment>
+    <enableScaleAttributes>false</enableScaleAttributes>
+    <enableTransactionCloning>false</enableTransactionCloning>
+    <enableTransactionProcessor>false</enableTransactionProcessor>
+    <groupsEnabled>false</groupsEnabled>
+    <hidePriceRefreshNtfcn>false</hidePriceRefreshNtfcn>
+    <persistChunkSizeOverride>false</persistChunkSizeOverride>
+    <relaxUniqueCipValidation>false</relaxUniqueCipValidation>
+    <skipOrgSttPricing>false</skipOrgSttPricing>
+</RevenueManagementSettings>

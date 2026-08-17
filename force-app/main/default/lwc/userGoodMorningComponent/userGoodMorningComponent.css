@@ -1,0 +1,475 @@
+/* ═══════════════════════════════════════════════════
+   CARD
+═══════════════════════════════════════════════════ */
+.mainCard {
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+.lightCard { background: #ffffff; }
+.darkCard  {
+    background-color: #0D1B3C;
+    background-image: linear-gradient(91.63deg, #000000 -13.12%, #ffffffb2 360.55%);
+}
+
+.headerWrap { display: flex; flex-direction: column; }
+
+.topBar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.welcomeText { font-size: 22px; }
+
+.greetingText {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 25px;
+}
+
+.linksText {
+    margin-top: 16px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.textWhite { color: #ffffff; }
+.textDark  { color: #111827; }
+.linkColordark  { color: #a5c8ff; text-decoration: underline; }
+.linkColorlight { color: #1b4fd8; text-decoration: underline; }
+
+.line { float: left; width: 100%; border-top-width: 1px; border-top-style: solid; }
+.lineLight { border-top-color: rgba(0,0,0,0.18); }
+.lineDark  { border-top-color: rgba(255,255,255,0.20); }
+
+.linkItem  { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.linkIcon  { font-size: 16px; line-height: 1; }
+
+/* ── New T&C button ──────────────────────────────── */
+.btnRow {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+    margin-bottom: 4px;
+}
+.vendorBtnLight {
+    background: #1b4fd8; border-color: #1b4fd8; color: #ffffff;
+    border-radius: 8px; padding: 0.45rem 1.2rem; font-weight: 600; cursor: pointer;
+    border: none;
+}
+.vendorBtnLight:hover { background: #1540b8; }
+.vendorBtnDark {
+    background: #a5c8ff; border-color: #a5c8ff; color: #0b1220;
+    border-radius: 8px; padding: 0.45rem 1.2rem; font-weight: 600; cursor: pointer;
+    border: none;
+}
+.vendorBtnDark:hover { background: #88b8ff; }
+
+
+/* ═══════════════════════════════════════════════════
+   MODAL BACKDROP
+═══════════════════════════════════════════════════ */
+.tcBackdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 8000;
+    backdrop-filter: blur(2px);
+}
+
+/* ═══════════════════════════════════════════════════
+   MODAL CARD
+═══════════════════════════════════════════════════ */
+.tcModal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 8500;
+    width: 90%;
+    max-width: 560px;
+    max-height: 90vh;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.30), 0 4px 16px rgba(0,0,0,0.20);
+}
+.tcModalLight { background: #f8faff; }
+.tcModalDark  { background: #111827; }
+
+/* ═══════════════════════════════════════════════════
+   MODAL HEADER
+═══════════════════════════════════════════════════ */
+.tcHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 18px;
+    background: linear-gradient(135deg, #1b4fd8 0%, #3b82f6 100%);
+    flex-shrink: 0;
+}
+.tcHeaderInner { display: flex; align-items: center; gap: 14px; }
+.tcHeaderIcon  { font-size: 28px; line-height: 1; }
+.tcTitle       { font-size: 18px; font-weight: 700; color: #ffffff; margin: 0 0 2px 0; }
+.tcSubtitle    { font-size: 12px; color: rgba(255,255,255,0.75); margin: 0; }
+.tcBadge {
+    display: inline-block;
+    background: rgba(255,255,255,0.25);
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 1px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.tcCloseBtn {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: #ffffff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+.tcCloseBtn:hover { background: rgba(255,255,255,0.30); }
+
+/* ═══════════════════════════════════════════════════
+   MODAL BODY
+═══════════════════════════════════════════════════ */
+.tcBody {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tcField { display: flex; flex-direction: column; gap: 6px; }
+
+.tcLabel {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+.tcModalLight .tcLabel { color: #374151; }
+.tcModalDark  .tcLabel { color: #d1d5db; }
+
+.tcRequired { color: #ef4444; margin-left: 2px; }
+
+.tcFieldHint {
+    font-size: 12px;
+    margin: 0 0 2px;
+}
+.tcModalLight .tcFieldHint { color: #9ca3af; }
+.tcModalDark  .tcFieldHint { color: #6b7280; }
+
+/* ── Inputs ──────────────────────────────────────── */
+.tcInput {
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-sizing: border-box;
+}
+.tcModalLight .tcInput {
+    border: 1.5px solid #d1d9f0;
+    background: #ffffff;
+    color: #111827;
+}
+.tcModalLight .tcInput:focus {
+    border-color: #1b4fd8;
+    box-shadow: 0 0 0 3px rgba(27,79,216,0.12);
+}
+.tcModalDark .tcInput {
+    border: 1.5px solid #374151;
+    background: #1f2937;
+    color: #f9fafb;
+}
+.tcModalDark .tcInput:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96,165,250,0.15);
+}
+
+/* ── Select ──────────────────────────────────────── */
+.tcSelectWrap { position: relative; }
+.tcSelect {
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px 36px 10px 14px;
+    font-size: 14px;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-sizing: border-box;
+}
+.tcModalLight .tcSelect {
+    border: 1.5px solid #d1d9f0;
+    background: #ffffff;
+    color: #111827;
+}
+.tcModalLight .tcSelect:focus {
+    border-color: #1b4fd8;
+    box-shadow: 0 0 0 3px rgba(27,79,216,0.12);
+}
+.tcModalDark .tcSelect {
+    border: 1.5px solid #374151;
+    background: #1f2937;
+    color: #f9fafb;
+}
+.tcModalDark .tcSelect:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96,165,250,0.15);
+}
+.tcSelectArrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 12px;
+}
+.tcModalLight .tcSelectArrow { color: #6b7280; }
+.tcModalDark  .tcSelectArrow { color: #9ca3af; }
+
+/* ── Textarea ─────────────────────────────────────── */
+.tcTextarea {
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    outline: none;
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+    line-height: 1.5;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-sizing: border-box;
+}
+.tcModalLight .tcTextarea {
+    border: 1.5px solid #d1d9f0;
+    background: #ffffff;
+    color: #111827;
+}
+.tcModalLight .tcTextarea:focus {
+    border-color: #1b4fd8;
+    box-shadow: 0 0 0 3px rgba(27,79,216,0.12);
+}
+.tcModalDark .tcTextarea {
+    border: 1.5px solid #374151;
+    background: #1f2937;
+    color: #f9fafb;
+}
+.tcModalDark .tcTextarea:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96,165,250,0.15);
+}
+
+/* ── Pills ───────────────────────────────────────── */
+.tcPillRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+.tcPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 20px;
+    padding: 4px 10px 4px 12px;
+    font-size: 13px;
+    font-weight: 500;
+}
+.tcModalLight .tcPill {
+    background: #eff4ff;
+    color: #1b4fd8;
+    border: 1px solid #c7d7fb;
+}
+.tcModalDark .tcPill {
+    background: #1e3a5f;
+    color: #93c5fd;
+    border: 1px solid #2d5a9e;
+}
+.tcPillRemove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 10px;
+    line-height: 1;
+    padding: 0;
+    opacity: 0.6;
+    color: inherit;
+    font-weight: 700;
+}
+.tcPillRemove:hover { opacity: 1; }
+
+/* ── Account lookup ──────────────────────────────── */
+.tcLookupWrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.tcSearchIcon {
+    position: absolute;
+    left: 12px;
+    font-size: 14px;
+    pointer-events: none;
+    z-index: 1;
+}
+.tcLookupInput {
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px 14px 10px 36px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-sizing: border-box;
+}
+.tcModalLight .tcLookupInput {
+    border: 1.5px solid #d1d9f0;
+    background: #f5f8ff;
+    color: #111827;
+}
+.tcModalLight .tcLookupInput:focus {
+    border-color: #1b4fd8;
+    box-shadow: 0 0 0 3px rgba(27,79,216,0.12);
+    background: #ffffff;
+}
+.tcModalDark .tcLookupInput {
+    border: 1.5px solid #374151;
+    background: #1a2535;
+    color: #f9fafb;
+}
+.tcModalDark .tcLookupInput:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96,165,250,0.15);
+    background: #1f2937;
+}
+
+/* ── Dropdown ────────────────────────────────────── */
+.tcDropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 9500;
+    border-radius: 12px;
+    overflow: hidden;
+    max-height: 180px;
+    overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
+.tcDropdownLight {
+    background: #ffffff;
+    border: 1px solid #e2e8f8;
+}
+.tcDropdownDark {
+    background: #1f2937;
+    border: 1px solid #374151;
+}
+.tcDropItem {
+    padding: 10px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.1s;
+}
+.tcDropdownLight .tcDropItem { color: #111827; }
+.tcDropdownLight .tcDropItem:hover { background: #eff4ff; color: #1b4fd8; }
+.tcDropdownDark  .tcDropItem { color: #e5e7eb; }
+.tcDropdownDark  .tcDropItem:hover { background: #1e3a5f; color: #93c5fd; }
+.tcDropIcon { font-size: 14px; }
+.tcDropEmpty {
+    padding: 12px 16px;
+    font-size: 13px;
+    font-style: italic;
+}
+.tcDropdownLight .tcDropEmpty { color: #9ca3af; }
+.tcDropdownDark  .tcDropEmpty { color: #6b7280; }
+
+/* ── Error ───────────────────────────────────────── */
+.tcError {
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+/* ═══════════════════════════════════════════════════
+   MODAL FOOTER
+═══════════════════════════════════════════════════ */
+.tcFooter {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 24px;
+    flex-shrink: 0;
+    border-top: 1px solid transparent;
+}
+.tcModalLight .tcFooter { border-top-color: #e5e7eb; background: #f8faff; }
+.tcModalDark  .tcFooter { border-top-color: #1f2937; background: #0d1117; }
+
+.tcCancelBtn {
+    padding: 9px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: transparent;
+}
+.tcModalLight .tcCancelBtn {
+    border: 1.5px solid #d1d9f0;
+    color: #374151;
+}
+.tcModalLight .tcCancelBtn:hover { background: #f3f4f6; }
+.tcModalDark .tcCancelBtn {
+    border: 1.5px solid #374151;
+    color: #d1d5db;
+}
+.tcModalDark .tcCancelBtn:hover { background: #1f2937; }
+
+.tcSubmitBtn {
+    padding: 9px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    background: linear-gradient(135deg, #1b4fd8 0%, #3b82f6 100%);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(27,79,216,0.30);
+}
+.tcSubmitBtn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1540b8 0%, #2563eb 100%);
+    box-shadow: 0 4px 14px rgba(27,79,216,0.40);
+    transform: translateY(-1px);
+}
+.tcSubmitBtn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}

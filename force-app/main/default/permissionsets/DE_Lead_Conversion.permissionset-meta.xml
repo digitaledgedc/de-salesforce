@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Allow_Lead_Conversion</name>
+    </customPermissions>
+    <description>Carries the Allow_Lead_Conversion custom permission that reveals the Convert Lead button (custom system-mode convert flow). Added to the AE, Sales Support, and RevOps PSGs so those personas can convert leads.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE Lead Conversion</label>
+</PermissionSet>

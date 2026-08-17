@@ -1,0 +1,19 @@
+<template>
+    <div class="slds-p-around_small">
+        <p class="slds-text-body_small slds-m-bottom_x-small">
+            Current: <strong>{currentLanguageLabel}</strong>
+        </p>
+        <lightning-combobox
+            label="Switch Language"
+            value={currentLanguage}
+            options={languageOptions}
+            onchange={handleLanguageChange}
+            disabled={isSaving}>
+        </lightning-combobox>
+        <template if:true={isSaving}>
+            <div class="slds-m-top_small slds-text-color_weak slds-text-body_small">
+                Switching language...
+            </div>
+        </template>
+    </div>
+</template>

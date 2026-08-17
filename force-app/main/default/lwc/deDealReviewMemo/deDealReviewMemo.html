@@ -1,0 +1,380 @@
+<template>
+<div class="popup">
+
+  <!-- 1. BRAND BAR -->
+  <header class="brand-bar">
+    <div class="logo">
+      <div class="logo-ports">
+        <span class="port-dot"></span>
+        <span class="port-bar"></span>
+        <span class="port-dot"></span>
+        <span class="port-bar"></span>
+        <span class="port-dot"></span>
+      </div>
+      <span class="logo-wordmark">Digital Edge<span class="logo-dc">DC</span></span>
+    </div>
+    <div class="identity">
+      <div class="tag">Deal Review Memo</div>
+      <div class="name">{accountName}</div>
+      <div class="meta">
+        <span class="meta-mono">{metaSummary}</span>
+        <template if:true={hasMetaEnvelope}>
+          <span class="meta-dot">&middot;</span>{metaEnvelope}
+        </template>
+      </div>
+    </div>
+    <div class="bar-actions">
+      <template if:true={hasMissingFields}>
+        <span class="pill pill-warn">{missingCountLabel}</span>
+      </template>
+      <span class={statusClass}>{drStatus}</span>
+      <button class="close-btn" onclick={handleClose}>&#215;</button>
+    </div>
+  </header>
+
+  <!-- 2. KPI STRIP -->
+  <div class="kpi-strip">
+    <div class="kpi">
+      <div class="kpi-label">Headline MRC</div>
+      <div class="kpi-value"><span class="kpi-currency">{currency}</span> {kpiHeadline}</div>
+      <div class={kpiHeadlineSubClass}>{kpiHeadlineSub}</div>
+    </div>
+    <div class={kpiMrcClass}>
+      <div class="kpi-label">Monthly Recurring</div>
+      <template if:true={kpiMrcHasValue}>
+        <div class="kpi-value"><span class="kpi-currency">{currency}</span> {kpiMrc}</div>
+      </template>
+      <template if:false={kpiMrcHasValue}>
+        <div class="kpi-value-muted">&mdash; &mdash; &mdash;</div>
+      </template>
+      <div class="kpi-sub">{kpiMrcSub}</div>
+    </div>
+    <div class={kpiNrcClass}>
+      <div class="kpi-label">One-time NRC</div>
+      <div class="kpi-value"><span class="kpi-currency">{currency}</span> {kpiNrc}</div>
+      <div class={kpiNrcSubClass}>{kpiNrcSub}</div>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <template if:true={isLoading}>
+    <div class="loading-wrap">
+      <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+    </div>
+  </template>
+
+  <!-- QUOTE PICKER (always visible) -->
+  <template if:false={isLoading}>
+    <div class="quote-bar">
+      <div class="quote-bar-row">
+        <span class="quote-bar-label">Quote</span>
+        <template if:true={isQuoteContext}>
+          <span class="quote-bar-name">{selectedQuoteName}</span>
+        </template>
+        <template if:false={isQuoteContext}>
+          <template if:true={hasQuotes}>
+            <lightning-combobox value={selectedQuoteId}
+                                options={quoteOptions} onchange={handleQuoteSelect}
+                                variant="label-hidden" class="quote-combo"></lightning-combobox>
+          </template>
+          <template if:false={hasQuotes}>
+            <span class="quote-bar-empty">No quotes on this opportunity</span>
+          </template>
+        </template>
+      </div>
+      <template if:true={quoteLinesLoading}>
+        <div class="loading-sm"><lightning-spinner alternative-text="Loading" size="small"></lightning-spinner></div>
+      </template>
+      <template if:true={hasQuoteLines}>
+        <div class="ql-table-wrap">
+          <table class="ql-table">
+            <thead><tr>
+              <th>#</th><th>Product</th><th class="right">Qty</th><th class="right">Total</th>
+            </tr></thead>
+            <tbody>
+              <template for:each={quoteLines} for:item="ql">
+                <tr key={ql.Id}>
+                  <td>{ql.idx}</td><td>{ql.productName}</td>
+                  <td class="right">{ql.Quantity}</td><td class="right">{ql.formattedTotal}</td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </template>
+    </div>
+  </template>
+
+  <template if:false={isLoading}>
+  <!-- 3. BODY: Vertical accordion -->
+  <div class="body">
+
+    <!-- A. Basic Information -->
+    <div class={sectionAClass}>
+      <button class="sec-hdr" type="button" data-section="A" onclick={handleSectionToggle}>
+        <span class="sec-marker">A</span>
+        <span class="sec-title">Basic Information</span>
+        <template if:true={hasSectionAMissing}>
+          <span class="sec-badge">{sectionAMissingLabel}</span>
+        </template>
+        <span class="sec-hint">{basicInfoHint}</span>
+        <span class="sec-chevron"></span>
+      </button>
+      <div class="sec-body">
+        <div class="field-grid fg-4">
+          <div class="fld">
+            <div class="fld-k">Customer type</div>
+            <div class="fld-v">{customerType}</div>
+          </div>
+          <div class="fld">
+            <div class="fld-k">Country / Site</div>
+            <div class="fld-v">{countrySite}</div>
+          </div>
+          <div class="fld">
+            <div class="fld-k">Application</div>
+            <div class="fld-v">{productInterest}</div>
+          </div>
+          <div class="fld">
+            <div class="fld-k">Account exec</div>
+            <div class="fld-v">{ownerName}</div>
+          </div>
+          <div class={contractingEntityFldClass}>
+            <div class="fld-k">Contracting entity</div>
+            <template if:true={hasContractingEntity}><div class="fld-v">{contractingEntity}</div></template>
+            <template if:false={hasContractingEntity}><div class="fld-v fld-miss">Missing</div></template>
+          </div>
+          <div class="fld">
+            <div class="fld-k">Existing customer</div>
+            <div class="fld-v">
+              <template if:true={isExistingChip}><span class="chip">{isExistingCustomer}</span></template>
+              <template if:false={isExistingChip}>{isExistingCustomer}</template>
+            </div>
+          </div>
+          <div class="fld">
+            <div class="fld-k">Credit check</div>
+            <div class="fld-v">
+              <template if:true={creditCheckChip}><span class="chip">{creditCheck}</span></template>
+              <template if:false={creditCheckChip}>{creditCheck}</template>
+            </div>
+          </div>
+          <div class={rfsDateFldClass}>
+            <div class="fld-k">RFS date</div>
+            <template if:true={hasRfsDate}><div class="fld-v">{rfsDate}</div></template>
+            <template if:false={hasRfsDate}><div class="fld-v fld-miss">Missing</div></template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B-Tech. Technical -->
+    <div class={sectionBTechClass}>
+      <button class="sec-hdr" type="button" data-section="B-Tech" onclick={handleSectionToggle}>
+        <span class="sec-marker">B</span>
+        <span class="sec-title">Technical</span>
+        <template if:true={hasSectionBTechMissing}>
+          <span class="sec-badge">{sectionBTechMissingLabel}</span>
+        </template>
+        <span class="sec-hint">{techSummary}</span>
+        <span class="sec-chevron"></span>
+      </button>
+      <div class="sec-body">
+        <div class="field-grid fg-3">
+          <div class="fld">
+            <div class="fld-k">Power</div>
+            <template if:true={hasPower}><div class="fld-v">{powerKw}</div></template>
+            <template if:false={hasPower}><div class="fld-v fld-muted">&mdash;</div></template>
+          </div>
+          <div class="fld">
+            <div class="fld-k">Cabinets</div>
+            <template if:true={hasCabinets}><div class="fld-v">{cabinets}</div></template>
+            <template if:false={hasCabinets}><div class="fld-v fld-muted">&mdash;</div></template>
+          </div>
+          <div class={powerDensityFldClass}>
+            <div class="fld-k">Cabinet density</div>
+            <template if:true={hasPowerDensity}><div class="fld-v">{powerDensity}</div></template>
+            <template if:false={hasPowerDensity}><div class="fld-v fld-miss">Missing</div></template>
+          </div>
+          <div class={dataHallFldClass}>
+            <div class="fld-k">Data hall / floor</div>
+            <template if:true={hasDataHall}><div class="fld-v">{dataHall}</div></template>
+            <template if:false={hasDataHall}><div class="fld-v fld-miss">Missing</div></template>
+          </div>
+          <div class={capacityFldClass}>
+            <div class="fld-k">Power draw cap</div>
+            <template if:true={hasCapacity}><div class="fld-v">{capacityKw}</div></template>
+            <template if:false={hasCapacity}><div class="fld-v fld-miss">Missing</div></template>
+          </div>
+          <div class="fld fld-input">
+            <div class="fld-k">PUE (metered)</div>
+            <lightning-input type="number" step="0.01" variant="label-hidden"
+                             value={pue} data-field="pue"
+                             onchange={handleFieldChange}
+                             class="sec-input"></lightning-input>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B-Comm. Commercial -->
+    <div class={sectionBCommClass}>
+      <button class="sec-hdr" type="button" data-section="B-Comm" onclick={handleSectionToggle}>
+        <span class="sec-marker">B</span>
+        <span class="sec-title">Commercial</span>
+        <template if:true={hasSectionBCommMissing}>
+          <span class="sec-badge">{sectionBCommMissingLabel}</span>
+        </template>
+        <span class="sec-hint">{commSummary}</span>
+        <span class="sec-chevron"></span>
+      </button>
+      <div class="sec-body">
+        <div class="field-grid fg-4">
+          <div class={headlinePriceFldClass}>
+            <div class="fld-k">Headline price</div>
+            <template if:true={hasHeadlinePrice}><div class="fld-v">{headlinePrice}</div></template>
+            <template if:false={hasHeadlinePrice}><div class="fld-v fld-miss">Not set</div></template>
+          </div>
+          <div class="fld fld-input">
+            <div class="fld-k">API %</div>
+            <lightning-input type="number" step="0.01" variant="label-hidden"
+                             value={apiPct} data-field="apiPct"
+                             onchange={handleFieldChange}
+                             class="sec-input"></lightning-input>
+          </div>
+          <div class="fld fld-input">
+            <div class="fld-k">Metered power</div>
+            <lightning-combobox variant="label-hidden"
+                                value={meteredPowerCharges}
+                                data-field="meteredPowerCharges"
+                                options={meteredPowerOptions}
+                                onchange={handleFieldChange}
+                                class="sec-input"></lightning-combobox>
+          </div>
+          <div class="fld">
+            <div class="fld-k">Rent-free</div>
+            <template if:true={hasFreeMonths}><div class="fld-v">{freeMonths}</div></template>
+            <template if:false={hasFreeMonths}><div class="fld-v fld-muted">None</div></template>
+          </div>
+          <div class="fld">
+            <div class="fld-k">Contract</div>
+            <div class="fld-v">{contractTenure}</div>
+          </div>
+          <div class="fld">
+            <div class="fld-k">Renewal</div>
+            <template if:true={hasRenewalTerms}><div class="fld-v">{renewalTerms}</div></template>
+            <template if:false={hasRenewalTerms}><div class="fld-v fld-muted">Not set</div></template>
+          </div>
+          <div class="fld fld-input">
+            <div class="fld-k">Reservation</div>
+            <lightning-input type="number" step="0.01" variant="label-hidden"
+                             value={reservationRofr} data-field="reservationRofr"
+                             onchange={handleFieldChange} placeholder="kW"
+                             class="sec-input"></lightning-input>
+          </div>
+          <div class="fld">
+            <div class="fld-k">Ramp</div>
+            <div class="fld-v">{rampSummary}</div>
+          </div>
+        </div>
+        <div class="total-mrc">
+          <span class="total-mrc-k">Total MRC</span>
+          <span class="total-mrc-v">{totalMrc}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- C/D/E. Justifications + NRC -->
+    <div class={sectionCClass}>
+      <button class="sec-hdr" type="button" data-section="C" onclick={handleSectionToggle}>
+        <span class="sec-marker">C</span>
+        <span class="sec-title">Justifications</span>
+        <template if:true={hasSectionCMissing}>
+          <span class="sec-badge">{sectionCMissingLabel}</span>
+        </template>
+        <span class="sec-hint">{quoteHint}</span>
+        <span class="sec-chevron"></span>
+      </button>
+      <div class="sec-body">
+        <div class="just-pair">
+          <div class="just-item">
+            <div class="just-lbl">Market benchmark</div>
+            <lightning-textarea value={drMarketBenchmark} data-field="drMarketBenchmark"
+                                onchange={handleFieldChange} variant="label-hidden"
+                                placeholder="Pricebook ref, competitor positioning..."
+                                class="just-ta"></lightning-textarea>
+          </div>
+          <div class="just-item">
+            <div class="just-lbl">Strategic justification</div>
+            <lightning-textarea value={drPricingJustification} data-field="drPricingJustification"
+                                onchange={handleFieldChange} variant="label-hidden"
+                                placeholder="Expansion, multi-site, displacement..."
+                                class="just-ta"></lightning-textarea>
+          </div>
+        </div>
+        <div class="just-pair">
+          <div class="just-item">
+            <div class="just-lbl">Implied scope of works</div>
+            <lightning-textarea value={drNrcScope} data-field="drNrcScope"
+                                onchange={handleFieldChange} variant="label-hidden"
+                                placeholder="Cage build-out, power whips, fiber..."
+                                class="just-ta"></lightning-textarea>
+          </div>
+          <div class="just-item just-item-req">
+            <div class="just-lbl">
+              <span class="sec-marker-sm">E</span> Deal review summary <span class="req-badge">REQUIRED</span>
+            </div>
+            <lightning-textarea value={drNotes} data-field="drNotes"
+                                onchange={handleFieldChange} variant="label-hidden"
+                                placeholder="Lead with the single most important reason this deal warrants review..."
+                                required class="just-ta"></lightning-textarea>
+          </div>
+        </div>
+        <div class="just-full">
+          <div class="just-lbl">Other considerations</div>
+          <lightning-textarea value={drOtherConsiderations} data-field="drOtherConsiderations"
+                              onchange={handleFieldChange} variant="label-hidden"
+                              placeholder="Relationship history, regulatory, ESG..."
+                              class="just-ta"></lightning-textarea>
+        </div>
+
+        <!-- NRC slab -->
+        <div class="nrc-strip">
+          <div>
+            <div class="nrc-label">D &middot; Total NRC</div>
+            <div class="nrc-amt"><span class="nrc-currency">{currency}</span> {kpiNrc}</div>
+          </div>
+          <template if:true={hasNrcBudget}>
+            <span class="nrc-approved">Approved</span>
+          </template>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </template>
+
+  <!-- 4. FOOTER -->
+  <footer class="foot">
+    <div class="foot-left">
+      <div class="ring">
+        <svg class="ring-svg" width="32" height="32" viewBox="0 0 32 32">
+          <circle class="ring-track" cx="16" cy="16" r="13"></circle>
+          <circle class="ring-fill" cx="16" cy="16" r="13"
+                  stroke-dasharray={ringDasharray}
+                  stroke-dashoffset={ringDashoffset}></circle>
+        </svg>
+        <span class="ring-pct">{completionPctLabel}</span>
+      </div>
+      <span class="foot-left-text"><strong>{footerStrong}</strong>{footerDetail}</span>
+    </div>
+    <div class="foot-actions">
+      <button class="btn btn-ghost" onclick={handleClose}>Cancel</button>
+      <button class="btn btn-secondary" onclick={handleSave} disabled={isLoading}>Save draft</button>
+      <button class="btn btn-primary" onclick={handleGenerate} disabled={isGenerating}>
+        <template if:true={isGenerating}>Generating...</template>
+        <template if:false={isGenerating}>Generate PDF &rarr;</template>
+      </button>
+    </div>
+  </footer>
+
+</div>
+</template>

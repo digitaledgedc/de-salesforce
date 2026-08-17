@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Allow_Accept_Quote</name>
+    </customPermissions>
+    <description>Carries the Allow_Accept_Quote custom permission that reveals the Accept Quote button on a Presented quote. Added to the RevOps and Sales Support PSGs.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE Accept Quote</label>
+</PermissionSet>

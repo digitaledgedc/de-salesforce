@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Assign to DE Finance profile users. Bundles country-level and group-level finance permissions including credit management, ETF, churn approval, and SBI finance review.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE Finance</label>
+    <permissionSets>DE_Apex_Access</permissionSets>
+    <permissionSets>DE_Churn_Approver</permissionSets>
+    <permissionSets>DE_Credit_Limit_Manager</permissionSets>
+    <permissionSets>DE_ETF_Manager</permissionSets>
+    <permissionSets>DE_Finance_Country</permissionSets>
+    <permissionSets>DE_Finance_Group</permissionSets>
+    <permissionSets>DE_Flow_Access</permissionSets>
+    <permissionSets>DE_SBI_Finance_Approver</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>

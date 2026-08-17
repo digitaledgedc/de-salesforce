@@ -1,0 +1,309 @@
+<template>
+    <div class="dcr-panel">
+
+        <!-- No site set -->
+        <template if:true={noSite}>
+            <div class="dcr-empty">
+                <p>The parent Opportunity needs an <strong>Operation Site</strong> set to see available capacity.</p>
+            </div>
+        </template>
+
+        <template if:false={noSite}>
+
+            <!-- HEADER -->
+            <div class="dcr-header">
+                <span class="dcr-site-label">{siteName}</span>
+                <div class="dcr-header-actions">
+                    <template if:true={canCreate}>
+                        <button class="dcr-btn dcr-btn-create" onclick={handleOpenCreate}
+                                title="Create new inventory">
+                            <lightning-icon icon-name="utility:add" size="xx-small"></lightning-icon>
+                            <span>Create</span>
+                        </button>
+                    </template>
+                    <button class="dcr-btn dcr-btn-ghost" onclick={handleRefresh}
+                            title="Refresh">
+                        <lightning-icon icon-name="utility:refresh" size="xx-small"></lightning-icon>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUMMARY STATS -->
+            <div class="dcr-stats">
+                <div class="dcr-stat">
+                    <span class="dcr-stat-val">{totalCount}</span>
+                    <span class="dcr-stat-lbl">Total</span>
+                </div>
+                <span class="dcr-divider"></span>
+                <div class="dcr-stat">
+                    <span class="dcr-stat-val dcr-c-available">{availableCount}</span>
+                    <span class="dcr-stat-lbl">Available</span>
+                </div>
+                <span class="dcr-divider"></span>
+                <div class="dcr-stat">
+                    <span class="dcr-stat-val dcr-c-thisquote">{thisQuoteCount}</span>
+                    <span class="dcr-stat-lbl">{thisQuoteLabel}</span>
+                </div>
+                <template if:true={showOtherHeld}>
+                    <span class="dcr-divider"></span>
+                    <div class="dcr-stat">
+                        <span class="dcr-stat-val dcr-c-otherheld">{otherHeldCount}</span>
+                        <span class="dcr-stat-lbl">Other Held</span>
+                    </div>
+                </template>
+            </div>
+
+            <!-- VIEW TABS -->
+            <div class="dcr-tabs">
+                <template for:each={viewTabs} for:item="tab">
+                    <button key={tab.value}
+                            class={tab.cls}
+                            data-value={tab.value}
+                            onclick={handleViewTab}>{tab.label}</button>
+                </template>
+            </div>
+
+            <!-- TOOLBAR: Search + Type filter + Status filter -->
+            <div class="dcr-toolbar">
+                <input type="search" class="dcr-search"
+                       placeholder="Search name, customer..."
+                       onkeyup={handleSearch} />
+                <div class="dcr-filter-section">
+                    <span class="dcr-filter-label">Type</span>
+                    <div class="dcr-pills">
+                        <template for:each={spaceTypeOptions} for:item="opt">
+                            <button key={opt.value}
+                                    class={opt.cssClass}
+                                    data-value={opt.value}
+                                    onclick={handleTypeFilter}>{opt.label} ({opt.count})</button>
+                        </template>
+                    </div>
+                </div>
+                <template if:true={showStatusFilter}>
+                    <div class="dcr-filter-section">
+                        <span class="dcr-filter-label">Status</span>
+                        <div class="dcr-pills">
+                            <template for:each={statusFilterOptions} for:item="opt">
+                                <button key={opt.value}
+                                        class={opt.cssClass}
+                                        data-value={opt.value}
+                                        onclick={handleStatusFilter}>{opt.label} ({opt.count})</button>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- ACTION BAR: Assign (Available tab only) -->
+            <template if:true={showAssignBar}>
+                <template if:true={hasAssignSelection}>
+                    <div class="dcr-action-bar">
+                        <button class="dcr-btn dcr-btn-reserve"
+                                onclick={handleBulkAssign}
+                                disabled={_assigning}>{assignBtnLabel}</button>
+                    </div>
+                </template>
+            </template>
+
+            <!-- ACTION BAR: Release (This Quote tab only) -->
+            <template if:true={showReleaseBar}>
+                <template if:true={hasReleaseSelection}>
+                    <div class="dcr-action-bar dcr-action-bar-release">
+                        <button class="dcr-btn dcr-btn-release"
+                                onclick={handleBulkRelease}
+                                disabled={_releasing}>{releaseBtnLabel}</button>
+                    </div>
+                </template>
+            </template>
+
+            <!-- LOADING -->
+            <template if:true={loading}>
+                <div class="dcr-loading">Loading...</div>
+            </template>
+
+            <!-- TABLE -->
+            <template if:false={loading}>
+                <template if:true={hasItems}>
+                    <div class="dcr-table-wrap">
+                        <table class="dcr-table">
+                            <thead>
+                                <tr>
+                                    <template if:true={showCheckboxes}>
+                                        <th class="dcr-th-check">
+                                            <input type="checkbox"
+                                                   checked={allFilteredSelected}
+                                                   onchange={handleSelectAll}
+                                                   title="Select all" />
+                                        </th>
+                                    </template>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th class="dcr-cell-num">CabE</th>
+                                    <th class="dcr-cell-num">kVA</th>
+                                    <th>Status</th>
+                                    <th>Customer</th>
+                                    <th>Reserved By</th>
+                                    <th>Room</th>
+                                </tr>
+                            </thead>
+                            <template for:each={groupedDisplay} for:item="group">
+                                <tbody key={group.key}>
+                                    <tr class="dcr-group-row" data-key={group.key}
+                                        onclick={handleToggleGroup}>
+                                        <td class="dcr-group-cell" colspan="20">
+                                            <span class="dcr-group-chevron">{group.chevron}</span>
+                                            <span class="dcr-group-label">{group.label}</span>
+                                            <span class="dcr-group-count">({group.count})</span>
+                                        </td>
+                                    </tr>
+                                    <template if:true={group.isExpanded}>
+                                        <template for:each={group.items} for:item="row">
+                                            <tr key={row.Id} class={row.rowClass}>
+                                                <template if:true={showCheckboxes}>
+                                                    <td class="dcr-td-check">
+                                                        <input type="checkbox"
+                                                               data-id={row.Id}
+                                                               checked={row.isSelected}
+                                                               onchange={handleCheck} />
+                                                    </td>
+                                                </template>
+                                                <td class="dcr-cell-name" data-id={row.Id}
+                                                    onclick={handleRowNav}>{row.Name}</td>
+                                                <td>{row.typeLabel}</td>
+                                                <td class="dcr-cell-num">{row.cabeLabel}</td>
+                                                <td class="dcr-cell-num">{row.powerLabel}</td>
+                                                <td>
+                                                    <span class={row.statusCls}>{row.Status__c}</span>
+                                                </td>
+                                                <td class="dcr-cell-customer">{row.customerLabel}</td>
+                                                <td class="dcr-cell-reserved">{row.reservedByLabel}</td>
+                                                <td>{row.roomLabel}</td>
+                                            </tr>
+                                        </template>
+                                    </template>
+                                </tbody>
+                            </template>
+                        </table>
+                    </div>
+                    <template if:true={hasMoreItems}>
+                        <div class="dcr-show-more">
+                            <span class="dcr-showing-label">
+                                Showing {displayLimit} of {filteredCount}
+                            </span>
+                            <button class="dcr-btn dcr-btn-secondary"
+                                    onclick={handleShowMore}>Show More</button>
+                        </div>
+                    </template>
+                </template>
+
+                <template if:false={hasItems}>
+                    <p class="dcr-none">No inventory matches the current filters.</p>
+                </template>
+            </template>
+
+        </template>
+
+        <!-- CREATE INVENTORY MODAL -->
+        <template if:true={showCreateModal}>
+            <div class="dcr-modal-backdrop" onclick={handleCloseCreate}>
+                <div class="dcr-modal" onclick={handleModalClick}>
+                    <div class="dcr-modal-header">
+                        <span class="dcr-modal-title">Create Inventory</span>
+                        <button class="dcr-btn dcr-btn-ghost" onclick={handleCloseCreate}
+                                title="Close">
+                            <lightning-icon icon-name="utility:close" size="xx-small"></lightning-icon>
+                        </button>
+                    </div>
+                    <div class="dcr-modal-body">
+                        <lightning-combobox label="Record Type"
+                            value={createRT} options={createRTOptions}
+                            onchange={handleCreateRTChange}
+                            class="dcr-form-field">
+                        </lightning-combobox>
+                        <lightning-combobox label="Floor"
+                            value={createFloorId} options={floorOptions}
+                            placeholder="Select floor..."
+                            onchange={handleCreateFloorChange}
+                            class="dcr-form-field">
+                        </lightning-combobox>
+                        <lightning-combobox label="Data Hall"
+                            value={createHallId} options={hallOptions}
+                            placeholder="Select data hall..."
+                            onchange={handleCreateHallChange}
+                            disabled={noHallOptions}
+                            class="dcr-form-field">
+                        </lightning-combobox>
+
+                        <!-- Space-specific fields -->
+                        <template if:true={isSpaceRT}>
+                            <lightning-combobox label="Space Type"
+                                value={createSpaceType}
+                                options={spaceTypeCreateOptions}
+                                onchange={handleCreateSpaceTypeChange}
+                                class="dcr-form-field">
+                            </lightning-combobox>
+                            <lightning-input type="number" label="Total Capacity (kVA)"
+                                value={createTotalCapKva}
+                                onchange={handleCreateTotalCapKva}
+                                step="0.01" class="dcr-form-field">
+                            </lightning-input>
+                            <lightning-input type="number" label="Power (kVA)"
+                                value={createPowerKva}
+                                onchange={handleCreatePowerKva}
+                                step="0.01" class="dcr-form-field">
+                            </lightning-input>
+                        </template>
+
+                        <!-- Breaker-specific fields -->
+                        <template if:true={isBreakerRT}>
+                            <lightning-combobox label="Capacity Type"
+                                value={createCapType}
+                                options={capacityTypeOptions}
+                                onchange={handleCreateCapTypeChange}
+                                class="dcr-form-field">
+                            </lightning-combobox>
+                            <lightning-input type="number" label="Total (kW)"
+                                value={createTotalKw}
+                                onchange={handleCreateTotalKw}
+                                step="0.01" class="dcr-form-field">
+                            </lightning-input>
+                            <lightning-input type="text" label="Breaker Panel"
+                                value={createPanel}
+                                onchange={handleCreatePanel}
+                                class="dcr-form-field">
+                            </lightning-input>
+                        </template>
+
+                        <!-- Shared fields -->
+                        <lightning-input type="number" label="Quantity"
+                            value={createQty}
+                            onchange={handleCreateQty}
+                            min="1" max="100" step="1"
+                            class="dcr-form-field">
+                        </lightning-input>
+                        <lightning-textarea label="Notes"
+                            value={createNotes}
+                            onchange={handleCreateNotes}
+                            class="dcr-form-field">
+                        </lightning-textarea>
+                    </div>
+                    <div class="dcr-modal-footer">
+                        <button class="dcr-btn dcr-btn-secondary"
+                                onclick={handleCloseCreate}>Cancel</button>
+                        <button class="dcr-btn dcr-btn-reserve"
+                                disabled={createDisabled}
+                                onclick={handleCreateSubmit}>
+                            <template if:true={creating}>Creating...</template>
+                            <template if:false={creating}>Create</template>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={error}>
+            <div class="dcr-error">{error}</div>
+        </template>
+
+    </div>
+</template>

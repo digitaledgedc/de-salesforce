@@ -1,0 +1,130 @@
+:host {
+    display: block;
+}
+
+/* ── White card container (matches standard path) ── */
+.path-bg {
+    background: #ffffff;
+    padding: 0.75rem var(--lwc-spacingMedium, 12px);
+    border: 1px solid #dddbda;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+}
+
+.slds-path__track {
+    border: 0;
+    background: transparent;
+}
+.slds-path__scroller-container {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.slds-path__scroller {
+    overflow: hidden;
+}
+.slds-path__scroller_inner {
+    display: flex;
+    align-items: center;
+}
+
+/* ── Individual chevron step ── */
+.slds-path__item {
+    position: relative;
+    flex: 1 1 0%;
+    min-width: 0;
+    height: 2rem;
+    margin-left: -0.375rem;
+    text-align: center;
+    cursor: default;
+    filter: drop-shadow(1px 0 0 rgba(0, 0, 0, 0.1));
+    clip-path: polygon(
+        0 0,
+        calc(100% - 0.625rem) 0,
+        100% 50%,
+        calc(100% - 0.625rem) 100%,
+        0 100%,
+        0.625rem 50%
+    );
+}
+.slds-path__item:first-child {
+    margin-left: 0;
+    clip-path: polygon(
+        0 0,
+        calc(100% - 0.625rem) 0,
+        100% 50%,
+        calc(100% - 0.625rem) 100%,
+        0 100%
+    );
+}
+.slds-path__item:last-child {
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% 100%,
+        0 100%,
+        0.625rem 50%
+    );
+}
+
+/* ── Link + title ── */
+.slds-path__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 1rem;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    outline: none;
+}
+.slds-path__title {
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.025rem;
+    text-transform: uppercase;
+}
+.slds-path__title.check {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+/* ── Complete: saturated green with white checkmark ── */
+.slds-is-complete {
+    background-color: #2e844a;
+}
+.slds-is-complete .slds-path__title {
+    color: #ffffff;
+}
+
+/* ── Current: dark navy ── */
+.slds-is-current {
+    background-color: #032d60;
+}
+.slds-is-current .slds-path__title {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+/* ── Incomplete: light gray ── */
+.slds-is-incomplete {
+    background-color: #ecebea;
+}
+.slds-is-incomplete .slds-path__title {
+    color: #706e6b;
+}
+
+/* ── Rejected: single red pill ── */
+.rejected-step {
+    background-color: #ba0517;
+    border-radius: 1rem;
+    clip-path: none;
+}
+.rejected-step .slds-path__title {
+    color: #ffffff;
+    font-weight: 700;
+}

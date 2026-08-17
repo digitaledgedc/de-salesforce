@@ -1,0 +1,248 @@
+<template>
+    <div class="fdb-shell">
+        <template if:true={_loading}>
+            <div class="fdb-loading"><div class="fdb-spinner"></div></div>
+        </template>
+
+        <template if:false={_loading}>
+            <!-- Header -->
+            <div class="fdb-header">
+                <div class="fdb-header-left">
+                    <div class="fdb-view-toggle">
+                        <button class={pendingToggleCls} data-view="pending" onclick={handleViewToggle}>Pending</button>
+                        <button class={historyToggleCls} data-view="history" onclick={handleViewToggle}>History</button>
+                    </div>
+                </div>
+                <div class="fdb-header-right">
+                    <div class="fdb-search">
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4"/><path d="M10 10l3.5 3.5"/></svg>
+                        <input type="text" placeholder="Search accounts, quotes..." oninput={handleSearch} value={_searchTerm} />
+                    </div>
+                    <span class="fdb-last-refresh">{lastRefreshLabel}</span>
+                    <button class="fdb-refresh" title="Refresh" onclick={handleRefresh}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Metrics strip -->
+            <div class="fdb-metrics">
+                <template for:each={metrics} for:item="m">
+                    <div key={m.key} class={m.wrapCls}>
+                        <span class={m.cls}>{m.value}</span>
+                        <span class="fdb-metric-label">{m.label}</span>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Country filter -->
+            <template if:true={showCountryFilter}>
+                <div class="fdb-filters">
+                    <template for:each={countryPills} for:item="cp">
+                        <button key={cp.value} class={cp.cls} data-value={cp.value} onclick={handleCountryPill}>{cp.label}</button>
+                    </template>
+                </div>
+            </template>
+            <!-- Entity sub-filter (multi-entity countries) -->
+            <template if:true={showEntityFilter}>
+                <div class="fdb-filters fdb-filters-entity">
+                    <template for:each={entityPills} for:item="ep">
+                        <button key={ep.value} class={ep.cls} data-value={ep.value} onclick={handleEntityPill}>{ep.label}</button>
+                    </template>
+                </div>
+            </template>
+
+            <!-- Grouped sections -->
+            <template if:true={hasItems}>
+                <template for:each={groupedSections} for:item="section">
+                    <div key={section.key} class="fdb-section">
+                        <div class="fdb-section-head" data-key={section.key} onclick={handleSectionToggle}>
+                            <span class={section.chevronCls}>&#8250;</span>
+                            <span class="fdb-section-dot" style={section.dotStyle}></span>
+                            <span class="fdb-section-title">{section.title}</span>
+                            <span class="fdb-section-count">{section.count}</span>
+                        </div>
+                        <template if:true={section.isOpen}>
+                        <table class="fdb-tbl">
+                            <thead>
+                                <tr>
+                                    <th>Account</th>
+                                    <th class="fdb-th-detail">Detail</th>
+                                    <th class="fdb-th-quote">Quote</th>
+                                    <th class="fdb-th-amount">{section.amountHeader}</th>
+                                    <th class="fdb-th-age">Age</th>
+                                    <th class="fdb-th-action"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={section.items} for:item="item">
+                                    <tr key={item.key} class="fdb-row" style={item.rowStyle} data-id={item.id} onclick={handleRowClick}>
+                                        <td class="fdb-cell-account">
+                                            <a class="fdb-account-name fdb-link" data-id={item.id} onclick={handleNav}>{item.accountName}</a>
+                                        </td>
+                                        <td class="fdb-cell-detail">
+                                            <div class="fdb-detail-primary">{item.detailLabel}</div>
+                                            <template if:true={item.isCreditLimit}>
+                                                <div class="fdb-credit-summary">
+                                                    <span class="fdb-credit-limit-text">{item.creditLimitFmt}</span>
+                                                    <template if:true={item.creditIsOver}>
+                                                        <span class="fdb-credit-over-text">{item.creditOverFmt}</span>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                            <template if:true={item.hasResolutionNotes}>
+                                                <div class="fdb-resolution-note">{item.resolutionNotes}</div>
+                                            </template>
+                                        </td>
+                                        <td class="fdb-cell-quote">
+                                            <template if:true={item.hasQuote}>
+                                                <a class="fdb-link" data-id={item.quoteId} onclick={handleQuoteNav}>{item.quoteNumber}</a>
+                                            </template>
+                                            <template if:false={item.hasQuote}>
+                                                <template if:true={item.isBanApproval}>
+                                                    <span class="fdb-text-muted">From Account</span>
+                                                </template>
+                                            </template>
+                                        </td>
+                                        <td class="fdb-cell-amount">{item.valueLabel}</td>
+                                        <td><span class={item.agingCls}>{item.agingLabel}</span></td>
+                                        <td class="fdb-cell-action" onclick={handleStopProp}>
+                                            <template if:true={item.canAcknowledge}>
+                                                <button class="fdb-btn-ack" data-id={item.id} onclick={handleAcknowledge}>Acknowledge</button>
+                                            </template>
+                                            <template if:true={item.canReview}>
+                                                <button class="fdb-btn-review" data-id={item.id} onclick={handleCreditReview}>Review</button>
+                                            </template>
+                                            <template if:false={item.canAcknowledge}>
+                                                <template if:false={item.canReview}>
+                                                    <button class="fdb-btn-view" data-id={item.id} onclick={handleNav}>Open</button>
+                                                </template>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                    <!-- Inline Credit Review Panel -->
+                                    <template if:true={item.showCreditPanel}>
+                                        <tr key={item.panelKey} class="fdb-credit-panel-row">
+                                            <td colspan="6">
+                                                <div class="fdb-cp" onclick={handleStopProp}>
+                                                    <div class="fdb-cp-grid">
+                                                        <!-- LEFT: active quotes table -->
+                                                        <div class="fdb-cp-left">
+                                                            <div class="fdb-cp-left-head">
+                                                                <span class="fdb-cp-section-label">Active Quotes</span>
+                                                                <template if:true={hasCreditActiveQuotes}>
+                                                                    <span class="fdb-cp-quotes-count">{creditActiveQuoteCount}</span>
+                                                                </template>
+                                                            </div>
+                                                            <template if:true={_creditQuotesLoading}>
+                                                                <div class="fdb-cp-loading">Loading...</div>
+                                                            </template>
+                                                            <template if:false={_creditQuotesLoading}>
+                                                                <template if:false={hasCreditActiveQuotes}>
+                                                                    <div class="fdb-cp-empty">
+                                                                        <p>No active quotes on this account.</p>
+                                                                        <p class="fdb-cp-empty-sub">The triggering condition may have cleared since this review was created.</p>
+                                                                    </div>
+                                                                </template>
+                                                            </template>
+                                                            <template if:true={hasCreditActiveQuotes}>
+                                                                <div class="fdb-cp-quotes-wrap">
+                                                                    <table class="fdb-cp-tbl">
+                                                                        <thead><tr><th class="fdb-cpt-quote">Quote</th><th class="fdb-cpt-ccy">Ccy</th><th class="fdb-cpt-num">MRC</th><th class="fdb-cpt-num">NRC</th><th class="fdb-cpt-status">Status</th></tr></thead>
+                                                                        <tbody>
+                                                                            <template for:each={_creditActiveQuotes} for:item="q">
+                                                                                <tr key={q.key} class={q.isTriggering}>
+                                                                                    <td class="fdb-cpt-quote"><a class="fdb-link" data-id={q.quoteId} onclick={handleQuoteNav}>{q.quoteNumber}</a></td>
+                                                                                    <td class="fdb-cpt-ccy">{q.currencyCode}</td>
+                                                                                    <td class="fdb-cpt-num">{q.mrcFmt}</td>
+                                                                                    <td class="fdb-cpt-num">{q.nrcFmt}</td>
+                                                                                    <td class="fdb-cpt-status"><span class={q.statusCls}>{q.status}</span></td>
+                                                                                </tr>
+                                                                            </template>
+                                                                        </tbody>
+                                                                        <tfoot>
+                                                                            <template for:each={creditTotalsByCurrency} for:item="tot">
+                                                                                <tr key={tot.key} class={tot.rowClass}>
+                                                                                    <td class="fdb-cpt-quote">{tot.label}</td>
+                                                                                    <td class="fdb-cpt-ccy">{tot.ccy}</td>
+                                                                                    <td class="fdb-cpt-num">{tot.mrcFmt}</td>
+                                                                                    <td class="fdb-cpt-num">{tot.nrcFmt}</td>
+                                                                                    <td class="fdb-cpt-status"></td>
+                                                                                </tr>
+                                                                            </template>
+                                                                        </tfoot>
+                                                                    </table>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                        <!-- RIGHT: limits + quote context + actions -->
+                                                        <div class="fdb-cp-right">
+                                                            <div class="fdb-cp-right-head">
+                                                                <span class="fdb-cp-section-label">Credit Review</span>
+                                                                <div style="flex:1"></div>
+                                                                <button class="fdb-cp-close" data-id={item.id} onclick={handleCreditReview} title="Close">
+                                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                                                                </button>
+                                                            </div>
+                                                            <div class="fdb-cp-section">
+                                                                <div class="fdb-cp-section-label">Limits ({item.accountCurrencyCode})</div>
+                                                                <div class="fdb-cp-limit-pair">
+                                                                    <div class="fdb-cp-limit-box">
+                                                                        <span class="fdb-cp-limit-type">MRC</span>
+                                                                        <input type="text" inputmode="decimal" class="fdb-cp-input" data-field="limitMrc" value={item.creditLimitMrcFmt} onclick={handleStopProp} />
+                                                                    </div>
+                                                                    <div class="fdb-cp-limit-box">
+                                                                        <span class="fdb-cp-limit-type">NRC</span>
+                                                                        <input type="text" inputmode="decimal" class="fdb-cp-input" data-field="limitNrc" value={item.creditLimitNrcFmt} onclick={handleStopProp} />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="fdb-cp-section">
+                                                                <div class="fdb-cp-section-label">Triggering Quote</div>
+                                                                <a class="fdb-cp-quote-card" data-id={item.quoteId} onclick={handleQuoteNav}>
+                                                                    <span class="fdb-cp-qc-name">{item.quoteNumber}</span>
+                                                                    <span class="fdb-cp-qc-arrow">&#8599;</span>
+                                                                    <div class="fdb-cp-qc-amounts">
+                                                                        <span>MRC {item.trigQuoteMrcFmt}</span>
+                                                                        <span>NRC {item.trigQuoteNrcFmt}</span>
+                                                                    </div>
+                                                                    <template if:true={item.hasTrigQuoteUsd}>
+                                                                        <div class="fdb-cp-qc-amounts fdb-cp-qc-usd">
+                                                                            <span>{item.trigQuoteUsdMrcFmt}</span>
+                                                                            <span>{item.trigQuoteUsdNrcFmt}</span>
+                                                                        </div>
+                                                                    </template>
+                                                                </a>
+                                                            </div>
+                                                            <div class="fdb-cp-action-row">
+                                                                <template if:true={_actionLoading}>
+                                                                    <div class="fdb-action-spinner"><div class="fdb-spinner-sm"></div><span class="fdb-action-text">Processing...</span></div>
+                                                                </template>
+                                                                <template if:false={_actionLoading}>
+                                                                    <button class="fdb-btn-reject" data-id={item.id} onclick={handleCreditReject}>Reject</button>
+                                                                    <button class="fdb-btn-approve" data-id={item.id} data-account={item.accountId} data-quote={item.quoteId} onclick={handleCreditApprove}>Approve</button>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </template>
+                            </tbody>
+                        </table>
+                        </template>
+                    </div>
+                </template>
+            </template>
+
+            <template if:false={hasItems}>
+                <div class="fdb-empty">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <p class="fdb-empty-text">No pending items</p>
+                </div>
+            </template>
+        </template>
+    </div>
+</template>

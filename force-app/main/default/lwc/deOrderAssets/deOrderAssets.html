@@ -1,0 +1,258 @@
+<template>
+<div class="oa">
+
+    <!-- ── Stat strip + actions ───────────────────────────────── -->
+    <div class="oa-strip">
+        <div class="oa-stats">
+            <div class="oa-stat">
+                <span class="oa-stat-lbl">Services</span>
+                <span class="oa-stat-val">{statServices}</span>
+            </div>
+            <span class="oa-vdiv"></span>
+            <div class="oa-stat">
+                <span class="oa-stat-lbl">Total MRC</span>
+                <span class="oa-stat-val oa-stat-val_mint">{statTotalMRC}<span class="oa-stat-unit">/mo</span></span>
+            </div>
+            <template lwc:if={hasLifecycleSummary}>
+                <span class="oa-vdiv"></span>
+                <div class="oa-stat">
+                    <span class="oa-stat-lbl">Lifecycle</span>
+                    <span class="oa-stat-life">
+                        <template for:each={lifecycleSummary} for:item="lc">
+                            <span key={lc.label} class={lc.cssClass}>{lc.label}</span>
+                        </template>
+                    </span>
+                </div>
+            </template>
+        </div>
+        <div class="oa-actions">
+            <lightning-input
+                type="search"
+                placeholder="Name, code, or Odoo ID..."
+                value={searchTerm}
+                onchange={handleSearch}
+                class="oa-search"
+                variant="label-hidden"
+                label="Search"
+            ></lightning-input>
+            <template lwc:if={showChangeOrderButton}>
+                <button class="oa-co-btn" onclick={handleCreateCO} type="button">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5v14"/></svg>
+                    Change Order
+                </button>
+                <button class="oa-co-btn oa-co-btn_renew" onclick={handleRenewTerm} type="button">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
+                    Renewal / Termination
+                </button>
+            </template>
+        </div>
+    </div>
+
+    <!-- ── Filter pills ───────────────────────────────────────── -->
+    <template lwc:if={hasCategoryPills}>
+        <div class="oa-pills">
+            <div class="oa-pills-inner">
+                <template for:each={categoryPills} for:item="pill">
+                    <button key={pill.value} class={pill.cssClass}
+                            data-value={pill.value} onclick={handleCategoryFilter} type="button">
+                        {pill.label} <span class="oa-pill-ct">{pill.count}</span>
+                    </button>
+                </template>
+                <template lwc:if={hasStatusPills}>
+                    <span class="oa-vdiv oa-vdiv_pills"></span>
+                    <template for:each={statusPills} for:item="sp">
+                        <button key={sp.value} class={sp.cssClass}
+                                data-value={sp.value} onclick={handleStatusFilter} type="button">
+                            <span class={sp.dotClass}></span>
+                            {sp.label} <span class="oa-pill-ct">{sp.count}</span>
+                        </button>
+                    </template>
+                </template>
+            </div>
+        </div>
+    </template>
+
+    <!-- ── Loading ────────────────────────────────────────────── -->
+    <template lwc:if={isLoading}>
+        <div class="oa-loading">
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </div>
+    </template>
+
+    <!-- ── Error ──────────────────────────────────────────────── -->
+    <template lwc:if={hasError}>
+        <div class="oa-error">{errorMessage}</div>
+    </template>
+
+    <!-- ── Table ──────────────────────────────────────────────── -->
+    <template lwc:if={hasFilteredAssets}>
+        <div class="oa-tbl-wrap">
+            <table class="oa-tbl">
+                <thead>
+                    <tr>
+                        <th class="oa-th">Product</th>
+                        <th class="oa-th oa-th--status">Status</th>
+                        <th class="oa-th oa-th--r">MRC</th>
+                        <th class="oa-th oa-th--r oa-th--pct">% of total</th>
+                    </tr>
+                </thead>
+                <template for:each={displayGroups} for:item="group">
+                    <tbody key={group.groupKey}>
+                        <!-- Parent row -->
+                        <tr class={group.rowClass} data-group-key={group.groupKey} onclick={handleGroupToggle}>
+                            <td class="oa-td">
+                                <div class="oa-sub-cell">
+                                    <span class={group.chevronClass}>
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 6 6 6-6 6"/></svg>
+                                    </span>
+                                    <span class="oa-grp-name">{group.groupLabel}</span>
+                                    <span class="oa-badge">{group.count}</span>
+                                </div>
+                            </td>
+                            <td class="oa-td">
+                                <span class={group.statusChipClass}>
+                                    <span class="oa-dot"></span>{group.statusLabel}
+                                </span>
+                            </td>
+                            <td class="oa-td oa-td--r">
+                                <span class="oa-mrc oa-mrc_lg">{group.mrcFmt}</span>
+                            </td>
+                            <td class="oa-td oa-td--r">
+                                <span class={group.pctColor}>{group.pctFmt}</span>
+                            </td>
+                        </tr>
+                        <!-- Child rows -->
+                        <template lwc:if={group.hasChildren}>
+                            <template for:each={group.children} for:item="child">
+                                <tr key={child.Id} class="oa-child" data-id={child.Id} data-name={child.productName} onclick={handleRowClick}>
+                                    <td class="oa-td oa-td--child-first">
+                                        <div class="oa-child-name">{child.displayName}</div>
+                                        <!-- Display metadata below asset name -->
+                                        <template lwc:if={child.metaLabel}>
+                                            <div class="oa-child-meta">{child.metaLabel}</div>
+                                        </template>
+                                        <!-- REMOVED: refCode line that was showing duplicate info -->
+                                    </td>
+                                    <td class="oa-td">
+                                        <span class={child.childChipCls}>
+                                            <span class="oa-dot"></span>{child.Status}
+                                        </span>
+                                    </td>
+                                    <td class="oa-td oa-td--r">
+                                        <span class="oa-mrc">{child.mrcFmt}</span>
+                                    </td>
+                                    <td class="oa-td oa-td--r">
+                                        <span class="oa-pct_soft">{child.pctFmt}</span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </template>
+                    </tbody>
+                </template>
+
+                <!-- Smaller lines -->
+                <template lwc:if={hasSmallGroups}>
+                    <tbody>
+                        <tr class="oa-more">
+                            <td colspan="4" class="oa-td">
+                                <button class="oa-more-btn" onclick={handleShowSmallLines} type="button">
+                                    <span class="oa-more-left">
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                                        <span class="oa-more-label">{smallGroupsSummary.label}</span>
+                                        <span class="oa-more-ids">{smallGroupsSummary.ids}</span>
+                                    </span>
+                                    <span class="oa-more-right">
+                                        <span class="oa-more-mrc">{smallGroupsSummary.mrcFmt}</span>
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 6 6 6-6 6"/></svg>
+                                    </span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </template>
+            </table>
+        </div>
+
+        <!-- ── Footer total bar ───────────────────────────────── -->
+        <div class="oa-total">
+            <div class="oa-total-left">
+                <span class="oa-total-showing">{filteredCountLabel}</span>
+            </div>
+            <div class="oa-total-right">
+                <span class="oa-total-lbl">Total MRC</span>
+                <span class="oa-total-val">{statTotalMRC}</span>
+                <span class="oa-total-unit">/mo</span>
+            </div>
+        </div>
+    </template>
+
+    <!-- ── Empty ──────────────────────────────────────────────── -->
+    <template lwc:if={isEmpty}>
+        <div class="oa-empty">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <p>No assets match your search.</p>
+        </div>
+    </template>
+
+    <!-- ── Detail panel ───────────────────────────────────────── -->
+    <template lwc:if={showDetailPanel}>
+        <div class="oa-backdrop" onclick={closeDetailPanel}></div>
+        <div class="oa-panel">
+            <div class="oa-panel-hdr">
+                <div class="oa-panel-hdr-l">
+                    <div class="oa-panel-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                    </div>
+                    <div class="oa-panel-titles">
+                        <span class="oa-panel-name">{selectedAssetName}</span>
+                    </div>
+                </div>
+                <button class="oa-panel-close" onclick={closeDetailPanel} type="button">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 6l12 12M6 18L18 6"/></svg>
+                </button>
+            </div>
+            <div class="oa-panel-body">
+                <lightning-record-view-form record-id={selectedAssetId} object-api-name="Asset">
+                    <div class="oa-sec">
+                        <p class="oa-sec-lbl">Product</p>
+                        <lightning-output-field field-name="Name"></lightning-output-field>
+                        <lightning-output-field field-name="Product2Id"></lightning-output-field>
+                        <lightning-output-field field-name="Description"></lightning-output-field>
+                    </div>
+                    <div class="oa-sec">
+                        <p class="oa-sec-lbl">Financials</p>
+                        <div class="oa-sec-grid">
+                            <lightning-output-field field-name="MRC__c"></lightning-output-field>
+                            <lightning-output-field field-name="NRC__c"></lightning-output-field>
+                        </div>
+                    </div>
+                    <div class="oa-sec">
+                        <p class="oa-sec-lbl">Status</p>
+                        <div class="oa-sec-grid">
+                            <lightning-output-field field-name="Status"></lightning-output-field>
+                            <lightning-output-field field-name="Asset_Lifecycle_Status__c"></lightning-output-field>
+                        </div>
+                        <lightning-output-field field-name="InstallDate"></lightning-output-field>
+                        <template lwc:if={hasLinkedQuote}>
+                            <div class="oa-linked-quote">
+                                <p class="oa-linked-quote-lbl">Linked CO Quote</p>
+                                <a href={linkedQuoteUrl} target="_top" class="oa-linked-quote-link">{linkedQuoteName}</a>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="oa-sec">
+                        <p class="oa-sec-lbl">Integration</p>
+                        <lightning-output-field field-name="Odoo_IB_ID__c"></lightning-output-field>
+                        <lightning-output-field field-name="Odoo_Subscription_ID__c"></lightning-output-field>
+                        <lightning-output-field field-name="SCD__c"></lightning-output-field>
+                    </div>
+                </lightning-record-view-form>
+            </div>
+            <div class="oa-panel-foot">
+                <a href={selectedAssetUrl} target="_top" class="oa-open-link">Open Full Record</a>
+            </div>
+        </div>
+    </template>
+
+</div>
+</template>

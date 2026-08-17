@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Opportunity_Sales_Actions</name>
+    </customPermissions>
+    <description>Grants ONLY the Opportunity_Sales_Actions custom permission (no CRUD/FLS). Gates the Opportunity Lightning-page deal buttons (Advance/New Quote/Mark as Lost/Deal Review Memo) to AE, Sales Support, RevOps. Assign via PSGs, not directly.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Opportunity Sales Actions</label>
+</PermissionSet>

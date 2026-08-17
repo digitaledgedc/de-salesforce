@@ -1,0 +1,1309 @@
+<template>
+    <div class="qle-outer">
+
+        <!-- ─── Main Card ─────────────────────────────────────────────────── -->
+        <div class="qle-card">
+
+            <!-- ── Toolbar ── -->
+            <div class="qle-toolbar">
+                <div class="qle-toolbar-left">
+                    <lightning-icon icon-name="standard:product" size="small"></lightning-icon>
+                    <h2 class="qle-toolbar-title">Quote Lines</h2>
+                    <template lwc:if={lineCount}>
+                        <span class="qle-toolbar-badge">{lineCount}</span>
+                    </template>
+                    <template lwc:if={hasPricebookName}>
+                        <span class="qle-pb-label">{pricebookLabel}</span>
+                    </template>
+                    <template lwc:if={showRampScheduleNav}>
+                        <div class="qle-main-nav">
+                            <button class={linesNavClass} data-tab="lines" onclick={handleMainTabChange}>Lines</button>
+                            <button class={rampScheduleNavClass} data-tab="rampSchedule" onclick={handleMainTabChange}>
+                                Ramp Schedule
+                                <span class="qle-main-nav-count">{rampScheduleData.phaseCount}</span>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+                <div class="qle-toolbar-right">
+
+                    <template lwc:if={showCreateRampButton}>
+                        <lightning-button
+                            label="Create Ramp"
+                            icon-name="utility:steps"
+                            variant="neutral"
+                            onclick={handleCreateRamp}
+                        ></lightning-button>
+                    </template>
+
+                    <template lwc:if={showDeleteButton}>
+                        <lightning-button
+                            label="Delete Selected"
+                            icon-name="utility:delete"
+                            variant="destructive-text"
+                            onclick={handleDeleteSelected}
+                        ></lightning-button>
+                    </template>
+
+                    <!-- Inline search removed — products added via Add Product action -->
+
+                    <!-- Autosave toggle -->
+                    <lightning-button
+                        label={autoSaveLabel}
+                        title={autoSaveTitle}
+                        variant={autoSaveVariant}
+                        onclick={handleAutoSaveToggle}
+                        icon-name="utility:refresh"
+                        class="qle-autosave-btn"
+                    ></lightning-button>
+
+                    <!-- Save button (always visible when drafts pending) -->
+                    <template lwc:if={hasPendingDrafts}>
+                        <lightning-button
+                            label="Save"
+                            variant="brand"
+                            onclick={handleUnifiedSave}
+                            icon-name="utility:save"
+                        ></lightning-button>
+                    </template>
+
+                    <!-- Column picker -->
+                    <div class="qle-col-picker-wrap">
+                        <lightning-button-icon
+                            icon-name="utility:table"
+                            title="Choose columns"
+                            variant="border-filled"
+                            onclick={toggleColumnPicker}
+                        ></lightning-button-icon>
+                        <template lwc:if={showColumnPicker}>
+                            <div class="qle-picker-backdrop" onclick={toggleColumnPicker}></div>
+                            <div class="qle-col-picker-dropdown">
+                                <p class="slds-p-horizontal_small slds-p-top_x-small slds-p-bottom_xx-small slds-text-title_caps slds-text-color_weak">Columns</p>
+                                <template for:each={columnDefs} for:item="c">
+                                    <div key={c.key} class="qle-col-picker-item">
+                                        <lightning-input
+                                            type="checkbox"
+                                            label={c.label}
+                                            checked={c.visible}
+                                            data-key={c.key}
+                                            onchange={handleColumnToggle}
+                                        ></lightning-input>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Approval status bar ── -->
+            <template lwc:if={showApprovalBar}>
+                <div class="qle-approval-bar">
+                    <lightning-icon icon-name="utility:lock" size="xx-small" class="qle-approval-lock"></lightning-icon>
+                    <span class="qle-approval-label">Approvals in Progress</span>
+                    <div class="qle-approval-badges">
+                        <template for:each={approvalBadges} for:item="badge">
+                            <span key={badge.key} class={badge.cls}>{badge.label}</span>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- ── Error ── -->
+            <template lwc:if={hasError}>
+                <div class="qle-error">
+                    <lightning-icon icon-name="utility:error" size="x-small" variant="error" class="qle-error-ic"></lightning-icon>
+                    <span>{errorMessage}</span>
+                </div>
+            </template>
+
+            <!-- ── Initial load spinner ── -->
+            <template lwc:if={showInitialSpinner}>
+                <div class="slds-align_absolute-center slds-p-vertical_medium">
+                    <lightning-spinner alternative-text="Loading…" size="small"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- ── Table area (Lines tab) ── -->
+            <template lwc:if={hasLines}>
+                <template lwc:if={isLinesTab}>
+                    <div class="qle-table-area">
+
+                        <template lwc:if={showLoadingOverlay}>
+                            <div class="qle-table-overlay">
+                                <lightning-spinner alternative-text="Working…" size="small"></lightning-spinner>
+                            </div>
+                        </template>
+
+                        <div class="qle-table-inner">
+                        <template for:each={groupedLines} for:item="grp">
+                            <div key={grp.key} class="qle-group-section">
+
+                                <!-- Billing group header -->
+                                <template lwc:if={showBillingGroups}>
+                                    <div class={grp.headerCls} data-key={grp.key} onclick={handleGroupCollapse} role="button" tabindex="0">
+                                        <div class="qle-grp-row">
+                                            <lightning-icon icon-name={grp.chevronIcon} size="x-small" class="qle-chevron"></lightning-icon>
+                                            <span class="qle-grp-label">{grp.label}</span>
+                                            <span class="qle-grp-count">{grp.count}</span>
+                                            <div class="qle-grp-subtotal">
+                                                <span class="qle-grp-sub-lbl">Subtotal</span>
+                                                <span class="qle-grp-sub-val">{grp.subtotal}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- Group content -->
+                                <div class={grp.contentClass}>
+
+                                    <!-- Family sub-groups -->
+                                    <template lwc:if={grp.hasSubGroups}>
+                                        <template for:each={grp.subGroups} for:item="sub">
+                                            <div key={sub.key} class="qle-subgroup-section">
+                                                <div class="qle-subgrp-header"
+                                                     data-key={sub.key}
+                                                     onclick={handleSubGroupCollapse}
+                                                     role="button"
+                                                     tabindex="0">
+                                                    <lightning-icon icon-name={sub.chevronIcon} size="xx-small" class="qle-chevron"></lightning-icon>
+                                                    <span class="qle-subgrp-label">{sub.label}</span>
+                                                    <span class="qle-subgrp-count">{sub.count}</span>
+                                                    <div class="qle-subgrp-subtotal">
+                                                        <span class="qle-grp-sub-lbl">Subtotal</span>
+                                                        <span class="qle-subgrp-sub-val">{sub.subtotal}</span>
+                                                    </div>
+                                                </div>
+                                                <div class={sub.contentClass}>
+                                                    <c-quote-line-datatable
+                                                        key-field="Id"
+                                                        data={sub.lines}
+                                                        columns={columns}
+                                                        selected-rows={selectedRowIds}
+                                                        onrowselection={handleRowSelection}
+                                                        data-group={sub.key}
+                                                        onrowaction={handleRowAction}
+                                                        onsave={handleSave}
+                                                        draft-values={draftValues}
+                                                        onattributechange={handleAttributeChange}
+                                                        hide-draft-bar
+                                                        ondraftchange={handleDraftChange}
+                                                        read-only={isQuoteLocked}
+                                                    ></c-quote-line-datatable>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>
+
+                                    <!-- Flat datatable -->
+                                    <template lwc:else>
+                                        <c-quote-line-datatable
+                                            key-field="Id"
+                                            data={grp.lines}
+                                            columns={columns}
+                                            selected-rows={selectedRowIds}
+                                            onrowselection={handleRowSelection}
+                                            data-group={grp.key}
+                                            onrowaction={handleRowAction}
+                                            onsave={handleSave}
+                                            draft-values={draftValues}
+                                            onattributechange={handleAttributeChange}
+                                            hide-draft-bar
+                                            ondraftchange={handleDraftChange}
+                                            read-only={isQuoteLocked}
+                                        ></c-quote-line-datatable>
+                                    </template>
+
+                                </div>
+                            </div>
+                        </template>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- ── Ramp Schedule tab ── -->
+                <template lwc:if={isRampScheduleTab}>
+                    <div class="qle-rs-wrap">
+                        <div class="qle-rs-bar">
+                            <span class="qle-rs-bar-summary">{rampScheduleData.phaseCount} phases</span>
+                            <span class="qle-rs-bar-dot"></span>
+                            <span class="qle-rs-bar-summary">{rampScheduleData.productCount} products</span>
+                            <div class="qle-rs-bar-actions">
+                                <button class="qle-rs-btn qle-rs-btn-edit" onclick={handleEditRampFromSchedule} disabled={isLoading}>Edit Ramp</button>
+                                <button class="qle-rs-btn qle-rs-btn-remove" onclick={handleRemoveRampFromSchedule} disabled={isLoading}>
+                                    <template if:true={isLoading}><span class="qle-rs-spinner"></span></template>
+                                    <template if:true={isLoading}>Removing...</template>
+                                    <template if:false={isLoading}>Remove Ramp</template>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="qle-rs-sections">
+                            <template for:each={rampScheduleData.phaseCards} for:item="phase">
+                                <div key={phase.key} class={phase.sectionClass}>
+                                    <button class="qle-rs-sec-hdr" data-phase={phase.phaseNumber} onclick={handleToggleRampPhase}>
+                                        <span class="qle-rs-sec-chevron"></span>
+                                        <div class="qle-rs-sec-left">
+                                            <span class="qle-rs-sec-title">Phase {phase.phaseNumber}</span>
+                                            <span class="qle-rs-sec-date">{phase.formattedStart}</span>
+                                            <span class="qle-rs-sec-products">{phase.productSummary}</span>
+                                        </div>
+                                        <div class="qle-rs-sec-right">
+                                            <span class="qle-rs-sec-mrc">{phase.mrcTotal}</span>
+                                            <span class="qle-rs-sec-nrc">{phase.nrcTotal} NRC</span>
+                                        </div>
+                                    </button>
+                                    <div class="qle-rs-sec-body">
+                                        <template for:each={phase.items} for:item="item">
+                                            <div key={item.key} class="qle-rs-item">
+                                                <div class="qle-rs-item-left">
+                                                    <span class="qle-rs-item-name">{item.name}</span>
+                                                    <span class={item.identifierClass}>{item.identifierLabel}</span>
+                                                </div>
+                                                <div class="qle-rs-item-right">
+                                                    <template lwc:if={item.hasAttr}>
+                                                        <span class="qle-rs-item-attr">{item.attr}</span>
+                                                    </template>
+                                                    <span class="qle-rs-item-qty">{item.qty}</span>
+                                                    <span class="qle-rs-item-price">{item.price}</span>
+                                                </div>
+                                            </div>
+                                            <template lwc:if={item.hasNrc}>
+                                                <div key={item.nrcKey} class="qle-rs-item qle-rs-item-nrc">
+                                                    <div class="qle-rs-item-left">
+                                                        <span class="qle-rs-item-name qle-rs-nrc-name">{item.nrcName}</span>
+                                                        <span class="qle-rs-nrc-badge">NRC</span>
+                                                    </div>
+                                                    <div class="qle-rs-item-right">
+                                                        <span class="qle-rs-item-qty">{item.nrcQty}</span>
+                                                        <span class="qle-rs-item-price">{item.nrcPrice}</span>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </template>
+                                        <template lwc:if={phase.hasNotes}>
+                                            <div class="qle-rs-sec-notes">{phase.notes}</div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="qle-rs-grand">
+                            <span class="qle-rs-grand-label">TOTAL COMMITMENT</span>
+                            <span class="qle-rs-grand-val">{rampScheduleData.grandTotal}</span>
+                        </div>
+                    </div>
+                </template>
+            </template>
+
+            <template lwc:if={isEmpty}>
+                <div class="qle-empty">
+                    <lightning-icon icon-name="utility:package" size="large" class="qle-empty-ic"></lightning-icon>
+                    <p class="qle-empty-h">No products on this quote yet</p>
+                    <p class="qle-empty-p">Search above to add products.</p>
+                </div>
+            </template>
+
+            <!-- ── Unified draft bar ── -->
+            <template lwc:if={hasPendingDrafts}>
+                <div class="qle-unified-draft-bar">
+                    <span class="qle-draft-label">Unsaved changes</span>
+                    <button class="qle-draft-cancel" onclick={handleUnifiedCancel} type="button">Cancel</button>
+                    <button class="qle-draft-save" onclick={handleUnifiedSave} type="button">Save</button>
+                </div>
+            </template>
+
+            <!-- ── Footer ── -->
+            <template lwc:if={hasLines}>
+                <div class="qle-footer">
+                    <span class="qle-footer-label">Grand Total</span>
+                    <span class="qle-footer-value">{formattedTotal}</span>
+                </div>
+            </template>
+
+        </div>
+
+        <!-- ─── Detail Panel ───────────────────────────────────────────────── -->
+        <template lwc:if={showDetailPanel}>
+            <div class="qle-backdrop" onclick={closeDetailPanel}></div>
+            <div class="qle-detail-panel">
+
+                <!-- ── Panel header ── -->
+                <div class="qle-dp-header">
+                    <div class="qle-dp-top">
+                        <lightning-icon icon-name="standard:product" size="x-small" class="qle-dp-ic"></lightning-icon>
+                        <h3 class="qle-dp-title" title={selectedLineName}>{selectedLineName}</h3>
+                        <template lwc:if={isPanelDetails}>
+                            <a href={selectedLineUrl} title="Open record" class="qle-dp-link-btn" target="_top">
+                                <lightning-icon icon-name="utility:new_window" size="xx-small"></lightning-icon>
+                            </a>
+                        </template>
+                        <lightning-button-icon icon-name="utility:close" variant="bare" size="small" onclick={closeDetailPanel} title="Close" class="qle-dp-close-btn"></lightning-button-icon>
+                    </div>
+                    <div class="qle-pn">
+                        <button class={detailsNavCls} data-section="details" onclick={handlePanelNav}>Details</button>
+                        <template lwc:if={showInventoryTab}>
+                            <button class={inventoryNavCls} data-section="inventory" onclick={handlePanelNav}>
+                                Inventory
+                                <template lwc:if={hasAssignedInventory}>
+                                    <span class="qle-pn-badge">{assignedCount}</span>
+                                </template>
+                            </button>
+                        </template>
+                        <template lwc:if={showRampTab}>
+                            <button class={rampNavCls} data-section="ramp" onclick={handlePanelNav}>Ramp</button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- ── Panel body ── -->
+                <div class="qle-dp-body">
+
+                    <!-- ═══ Details Section ═══════════════════════════════════ -->
+                    <template lwc:if={isPanelDetails}>
+
+                        <!-- Cross Connect — always editable, own form -->
+                        <template lwc:if={selectedLineIsCrossConnect}>
+                                <div class="qle-xc">
+                                    <div class="qle-xc-head">
+                                        <lightning-icon icon-name="utility:connected_apps" size="xx-small" class="qle-xc-ic"></lightning-icon>
+                                        <span class="qle-xc-title">Cross Connect Assets</span>
+                                        <template lwc:if={selectedLineCrossConnectComplete}>
+                                            <span class="qle-xc-badge qle-xc-badge_done">
+                                                <lightning-icon icon-name="utility:check" size="xx-small" class="qle-xc-badge-ic"></lightning-icon>
+                                                Linked
+                                            </span>
+                                        </template>
+                                        <template lwc:else>
+                                            <span class="qle-xc-badge qle-xc-badge_pending">Setup needed</span>
+                                        </template>
+                                    </div>
+                                    <p class="qle-xc-hint">Link to existing assets at both ends of this cross connect.</p>
+                                    <div class="slds-grid slds-gutters_xx-small">
+                                        <div class="slds-col slds-size_6-of-12">
+                                            <lightning-record-picker
+                                                label="A-Side Asset"
+                                                placeholder="Search Assets..."
+                                                object-api-name="Asset"
+                                                value={selectedLineASideAsset}
+                                                display-info={assetDisplayInfo}
+                                                matching-info={assetMatchingInfo}
+                                                filter={assetLookupFilter}
+                                                onchange={handleASideChange}
+                                            ></lightning-record-picker>
+                                        </div>
+                                        <div class="slds-col slds-size_6-of-12">
+                                            <lightning-record-picker
+                                                label="Z-Side Asset"
+                                                placeholder="Search Assets..."
+                                                object-api-name="Asset"
+                                                value={selectedLineZSideAsset}
+                                                display-info={assetDisplayInfo}
+                                                matching-info={assetMatchingInfo}
+                                                filter={assetLookupFilter}
+                                                onchange={handleZSideChange}
+                                            ></lightning-record-picker>
+                                        </div>
+                                    </div>
+                                    <div class="qle-xc-actions">
+                                        <lightning-button label="Save Assets" variant="brand" class="qle-xc-save" onclick={handleXcSave} disabled={xcSaving}></lightning-button>
+                                    </div>
+                                </div>
+                        </template>
+
+                        <!-- ─── Product — always view ─── -->
+                        <div class="qle-ps">
+                            <div class="qle-ps-head"><span class="qle-ps-title">Product</span></div>
+                            <div class="qle-ps-body">
+                                <lightning-record-view-form record-id={selectedLineId} object-api-name="QuoteLineItem">
+                                    <lightning-output-field field-name="Product2Id"></lightning-output-field>
+                                    <div class="slds-grid slds-gutters_xx-small">
+                                        <div class="slds-col slds-size_6-of-12">
+                                            <lightning-output-field field-name="Charge_Type__c"></lightning-output-field>
+                                        </div>
+                                        <div class="slds-col slds-size_6-of-12">
+                                            <lightning-output-field field-name="Description"></lightning-output-field>
+                                        </div>
+                                    </div>
+                                    <template lwc:if={isChangeOrderQuote}>
+                                        <lightning-output-field field-name="Change_Type__c"></lightning-output-field>
+                                        <div class="slds-grid slds-gutters_xx-small">
+                                            <div class="slds-col slds-size_6-of-12">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label">Original Price</label>
+                                                    <div class="slds-form-element__control">
+                                                        <span class="slds-form-element__static">{selectedLineOriginalPrice}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label">Original Attribute</label>
+                                                    <div class="slds-form-element__control">
+                                                        <span class="slds-form-element__static">{selectedLineOriginalAttribute}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <lightning-output-field field-name="Target_BAN__c"></lightning-output-field>
+                                </lightning-record-view-form>
+                                <template lwc:if={selectedLineHasAttribute}>
+                                    <lightning-combobox
+                                        label="Attribute"
+                                        value={selectedLineAttributeValue}
+                                        options={selectedLineAttributeOptions}
+                                        onchange={handleDetailAttributeChange}
+                                    ></lightning-combobox>
+                                </template>
+                                <template lwc:if={selectedLineShowCustomValue}>
+                                    <lightning-input
+                                        type="text"
+                                        label="Custom Attribute Value"
+                                        value={selectedLineCustomValue}
+                                        onchange={handleDetailCustomValueChange}
+                                    ></lightning-input>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- ─── Pricing — per-section edit ─── -->
+                        <template lwc:if={isEditingPricing}>
+                            <lightning-record-edit-form
+                                record-id={selectedLineId}
+                                object-api-name="QuoteLineItem"
+                                onsuccess={handleSectionSaveSuccess}
+                            >
+                                <div class="qle-ps qle-ps-editing">
+                                    <div class="qle-ps-head"><span class="qle-ps-title">Pricing</span></div>
+                                    <div class="qle-ps-body">
+                                        <div class="slds-grid slds-gutters_xx-small">
+                                            <div class="slds-col slds-size_6-of-12">
+                                                <lightning-input-field field-name="Quantity"></lightning-input-field>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12">
+                                                <lightning-input-field field-name="UnitPrice"></lightning-input-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="qle-ps-actions">
+                                        <lightning-button label="Cancel" onclick={handleSectionCancel}></lightning-button>
+                                        <lightning-button type="submit" label="Save" variant="brand"></lightning-button>
+                                    </div>
+                                </div>
+                            </lightning-record-edit-form>
+                        </template>
+                        <template lwc:else>
+                            <div class="qle-ps">
+                                <div class="qle-ps-head">
+                                    <span class="qle-ps-title">Pricing</span>
+                                    <button class="qle-ps-edit-btn" data-section="pricing" onclick={handleSectionEdit} title="Edit pricing">
+                                        <lightning-icon icon-name="utility:edit" size="xx-small"></lightning-icon>
+                                    </button>
+                                </div>
+                                <div class="qle-ps-body">
+                                    <lightning-record-view-form record-id={selectedLineId} object-api-name="QuoteLineItem">
+                                        <div class="slds-grid slds-gutters_xx-small">
+                                            <div class="slds-col slds-size_6-of-12">
+                                                <lightning-output-field field-name="Quantity"></lightning-output-field>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12">
+                                                <lightning-output-field field-name="ListPrice"></lightning-output-field>
+                                            </div>
+                                        </div>
+                                        <div class="slds-grid slds-gutters_xx-small">
+                                            <div class="slds-col slds-size_6-of-12">
+                                                <lightning-output-field field-name="UnitPrice"></lightning-output-field>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12">
+                                                <lightning-output-field field-name="TotalPrice"></lightning-output-field>
+                                            </div>
+                                        </div>
+                                    </lightning-record-view-form>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- ─── Schedule — per-section edit ─── -->
+                        <template lwc:if={isEditingSchedule}>
+                            <lightning-record-edit-form
+                                record-id={selectedLineId}
+                                object-api-name="QuoteLineItem"
+                                onsuccess={handleSectionSaveSuccess}
+                            >
+                                <div class="qle-ps qle-ps-editing">
+                                    <div class="qle-ps-head"><span class="qle-ps-title">Schedule</span></div>
+                                    <div class="qle-ps-body">
+                                        <div class="slds-grid slds-gutters_xx-small">
+                                            <div class="slds-col slds-size_6-of-12">
+                                                <lightning-input-field field-name="StartDate"></lightning-input-field>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12">
+                                                <lightning-input-field field-name="EndDate"></lightning-input-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="qle-ps-actions">
+                                        <lightning-button label="Cancel" onclick={handleSectionCancel}></lightning-button>
+                                        <lightning-button type="submit" label="Save" variant="brand"></lightning-button>
+                                    </div>
+                                </div>
+                            </lightning-record-edit-form>
+                        </template>
+                        <template lwc:else>
+                            <div class="qle-ps">
+                                <div class="qle-ps-head">
+                                    <span class="qle-ps-title">Schedule</span>
+                                    <div class="qle-ps-head-actions">
+                                        <button class="qle-ps-edit-btn" data-section="schedule" onclick={handleSectionEdit} title="Edit schedule">
+                                            <lightning-icon icon-name="utility:edit" size="xx-small"></lightning-icon>
+                                        </button>
+                                        <button class="qle-ps-edit-btn" onclick={handleAddRamp} title="Ramp schedule">
+                                            <lightning-icon icon-name="utility:steps" size="xx-small"></lightning-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="qle-ps-body">
+                                    <div class="slds-grid slds-gutters_xx-small">
+                                        <div class="slds-col slds-size_6-of-12">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">Start Date</span>
+                                                <div class="slds-form-element__control">
+                                                    <span class="slds-form-element__static">{selectedLineStartDate}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col slds-size_6-of-12">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">End Date</span>
+                                                <div class="slds-form-element__control">
+                                                    <span class="slds-form-element__static">{selectedLineEndDate}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-grid slds-gutters_xx-small">
+                                        <div class="slds-col slds-size_6-of-12">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">Ramp Phase</span>
+                                                <div class="slds-form-element__control">
+                                                    <span class="slds-form-element__static">{selectedLineRampPhase}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col slds-size_6-of-12">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">Billing Frequency</span>
+                                                <div class="slds-form-element__control">
+                                                    <span class="slds-form-element__static">{selectedLineBillingFrequency}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+
+                    <!-- ═══ Inventory Section ═════════════════════════════════ -->
+                    <template lwc:if={isPanelInventory}>
+                        <div class="qle-inv-wrap">
+
+                            <template lwc:if={isInventoryLoading}>
+                                <div class="slds-align_absolute-center slds-p-vertical_medium">
+                                    <lightning-spinner alternative-text="Loading inventory…" size="small"></lightning-spinner>
+                                </div>
+                            </template>
+
+                            <template lwc:if={inventoryLoaded}>
+
+                                <!-- Progress bar -->
+                                <div class="qle-inv-progress">
+                                    <div class="qle-inv-progress-top">
+                                        <span class="qle-inv-progress-label">{inventoryProgressLabel}</span>
+                                        <template lwc:if={isInventoryComplete}>
+                                            <lightning-icon icon-name="utility:check" size="xx-small" variant="success"></lightning-icon>
+                                        </template>
+                                    </div>
+                                    <div class="qle-inv-progress-bar">
+                                        <div class={inventoryProgressBarClass} style={inventoryProgressStyle}></div>
+                                    </div>
+                                </div>
+
+                                <!-- Assigned -->
+                                <template lwc:if={hasAssignedInventory}>
+                                    <p class="qle-inv-section-label">Assigned</p>
+                                    <template for:each={assignedInventory} for:item="inv">
+                                        <div key={inv.Id} class="qle-inv-row qle-inv-row_assigned">
+                                            <div class="qle-inv-row-main">
+                                                <span class="qle-inv-name" title={inv.displayName}>{inv.displayName}</span>
+                                                <span class={inv.typeBadgeCls}>{inv.rtLabel}</span>
+                                            </div>
+                                            <div class="qle-inv-row-meta">
+                                                <span class="qle-inv-meta-text">{inv.typeLabel}</span>
+                                                <template lwc:if={inv.roomLabel}>
+                                                    <span class="qle-inv-meta-sep">&middot;</span>
+                                                    <span class="qle-inv-meta-text">{inv.roomLabel}</span>
+                                                </template>
+                                                <template lwc:if={inv.powerLabel}>
+                                                    <span class="qle-inv-meta-sep">&middot;</span>
+                                                    <span class="qle-inv-meta-text">{inv.powerLabel}</span>
+                                                </template>
+                                            </div>
+                                            <lightning-button-icon
+                                                icon-name="utility:close"
+                                                variant="bare"
+                                                size="small"
+                                                title="Release"
+                                                data-id={inv.Id}
+                                                onclick={handleReleaseFromLine}
+                                                disabled={isInventoryBusy}
+                                                class="qle-inv-release-btn"
+                                            ></lightning-button-icon>
+                                        </div>
+                                    </template>
+                                </template>
+
+                                <!-- Available -->
+                                <p class="qle-inv-section-label">Available at Site</p>
+
+                                <div class="qle-inv-filter-row">
+                                    <template for:each={invTypeFilterOptions} for:item="ft">
+                                        <button key={ft.value}
+                                                class={ft.cls}
+                                                data-value={ft.value}
+                                                onclick={handleInvTypeFilter}>{ft.label}</button>
+                                    </template>
+                                </div>
+
+                                <div class="qle-inv-search-wrap">
+                                    <input
+                                        type="text"
+                                        class="slds-input qle-inv-search"
+                                        placeholder="Filter by name…"
+                                        oninput={handleInventorySearch}
+                                    />
+                                </div>
+
+                                <template lwc:if={hasAvailableInventory}>
+                                    <!-- Assign Selected button -->
+                                    <template lwc:if={hasSelectedInv}>
+                                        <div class="qle-inv-bulk-row">
+                                            <button class="qle-inv-bulk-assign-btn"
+                                                    onclick={handleBulkAssignToLine}
+                                                    disabled={isAssignDisabled}>{assignSelectedLabel}</button>
+                                        </div>
+                                    </template>
+
+                                    <div class="qle-inv-available-list">
+                                        <template for:each={filteredAvailableInventory} for:item="inv">
+                                            <div key={inv.Id} class="qle-inv-row qle-inv-row_available">
+                                                <input type="checkbox"
+                                                       checked={inv._checked}
+                                                       disabled={inv._disabled}
+                                                       data-id={inv.Id}
+                                                       onchange={handleInvCheckbox}
+                                                       class="qle-inv-checkbox" />
+                                                <div class="qle-inv-row-main">
+                                                    <span class="qle-inv-name" title={inv.displayName}>{inv.displayName}</span>
+                                                    <span class={inv.typeBadgeCls}>{inv.rtLabel}</span>
+                                                </div>
+                                                <div class="qle-inv-row-meta">
+                                                    <span class="qle-inv-meta-text">{inv.typeLabel}</span>
+                                                    <template lwc:if={inv.roomLabel}>
+                                                        <span class="qle-inv-meta-sep">&middot;</span>
+                                                        <span class="qle-inv-meta-text">{inv.roomLabel}</span>
+                                                    </template>
+                                                    <template lwc:if={inv.powerLabel}>
+                                                        <span class="qle-inv-meta-sep">&middot;</span>
+                                                        <span class="qle-inv-meta-text">{inv.powerLabel}</span>
+                                                    </template>
+                                                </div>
+                                                <lightning-button-icon
+                                                    icon-name="utility:add"
+                                                    variant="bare"
+                                                    size="small"
+                                                    title="Assign"
+                                                    data-id={inv.Id}
+                                                    onclick={handleAssignToLine}
+                                                    disabled={isAssignDisabled}
+                                                    class="qle-inv-assign-btn"
+                                                ></lightning-button-icon>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <p class="qle-inv-empty-text">No available inventory at this site.</p>
+                                </template>
+
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- ═══ Ramp Section ══════════════════════════════════════ -->
+                    <template lwc:if={isPanelRamp}>
+
+                        <!-- ── View Existing Ramp ── -->
+                        <template lwc:if={isViewingExistingRamp}>
+                            <div class="qle-ramp-wrap">
+                                <div class="qle-ramp-info">
+                                    <span class="qle-ramp-badge">{existingRampPhaseCount} Phases</span>
+                                    <span class="qle-ramp-badge">{existingRampProductCount} Products</span>
+                                </div>
+
+                                <!-- Phase-by-phase cards with all products -->
+                                <template for:each={existingRampPhases} for:item="phase">
+                                    <div key={phase.key} class="qle-ramp-phase">
+                                        <div class="qle-ramp-phase-head">
+                                            <span class="qle-ramp-phase-label">Phase {phase.phaseNumber}</span>
+                                            <span class="qle-ramp-phase-dates">{phase.formattedStart}</span>
+                                        </div>
+                                        <template for:each={phase.products} for:item="prod">
+                                            <div key={prod.id} class="qle-ramp-prod-row">
+                                                <span class="qle-ramp-prod-code">{prod.code}</span>
+                                                <template lwc:if={prod.attributeValue}>
+                                                    <span class="qle-ramp-prod-attr">{prod.attributeValue}</span>
+                                                </template>
+                                                <span class="qle-ramp-prod-qty">x{prod.quantity}</span>
+                                                <span class="qle-ramp-prod-price">{prod.formattedPrice}</span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <!-- Actions -->
+                                <div class="qle-ramp-actions">
+                                    <lightning-button label="Remove Ramp" variant="destructive-text" onclick={handleDeleteRamp}></lightning-button>
+                                    <lightning-button label="Edit Ramp" variant="brand" onclick={handleEditExistingRamp}></lightning-button>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- ── Create New Ramp ── -->
+                        <template lwc:else>
+                        <div class="qle-ramp-wrap">
+
+                            <div class="qle-ramp-info">
+                                <template lwc:if={isQtyRamp}>
+                                    <span class="qle-ramp-badge">Total Qty: {rampSourceQty}</span>
+                                </template>
+                                <template lwc:elseif={isAttributeRamp}>
+                                    <span class="qle-ramp-badge">Attribute: {rampAttributeLabel}</span>
+                                    <span class="qle-ramp-badge">Source Price: {rampSourcePriceFormatted}</span>
+                                </template>
+                                <template lwc:else>
+                                    <span class="qle-ramp-badge">Source Price: {rampSourcePriceFormatted}</span>
+                                </template>
+                            </div>
+
+                            <!-- Ramp type selector -->
+                            <div class="qle-ramp-types">
+                                <button class={qtyRampCls} onclick={handleSelectQtyRamp}>Quantity</button>
+                                <button class={priceRampCls} onclick={handleSelectPriceRamp}>Price</button>
+                                <template lwc:if={rampHasAttribute}>
+                                    <button class={attrRampCls} onclick={handleSelectAttributeRamp}>Attribute</button>
+                                </template>
+                            </div>
+
+                            <!-- Allocation status -->
+                            <template lwc:if={isIndependentQtyRamp}>
+                                <div class="qle-ramp-status">
+                                    Each phase has independent quantity — source qty: {rampSourceQty}
+                                </div>
+                            </template>
+                            <template lwc:elseif={showQtyAllocationStatus}>
+                                <div class={rampStatusClass}>
+                                    <template lwc:if={rampOverAllocated}>
+                                        Over-allocated by {rampOverAmount} — reduce phase quantities
+                                    </template>
+                                    <template lwc:elseif={hasRampRemaining}>
+                                        {rampRemainingQty} remaining — will auto-create final phase on save
+                                    </template>
+                                    <template lwc:else>
+                                        All quantity allocated across phases
+                                    </template>
+                                </div>
+                            </template>
+                            <template lwc:elseif={isAttributeRamp}>
+                                <div class="qle-ramp-status">
+                                    Set {rampAttributeLabel} and price per phase — quantity stays at {rampSourceQty}
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="qle-ramp-status">
+                                    Set unit price per phase — quantity stays at {rampSourceQty}
+                                </div>
+                            </template>
+
+                            <!-- Phase cards -->
+                            <template for:each={rampPhases} for:item="phase">
+                                <div key={phase.id} class="qle-ramp-phase">
+                                    <div class="qle-ramp-phase-head">
+                                        <span class="qle-ramp-phase-label">Phase {phase.phaseNumber}</span>
+                                        <template lwc:if={phase.canRemove}>
+                                            <lightning-button-icon
+                                                icon-name="utility:delete"
+                                                variant="bare"
+                                                size="small"
+                                                title="Remove phase"
+                                                data-phase-id={phase.id}
+                                                onclick={handleRemoveRampPhase}
+                                            ></lightning-button-icon>
+                                        </template>
+                                    </div>
+                                    <div class="slds-grid slds-gutters_x-small slds-wrap">
+                                        <div class="slds-col slds-size_6-of-12">
+                                            <template lwc:if={isQtyRamp}>
+                                                <lightning-input
+                                                    type="number" label="Qty"
+                                                    value={phase.quantity} min="1"
+                                                    data-phase-id={phase.id} data-field="quantity"
+                                                    onchange={handleRampPhaseChange}
+                                                    variant="label-stacked"
+                                                ></lightning-input>
+                                            </template>
+                                            <template lwc:elseif={isAttributeRamp}>
+                                                <lightning-combobox
+                                                    label={rampAttributeLabel}
+                                                    value={phase.attributeValue}
+                                                    options={rampAttributeOptions}
+                                                    data-phase-id={phase.id} data-field="attributeValue"
+                                                    onchange={handleRampPhaseChange}
+                                                    variant="label-stacked"
+                                                ></lightning-combobox>
+                                            </template>
+                                            <template lwc:else>
+                                                <lightning-input
+                                                    type="number" label={rampPriceLabel}
+                                                    value={phase.unitPrice} min="0" step="0.01"
+                                                    data-phase-id={phase.id} data-field="unitPrice"
+                                                    onchange={handleRampPhaseChange}
+                                                    variant="label-stacked"
+                                                ></lightning-input>
+                                            </template>
+                                        </div>
+                                        <div class="slds-col slds-size_6-of-12">
+                                            <lightning-input
+                                                type="date" label="Start Date"
+                                                value={phase.startDate}
+                                                data-phase-id={phase.id} data-field="startDate"
+                                                onchange={handleRampPhaseChange}
+                                                variant="label-stacked"
+                                            ></lightning-input>
+                                        </div>
+                                        <!-- Attribute ramp: price per phase -->
+                                        <template lwc:if={isAttributeRamp}>
+                                            <div class="slds-col slds-size_6-of-12 slds-m-top_x-small">
+                                                <lightning-input
+                                                    type="number" label={rampPriceLabel}
+                                                    value={phase.unitPrice} min="0" step="0.01"
+                                                    data-phase-id={phase.id} data-field="unitPrice"
+                                                    onchange={handleRampPhaseChange}
+                                                    variant="label-stacked"
+                                                ></lightning-input>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Add phase -->
+                            <template lwc:if={canAddRampPhase}>
+                                <button class="qle-ramp-add-btn" onclick={handleAddRampPhase}>
+                                    <lightning-icon icon-name="utility:add" size="xx-small" class="qle-ramp-add-ic"></lightning-icon>
+                                    Add Phase
+                                </button>
+                            </template>
+
+                            <!-- Actions -->
+                            <div class="qle-ramp-actions">
+                                <lightning-button label="Cancel" onclick={handleCancelRamp}></lightning-button>
+                                <lightning-button
+                                    label="Save Ramp"
+                                    variant="brand"
+                                    onclick={handleSaveRamp}
+                                    disabled={rampSaveDisabled}
+                                ></lightning-button>
+                            </div>
+                        </div>
+                        </template>
+                    </template>
+
+                </div>
+
+            </div>
+        </template>
+
+        <!-- ─── Create Inventory Modal ───────────────────────────────── -->
+        <template lwc:if={showCreateModal}>
+            <div class="qle-create-backdrop" onclick={handleCloseCreate}>
+                <div class="qle-create-modal" onclick={handleCreateModalClick}>
+                    <div class="qle-create-header">
+                        <span class="qle-create-title">Create Inventory</span>
+                        <lightning-button-icon icon-name="utility:close" variant="bare"
+                                              onclick={handleCloseCreate} title="Close"></lightning-button-icon>
+                    </div>
+                    <div class="qle-create-body">
+                        <lightning-combobox label="Record Type"
+                            value={createRT} options={createRTOptions}
+                            onchange={handleCreateRTChange}
+                            class="slds-m-bottom_small"></lightning-combobox>
+                        <lightning-combobox label="Floor"
+                            value={createFloorId} options={floorOptions}
+                            placeholder="Select floor..."
+                            onchange={handleCreateFloorChange}
+                            class="slds-m-bottom_small"></lightning-combobox>
+                        <lightning-combobox label="Data Hall"
+                            value={createHallId} options={hallOptions}
+                            placeholder="Select data hall..."
+                            onchange={handleCreateHallChange}
+                            disabled={noHallOptions}
+                            class="slds-m-bottom_small"></lightning-combobox>
+
+                        <template lwc:if={isSpaceRT}>
+                            <lightning-combobox label="Space Type"
+                                value={createSpaceType}
+                                options={spaceTypeCreateOptions}
+                                onchange={handleCreateSpaceTypeChange}
+                                class="slds-m-bottom_small"></lightning-combobox>
+                            <lightning-input type="number" label="Total Capacity (kVA)"
+                                value={createTotalCapKva}
+                                onchange={handleCreateTotalCapKva}
+                                step="0.01" class="slds-m-bottom_small"></lightning-input>
+                            <lightning-input type="number" label="Power (kVA)"
+                                value={createPowerKva}
+                                onchange={handleCreatePowerKva}
+                                step="0.01" class="slds-m-bottom_small"></lightning-input>
+                        </template>
+
+                        <template lwc:if={isBreakerRT}>
+                            <lightning-combobox label="Capacity Type"
+                                value={createCapType}
+                                options={capacityTypeOptions}
+                                onchange={handleCreateCapTypeChange}
+                                class="slds-m-bottom_small"></lightning-combobox>
+                            <lightning-input type="text" label="Breaker Panel"
+                                value={createPanel}
+                                onchange={handleCreatePanel}
+                                class="slds-m-bottom_small"></lightning-input>
+                        </template>
+
+                        <lightning-input type="number" label="Quantity"
+                            value={createQty}
+                            onchange={handleCreateQty}
+                            min="1" max="100" step="1"
+                            class="slds-m-bottom_small"></lightning-input>
+                        <lightning-textarea label="Notes"
+                            value={createNotes}
+                            onchange={handleCreateNotes}></lightning-textarea>
+                    </div>
+                    <div class="qle-create-footer">
+                        <lightning-button label="Cancel" onclick={handleCloseCreate}></lightning-button>
+                        <lightning-button label={createBtnLabel}
+                                         variant="brand"
+                                         disabled={createDisabled}
+                                         onclick={handleCreateSubmit}></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ─── SBI Warning Modal ─────────────────────────────────────────── -->
+        <template lwc:if={showSbiWarning}>
+            <div class="qle-create-backdrop" onclick={handleSbiCancel}>
+                <div class="qle-create-modal" onclick={handleCreateModalClick}>
+                    <div class="qle-create-header">
+                        <span class="qle-create-title">Non-Standard Billing Change</span>
+                        <lightning-button-icon icon-name="utility:close" variant="bare"
+                                              onclick={handleSbiCancel} title="Close"></lightning-button-icon>
+                    </div>
+                    <div class="qle-create-body">
+                        <div class="slds-illustration slds-illustration_small slds-m-bottom_small">
+                            <lightning-icon icon-name="utility:warning" size="large" variant="warning"
+                                            class="slds-m-bottom_small"></lightning-icon>
+                        </div>
+                        <p class="slds-text-heading_small slds-m-bottom_x-small" style="font-weight: 700;">
+                            Billing Mode change is non-standard
+                        </p>
+                        <template for:each={sbiChangeDetails} for:item="detail">
+                            <p key={detail} class="slds-text-body_regular slds-m-bottom_xx-small">{detail}</p>
+                        </template>
+                        <p class="slds-text-body_regular slds-m-top_small" style="color: #c23934; font-weight: 600;">
+                            This will trigger SBI Finance Approval. Proceed?
+                        </p>
+                    </div>
+                    <div class="qle-create-footer">
+                        <lightning-button label="Cancel" onclick={handleSbiCancel}></lightning-button>
+                        <lightning-button label="Confirm &amp; Save" variant="brand" onclick={handleSbiConfirm}></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ─── Multi-Product Ramp Modal ──────────────────────────────────── -->
+        <template lwc:if={showRampModal}>
+            <div class="qle-ramp-backdrop" onclick={handleCloseRampModal}>
+                <div class="qle-ramp-modal" style={rampModalWidthStyle} onclick={handleRampModalClick}>
+
+                    <!-- Header -->
+                    <div class="qle-ramp-modal-header">
+                        <div class="qle-ramp-modal-header-left">
+                            <lightning-icon icon-name="utility:steps" size="small"></lightning-icon>
+                            <h2 class="qle-ramp-modal-title">{rampModalTitle}</h2>
+                        </div>
+                        <lightning-button-icon icon-name="utility:close" variant="bare"
+                                              onclick={handleCloseRampModal} title="Close"></lightning-button-icon>
+                    </div>
+
+                    <!-- Compact product summary + config -->
+                    <div class="qle-ramp-config">
+                        <div class="qle-ramp-config-row">
+                            <!-- Product chips with remove -->
+                            <div class="qle-ramp-config-products">
+                                <template for:each={rampMrcChips} for:item="chip">
+                                    <span key={chip.id} class="qle-ramp-chip qle-ramp-chip_mrc">
+                                        {chip.code}
+                                        <template lwc:if={chip.attr}>
+                                            <span class="qle-ramp-chip-attr">{chip.attr}</span>
+                                        </template>
+                                        <template lwc:if={chip.canRemove}>
+                                            <button class="qle-ramp-chip-x" data-id={chip.id} onclick={handleRemoveLineFromRamp} title="Remove from ramp">&times;</button>
+                                        </template>
+                                    </span>
+                                </template>
+                                <template lwc:if={hasRampNrcLines}>
+                                    <span class="qle-ramp-nrc-label">{rampNrcSummary}</span>
+                                </template>
+                                <!-- Add more lines -->
+                                <template lwc:if={hasAvailableRampLines}>
+                                    <div class="qle-ramp-add-wrap">
+                                        <button class="qle-ramp-add-line-btn" onclick={toggleRampAddPopover} title="Add more lines">{rampAddButtonLabel}</button>
+                                        <template lwc:if={_showRampAddPopover}>
+                                            <div class="qle-ramp-add-backdrop" onclick={closeRampAddPopover}></div>
+                                            <div class="qle-ramp-add-popover">
+                                                <template for:each={_availableRampLines} for:item="avail">
+                                                    <button key={avail.Id} class="qle-ramp-add-item" data-id={avail.Id} onclick={handleAddLineToRamp}>
+                                                        <span class="qle-ramp-add-code">{avail.productCode}</span>
+                                                        <template lwc:if={avail.Product_Attribute_Value__c}>
+                                                            <span class="qle-ramp-add-attr">{avail.Product_Attribute_Value__c}</span>
+                                                        </template>
+                                                        <span class="qle-ramp-add-qty">Qty {avail.Quantity}</span>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="qle-ramp-config-row">
+                            <div class="qle-ramp-config-group">
+                                <span class="qle-ramp-config-label">Phases</span>
+                                <div class="qle-ramp-count-pills">
+                                    <template for:each={phaseCountOptions} for:item="opt">
+                                        <button key={opt.value} class={opt.cls} data-count={opt.value}
+                                                onclick={handlePhaseCountChange}>{opt.label}</button>
+                                    </template>
+                                </div>
+                                <!-- Beyond the quick-pick row (SFDC-208: up to 30 phases) -->
+                                <div class="qle-ramp-step">
+                                    <button class="qle-ramp-step-btn" title="One phase fewer"
+                                            disabled={phaseStepDownDisabled}
+                                            onclick={handlePhaseStepDown}>&#8722;</button>
+                                    <span class={phaseStepValueCls}>{rampPhaseCount}</span>
+                                    <button class="qle-ramp-step-btn" title="One phase more"
+                                            disabled={phaseStepUpDisabled}
+                                            onclick={handlePhaseStepUp}>+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading overlay -->
+                    <template lwc:if={isLoading}>
+                        <div class="qle-ramp-modal-loading">
+                            <lightning-spinner alternative-text="Saving..." size="medium"></lightning-spinner>
+                        </div>
+                    </template>
+
+                    <!-- Grid: products × phases -->
+                    <div class="qle-ramp-modal-body">
+                        <div class={rampGridCls} style={rampGridStyle}>
+
+                            <!-- Header row: corner + phase columns -->
+                            <div class="qle-ramp-grid-corner">
+                                <span class="qle-ramp-grid-corner-label">Product</span>
+                            </div>
+                            <template for:each={_rampModalPhases} for:item="phase">
+                                <div key={phase.id} class={phase.colClass}>
+                                    <span class="qle-ramp-grid-phase-num">Phase {phase.phaseNumber}</span>
+                                    <lightning-input
+                                        type="date" label="Start Date"
+                                        value={phase.startDate}
+                                        data-phase-id={phase.id}
+                                        onchange={handleRampModalPhaseDate}
+                                        variant="label-hidden"
+                                        class="qle-ramp-grid-date"
+                                    ></lightning-input>
+                                    <input type="text"
+                                        value={phase.notes}
+                                        data-phase-id={phase.id}
+                                        data-field="notes"
+                                        oninput={handleRampModalPhaseNotes}
+                                        placeholder="Phase notes"
+                                        class="qle-ramp-grid-notes"
+                                    />
+                                </div>
+                            </template>
+
+                            <!-- Product rows -->
+                            <template for:each={_rampGridRows} for:item="row">
+                                <div key={row.lineId} class="qle-ramp-grid-product">
+                                    <div class="qle-ramp-grid-product-top">
+                                        <span class="qle-ramp-grid-code">{row.code}</span>
+                                        <template lwc:if={row.attrLabel}>
+                                            <span class="qle-ramp-grid-attr">{row.attrLabel}</span>
+                                        </template>
+                                    </div>
+                                    <div class="qle-ramp-grid-base-qty">
+                                        <span class="qle-ramp-grid-base-label" title="Total quantity to distribute across phases">Base Qty</span>
+                                        <input type="number" value={row.baseQty} min="0" step="any"
+                                               data-line-id={row.lineId}
+                                               onchange={handleRampBaseQtyChange}
+                                               class="qle-ramp-grid-base-input" />
+                                    </div>
+                                    <span class={row.aggregateCls}>{row.aggregateLabel}</span>
+                                </div>
+                                <template for:each={row.cells} for:item="cell">
+                                    <div key={cell.key} class={cell.cellClass}>
+                                        <template lwc:if={cell.isExcluded}>
+                                            <!-- Excluded state — hide everything -->
+                                            <div class="qle-ramp-excluded">
+                                                <span class="qle-ramp-excluded-label">Excluded</span>
+                                                <button class="qle-ramp-include-btn"
+                                                        data-phase-id={cell.phaseId} data-line-id={cell.lineId}
+                                                        onclick={handleExcludeToggle}>Include</button>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>
+                                        <template lwc:if={cell.hasAttribute}>
+                                            <lightning-combobox
+                                                label={cell.attributeLabel} value={cell.attributeValue} options={cell.attributeOptions}
+                                                data-phase-id={cell.phaseId} data-line-id={cell.lineId} data-field="attributeValue"
+                                                onchange={handleRampModalProdChange}
+                                                variant="label-hidden"
+                                                placeholder={cell.attributeLabel}
+                                                class="qle-ramp-grid-input"
+                                            ></lightning-combobox>
+                                        </template>
+                                        <template lwc:if={cell.showCustomValue}>
+                                            <div class="qle-ramp-grid-full">
+                                                <lightning-input
+                                                    type="text" label={cell.customValueLabel} value={cell.customValue}
+                                                    data-phase-id={cell.phaseId} data-line-id={cell.lineId} data-field="customValue"
+                                                    onchange={handleRampModalProdChange}
+                                                    variant="label-hidden"
+                                                    placeholder={cell.customValuePlaceholder}
+                                                    class="qle-ramp-grid-input"
+                                                ></lightning-input>
+                                            </div>
+                                        </template>
+                                            <lightning-input
+                                                type="number" label="Qty" value={cell.quantity} min="0" step="any"
+                                                data-phase-id={cell.phaseId} data-line-id={cell.lineId} data-field="quantity"
+                                                onchange={handleRampModalProdChange}
+                                                variant="label-hidden"
+                                                placeholder="Qty"
+                                                class="qle-ramp-grid-input"
+                                                disabled={cell.qtyDisabled}
+                                            ></lightning-input>
+                                            <lightning-input
+                                                type="number" label="Price" value={cell.unitPrice} min="0" step="0.01"
+                                                data-phase-id={cell.phaseId} data-line-id={cell.lineId} data-field="unitPrice"
+                                                onchange={handleRampModalProdChange}
+                                                variant="label-hidden"
+                                                placeholder="Price"
+                                                class="qle-ramp-grid-input"
+                                            ></lightning-input>
+                                            <!-- Phase actions: link + exclude -->
+                                            <template lwc:if={cell.canExclude}>
+                                                <div class="qle-ramp-phase-actions">
+                                                    <template lwc:if={cell.isLinkable}>
+                                                        <div class="qle-ramp-pill-wrap">
+                                                            <button class={cell.pillClass}
+                                                                    data-phase-id={cell.phaseId} data-line-id={cell.lineId}
+                                                                    disabled={cell.linkLocked} title={cell.pillTitle}
+                                                                    onclick={handlePillClick}>{cell.pillLabel}</button>
+                                                            <template lwc:if={cell.showPillMenu}>
+                                                                <!-- Multi-select stays open while toggling — this catches the outside click -->
+                                                                <div class="qle-ramp-pill-backdrop" onclick={handlePillMenuClose}></div>
+                                                                <div class="qle-ramp-pill-menu" style={cell.pillMenuStyle}>
+                                                                    <template for:each={cell.pillOptions} for:item="po">
+                                                                        <button key={po.value} class={po.cls}
+                                                                                data-phase-id={cell.phaseId} data-line-id={cell.lineId}
+                                                                                data-target={po.value}
+                                                                                onclick={handlePillSelect}><span class="qle-ramp-pill-mark">{po.mark}</span>{po.label}</button>
+                                                                    </template>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                    <button class="qle-ramp-exclude-btn"
+                                                            data-phase-id={cell.phaseId} data-line-id={cell.lineId}
+                                                            onclick={handleExcludeToggle} title="Exclude from this phase">&#x2715;</button>
+                                                </div>
+                                            </template>
+                                        </template>
+                                    </div>
+                                </template>
+                                <!-- Connector track row -->
+                                <div key={row.trackKey} class="qle-ramp-track-corner" style={row.trackStyle}></div>
+                                <template for:each={row.trackCells} for:item="tc">
+                                    <div key={tc.key} class={tc.cls} style={tc.cellStyle}>
+                                        <template lwc:if={tc.hasNode}>
+                                            <div class={tc.nodeClass}></div>
+                                            <div class="qle-ramp-track-leg"></div>
+                                        </template>
+                                        <template for:each={tc.lines} for:item="ln">
+                                            <div key={ln.key} class="qle-ramp-track-hline" style={ln.style}></div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+
+                        <!-- Inline validation -->
+                        <template lwc:if={hasRampValidationErrors}>
+                            <div class="qle-ramp-validation">
+                                <lightning-icon icon-name="utility:warning" size="xx-small" class="qle-ramp-validation-ic"></lightning-icon>
+                                <div class="qle-ramp-validation-list">
+                                    <template for:each={_rampValidationMessages} for:item="msg">
+                                        <span key={msg.key} class="qle-ramp-validation-msg">{msg.text}</span>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Error display -->
+                    <template lwc:if={_rampModalError}>
+                        <div class="qle-ramp-modal-error">
+                            <lightning-icon icon-name="utility:error" size="x-small" variant="error"></lightning-icon>
+                            <span>{_rampModalError}</span>
+                        </div>
+                    </template>
+
+                    <!-- Footer -->
+                    <div class="qle-ramp-modal-footer">
+                        <span class="qle-ramp-modal-footer-info">{rampModalProductCount} products &middot; {_rampModalPhaseCount} phases</span>
+                        <lightning-button label="Cancel" onclick={handleCloseRampModal}></lightning-button>
+                        <lightning-button label={rampModalSaveLabel} variant="brand"
+                                          onclick={handleSaveRampModal}
+                                          disabled={rampModalSaveDisabled}></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+    </div>
+</template>

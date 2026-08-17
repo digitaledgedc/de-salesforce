@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Inbound - Website - Organic</fullName>
+        <default>false</default>
+        <label>Inbound - Website - Organic</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Inbound - Website - Paid Ads</fullName>
+        <default>false</default>
+        <label>Inbound - Website - Paid Ads</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Inbound - Event</fullName>
+        <default>false</default>
+        <label>Inbound - Event</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Inbound - Partners</fullName>
+        <default>false</default>
+        <label>Inbound - Partners</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Inbound - Customer Referral</fullName>
+        <default>false</default>
+        <label>Inbound - Customer Referral</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Inbound - Directory/Listings</fullName>
+        <default>false</default>
+        <label>Inbound - Directory/Listings</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Outbound - Existing Account Expansion</fullName>
+        <default>false</default>
+        <label>Outbound - Existing Account Expansion</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Outbound - New Direct Sales Outreach</fullName>
+        <default>false</default>
+        <label>Outbound - New Direct Sales Outreach</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Outbound - LinkedIn Sales Navigator</fullName>
+        <default>false</default>
+        <label>Outbound - LinkedIn Sales Navigator</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Outbound - Market EDM/Campaign</fullName>
+        <default>false</default>
+        <label>Outbound - Market EDM/Campaign</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Outbound - AI/BDR Outreach</fullName>
+        <default>false</default>
+        <label>Outbound - AI/BDR Outreach</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Outbound - Employee Referral</fullName>
+        <default>false</default>
+        <label>Outbound - Employee Referral</label>
+    </standardValue>
+</StandardValueSet>

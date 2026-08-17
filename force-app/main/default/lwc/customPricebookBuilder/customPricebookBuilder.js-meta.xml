@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__FlowScreen</target>
+        <target>lightning__RecordAction</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="pricebookId"    type="String" label="Pricebook ID"
+                description="Active pricebook on the Quote" />
+            <property name="quoteId"        type="String" label="Quote ID"
+                description="The Quote being worked on" />
+            <property name="preSelectedIds" type="String" label="Pre-selected Product IDs"
+                description="Semicolon-delimited Product2 IDs selected on the previous screen" />
+            <property name="siteId" type="String" label="Target Site ID"
+                description="Site__c record ID from the quote - stamped on the request for pricebook linking on approval" />
+            <property name="currencyIsoCode" type="String" label="Currency ISO Code"
+                description="Quote currency - passed directly to avoid wire race conditions" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,144 @@
+<template>
+    <template if:true={hasAccess}>
+    <template if:true={isLoaded}>
+        <article class="card">
+
+            <!-- ── Header ── -->
+            <header class="card-header">
+                <div class="header-row">
+                    <span class="header-title">Account Readiness</span>
+                    <span class={statusPillClass}>
+                        <span class="pulse"></span>
+                        {statusPillLabel}
+                    </span>
+                </div>
+            </header>
+
+            <!-- ── Summary: ring + breakdown ── -->
+            <div class="summary" style={ringStyle}>
+                <div class="ring-wrap">
+                    <div class="ring-bg"></div>
+                    <div class="ring-center"></div>
+                    <div class="ring-label">
+                        <span class="ring-number">{readinessPercent}</span>
+                        <span class="ring-pct">%</span>
+                    </div>
+                </div>
+                <div class="summary-text">
+                    <div class="summary-headline">{summaryHeadline}</div>
+                    <div class="summary-breakdown">
+                        <template if:true={hasBlockers}>
+                            <span class="chip">
+                                <span class="swatch swatch-rose"></span>
+                                <strong>{blockerCount}</strong>&nbsp;blocking
+                            </span>
+                        </template>
+                        <template if:true={hasProgress}>
+                            <span class="chip">
+                                <span class="swatch swatch-amber"></span>
+                                <strong>{progressCount}</strong>&nbsp;in progress
+                            </span>
+                        </template>
+                        <template if:true={hasComplete}>
+                            <span class="chip">
+                                <span class="swatch swatch-emerald"></span>
+                                <strong>{completeCount}</strong>&nbsp;complete
+                            </span>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Needs attention ── -->
+            <template if:true={hasBlockers}>
+                <div class="section">
+                    <div class="section-head">
+                        <span class="section-title">
+                            <span class="dot dot-rose"></span>
+                            Needs attention
+                        </span>
+                        <span class="section-count">{blockerCount}</span>
+                    </div>
+                    <template for:each={blockerItems} for:item="item">
+                        <div key={item.key} class="item">
+                            <div class={item.icoClass}>
+                                <lightning-icon icon-name={item.icon} variant={item.variant} size="xx-small"></lightning-icon>
+                            </div>
+                            <div class="item-text">
+                                <div class="item-label">{item.label}</div>
+                                <div class="item-meta meta-rose">{item.meta}</div>
+                            </div>
+                            <span class={item.pillClass}>{item.value}</span>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- ── In progress ── -->
+            <template if:true={hasProgress}>
+                <div class="section">
+                    <div class="section-head">
+                        <span class="section-title">
+                            <span class="dot dot-amber"></span>
+                            In progress
+                        </span>
+                        <span class="section-count">{progressCount}</span>
+                    </div>
+                    <template for:each={progressItems} for:item="item">
+                        <div key={item.key} class="item">
+                            <div class={item.icoClass}>
+                                <lightning-icon icon-name={item.icon} variant={item.variant} size="xx-small"></lightning-icon>
+                            </div>
+                            <div class="item-text">
+                                <div class="item-label">{item.label}</div>
+                                <div class="item-meta">{item.meta}</div>
+                            </div>
+                            <span class={item.pillClass}>{item.value}</span>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- ── Complete ── -->
+            <template if:true={hasComplete}>
+                <div class="section">
+                    <div class="section-head">
+                        <span class="section-title">
+                            <span class="dot dot-emerald"></span>
+                            Complete
+                        </span>
+                        <span class="section-count">{completeCount}</span>
+                    </div>
+                    <template for:each={completeItems} for:item="item">
+                        <div key={item.key} class="item">
+                            <div class={item.icoClass}>
+                                <lightning-icon icon-name={item.icon} variant={item.variant} size="xx-small"></lightning-icon>
+                            </div>
+                            <div class="item-text">
+                                <div class="item-label">{item.label}</div>
+                                <div class="item-meta">{item.meta}</div>
+                            </div>
+                            <span class={item.pillClass}>{item.value}</span>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- ── Footer ── -->
+            <footer class="card-footer">
+                <span class="footer-text">{footerText}</span>
+            </footer>
+
+        </article>
+    </template>
+
+    <template if:true={hasError}>
+        <article class="card">
+            <header class="card-header">
+                <span class="header-title">Account Readiness</span>
+            </header>
+            <div class="error-body">Unable to load readiness data.</div>
+        </article>
+    </template>
+    </template>
+</template>

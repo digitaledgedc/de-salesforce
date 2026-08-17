@@ -1,0 +1,169 @@
+<template>
+    <div class="cpt-wrap">
+        <lightning-input type="search" label="Search" variant="label-hidden"
+            placeholder="Search contacts by name, title, or email…"
+            value={searchTerm} onchange={handleSearch}
+            class="cpt-search">
+        </lightning-input>
+
+        <template if:true={isLoading}>
+            <div class="cpt-loading">
+                <lightning-spinner alternative-text="Loading contacts" size="small"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={hasSearchTerm}>
+
+                <!-- ── Results table ──────────────────────────────────── -->
+                <template if:true={hasContacts}>
+                    <table class="cpt-table">
+                        <thead>
+                            <tr>
+                                <th class="cpt-th cpt-th--sel"></th>
+                                <th class="cpt-th">Name</th>
+                                <th class="cpt-th">Title</th>
+                                <th class="cpt-th">Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={filteredContacts} for:item="c">
+                                <tr key={c.Id} class={c.rowClass}
+                                    data-id={c.Id} onclick={handleRowClick}>
+                                    <td class="cpt-td cpt-td--sel">
+                                        <span class={c.radioClass}></span>
+                                    </td>
+                                    <td class="cpt-td cpt-td--name">{c.Name}</td>
+                                    <td class="cpt-td">{c.titleDisplay}</td>
+                                    <td class="cpt-td">{c.emailDisplay}</td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </template>
+
+                <!-- ── No results ─────────────────────────────────────── -->
+                <template if:false={hasContacts}>
+                    <p class="cpt-empty">No contacts match &ldquo;{searchTerm}&rdquo;.</p>
+
+                    <!-- Default: show button -->
+                    <template if:false={showCreateForm}>
+                        <template if:false={newContactCreated}>
+                            <button type="button" class="cpt-create-btn" onclick={handleShowCreateForm}>
+                                + Create New Contact
+                            </button>
+                        </template>
+                        <!-- Success state after creation -->
+                        <template if:true={newContactCreated}>
+                            <div class="cpt-new-selected">
+                                <span class="cpt-new-check">&#10003;</span>
+                                <strong>{createdContactName}</strong> created &mdash; click <strong>Next</strong> to continue
+                            </div>
+                        </template>
+                    </template>
+
+                    <!-- Inline create form -->
+                    <template if:true={showCreateForm}>
+                        <div class="cpt-create-form">
+                            <p class="cpt-form-heading">New contact will be linked to the account on this opportunity.</p>
+                            <div class="cpt-form-row">
+                                <lightning-input
+                                    label="First Name"
+                                    value={newFirstName}
+                                    data-field="newFirstName"
+                                    onchange={handleNewFieldChange}
+                                    class="cpt-form-field">
+                                </lightning-input>
+                                <lightning-input
+                                    label="Last Name"
+                                    required
+                                    value={newLastName}
+                                    data-field="newLastName"
+                                    onchange={handleNewFieldChange}
+                                    class="cpt-form-field">
+                                </lightning-input>
+                            </div>
+                            <div class="cpt-form-row">
+                                <lightning-input
+                                    label="Title"
+                                    value={newTitle}
+                                    data-field="newTitle"
+                                    onchange={handleNewFieldChange}
+                                    class="cpt-form-field">
+                                </lightning-input>
+                                <lightning-input
+                                    type="email"
+                                    label="Email"
+                                    value={newEmail}
+                                    data-field="newEmail"
+                                    onchange={handleNewFieldChange}
+                                    class="cpt-form-field">
+                                </lightning-input>
+                            </div>
+                            <div class="cpt-form-row">
+                                <lightning-combobox
+                                    label="Reports To"
+                                    placeholder="Select who this contact reports to…"
+                                    value={newReportsToId}
+                                    options={reportsToOptions}
+                                    data-field="newReportsToId"
+                                    onchange={handleNewFieldChange}
+                                    class="cpt-form-field cpt-form-field--full">
+                                </lightning-combobox>
+                            </div>
+                            <template if:true={createError}>
+                                <p class="cpt-error">{createError}</p>
+                            </template>
+                            <div class="cpt-form-actions">
+                                <button type="button" class="cpt-cancel-btn" onclick={handleCancelCreate}>
+                                    Cancel
+                                </button>
+                                <button type="button" class="cpt-save-btn" onclick={handleCreateContact} disabled={isCreating}>
+                                    Create Contact
+                                </button>
+                                <template if:true={isCreating}>
+                                    <lightning-spinner alternative-text="Creating…" size="small" class="cpt-spinner"></lightning-spinner>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+
+            </template>
+
+            <!-- Prompt to start typing -->
+            <template if:false={hasSearchTerm}>
+                <p class="cpt-hint">Type a name, title, or email to search contacts.</p>
+            </template>
+        </template>
+
+        <!-- ── Role & Engagement — appears once any contact is selected ── -->
+        <template if:true={showRoleSection}>
+            <div class="cpt-role-section">
+                <p class="cpt-role-heading">Role &amp; Engagement</p>
+                <div class="cpt-form-row">
+                    <lightning-combobox
+                        label="Role in Deal"
+                        required
+                        placeholder="Select role…"
+                        value={_selectedRole}
+                        options={roleOptions}
+                        onchange={handleRoleChange}
+                        class="cpt-form-field">
+                    </lightning-combobox>
+                    <lightning-combobox
+                        label="Engagement Status"
+                        value={_selectedEngagementStatus}
+                        options={engagementStatusOptions}
+                        onchange={handleEngagementChange}
+                        class="cpt-form-field">
+                    </lightning-combobox>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={errorMessage}>
+            <p class="cpt-error">{errorMessage}</p>
+        </template>
+    </div>
+</template>

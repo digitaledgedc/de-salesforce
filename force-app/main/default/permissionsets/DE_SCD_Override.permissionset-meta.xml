@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Correct SCD post-provisioning. Grants R/W on Asset.SCD_Override_Approved__c. Requires manager approval before assignment. Named users only - Finance and Rev Ops.</description>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Asset.SCD_Override_Approved__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Product2.Invoice_Frequency__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE SCD Override</label>
+    <license>Salesforce</license>
+</PermissionSet>

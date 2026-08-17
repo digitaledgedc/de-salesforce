@@ -1,0 +1,85 @@
+<template>
+    <lightning-tabset variant="scoped">
+        <lightning-tab label="Details">
+            <div class="slds-p-around_small">
+                <lightning-record-form
+                    record-id={recordId}
+                    object-api-name="QuoteLineItem"
+                    fields={detailFields}
+                    columns="2"
+                    mode="view">
+                </lightning-record-form>
+            </div>
+        </lightning-tab>
+
+        <lightning-tab label="Schedule & Ramp">
+            <div class="slds-p-around_small">
+                <lightning-record-form
+                    record-id={recordId}
+                    object-api-name="QuoteLineItem"
+                    fields={scheduleFields}
+                    columns="2"
+                    mode="view">
+                </lightning-record-form>
+            </div>
+        </lightning-tab>
+
+        <lightning-tab label="Capacity & Connectivity">
+            <div class="slds-p-around_small">
+                <lightning-record-form
+                    record-id={recordId}
+                    object-api-name="QuoteLineItem"
+                    fields={capacityFields}
+                    columns="2"
+                    mode="view">
+                </lightning-record-form>
+                <!-- FB-455/FB-960: rendered separately as a numeric input — see deQliRecordDetail.js -->
+                <lightning-input
+                    type="number"
+                    step="any"
+                    label="Custom Attribute Value"
+                    value={customAttrValue}
+                    disabled={isSavingCustomAttr}
+                    class="slds-p-top_small"
+                    onchange={handleCustomAttrChange}>
+                </lightning-input>
+            </div>
+        </lightning-tab>
+
+        <lightning-tab label="Billing & Pairing">
+            <div class="slds-p-around_small">
+                <lightning-record-form
+                    record-id={recordId}
+                    object-api-name="QuoteLineItem"
+                    fields={billingFields}
+                    columns="2"
+                    mode="view">
+                </lightning-record-form>
+            </div>
+        </lightning-tab>
+
+        <lightning-tab label="Integration">
+            <div class="slds-p-around_small">
+                <lightning-record-form
+                    record-id={recordId}
+                    object-api-name="QuoteLineItem"
+                    fields={integrationFields}
+                    columns="2"
+                    mode="view">
+                </lightning-record-form>
+            </div>
+        </lightning-tab>
+
+        <lightning-tab label="System">
+            <div class="slds-p-around_small">
+                <lightning-record-form
+                    record-id={recordId}
+                    object-api-name="QuoteLineItem"
+                    fields={systemFields}
+                    columns="2"
+                    mode="view">
+                </lightning-record-form>
+            </div>
+        </lightning-tab>
+    </lightning-tabset>
+</template>
