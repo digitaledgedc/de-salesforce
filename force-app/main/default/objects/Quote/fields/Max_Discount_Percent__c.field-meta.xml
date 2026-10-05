@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Max_Discount_Percent__c</fullName>
+    <description>Highest discount percentage across all line items on this quote. Calculated by QuoteLineItem_AfterSave_DiscountCheck flow as (ListPrice - UnitPrice) / ListPrice * 100. Drives the Discount Approval Tier.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Maximum discount % across all line items. Set automatically when line items are saved.</inlineHelpText>
+    <label>Max Discount %</label>
+    <precision>5</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Originating_Lead__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Linked to source Lead on conversion by F-04. Used for attribution reporting.</description>
+    <inlineHelpText>Auto-populated on Lead conversion. Links this Opportunity back to the source Lead for attribution and pipeline source reporting. Do not edit manually.</inlineHelpText>
+    <label>Originating Lead</label>
+    <referenceTo>Lead</referenceTo>
+    <relationshipName>Originated_Opportunities</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

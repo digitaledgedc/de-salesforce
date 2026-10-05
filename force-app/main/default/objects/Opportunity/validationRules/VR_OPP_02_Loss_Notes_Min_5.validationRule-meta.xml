@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_OPP_02_Loss_Notes_Min_5</fullName>
+    <active>false</active>
+    <description>VR-OPP-02: Win/Loss notes must be at least 5 characters on 9-Lost and 5-Won outcomes.</description>
+    <errorConditionFormula>AND( OR( ISPICKVAL(StageName, &quot;9-Lost&quot;), ISPICKVAL(StageName, &quot;5-Won&quot;) ), NOT(ISCHANGED(StageName)), NOT(ISBLANK(Loss_Notes__c)), LEN(Loss_Notes__c) &lt; 5 )</errorConditionFormula>
+    <errorDisplayField>Loss_Notes__c</errorDisplayField>
+    <errorMessage>Win/Loss notes must be at least 5 characters. Please describe the outcome.</errorMessage>
+</ValidationRule>

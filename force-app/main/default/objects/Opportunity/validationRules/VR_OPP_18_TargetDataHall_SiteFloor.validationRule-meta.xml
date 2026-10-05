@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_OPP_18_TargetDataHall_SiteFloor</fullName>
+    <active>true</active>
+    <description>Target Data Hall must belong to the selected Target Site and Target Floor. Replaces the Target_Data_Hall__c lookup filter (removed to free a required-filter slot).</description>
+    <errorConditionFormula>AND(
+    NOT(ISBLANK(Target_Data_Hall__c)),
+    OR(
+        Target_Data_Hall__r.Site__c &lt;&gt; Target_Site__c,
+        Target_Data_Hall__r.Floor__c &lt;&gt; Target_Floor__c
+    )
+)</errorConditionFormula>
+    <errorDisplayField>Target_Data_Hall__c</errorDisplayField>
+    <errorMessage>Data Hall must belong to the selected Target Site and Target Floor.</errorMessage>
+</ValidationRule>

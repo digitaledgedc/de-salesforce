@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <layouts>
+        <layout>Account Layout</layout>
+        <sections>
+            <label><!-- Account Summary --></label>
+            <section>Account Summary</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Competitor Layout</layout>
+        <sections>
+            <label><!-- Battle Card --></label>
+            <section>Battle Card</section>
+        </sections>
+        <sections>
+            <label><!-- Competitor Information --></label>
+            <section>Competitor Information</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Sales Positioning --></label>
+            <section>Sales Positioning</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Customer Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Legal &amp; Registration --></label>
+            <section>Legal &amp; Registration</section>
+        </sections>
+        <sections>
+            <label><!-- Sales &amp; Ownership --></label>
+            <section>Sales &amp; Ownership</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>DE Entity Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- DE Entity Information --></label>
+            <section>DE Entity Information</section>
+        </sections>
+        <sections>
+            <label><!-- Registered Address --></label>
+            <section>Registered Address</section>
+        </sections>
+        <sections>
+            <label><!-- Tax &amp; Compliance --></label>
+            <section>Tax &amp; Compliance</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>End Customer Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Sales &amp; Ownership --></label>
+            <section>Sales &amp; Ownership</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Referral Partner Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Partner Information --></label>
+            <section>Partner Information</section>
+        </sections>
+        <sections>
+            <label><!-- Referral Terms --></label>
+            <section>Referral Terms</section>
+        </sections>
+        <sections>
+            <label><!-- Sales &amp; Ownership --></label>
+            <section>Sales &amp; Ownership</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Reseller Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Legal &amp; Registration --></label>
+            <section>Legal &amp; Registration</section>
+        </sections>
+        <sections>
+            <label><!-- Reseller Details --></label>
+            <section>Reseller Details</section>
+        </sections>
+        <sections>
+            <label><!-- Sales &amp; Ownership --></label>
+            <section>Sales &amp; Ownership</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Vendor Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Vendor Information --></label>
+            <section>Vendor Information</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- Child Account --></label>
+        <name>Child_Account</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- D&amp;B Check --></label>
+        <name>DnB_Check</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Finance Approval --></label>
+        <name>DnB_Review</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Finance Approval --></label>
+        <name>Finance_Approval</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- KYC Check --></label>
+        <name>KYC_Check</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Legal Resolution --></label>
+        <name>Legal_Resolution</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- New BAN --></label>
+        <name>New_BAN</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Printable View --></label>
+        <name>Printable_View</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Qualify Account --></label>
+        <name>Qualify_Account</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Record Security Deposit --></label>
+        <name>Record_Security_Deposit</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Request Master Data Change --></label>
+        <name>Request_Master_Data_Change</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Upload Document --></label>
+        <name>Upload_Document</name>
+    </quickActions>
+    <recordTypes>
+        <description><!-- Competitor accounts - companies competing against Digital Edge in active deals. --></description>
+        <label><!-- 3 - Competitor --></label>
+        <name>Competitor</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Direct end-customers of Digital Edge. Standard billing and contracting flow. This is the primary record type. --></description>
+        <label><!-- 1 - Customer --></label>
+        <name>Customer</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Digital Edge legal entities (subsidiaries). Records of this type represent DE contracting companies: DE HK Ltd, DE SG Pte Ltd, DE KR Co Ltd, DE PH Inc, DE ID PT, DE JP KK. Used as the contracting party on Opportunity.DE_Entity__c. --></description>
+        <label><!-- DE Entity --></label>
+        <name>DE_Entity</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- End customer of colocation services when sold through a reseller or channel partner. The reseller is the contractual counterparty; the end customer is the actual user of the space. --></description>
+        <label><!-- 2 - End Customer --></label>
+        <name>End_Customer</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Referral partners who refer deals to DE but do not contract directly. Referral fee tracking only. No Finance approval required. --></description>
+        <label><!-- 4 - Referral Partner --></label>
+        <name>Referral_Partner</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Vendor accounts for supplier management. Out of scope for Phase 1. Created now to avoid schema changes later. --></description>
+        <label><!-- 5 - Vendor --></label>
+        <name>Vendor</name>
+    </recordTypes>
+    <validationRules>
+        <errorMessage><!-- CompanyId should be a numeric value --></errorMessage>
+        <name>LID__Check_Company_Id_Value</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Security Deposit Amount is required when Security Deposit Required is checked. --></errorMessage>
+        <name>Security_Deposit_Amount_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Tax ID is required before this account can be locked. Enter the Tax ID and save before locking the entity. --></errorMessage>
+        <name>Tax_ID_Required_On_Lock</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Tax ID cannot be changed after Finance Approval has been granted. Contact Finance to re-run the approval process. --></errorMessage>
+        <name>VR_ACC_01_TaxID_Locked</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Account Name (legal entity name) cannot be changed after Finance Approval. Contact Finance to re-run the approval process. --></errorMessage>
+        <name>VR_ACC_02_Name_Locked</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Registered address cannot be changed after Finance Approval. Contact Finance to re-run the approval process. --></errorMessage>
+        <name>VR_ACC_03_Address_Locked</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Local entity name cannot be changed after Finance Approval. --></errorMessage>
+        <name>VR_ACC_05_LocalName_Locked</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- This account has a credit block. Contact Finance to resolve before creating Quotes. --></errorMessage>
+        <name>VR_ACC_09_Credit_Block_Warning</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- This account is in (or past) finance approval, so Sales can no longer edit it. Please contact Finance if a change is required. --></errorMessage>
+        <name>VR_ACC_10_Sales_Edit_Lock_After_Finance</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Security Deposit Amount is required when Security Deposit is marked as required. --></errorMessage>
+        <name>VR_ACC_10_SecDeposit_Amount_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- D&amp;B Number is required to proceed with D&amp;B Review. Enter the company&apos;s Dun &amp; Bradstreet number before saving. --></errorMessage>
+        <name>VR_ACC_12_DnB_Number_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Account ownership cannot be changed after Finance Approval. Contact Finance to unlock the account before transferring ownership. --></errorMessage>
+        <name>VR_ACC_17_OwnerLocked</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- GoogleMaps --></label>
+        <name>GoogleMaps</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- GoogleNews --></label>
+        <name>GoogleNews</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- GoogleSearch --></label>
+        <name>GoogleSearch</name>
+    </webLinks>
+</CustomObjectTranslation>

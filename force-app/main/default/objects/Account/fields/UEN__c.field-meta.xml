@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UEN__c</fullName>
+    <description>Singapore Unique Entity Number (UEN). Required for SG customers. Passed to Odoo invoice generation for SG entities.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Unique Entity Number issued by ACRA for Singapore-registered entities. Required for SG customers before Finance Approval. Format: 9 or 10 alphanumeric characters.</inlineHelpText>
+    <label>UEN (Singapore)</label>
+    <length>20</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

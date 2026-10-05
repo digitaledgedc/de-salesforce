@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Comp_Strengths__c</fullName>
+    <description>What this competitor does well - used in battle card and sales coaching.</description>
+    <inlineHelpText>Key strengths of this competitor. What do they win on?</inlineHelpText>
+    <label>Strengths</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>4</visibleLines>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Credit_Block__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set when credit limit breached or receivables &gt; 90 days overdue. Blocks Quote submission.</description>
+    <label>Credit Block</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

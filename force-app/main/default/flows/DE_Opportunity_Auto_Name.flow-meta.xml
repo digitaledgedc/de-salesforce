@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>Task 7.6: Sets Opportunity Name on creation to Account.Name - Site.Name - Opportunity_Number__c. Falls back to Account.Name - Opportunity_Number__c when no site. Skips Opportunities created via Lead conversion (Originating_Lead__c is populated).</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>FormulaOppName</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!$Record.Target_Site__r.Name}), {!$Record.Account.Name} &amp; &quot; - &quot; &amp; {!$Record.Opportunity_Number__c}, {!$Record.Account.Name} &amp; &quot; - &quot; &amp; {!$Record.Target_Site__r.Name} &amp; &quot; - &quot; &amp; {!$Record.Opportunity_Number__c})</expression>
+    </formulas>
+    <interviewLabel>DE Opportunity Auto Name {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>DE - Opportunity Auto Name</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Set_Opportunity_Name</name>
+        <label>Set Opportunity Name</label>
+        <locationX>176</locationX>
+        <locationY>323</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <elementReference>FormulaOppName</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Opportunity</object>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Set_Opportunity_Name</targetReference>
+        </connector>
+        <filterFormula>AND(ISBLANK({!$Record.Originating_Lead__c}), NOT(ISBLANK({!$Record.Opportunity_Number__c})))</filterFormula>
+        <object>Opportunity</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

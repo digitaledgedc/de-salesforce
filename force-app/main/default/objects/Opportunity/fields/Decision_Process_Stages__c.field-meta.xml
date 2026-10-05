@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Decision_Process_Stages__c</fullName>
+    <description>Multi-select checklist of stages in the client&apos;s decision-making workflow. Stored semi-colon separated.</description>
+    <label>Decision Process - Stages</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>RFP / RFI</fullName>
+                <default>false</default>
+                <label>RFP / RFI</label>
+            </value>
+            <value>
+                <fullName>Internal Evaluation</fullName>
+                <default>false</default>
+                <label>Internal Evaluation</label>
+            </value>
+            <value>
+                <fullName>Shortlisting</fullName>
+                <default>false</default>
+                <label>Shortlisting</label>
+            </value>
+            <value>
+                <fullName>Procurement Review</fullName>
+                <default>false</default>
+                <label>Procurement Review</label>
+            </value>
+            <value>
+                <fullName>Legal Review</fullName>
+                <default>false</default>
+                <label>Legal Review</label>
+            </value>
+            <value>
+                <fullName>Finance Approval</fullName>
+                <default>false</default>
+                <label>Finance Approval</label>
+            </value>
+            <value>
+                <fullName>Board / Executive Sign-off</fullName>
+                <default>false</default>
+                <label>Board / Executive Sign-off</label>
+            </value>
+            <value>
+                <fullName>Final Decision</fullName>
+                <default>false</default>
+                <label>Final Decision</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

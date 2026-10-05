@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Translated_Name__c</fullName>
+    <description>Account name in the preferred local language, such as Japanese, Korean, Simplified Chinese, or Traditional Chinese.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enter the account name in the language selected in Preferred Language.</inlineHelpText>
+    <label>Translated Name</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

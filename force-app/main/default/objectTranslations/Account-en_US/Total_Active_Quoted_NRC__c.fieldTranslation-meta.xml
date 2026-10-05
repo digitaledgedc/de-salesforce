@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Total NRC across all active quotes for this account. Used to evaluate credit limit compliance. --></help>
+    <label><!-- Total Active Quoted NRC --></label>
+    <name>Total_Active_Quoted_NRC__c</name>
+</CustomFieldTranslation>

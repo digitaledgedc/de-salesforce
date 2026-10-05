@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_Quotes_Count__c</fullName>
+    <label>Active Quotes Count</label>
+    <summaryFilterItems>
+        <field>Quote.Status</field>
+        <operation>notEqual</operation>
+        <value>Rejected</value>
+    </summaryFilterItems>
+    <summaryFilterItems>
+        <field>Quote.Status</field>
+        <operation>notEqual</operation>
+        <value>Accepted</value>
+    </summaryFilterItems>
+    <summaryFilterItems>
+        <field>Quote.Status</field>
+        <operation>notEqual</operation>
+        <value>Void</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Quote.OpportunityId</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

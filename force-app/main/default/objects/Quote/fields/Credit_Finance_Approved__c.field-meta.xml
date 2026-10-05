@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Credit_Finance_Approved__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set to TRUE by the Credit Limit Approval process when Finance Country Manager approves the credit limit override.</description>
+    <label>Credit Finance Approved</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

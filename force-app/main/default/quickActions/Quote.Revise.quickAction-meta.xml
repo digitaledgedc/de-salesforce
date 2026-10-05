@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Void the current quote and create a revised version. Preserves line items and increments the version number.</description>
+    <height>180</height>
+    <label>Revise Quote</label>
+    <lightningComponent>reviseQuoteAction</lightningComponent>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>LightningComponent</type>
+    <width>-1</width>
+</QuickAction>

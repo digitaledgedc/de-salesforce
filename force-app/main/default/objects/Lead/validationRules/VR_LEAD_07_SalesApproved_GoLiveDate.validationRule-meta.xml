@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_LEAD_07_SalesApproved_GoLiveDate</fullName>
+    <active>true</active>
+    <description>Requested Delivery Date must be set before a Lead can be marked Sales Approved.</description>
+    <errorConditionFormula>AND(
+  ISPICKVAL(Status, &apos;Sales Approved&apos;),
+  ISBLANK(GoLive_Target_Date__c)
+)</errorConditionFormula>
+    <errorDisplayField>GoLive_Target_Date__c</errorDisplayField>
+    <errorMessage>Requested Delivery Date is required before marking this Lead as Sales Approved.</errorMessage>
+</ValidationRule>

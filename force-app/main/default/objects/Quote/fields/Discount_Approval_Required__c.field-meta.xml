@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Discount_Approval_Required__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set TRUE by F-14-After when any Quote Line has a discount exceeding the Sales Rep threshold from Discount_Threshold__mdt. Triggers Sales Manager approval routing in the Quote approval chain.</description>
+    <inlineHelpText>Checked automatically when a quote line discount exceeds the sales rep&apos;s authorised threshold. Routes the quote through Sales Manager approval before it can be submitted to the customer.</inlineHelpText>
+    <label>Discount Approval Required</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

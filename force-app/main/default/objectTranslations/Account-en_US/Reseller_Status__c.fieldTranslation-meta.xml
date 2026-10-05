@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Indicates whether this account has a reseller agreement with Digital Edge. Unsigned = pending agreement. Signed = active reseller agreement in place. --></help>
+    <label><!-- Reseller Status --></label>
+    <name>Reseller_Status__c</name>
+    <picklistValues>
+        <masterLabel>Signed</masterLabel>
+        <translation><!-- Signed --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Unsigned</masterLabel>
+        <translation><!-- Unsigned --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

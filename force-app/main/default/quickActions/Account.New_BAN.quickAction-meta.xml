@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Create a new Billing Account (BAN) for this Account. Revenue Ops and Finance only.</description>
+    <flowDefinition>BillingAccount_Screen_CreateBAN</flowDefinition>
+    <label>New BAN</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>

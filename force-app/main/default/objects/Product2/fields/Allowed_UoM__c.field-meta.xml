@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Allowed_UoM__c</fullName>
+    <description>SFDC-366. Additional Units of Measure a rep may select for this product on a quote line, beyond the default held in QuantityUnitOfMeasure. The quote line picker shows QuantityUnitOfMeasure plus these values. Leave blank when the product only ever uses its default unit - a blank value means the quote line behaves exactly as it did before SFDC-366.</description>
+    <inlineHelpText>Extra units a rep can choose on a quote line. The product&apos;s own Quantity Unit Of Measure is always offered and does not need to be selected here.</inlineHelpText>
+    <label>Allowed UoM</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>DE_Unit_Of_Measure</valueSetName>
+    </valueSet>
+    <visibleLines>6</visibleLines>
+</CustomField>

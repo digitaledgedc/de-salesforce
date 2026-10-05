@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Facilities_Confirmed__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>TRUE = Facilities Manager confirmed power and space feasibility. Required before Stage 4.</description>
+    <inlineHelpText>Check once the Facilities Manager has confirmed that sufficient power and space are available at the target site. Required before advancing to Stage 4.</inlineHelpText>
+    <label>Facilities Confirmed</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

@@ -46,33 +46,16 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
         if (!toGrant.isEmpty())    OpportunitySEShareService.grant(toGrant);
 
         /*
-         * STUB — Ramp child Opportunity creation
-         *
-         * This context is the entry point for automatically creating child
-         * (ramp) Opportunities when a parent Opportunity meets certain criteria.
-         *
-         * Work required before implementing:
-         *   1. Confirm the trigger condition(s):
-         *      - Which field change(s) signal that ramp children should be created?
-         *        (e.g. StageName moving to a specific value, a new checkbox/picklist
-         *        field such as Ramp_Required__c flipping to true, or Contract_Term_Months__c
-         *        being populated above a threshold)
-         *      - Should children be created only once, or can additional ramp periods
-         *        be added on subsequent updates?
-         *   2. Define the child Opportunity shape:
-         *      - Which fields are copied from the parent vs. derived?
-         *      - How are ramp periods calculated (equal splits, custom schedule)?
-         *      - What is the Parent_Opportunity__c lookup expected to reference?
-         *   3. Decide the service class: a new RampOppService.cls is the expected home
-         *      so that this handler stays thin. The service will call OpportunitySelector
-         *      for any needed parent/child reads.
-         *   4. Confirm duplicate-guard: prevent re-creating children if they already exist.
-         *
-         * Placeholder call (replace with real invocation once spec is finalised):
-         *
-         *   List<Opportunity> newList = (List<Opportunity>) Trigger.new;
-         *   Map<Id, Opportunity> oldMap = (Map<Id, Opportunity>) Trigger.oldMap;
-         *   RampOppService.createRampChildren(newList, oldMap);
+         * FB-1041: Ramp child Opportunity creation is implemented, but NOT
+         * from this handler. The trigger condition originally scoped here
+         * (some Opportunity field change) turned out to be the wrong signal —
+         * a ramp child Opportunity corresponds 1:1 with a split ramp-phase
+         * Order, not with any Opportunity edit. It is created from
+         * RampOrderService.splitRampOrder via RampOppService.createRampChildren,
+         * right after each phase's Order/MRC exist and before that Order is
+         * activated. See RampOppService.cls for the shape/field mapping and
+         * OpportunitySelector.getForRampClone/getChildrenByParentIds for the
+         * supporting reads.
          */
     }
 }

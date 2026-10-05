@@ -45,6 +45,10 @@
                 <behavior>Edit</behavior>
                 <field>QuantityUnitOfMeasure</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Allowed_UoM__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FX_Billing_Flag__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set TRUE when customer contract is in USD but billing country uses local currency.</description>
+    <inlineHelpText>Check when the contract is priced in USD but the customer&apos;s billing country invoices in local currency. Triggers FX Rate Model and Terms fields.</inlineHelpText>
+    <label>FX Billing Required</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

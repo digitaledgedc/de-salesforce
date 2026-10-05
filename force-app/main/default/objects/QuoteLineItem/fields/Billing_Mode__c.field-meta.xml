@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Billing_Mode__c</fullName>
+    <description>Auto-set from Product2 billing charge type. Arrear = bill after service period. Advance = bill before service period. Passed as ns_charge_type in IP-1 payload. Required for Quote revision cloning.</description>
+    <label>Billing Mode</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Arrear</fullName>
+                <default>false</default>
+                <label>Arrear</label>
+            </value>
+            <value>
+                <fullName>Advance</fullName>
+                <default>false</default>
+                <label>Advance</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

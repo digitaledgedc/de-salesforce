@@ -13,43 +13,78 @@ public without sharing class SendChangeOrdersQueueable implements Queueable, Dat
         this.orderIds = orderIds;
     }
 
+    /** See SendNewOrdersQueueable.SendResult — same reasoning, no successOrderIds/IP-3 chain here. */
+    public class SendResult {
+        public List<Order> pendingUpdates = new List<Order>();
+        public List<DE_Integration_Error__c> pendingErrors = new List<DE_Integration_Error__c>();
+    }
+
     public void execute(QueueableContext ctx) {
-        System.debug('🔵 IP-4 EXECUTE: Starting execution with ' + orderIds.size() + ' orders');
-        
-        // Process in smaller batches if too many orders
-        if (orderIds.size() > BATCH_SIZE) {
-            System.debug('⚠️ IP-4 BATCHING: ' + orderIds.size() + ' orders exceeds batch size of ' + BATCH_SIZE);
-            List<Id> currentBatch = new List<Id>();
-            List<Id> remainingBatch = new List<Id>();
-            
-            for (Integer i = 0; i < orderIds.size(); i++) {
-                if (i < BATCH_SIZE) {
-                    currentBatch.add(orderIds[i]);
-                } else {
-                    remainingBatch.add(orderIds[i]);
-                }
-            }
-            
-            System.debug('📦 IP-4 BATCH: Processing ' + currentBatch.size() + ' orders in current batch');
-            System.debug('📦 IP-4 BATCH: ' + remainingBatch.size() + ' orders remaining for next batch');
-            
-            // Process current batch
-            processBatch(currentBatch);
-            
-            // Queue next batch
-            if (!remainingBatch.isEmpty()) {
-                System.debug('🔄 IP-4 QUEUE: Enqueuing next batch with ' + remainingBatch.size() + ' orders');
-                System.enqueueJob(new SendChangeOrdersQueueable(remainingBatch));
-            } else {
-                System.debug('✅ IP-4 COMPLETE: All batches processed');
-            }
-        } else {
-            System.debug('📦 IP-4 DIRECT: Processing all ' + orderIds.size() + ' orders in single batch');
-            processBatch(orderIds);
+        SendResult result = runSync(orderIds, null);
+        commitPending(result);
+    }
+
+    /**
+     * Direct, non-enqueued entry point: sends all Change Orders in orderIds, chunking into
+     * batches of BATCH_SIZE in-process instead of re-enqueueing itself for each chunk.
+     * Callable from another already-executing Queueable (e.g. OdooBanSyncQueueable) without
+     * risking "Too many queueable jobs added to the queue" — Salesforce caps an executing job to
+     * at most one additional System.enqueueJob() call, and looping in-process needs none.
+     * Commits its own DML immediately (standalone use — nothing else in this transaction is
+     * holding pending DML).
+     */
+    public static void sendOrders(List<Id> orderIds) {
+        SendChangeOrdersQueueable q = new SendChangeOrdersQueueable(orderIds);
+        SendResult result = q.runSync(orderIds, null);
+        q.commitPending(result);
+    }
+
+    /**
+     * Deferred variant for a caller (OdooBanSyncQueueable) that already ran its own Odoo callouts
+     * earlier in THIS SAME transaction and has NOT yet committed the resulting DML. Since this
+     * method itself calls out to Odoo, and Salesforce throws "You have uncommitted work pending"
+     * on any callout that follows DML in one transaction, this method deliberately does NOT
+     * perform any DML — it returns everything it would have written (SendResult.pendingUpdates /
+     * pendingErrors) so the caller can merge it with its own pending DML and commit everything
+     * together, once, only after every callout in the whole chain (its own + this one) has run.
+     *
+     * banOverrides (keyed by BillingAccount__c Id, carrying the freshly-synced
+     * Odoo_Partner_ID__c/Odoo_BAN_ID__c — still uncommitted at this point) is applied on top of
+     * the normal fresh query below. An Order whose BAN isn't in this map (already synced in an
+     * earlier, already-committed run) falls back to the queried value, completely unchanged from
+     * today's behavior.
+     */
+    public static SendResult sendOrdersDeferred(List<Id> orderIds, Map<Id, BillingAccount__c> banOverrides) {
+        return new SendChangeOrdersQueueable(orderIds).runSync(orderIds, banOverrides);
+    }
+
+    private SendResult runSync(List<Id> idsToProcess, Map<Id, BillingAccount__c> banOverrides) {
+        System.debug('🔵 IP-4 EXECUTE: Starting execution with ' + idsToProcess.size() + ' orders');
+        SendResult result = new SendResult();
+        Integer total = idsToProcess.size();
+        for (Integer start = 0; start < total; start += BATCH_SIZE) {
+            Integer chunkEnd = Math.min(start + BATCH_SIZE, total);
+            List<Id> chunk = new List<Id>();
+            for (Integer i = start; i < chunkEnd; i++) chunk.add(idsToProcess[i]);
+            System.debug('📦 IP-4 BATCH: Processing ' + chunk.size() + ' orders (offset ' + start + ')');
+            processBatch(chunk, banOverrides, result);
+        }
+        System.debug('✅ IP-4 COMPLETE: All batches processed');
+        return result;
+    }
+
+    private void commitPending(SendResult result) {
+        if (!result.pendingErrors.isEmpty()) {
+            System.debug('💾 IP-4 DML: Inserting ' + result.pendingErrors.size() + ' error records');
+            insert result.pendingErrors;
+        }
+        if (!result.pendingUpdates.isEmpty()) {
+            System.debug('💾 IP-4 DML: Updating ' + result.pendingUpdates.size() + ' orders');
+            update result.pendingUpdates;
         }
     }
-    
-    private void processBatch(List<Id> batchOrderIds) {
+
+    private void processBatch(List<Id> batchOrderIds, Map<Id, BillingAccount__c> banOverrides, SendResult result) {
         System.debug('🔵 IP-4 PROCESS BATCH: Starting batch processing for ' + batchOrderIds.size() + ' orders');
         
         OdooIntegrationSettings__c settings = OdooIntegrationSettings__c.getOrgDefaults();
@@ -96,6 +131,7 @@ public without sharing class SendChangeOrdersQueueable implements Queueable, Dat
                            Target_BAN__c, Target_BAN__r.Odoo_BAN_ID__c,
                            Odoo_Sub_Line_ID__c, Odoo_Origin_Line_ID__c,
                            Odoo_Project_Task_IDs__c, Odoo_Sub_Task_IDs__c,
+                           Subscription_Id__c,
                            Original_OrderItem__c,
                            Original_OrderItem__r.Odoo_Sub_Line_ID__c,Line_Remarks__c,
                            Original_OrderItem__r.Odoo_Origin_Line_ID__c,
@@ -107,7 +143,21 @@ public without sharing class SendChangeOrdersQueueable implements Queueable, Dat
             WHERE Id IN :batchOrderIds
         ];
         System.debug('📋 IP-4 ORDERS: Retrieved ' + orders.size() + ' orders');
-        
+
+        // Apply just-computed-this-transaction BAN Odoo ids on top of the fresh query above (see
+        // sendOrders(orderIds, banOverrides) doc) — a BAN absent from this map was already synced
+        // in an earlier, committed run, so it keeps whatever the query already returned. Payload
+        // logic below is untouched; only the source of these specific values changes.
+        if (banOverrides != null) {
+            for (Order o : orders) {
+                if (o.BillingAccount__c != null && banOverrides.containsKey(o.BillingAccount__c)) {
+                    BillingAccount__c ov = banOverrides.get(o.BillingAccount__c);
+                    if (ov.Odoo_Partner_ID__c != null) o.BillingAccount__r.Odoo_Partner_ID__c = ov.Odoo_Partner_ID__c;
+                    if (ov.Odoo_BAN_ID__c != null) o.BillingAccount__r.Odoo_BAN_ID__c = ov.Odoo_BAN_ID__c;
+                }
+            }
+        }
+
         // Calculate statistics
         Integer totalOrderItems = 0;
         for (Order o : orders) {
@@ -152,6 +202,33 @@ public without sharing class SendChangeOrdersQueueable implements Queueable, Dat
             }
             System.debug('🗄️ IP-4 INVENTORY: Space records found for ' + mapLineItemWithSpaceId.keySet().size() + ' QuoteLines');
             System.debug('🗄️ IP-4 INVENTORY: Breaker records found for ' + mapLineItemWithBreakerId.keySet().size() + ' QuoteLines');
+        }
+
+        // Asset.Odoo_Sub_Line_ID__c fallback for ns_subscription_line_id: for change orders
+        // tracing back to a migrated/legacy original order item, neither the new line's own
+        // Odoo_Sub_Line_ID__c nor Original_OrderItem__r.Odoo_Sub_Line_ID__c is ever populated —
+        // that value only ever landed on the Asset, not on any OrderItem. Resolve it from the
+        // Asset created off the original order item (Asset.Source_OrderItem__c) as a further
+        // fallback. See IP-4 subscription-line-ID patch ticket.
+        Set<Id> originalOrderItemIds = new Set<Id>();
+        for (Order o : orders) {
+            for (OrderItem oi : o.OrderItems) {
+                if (oi.Original_OrderItem__c != null) {
+                    originalOrderItemIds.add(oi.Original_OrderItem__c);
+                }
+            }
+        }
+        Map<Id, String> assetSubLineIdByOriginalItem = new Map<Id, String>();
+        if (!originalOrderItemIds.isEmpty()) {
+            for (Asset a : [
+                SELECT Source_OrderItem__c, Odoo_Sub_Line_ID__c
+                FROM Asset
+                WHERE Source_OrderItem__c IN :originalOrderItemIds
+                  AND Odoo_Sub_Line_ID__c != null
+            ]) {
+                assetSubLineIdByOriginalItem.put(a.Source_OrderItem__c, a.Odoo_Sub_Line_ID__c);
+            }
+            System.debug('🗄️ IP-4 ASSET: Odoo_Sub_Line_ID__c resolved for ' + assetSubLineIdByOriginalItem.size() + ' original OrderItems');
         }
 
         List<Order> toUpdate = new List<Order>();
@@ -222,7 +299,7 @@ public without sharing class SendChangeOrdersQueueable implements Queueable, Dat
             System.debug('   - Auto Confirm: ' + autoConfirm);
 
             String payload = buildIP4Payload(o, site, autoConfirm, freqMap, settings,
-                mapLineItemWithSpaceId, mapLineItemWithBreakerId);
+                mapLineItemWithSpaceId, mapLineItemWithBreakerId, assetSubLineIdByOriginalItem);
             System.debug('📦 IP-4 PAYLOAD for ' + o.Order_Number__c + ': ' + payload.substring(0, Math.min(500, payload.length())) + (payload.length() > 500 ? '...' : ''));
             System.debug('📦 IP-4 PAYLOAD SIZE: ' + payload.length() + ' characters');
             
@@ -257,17 +334,12 @@ public without sharing class SendChangeOrdersQueueable implements Queueable, Dat
         
         System.debug('📊 IP-4 BATCH SUMMARY: ' + processedCount + ' processed, ' + successCount + ' succeeded, ' + failureCount + ' failed');
 
-        // DML operations
-        if (!errorsToInsert.isEmpty()) {
-            System.debug('💾 IP-4 DML: Inserting ' + errorsToInsert.size() + ' error records');
-            insert errorsToInsert;
-        }
-        
-        if (!toUpdate.isEmpty()) {
-            System.debug('💾 IP-4 DML: Updating ' + toUpdate.size() + ' orders');
-            update toUpdate;
-        }
-        
+        // No DML here — collect into the shared result instead. The caller decides when it's
+        // safe to commit (immediately for standalone use, or deferred until every callout in a
+        // larger chain has finished — see SendResult / sendOrdersDeferred doc).
+        result.pendingErrors.addAll(errorsToInsert);
+        result.pendingUpdates.addAll(toUpdate);
+
         System.debug('✅ IP-4 PROCESS BATCH COMPLETE: Batch finished');
     }
     
@@ -305,7 +377,8 @@ public without sharing class SendChangeOrdersQueueable implements Queueable, Dat
     private String buildIP4Payload(Order o, Site__c site, Boolean autoConfirm,
                                    Map<String, Integer> freqMap, OdooIntegrationSettings__c settings,
                                    Map<Id, List<Inventory__c>> mapLineItemWithSpaceId,
-                                   Map<Id, List<Inventory__c>> mapLineItemWithBreakerId) {
+                                   Map<Id, List<Inventory__c>> mapLineItemWithBreakerId,
+                                   Map<Id, String> assetSubLineIdByOriginalItem) {
         
         System.debug('🔨 IP-4 BUILD PAYLOAD: Creating payload for Order ' + o.Order_Number__c);
         
@@ -342,8 +415,7 @@ public without sharing class SendChangeOrdersQueueable implements Queueable, Dat
         gen.writeNumberField('x_studio_operation_country', Integer.valueOf(site.Odoo_Country_ID__c));
         gen.writeNumberField('x_studio_operation_metro', Integer.valueOf(site.Odoo_Metro_ID__c));
         gen.writeNumberField('x_studio_operation_site', Integer.valueOf(site.Odoo_Site_ID__c));
-        gen.writeStringField('x_studio_service_request_date',
-            o.RDD__c != null ? formatDate(o.RDD__c) : formatDate(o.EffectiveDate));
+        gen.writeStringField('x_studio_service_request_date',formatDate(o.RDD__c));
         gen.writeNumberField('x_contract_term',
             o.Contract_Term_Months__c != null ? Integer.valueOf(o.Contract_Term_Months__c) : 12);
         gen.writeNumberField('ns_ban_id', Integer.valueOf(o.BillingAccount__r.Odoo_BAN_ID__c));
@@ -388,6 +460,9 @@ public without sharing class SendChangeOrdersQueueable implements Queueable, Dat
             
             String resolvedSubLineId = resolveOdooField(oi.Odoo_Sub_Line_ID__c,
                 oi.Original_OrderItem__r?.Odoo_Sub_Line_ID__c);
+            if ((resolvedSubLineId == null || resolvedSubLineId == '') && oi.Original_OrderItem__c != null) {
+                resolvedSubLineId = assetSubLineIdByOriginalItem.get(oi.Original_OrderItem__c);
+            }
             String resolvedOriginLineId = resolveOdooField(oi.Odoo_Origin_Line_ID__c,
                 oi.Original_OrderItem__r?.Odoo_Origin_Line_ID__c);
             
@@ -399,10 +474,15 @@ public without sharing class SendChangeOrdersQueueable implements Queueable, Dat
             // SF reference fields
             gen.writeStringField('sf_orderitem_id', oi.Id);
             
-            if (o.Original_Order__r != null && o.Original_Order__r.Odoo_Subscription_ID__c != null) {
-                gen.writeNumberField('subscription_id', Integer.valueOf(o.Original_Order__r.Odoo_Subscription_ID__c));
+            String lineSubscriptionId = (oi.Subscription_Id__c != null && oi.Subscription_Id__c != '')
+                ? oi.Subscription_Id__c
+                : (o.Original_Order__r != null ? o.Original_Order__r.Odoo_Subscription_ID__c : null);
+            if (lineSubscriptionId != null && lineSubscriptionId != '') {
+                gen.writeNumberField('subscription_id', Integer.valueOf(lineSubscriptionId));
+            } else {
+                gen.writeBooleanField('subscription_id', false);
             }
-            
+
             gen.writeStringField('ns_change_type', odooChangeType);
             gen.writeNumberField('product_id', Integer.valueOf(oi.Odoo_Product_ID__c));
             gen.writeStringField('name', oi.Description != null ? oi.Description : 
@@ -457,10 +537,15 @@ public without sharing class SendChangeOrdersQueueable implements Queueable, Dat
                 if (originId != null) {
                     gen.writeNumberField('ns_origin_sale_line_id', originId);
                     System.debug('      - Origin Line ID: ' + originId);
+                } else {
+                    gen.writeBooleanField('ns_origin_sale_line_id', false);
                 }
                 if (subLineId != null) {
                     gen.writeNumberField('ns_subscription_line_id', subLineId);
                     System.debug('      - Subscription Line ID: ' + subLineId);
+                } else {
+                    gen.writeBooleanField('ns_subscription_line_id', false);
+                    System.debug('      - Subscription Line ID unresolved for non-Add line — sending false');
                 }
             }
             

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>TP 0124124 5Amps HKD</label>
+    <protected>false</protected>
+    <values>
+        <field>Attribute_Value__c</field>
+        <value xsi:type="xsd:string">5Amps</value>
+    </values>
+    <values>
+        <field>Currency_Code__c</field>
+        <value xsi:type="xsd:string">HKD</value>
+    </values>
+    <values>
+        <field>Odoo_Combo_ID__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Price__c</field>
+        <value xsi:type="xsd:double">300.0</value>
+    </values>
+    <values>
+        <field>Product_Code__c</field>
+        <value xsi:type="xsd:string">TP.0124124</value>
+    </values>
+    <values>
+        <field>Site_Code__c</field>
+        <value xsi:nil="true"/>
+    </values>
+</CustomMetadata>

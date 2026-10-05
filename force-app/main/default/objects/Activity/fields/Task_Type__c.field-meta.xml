@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Task_Type__c</fullName>
+    <description>Categorises the task for routing and reporting. KYC_Legal_Review: auto-created when Finance rejects KYC, assigned to Legal Review queue. SDD §Order Confirmation — BAN Creation.</description>
+    <label>Task Type</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>KYC_Legal_Review</fullName>
+                <default>false</default>
+                <label>KYC Legal Review</label>
+            </value>
+            <value>
+                <fullName>General</fullName>
+                <default>true</default>
+                <label>General</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

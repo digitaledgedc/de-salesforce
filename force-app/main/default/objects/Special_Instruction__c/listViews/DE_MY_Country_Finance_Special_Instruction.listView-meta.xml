@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DE_MY_Country_Finance_Special_Instruction</fullName>
+    <filterScope>Queue</filterScope>
+    <label>DE MY Country Finance</label>
+    <queue>DE_MY_Country_Finance</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

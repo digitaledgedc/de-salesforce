@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>End_Customer__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>TRUE when the account is the end-consumer of services. Aligned with Odoo boolean column. An account can be both End Customer and have a Reseller relationship.</description>
+    <inlineHelpText>Checked when this account is the end-user of DE services, even if invoicing goes through a reseller or channel partner. Aligned with Odoo End Customer flag.</inlineHelpText>
+    <label>End Customer</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

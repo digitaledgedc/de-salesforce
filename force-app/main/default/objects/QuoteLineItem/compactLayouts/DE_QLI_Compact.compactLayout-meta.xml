@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DE_QLI_Compact</fullName>
+    <fields>Product2Id</fields>
+    <fields>Quantity</fields>
+    <fields>UnitPrice</fields>
+    <fields>Charge_Type__c</fields>
+    <fields>Ramp_Phase__c</fields>
+    <label>DE Quote Line Item Compact</label>
+</CompactLayout>

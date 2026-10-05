@@ -42,8 +42,7 @@
                             </button>
                         </div>
                         <div class="co-modal-body">
-                            <p class="co-modal-message">You haven't made any changes to this order. Are you sure you
-                                want to create a blank change order?</p>
+                            <p class="co-modal-message">You haven't made any changes to this order. Are you sure you want to create a blank change order?</p>
                             <p class="co-modal-sub">This will create a draft change order with no modifications.</p>
                         </div>
                         <div class="co-modal-footer">
@@ -74,26 +73,19 @@
                     <!-- Renewal Card -->
                     <div class="co-panel" data-intent="renewal" onclick={handleIntentSelect}>
                         <div class="co-panel-icon co-panel-icon_renewal">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M1 4v6h6M23 20v-6h-6" />
-                                <path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15" />
-                            </svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
                         </div>
                         <span class="co-panel-label">Renewal</span>
-                        <p class="co-panel-desc">Extend the contract for a new term with updated pricing. Services not
-                            selected will continue as-is.</p>
+                        <p class="co-panel-desc">Extend the contract for a new term with updated pricing. Services not selected will continue as-is.</p>
                     </div>
 
                     <!-- Termination Card -->
                     <div class="co-panel" data-intent="termination" onclick={handleIntentSelect}>
                         <div class="co-panel-icon co-panel-icon_termination">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M18 6L6 18M6 6l12 12" />
-                            </svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
                         </div>
                         <span class="co-panel-label">Termination</span>
-                        <p class="co-panel-desc">End specific services or all services on this order. Services not
-                            selected will continue as-is.</p>
+                        <p class="co-panel-desc">End specific services or all services on this order. Services not selected will continue as-is.</p>
                     </div>
                 </div>
 
@@ -102,37 +94,16 @@
                     <div class="co-ctx-header">Order Details</div>
                     <div class="co-ctx-grid">
                         <div>
-                            <template if:true={orderNumber}>
-                                <div class="co-ctx-row">
-                                    <span class="co-ctx-k">Order</span><span class="co-ctx-v">{orderNumber}</span></div>
-                            </template>
-                            <template if:true={orderSite}>
-                                <div class="co-ctx-row">
-                                    <span class="co-ctx-k">Site</span><span class="co-ctx-v">{orderSite}</span></div>
-                            </template>
-                            <div class="co-ctx-row">
-                                <span class="co-ctx-k">Active Services</span><span class="co-ctx-v">{totalRows}</span>
-                            </div>
-                            <div class="co-ctx-row">
-                                <span class="co-ctx-k">Products</span><span class="co-ctx-v">{uniqueProductCount}</span>
-                            </div>
+                            <template if:true={orderNumber}><div class="co-ctx-row"><span class="co-ctx-k">Order</span><span class="co-ctx-v">{orderNumber}</span></div></template>
+                            <template if:true={orderSite}><div class="co-ctx-row"><span class="co-ctx-k">Site</span><span class="co-ctx-v">{orderSite}</span></div></template>
+                            <div class="co-ctx-row"><span class="co-ctx-k">Active Services</span><span class="co-ctx-v">{totalRows}</span></div>
+                            <div class="co-ctx-row"><span class="co-ctx-k">Products</span><span class="co-ctx-v">{uniqueProductCount}</span></div>
                         </div>
                         <div>
-                            <div class="co-ctx-row">
-                                <span class="co-ctx-k">Monthly MRC</span><span class="co-ctx-v">{currentTotalMrc}</span>
-                            </div>
-                            <div class="co-ctx-row">
-                                <span class="co-ctx-k">Currency</span><span class="co-ctx-v">{currencyCode}</span></div>
-                            <template if:true={orderDate}>
-                                <div class="co-ctx-row">
-                                    <span class="co-ctx-k">Start Date</span><span class="co-ctx-v">{orderDate}</span>
-                                </div>
-                            </template>
-                            <template if:true={orderTerm}>
-                                <div class="co-ctx-row">
-                                    <span class="co-ctx-k">Contract</span><span class="co-ctx-v">{orderTerm} months</span>
-                                </div>
-                            </template>
+                            <div class="co-ctx-row"><span class="co-ctx-k">Monthly MRC</span><span class="co-ctx-v">{currentTotalMrc}</span></div>
+                            <div class="co-ctx-row"><span class="co-ctx-k">Currency</span><span class="co-ctx-v">{currencyCode}</span></div>
+                            <template if:true={orderDate}><div class="co-ctx-row"><span class="co-ctx-k">Start Date</span><span class="co-ctx-v">{orderDate}</span></div></template>
+                            <template if:true={orderTerm}><div class="co-ctx-row"><span class="co-ctx-k">Contract</span><span class="co-ctx-v">{orderTerm} months</span></div></template>
                         </div>
                     </div>
                 </div>
@@ -155,19 +126,14 @@
                 <div class="co-step1-panels">
                     <div class="co-panel" data-scope="all" onclick={handleScopeSelect}>
                         <div class="co-panel-icon co-panel-icon_all">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2" />
-                                <path d="M9 12l2 2 4-4" />
-                            </svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
                         </div>
                         <span class="co-panel-label">All Items</span>
                         <p class="co-panel-desc">{allItemsDesc}</p>
                     </div>
                     <div class="co-panel" data-scope="select" onclick={handleScopeSelect}>
                         <div class="co-panel-icon co-panel-icon_select">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M14 14l7 7M3 8V3h5" />
-                            </svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M14 14l7 7M3 8V3h5"/></svg>
                         </div>
                         <span class="co-panel-label">Select Items</span>
                         <p class="co-panel-desc">{selectItemsDesc}</p>
@@ -178,37 +144,16 @@
                     <div class="co-ctx-header">Order Details</div>
                     <div class="co-ctx-grid">
                         <div>
-                            <template if:true={orderNumber}>
-                                <div class="co-ctx-row">
-                                    <span class="co-ctx-k">Order</span><span class="co-ctx-v">{orderNumber}</span></div>
-                            </template>
-                            <template if:true={orderSite}>
-                                <div class="co-ctx-row">
-                                    <span class="co-ctx-k">Site</span><span class="co-ctx-v">{orderSite}</span></div>
-                            </template>
-                            <div class="co-ctx-row">
-                                <span class="co-ctx-k">Active Services</span><span class="co-ctx-v">{totalRows}</span>
-                            </div>
-                            <div class="co-ctx-row">
-                                <span class="co-ctx-k">Products</span><span class="co-ctx-v">{uniqueProductCount}</span>
-                            </div>
+                            <template if:true={orderNumber}><div class="co-ctx-row"><span class="co-ctx-k">Order</span><span class="co-ctx-v">{orderNumber}</span></div></template>
+                            <template if:true={orderSite}><div class="co-ctx-row"><span class="co-ctx-k">Site</span><span class="co-ctx-v">{orderSite}</span></div></template>
+                            <div class="co-ctx-row"><span class="co-ctx-k">Active Services</span><span class="co-ctx-v">{totalRows}</span></div>
+                            <div class="co-ctx-row"><span class="co-ctx-k">Products</span><span class="co-ctx-v">{uniqueProductCount}</span></div>
                         </div>
                         <div>
-                            <div class="co-ctx-row">
-                                <span class="co-ctx-k">Monthly MRC</span><span class="co-ctx-v">{currentTotalMrc}</span>
-                            </div>
-                            <div class="co-ctx-row">
-                                <span class="co-ctx-k">Currency</span><span class="co-ctx-v">{currencyCode}</span></div>
-                            <template if:true={orderDate}>
-                                <div class="co-ctx-row">
-                                    <span class="co-ctx-k">Start Date</span><span class="co-ctx-v">{orderDate}</span>
-                                </div>
-                            </template>
-                            <template if:true={orderTerm}>
-                                <div class="co-ctx-row">
-                                    <span class="co-ctx-k">Contract</span><span class="co-ctx-v">{orderTerm} months</span>
-                                </div>
-                            </template>
+                            <div class="co-ctx-row"><span class="co-ctx-k">Monthly MRC</span><span class="co-ctx-v">{currentTotalMrc}</span></div>
+                            <div class="co-ctx-row"><span class="co-ctx-k">Currency</span><span class="co-ctx-v">{currencyCode}</span></div>
+                            <template if:true={orderDate}><div class="co-ctx-row"><span class="co-ctx-k">Start Date</span><span class="co-ctx-v">{orderDate}</span></div></template>
+                            <template if:true={orderTerm}><div class="co-ctx-row"><span class="co-ctx-k">Contract</span><span class="co-ctx-v">{orderTerm} months</span></div></template>
                         </div>
                     </div>
                 </div>
@@ -237,25 +182,55 @@
 
                 <!-- ── Config fields ──────────────────────────── -->
                 <div class="co-config-row">
-                    <lightning-input type="date" label="Requested Delivery Date" value={coDate}
-                        onchange={handleDateChange} required class="co-config-field"
-                        field-level-help="Requested Delivery Date"></lightning-input>
+                    <lightning-input
+                        type="date"
+                        label="Requested Delivery Date"
+                        value={coDate}
+                        onchange={handleDateChange}
+                        required
+                        class="co-config-field"
+                        field-level-help="Requested Delivery Date"
+                    ></lightning-input>
 
                     <!-- Renewal-specific fields -->
                     <template lwc:if={showRenewalFields}>
-                        <lightning-input type="number" label="Contract Term (months)" value={renewalTerm} min="1"
-                            step="1" onchange={handleTermChange} class="co-config-field"></lightning-input>
-                        <lightning-combobox label="Renewal Type" value={renewalType} options={renewalTypeOptions}
-                            onchange={handleRenewalTypeChange} class="co-config-field"></lightning-combobox>
-                        <lightning-input type="number" label="% Increase" value={bulkPriceIncrease} step="0.1"
-                            formatter="percent-fixed" onchange={handleBulkPriceApply} class="co-config-field">
-                        </lightning-input>
+                        <lightning-input
+                            type="number"
+                            label="Contract Term (months)"
+                            value={renewalTerm}
+                            min="1"
+                            step="1"
+                            onchange={handleTermChange}
+                            class="co-config-field"
+                        ></lightning-input>
+                        <lightning-combobox
+                            label="Renewal Type"
+                            value={renewalType}
+                            options={renewalTypeOptions}
+                            onchange={handleRenewalTypeChange}
+                            class="co-config-field"
+                        ></lightning-combobox>
+                        <lightning-input
+                            type="number"
+                            label="% Increase"
+                            value={bulkPriceIncrease}
+                            step="0.1"
+                            formatter="percent-fixed"
+                            onchange={handleBulkPriceApply}
+                            class="co-config-field"
+                        ></lightning-input>
                     </template>
 
                     <!-- Search -->
-                    <lightning-input type="search" label="Search" variant="label-hidden"
-                        placeholder="Filter services..." value={searchTerm} onchange={handleSearch}
-                        class="co-config-field co-config-search"></lightning-input>
+                    <lightning-input
+                        type="search"
+                        label="Search"
+                        variant="label-hidden"
+                        placeholder="Filter services..."
+                        value={searchTerm}
+                        onchange={handleSearch}
+                        class="co-config-field co-config-search"
+                    ></lightning-input>
                     <span class="co-stats">{statsLabel}</span>
                 </div>
 
@@ -321,28 +296,55 @@
                                             <div class="co-row-edit">
                                                 <!-- New service quantity (upsell only) -->
                                                 <template lwc:if={row.isNew}>
-                                                    <lightning-input type="number" label="QTY" value={row.newQuantity}
-                                                        min="1" step="1" data-row-id={row.rowId}
-                                                        data-field="newQuantity" onchange={handleLineFieldChange}
-                                                        class="co-edit-field"></lightning-input>
+                                                    <lightning-input
+                                                        type="number"
+                                                        label="QTY"
+                                                        value={row.newQuantity}
+                                                        min="1"
+                                                        step="1"
+                                                        data-row-id={row.rowId}
+                                                        data-field="newQuantity"
+                                                        onchange={handleLineFieldChange}
+                                                        class="co-edit-field"
+                                                    ></lightning-input>
                                                 </template>
 
-                                                <!-- Existing service quantity (read-only for changes) -->
+                                                <!-- Existing service quantity — editable only for Merge IB Task (aggregate) products; read-only otherwise since each row there is a single asset -->
                                                 <template lwc:elseif={isUpsellIntent}>
                                                     <template lwc:if={row.showChange}>
-                                                        <div class="co-edit-field co-edit-field_ro">
-                                                            <span class="co-edit-ro-label">Qty</span>
-                                                            <span class="co-edit-ro-val">{row.quantity}</span>
-                                                        </div>
+                                                        <template lwc:if={row.mergeIbTask}>
+                                                            <lightning-input
+                                                                type="number"
+                                                                label="QTY"
+                                                                value={row.newQuantity}
+                                                                min="1"
+                                                                step="1"
+                                                                data-row-id={row.rowId}
+                                                                data-field="newQuantity"
+                                                                onchange={handleLineFieldChange}
+                                                                class="co-edit-field"
+                                                            ></lightning-input>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            <div class="co-edit-field co-edit-field_ro">
+                                                                <span class="co-edit-ro-label">Qty</span>
+                                                                <span class="co-edit-ro-val">{row.quantity}</span>
+                                                            </div>
+                                                        </template>
                                                     </template>
                                                 </template>
 
                                                 <!-- Attributes -->
                                                 <template lwc:if={row.hasAttribute}>
-                                                    <lightning-combobox label="Attribute" value={row.newAttribute}
-                                                        options={row.attributeOptions} data-row-id={row.rowId}
-                                                        data-field="newAttribute" onchange={handleLineFieldChange}
-                                                        class="co-edit-field co-edit-field_attr"></lightning-combobox>
+                                                    <lightning-combobox
+                                                        label="Attribute"
+                                                        value={row.newAttribute}
+                                                        options={row.attributeOptions}
+                                                        data-row-id={row.rowId}
+                                                        data-field="newAttribute"
+                                                        onchange={handleLineFieldChange}
+                                                        class="co-edit-field co-edit-field_attr"
+                                                    ></lightning-combobox>
                                                 </template>
 
                                                 <!-- Price edit -->
@@ -350,11 +352,17 @@
                                                     <label class="co-edit-label">New price</label>
                                                     <div class="co-edit-field co-edit-field_currency">
                                                         <span class="co-currency-symbol">{currencySymbol}</span>
-                                                        <lightning-input type="number" value={row.newUnitPrice} min="0"
-                                                            step="0.01" data-row-id={row.rowId}
-                                                            data-field="newUnitPrice" onchange={handleLineFieldChange}
-                                                            class="co-edit-input" variant="label-hidden">
-                                                        </lightning-input>
+                                                        <lightning-input
+                                                            type="number"
+                                                            value={row.newUnitPrice}
+                                                            min="0"
+                                                            step="0.01"
+                                                            data-row-id={row.rowId}
+                                                            data-field="newUnitPrice"
+                                                            onchange={handleLineFieldChange}
+                                                            class="co-edit-input"
+                                                            variant="label-hidden"
+                                                        ></lightning-input>
                                                     </div>
                                                 </div>
 
@@ -386,14 +394,13 @@
                 </div>
 
                 <!-- ── Add new service (upsell only) ──────────────── -->
-
+                
 
                 <!-- ── Validation ─────────────────────────────────── -->
                 <template lwc:if={validationError}>
                     <div class="co-val-error">{validationError}</div>
                 </template>
 
-                <!-- ── Footer ─────────────────────────────────────── -->
                 <!-- ── Footer ─────────────────────────────────────── -->
                 <footer class="co-foot">
                     <div class="co-net">
@@ -408,14 +415,14 @@
                     </div>
                     <div class="co-foot-actions">
                         <template lwc:if={isUpsellIntent}>
-                            <button class="co-btn" onclick={handleCancel} type="button">Cancel</button>
-                        </template>
-                        <template lwc:else>
                             <button class="co-btn" onclick={handleBackFromGrid} type="button">Back</button>
                         </template>
+                        <template lwc:else>
+                            <button class="co-btn" onclick={handleCancel} type="button">Cancel</button>
+                        </template>
                         <button class="co-btn co-btn_primary" onclick={handleSubmit} disabled={isSaving} type="button">
-            {submitLabel}
-        </button>
+                            {submitLabel}
+                        </button>
                     </div>
                 </footer>
 

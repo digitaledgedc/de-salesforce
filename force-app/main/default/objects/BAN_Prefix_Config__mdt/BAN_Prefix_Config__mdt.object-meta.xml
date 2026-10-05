@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Maps DE Contracting Entity fragments to BAN country prefixes and sequence padding. Used by BillingAccountService to derive the correct country prefix from BillingAccount__c.Contracting_Entity__c.</description>
+    <label>BAN Prefix Config</label>
+    <pluralLabel>BAN Prefix Configs</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

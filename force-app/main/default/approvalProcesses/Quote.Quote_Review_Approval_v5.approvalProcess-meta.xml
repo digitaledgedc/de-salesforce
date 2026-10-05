@@ -21,6 +21,10 @@
         <type>role</type>
     </allowedSubmitters>
     <allowedSubmitters>
+        <submitter>Japan_CTC</submitter>
+        <type>role</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
         <submitter>Japan_Sales_Support</submitter>
         <type>role</type>
     </allowedSubmitters>
@@ -88,7 +92,7 @@
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
         </assignedApprover>
         <entryCriteria>
-            <formula>TEXT(Account_Type__c) = &quot;Platform&quot;</formula>
+            <formula>TEXT(Opportunity.Account_Type__c) = &quot;Platform&quot;</formula>
         </entryCriteria>
         <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
         <label>Platform Manager Review</label>
@@ -113,7 +117,7 @@
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
         </assignedApprover>
         <entryCriteria>
-            <formula>TEXT(Account_Type__c) &lt;&gt; &quot;Platform&quot;</formula>
+            <formula>TEXT(Opportunity.Account_Type__c) &lt;&gt; &quot;Platform&quot;</formula>
         </entryCriteria>
         <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
         <label>Country Manager Review</label>
@@ -171,6 +175,10 @@
         <action>
             <name>Quote_SetFinanceApproved</name>
             <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Send_opportunity_owner_a_notification_when_quote_is_approved</name>
+            <type>Alert</type>
         </action>
     </finalApprovalActions>
     <finalApprovalRecordLock>false</finalApprovalRecordLock>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Integration Error</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Integration Errors</value>
+    </caseValues>
+    <layouts>
+        <layout>DE Integration Error Layout</layout>
+        <sections>
+            <label><!-- Error Details --></label>
+            <section>Error Details</section>
+        </sections>
+        <sections>
+            <label><!-- Error Message --></label>
+            <section>Error Message</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

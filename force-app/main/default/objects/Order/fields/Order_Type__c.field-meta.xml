@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Order_Type__c</fullName>
+    <inlineHelpText>The type of commercial action this order executes. Drives the provisioning workflow and asset lifecycle update. Set automatically from the Quote Type on order creation.</inlineHelpText>
+    <label>Order Type</label>
+    <required>false</required>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>New Service</fullName>
+                <default>true</default>
+                <label>New Service</label>
+            </value>
+            <value>
+                <fullName>Change/Upsell</fullName>
+                <default>false</default>
+                <label>Change/Upsell</label>
+            </value>
+            <value>
+                <fullName>Churn</fullName>
+                <default>false</default>
+                <label>Churn</label>
+            </value>
+            <value>
+                <fullName>Partial Churn</fullName>
+                <default>false</default>
+                <label>Partial Churn</label>
+            </value>
+            <value>
+                <fullName>Renewal</fullName>
+                <default>false</default>
+                <label>Renewal</label>
+            </value>
+            <value>
+                <fullName>Suspension</fullName>
+                <default>false</default>
+                <label>Suspension</label>
+            </value>
+            <value>
+                <fullName>Resumption</fullName>
+                <default>false</default>
+                <label>Resumption</label>
+            </value>
+            <value>
+                <fullName>BAN Change</fullName>
+                <default>false</default>
+                <label>BAN Change</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Read-only access to org configuration through the Metadata and Tooling APIs. Grants View Setup and Configuration only - no data access, no ability to change anything. Assign only if the consumer needs schema/config, not just rows.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE Analytics Metadata Read Only</label>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ApiEnabled</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ViewRoles</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ViewSetup</name>
+    </userPermissions>
+</PermissionSet>

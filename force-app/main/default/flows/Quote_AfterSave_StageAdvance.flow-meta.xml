@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Decision_Advance_to_3Quote</name>
+        <label>Opp before 3-Quote?</label>
+        <locationX>176</locationX>
+        <locationY>240</locationY>
+        <defaultConnector>
+            <targetReference>Decision_Advance_to_4Negotiate</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Already at 3-Quote or beyond</defaultConnectorLabel>
+        <rules>
+            <name>Opp_Before_Quote_Stage</name>
+            <conditionLogic>(1 OR 2) AND (3 OR 4)</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Opportunity.StageName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>1-Suspect</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Opportunity.StageName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>2-Prospect</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Opportunity.MEDDPICC_Decision_Criteria__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Opportunity.Skip_Stage_Gate__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Opp_to_3Quote</targetReference>
+            </connector>
+            <label>Before 3-Quote</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Decision_Advance_to_4Negotiate</name>
+        <label>Status Presented, Opp not closed?</label>
+        <locationX>440</locationX>
+        <locationY>240</locationY>
+        <defaultConnectorLabel>No action needed</defaultConnectorLabel>
+        <rules>
+            <name>Presented_and_Opp_not_closed</name>
+            <conditionLogic>1 AND 2 AND 3 AND 4 AND ((5 AND 6) OR 7)</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Presented</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.Status</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Presented</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Opportunity.StageName</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>5-Won</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Opportunity.StageName</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>9-Lost</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Opportunity.MEDDPICC_Economic_Buyer__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Opportunity.Facilities_Confirmed__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Opportunity.Skip_Stage_Gate__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Opp_to_4Negotiate</targetReference>
+            </connector>
+            <label>Presented and Opp not closed</label>
+        </rules>
+    </decisions>
+    <description>F-16: Advances the parent Opportunity stage based on Quote lifecycle events.
+  - On Quote creation: advances Opp from 1-Suspect or 2-Prospect to 3-Quote.
+  - On Quote Status becoming Presented: advances Opp to 4-Negotiate from any open stage.
+    Skipped if Opp is already at 5-Won or 9-Lost (closed), or if gate conditions
+    are not met (Economic Buyer must be identified and Facilities must be confirmed).
+  - Quote Accepted does NOT change Opp stage. Only Order confirmation triggers 5-Won.
+  Entry gate: ISNEW() OR ISCHANGED(Status). Previously the only entry filter was
+  OpportunityId != null, so the flow started on EVERY Quote save and ran Get_Opportunity
+  before evaluating either decision. A Quote is re-saved once per QuoteLineItem DML
+  (roll-up recalculation), so Add Product alone started this flow 7 times and burned
+  7 SOQL to decide &quot;do nothing&quot; — it was query #101 in the &quot;Too many SOQL queries: 101&quot;
+  failure of 2026-07-26 (ApexLog 07L8500000EXaxYEAT). The gate matches what the flow
+  actually acts on: ISNEW for the 3-Quote advance, ISCHANGED(Status) for the Presented
+  -&gt; 4-Negotiate advance. Neither can fire on a line-item edit.</description>
+    <interviewLabel>Quote After Save Stage Advance {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Quote - After Save - Stage Advance</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Opportunity</name>
+        <label>Get Opportunity</label>
+        <locationX>176</locationX>
+        <locationY>120</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Decision_Advance_to_3Quote</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.OpportunityId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Opportunity</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>StageName</queriedFields>
+        <queriedFields>MEDDPICC_Economic_Buyer__c</queriedFields>
+        <queriedFields>MEDDPICC_Decision_Process__c</queriedFields>
+        <queriedFields>Facilities_Confirmed__c</queriedFields>
+        <queriedFields>MEDDPICC_Decision_Criteria__c</queriedFields>
+        <queriedFields>Skip_Stage_Gate__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Opp_to_3Quote</name>
+        <label>Set Stage to 3-Quote</label>
+        <locationX>176</locationX>
+        <locationY>360</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.OpportunityId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>StageName</field>
+            <value>
+                <stringValue>3-Quote</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Opportunity</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Opp_to_4Negotiate</name>
+        <label>Set Stage to 4-Negotiate</label>
+        <locationX>440</locationX>
+        <locationY>360</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.OpportunityId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>StageName</field>
+            <value>
+                <stringValue>4-Negotiate</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Opportunity</object>
+    </recordUpdates>
+    <start>
+        <locationX>176</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Opportunity</targetReference>
+        </connector>
+        <filterFormula>AND(
+  NOT(ISBLANK({!$Record.OpportunityId})),
+  OR( ISNEW(), ISCHANGED({!$Record.Status}) )
+)</filterFormula>
+        <object>Quote</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

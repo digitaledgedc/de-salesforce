@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Match_Key__c</fullName>
+    <description>Value to match on the Opportunity. By_Country = Operation_Country__c value (e.g. Japan); By_AE = the opp Owner/AE Username; By_Account = the hyperscale account key (e.g. Account_Tier__c value or a hyperscale-group identifier).</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Match Key</label>
+    <length>255</length>
+    <required>true</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

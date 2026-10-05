@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Creates Asset records for each active MRC line on this Order. Use when provisioning is confirmed and assets need to be logged in Salesforce.</description>
+    <flowDefinition>Order_Screen_ActivateAssets</flowDefinition>
+    <label>Activate Assets</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>

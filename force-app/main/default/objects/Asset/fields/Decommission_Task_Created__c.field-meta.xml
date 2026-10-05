@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Decommission_Task_Created__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set to TRUE by F-25 after a Post-Churn Decommission Task has been created for this Asset. Prevents duplicate Task creation on subsequent daily F-25 runs.</description>
+    <inlineHelpText>Set automatically by the post-churn flow after a Decommission Task has been created for this asset. Prevents duplicate task creation. Do not edit manually.</inlineHelpText>
+    <label>Decommission Task Created</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

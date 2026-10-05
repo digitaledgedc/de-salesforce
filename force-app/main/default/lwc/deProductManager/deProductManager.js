@@ -433,6 +433,7 @@ export default class DeProductManager extends NavigationMixin(LightningElement) 
     @track newProductShowCustom    = false;
     @track newProductCountries     = [];
     @track newProductSites         = [];
+    @track newProductAllowedUom    = [];   // SFDC-366: extra units this product may use
     @track newProductError      = '';
     @track isCreatingProduct    = false;
     _productFamilies = [];
@@ -449,6 +450,7 @@ export default class DeProductManager extends NavigationMixin(LightningElement) 
         this.newProductShowCustom    = false;
         this.newProductCountries     = [];
         this.newProductSites         = [];
+        this.newProductAllowedUom    = [];
         this.newProductError      = '';
         // Auto-select site from current pricebook context
         if (this.selectedPricebook?.linkedTo) {
@@ -483,6 +485,8 @@ export default class DeProductManager extends NavigationMixin(LightningElement) 
         this.newProductShowCustom = prod.showCustomValue || false;
         this.newProductCountries = prod.availableCountries ? prod.availableCountries.split(';') : [];
         this.newProductSites = prod.availableSites ? prod.availableSites.split(';') : [];
+        // SFDC-366: ';'-delimited multi-select, same shape as the detail-panel modal
+        this.newProductAllowedUom = prod.allowedUom ? prod.allowedUom.split(';').map(v => v.trim()).filter(Boolean) : [];
         this.newProductError = '';
         if (!this._productFamilies.length) {
             getProductFamilies()
@@ -513,6 +517,7 @@ export default class DeProductManager extends NavigationMixin(LightningElement) 
     handleNewProductShowCustom(e) { this.newProductShowCustom  = e.target.checked; }
     handleNewProductCountries(e) { this.newProductCountries = e.detail.value || []; }
     handleNewProductSites(e) { this.newProductSites = e.detail.value || []; }
+    handleNewProductAllowedUom(e) { this.newProductAllowedUom = e.detail.value || []; }
     get siteOptions() {
         return [
             { label: 'BKK1', value: 'BKK1' }, { label: 'BKK2', value: 'BKK2' },
@@ -577,6 +582,7 @@ export default class DeProductManager extends NavigationMixin(LightningElement) 
                 showCustomAttrVal: this.newProductShowCustom,
                 availableCountries: this.newProductCountries.length ? this.newProductCountries.join(';') : null,
                 availableSites: this.newProductSites.length ? this.newProductSites.join(';') : null,
+                allowedUom: this.newProductAllowedUom.length ? this.newProductAllowedUom.join(';') : null,
             })
             .then(() => {
                 this.showNewProductModal = false;
@@ -600,6 +606,7 @@ export default class DeProductManager extends NavigationMixin(LightningElement) 
                 showCustomAttrVal: this.newProductShowCustom,
                 availableCountries: this.newProductCountries.length ? this.newProductCountries.join(';') : null,
                 availableSites: this.newProductSites.length ? this.newProductSites.join(';') : null,
+                allowedUom: this.newProductAllowedUom.length ? this.newProductAllowedUom.join(';') : null,
             })
             .then((newProductId) => {
                 const addToPanel = this._newProductFromAddPanel;
@@ -808,6 +815,7 @@ export default class DeProductManager extends NavigationMixin(LightningElement) 
     @track editProductShowCustom    = false;
     @track editProductCapAssign     = '';
     @track editProductUom           = '';
+    @track editProductAllowedUom    = [];   // SFDC-366: extra units this product may use
     @track editProductError         = '';
     @track isSavingProduct          = false;
 
@@ -829,6 +837,8 @@ export default class DeProductManager extends NavigationMixin(LightningElement) 
         this.editProductShowCustom  = d.showCustomValue === true;
         this.editProductCapAssign   = d.capacityAssignment || '';
         this.editProductUom         = d.uom || '';
+        // SFDC-366: Allowed_UoM__c is a multi-select picklist, stored ';'-delimited
+        this.editProductAllowedUom  = (d.allowedUom || '').split(';').map(v => v.trim()).filter(Boolean);
         this.editProductError       = '';
         this.showEditProductModal   = true;
     }
@@ -840,6 +850,16 @@ export default class DeProductManager extends NavigationMixin(LightningElement) 
     handleEditProductShowCustom(e){ this.editProductShowCustom  = e.target.checked; }
     handleEditProductCapAssign(e) { this.editProductCapAssign   = e.detail ? e.detail.value : e.target.value; }
     handleEditProductUom(e)       { this.editProductUom         = e.target.value; }
+    handleEditProductAllowedUom(e){ this.editProductAllowedUom  = e.detail.value; }
+
+    // SFDC-366: the DE_Unit_Of_Measure value set. Hard-coded rather than wired to a
+    // picklist describe because this screen already hard-codes its other option lists,
+    // and the set is stable. If a value is added to the global value set, add it here
+    // and to Product2.QuantityUnitOfMeasure too.
+    get allowedUomOptions() {
+        return ['Each','Cab','sqm','Unit','kVA','Mbps','Pair','Working Hours','Days','kwh','15-minutes']
+            .map(v => ({ label: v, value: v }));
+    }
 
     handleSaveEditProduct() {
         if (!this.editProductName?.trim()) {
@@ -857,6 +877,7 @@ export default class DeProductManager extends NavigationMixin(LightningElement) 
             showCustomValue: this.editProductShowCustom,
             capacityAssignment: this.editProductCapAssign || null,
             uom:             this.editProductUom || null,
+            allowedUom:      this.editProductAllowedUom.length ? this.editProductAllowedUom.join(';') : null,
         })
         .then(() => {
             this.showEditProductModal = false;
@@ -2721,6 +2742,11 @@ export default class DeProductManager extends NavigationMixin(LightningElement) 
         const hasSite    = !!this.newPricebookSiteId;
         const hasAccount = !!this.newPricebookAccountId;
         const hasProds   = this.newPbProducts.length > 0;
+        const prodCount  = hasProds ? this.newPbProducts.length : 0;
+        // The pricebook is committed by createPricebook in its own transaction; a later
+        // failure adding products does NOT roll it back. Track the id so the catch below
+        // can tell "nothing was created" from "created, products failed".
+        let createdPbId = null;
         createPricebook({
             name:        pbName,
             description: this.newPricebookDesc,
@@ -2729,6 +2755,7 @@ export default class DeProductManager extends NavigationMixin(LightningElement) 
             accountId:   this.newPricebookAccountId || null,
         })
         .then(pbId => {
+            createdPbId = pbId;
             if (hasProds) {
                 return addProductsToPricebook({
                     pricebookId:  pbId,
@@ -2738,23 +2765,35 @@ export default class DeProductManager extends NavigationMixin(LightningElement) 
             return Promise.resolve();
         })
         .then(() => {
-            this.showNewPricebookModal   = false;
-            this.newPbProducts           = [];
-            this.newPricebookSiteId      = '';
-            this.newPricebookAccountId   = '';
-            this.siteSearchTerm          = '';
-            this.accountSearchTerm       = '';
+            this._closeNewPricebookModal();
             const siteMsg    = hasSite    ? ', assigned to site'    : '';
             const acctMsg    = hasAccount ? ', linked to account'   : '';
-            const prodCount  = hasProds ? this.newPbProducts.length : 0;
             const finalMsg   = hasSite || hasAccount || prodCount > 0
                 ? `"${pbName}" created${siteMsg}${acctMsg}${prodCount > 0 ? `, ${prodCount} product(s) added` : ''}.`
                 : `"${pbName}" created.`;
             this._toast('Pricebook Created', finalMsg, 'success');
             return this._loadPricebooks();
         })
-        .catch(err => { this.modalError = err?.body?.message || 'Failed to create pricebook.'; })
+        .catch(err => {
+            const msg = err?.body?.message || 'Failed to create pricebook.';
+            if (!createdPbId) { this.modalError = msg; return null; }
+            // Pricebook exists. Keeping the modal open invites a second Create click and a
+            // duplicate pricebook, so close it and say plainly what did and did not happen.
+            this._closeNewPricebookModal();
+            this._toast('Products Not Added', `"${pbName}" was created, but its products could not be added: ${msg}`, 'warning');
+            return this._loadPricebooks();
+        })
         .finally(() => { this.isCreatingPricebook = false; });
+    }
+
+    _closeNewPricebookModal() {
+        this.showNewPricebookModal   = false;
+        this.modalError              = '';
+        this.newPbProducts           = [];
+        this.newPricebookSiteId      = '';
+        this.newPricebookAccountId   = '';
+        this.siteSearchTerm          = '';
+        this.accountSearchTerm       = '';
     }
 
     // ─── Pricebook Requests ───────────────────────────────────────────────────

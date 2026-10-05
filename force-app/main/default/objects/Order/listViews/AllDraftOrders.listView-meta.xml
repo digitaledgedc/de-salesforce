@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AllDraftOrders</fullName>
+    <columns>Order_No__c</columns>
+    <columns>ORDERS.CREATED_DATE</columns>
+    <columns>Order_Type__c</columns>
+    <columns>SALES.ACCOUNT.NAME</columns>
+    <columns>ORDERS.TOTAL_AMOUNT</columns>
+    <columns>ORDERS.EFFECTIVE_DATE</columns>
+    <columns>CREATEDBY_USER.ALIAS</columns>
+    <columns>ORDERS.STATUS</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>ORDERS.STATUS_CODE</field>
+        <operation>equals</operation>
+        <value>D</value>
+    </filters>
+    <label>All Draft Orders</label>
+</ListView>

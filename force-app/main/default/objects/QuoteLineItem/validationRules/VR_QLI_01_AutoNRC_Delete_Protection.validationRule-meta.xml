@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QLI_01_AutoNRC_Delete_Protection</fullName>
+    <active>true</active>
+    <description>VR-QLI-01: On auto-NRC lines paired to an MRC, blocks only identity/link changes (Product2Id, Paired_MRC_Line__c, Is_Auto_NRC__c). All editable/cascade updates and no-op re-saves pass. Deletion is guarded by the QLI before-delete trigger.</description>
+    <errorConditionFormula>AND(
+  NOT(ISNEW()),
+  Is_Auto_NRC__c = TRUE,
+  NOT(ISBLANK(Paired_MRC_Line__c)),
+  OR(
+    ISCHANGED(Product2Id),
+    ISCHANGED(Paired_MRC_Line__c),
+    ISCHANGED(Is_Auto_NRC__c)
+  )
+)</errorConditionFormula>
+    <errorMessage>This installation charge is linked to a service line. Its product and service-line link can&apos;t be changed here — edit the paired service line instead, or contact Revenue Ops.</errorMessage>
+</ValidationRule>

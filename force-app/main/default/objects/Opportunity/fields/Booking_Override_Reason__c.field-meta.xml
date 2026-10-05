@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Booking_Override_Reason__c</fullName>
+    <description>Required when Booking_Amount__c manually overridden or when Rev Ops closes to Won without a confirmed Order.</description>
+    <inlineHelpText>Required when Booking Amount is manually changed from the MRC default, or when Rev Ops closes an opportunity to Won without a confirmed order.</inlineHelpText>
+    <label>Booking Override Reason</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

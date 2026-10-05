@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Automatically TRUE for top-level accounts with no parent. Used for global account reporting. --></help>
+    <label><!-- Is Global Parent --></label>
+    <name>Is_Global_Parent__c</name>
+</CustomFieldTranslation>

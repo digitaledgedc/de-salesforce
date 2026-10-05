@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Churn_Approved_By__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <inlineHelpText>The manager who approved this termination. Populated automatically when the Approve Churn quick action is used. Read-only - do not edit manually.</inlineHelpText>
+    <label>Churn Approved By</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>Churn_Approved_Orders</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

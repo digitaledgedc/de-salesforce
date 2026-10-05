@@ -27,29 +27,13 @@
 
 .eqa-brand {
     display: flex;
-    align-items: baseline;
-    gap: 0.3rem;
+    align-items: center;
 }
 
-.eqa-logo-mark {
-    font-size: 7pt;
-    color: #D95C1F;
-    letter-spacing: 1pt;
-    font-weight: 700;
-}
-
-.eqa-logo-name {
-    font-size: 10.5pt;
-    font-weight: 700;
-    color: #D95C1F;
-    letter-spacing: -0.3pt;
-}
-
-.eqa-logo-sup {
-    font-size: 6pt;
-    vertical-align: super;
-    color: #D95C1F;
-    font-weight: 700;
+.eqa-logo-img {
+    height: 22px;
+    width: auto;
+    display: block;
 }
 
 .eqa-title {

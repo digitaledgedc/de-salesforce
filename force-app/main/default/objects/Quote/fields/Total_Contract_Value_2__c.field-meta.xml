@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Contract_Value_2__c</fullName>
+    <description>FB-798: replaces Total_Contract_Value__c (deleted — was a Formula field, which
+        Salesforce does not allow converting to Currency in place). Apex-calculated
+        (QuoteMrcRollupService, via QuoteLineItemTriggerHandler): sums each ramp phase&apos;s MRC
+        delta multiplied by the months remaining from that phase&apos;s start to Contract_End_Date__c,
+        instead of the old formula&apos;s Total_MRC_2__c * Contract_Term_Months__c (which treated the
+        final ramped-up rate as if it applied for the whole contract). Total Contract Value
+        excluding NRC. Used for reporting and commission forecast.</description>
+    <inlineHelpText>Month-weighted sum of each ramp phase&apos;s MRC delta. Excludes NRC. Auto-calculated on every line save - do not edit manually. Used for reporting and commission forecasting.</inlineHelpText>
+    <label>TCV MRC</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

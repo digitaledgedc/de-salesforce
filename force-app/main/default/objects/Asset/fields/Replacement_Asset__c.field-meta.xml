@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Replacement_Asset__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <inlineHelpText>The asset that replaced this one when a Change Order was executed. Populated automatically when a successor asset is created from a Change Order. Enables forward navigation of the asset CO chain.</inlineHelpText>
+    <label>Replacement Asset</label>
+    <referenceTo>Asset</referenceTo>
+    <relationshipLabel>Assets (Replaced By)</relationshipLabel>
+    <relationshipName>Replaced_Assets</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

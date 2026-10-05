@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Free_Period_Start_Date__c</fullName>
+    <inlineHelpText>First day of the billing waiver period for partial-month arrangements. Set alongside Free Period End Date to give Odoo exact waiver dates.</inlineHelpText>
+    <label>Free Period Start Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

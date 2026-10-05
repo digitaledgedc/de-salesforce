@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SBI_Flag__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set TRUE when FX billing, non-standard payment terms, or split billing across multiple BANs.</description>
+    <inlineHelpText>Check when this deal requires non-standard billing - FX billing, non-standard payment terms, or invoicing split across multiple BANs. Triggers finance review on the Quote.</inlineHelpText>
+    <label>Special Billing Instruction</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

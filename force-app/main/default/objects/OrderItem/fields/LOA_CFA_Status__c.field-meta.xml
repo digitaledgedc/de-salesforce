@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LOA_CFA_Status__c</fullName>
+    <label>LOA/CFA Status</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Not Required</fullName>
+                <default>true</default>
+                <label>Not Required</label>
+            </value>
+            <value>
+                <fullName>LOA Requested</fullName>
+                <default>false</default>
+                <label>LOA Requested</label>
+            </value>
+            <value>
+                <fullName>LOA Received</fullName>
+                <default>false</default>
+                <label>LOA Received</label>
+            </value>
+            <value>
+                <fullName>CFA Issued</fullName>
+                <default>false</default>
+                <label>CFA Issued</label>
+            </value>
+            <value>
+                <fullName>Complete</fullName>
+                <default>false</default>
+                <label>Complete</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionSubtype>ScreenAction</actionSubtype>
+    <description>Opens the Deal Review Memo LWC from the Quote page. The LWC resolves the linked Opportunity and presents the same memo composition + PDF generation workflow as on the Opportunity page.</description>
+    <label>Deal Review Memo</label>
+    <lightningWebComponent>deDealReviewMemo</lightningWebComponent>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>LightningWebComponent</type>
+</QuickAction>

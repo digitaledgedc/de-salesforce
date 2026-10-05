@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Skip_Stage_Gate__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Migration-only helper. Set TRUE via Integration User during data load to bypass F-08 stage gate validation. FLS hidden from all profiles post-migration. Deactivate after migration.</description>
+    <inlineHelpText>Used during data migration only to bypass stage gate validation. Do not check in normal use. Hidden from all non-integration profiles.</inlineHelpText>
+    <label>Skip Stage Gate (Migration)</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

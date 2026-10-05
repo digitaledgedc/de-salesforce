@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Binding__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>TRUE = formal binding proposal going through full approval chain. FALSE = non-binding/budgetary quote that bypasses approval and cannot be directly Accepted.</description>
+    <inlineHelpText>Checked for formal proposals that go through the full approval chain and can be accepted into an Order. Uncheck for budgetary or indicative quotes that are for pricing reference only.</inlineHelpText>
+    <label>Binding Quote</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

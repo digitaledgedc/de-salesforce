@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Order</entityName>
+    <fieldName>Status</fieldName>
+    <masterLabel>Default</masterLabel>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Activated - service is live.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Asset record created in Odoo and synced back via IP-2&lt;/li&gt;&lt;li&gt;Contract linked to Order&lt;/li&gt;&lt;li&gt;Billing cycle begins on Effective Date&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Activated</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <fieldNames>EffectiveDate</fieldNames>
+        <info>&lt;p&gt;&lt;b&gt;Draft - Order created from signed SOF.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Verify BAN is assigned and Finance-approved&lt;/li&gt;&lt;li&gt;Confirm Space ID and Breaker Panel ID are set on all line items&lt;/li&gt;&lt;li&gt;Run Confirm Order to validate all 12 gate checks&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Draft</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>__MASTER__</recordTypeName>
+</PathAssistant>

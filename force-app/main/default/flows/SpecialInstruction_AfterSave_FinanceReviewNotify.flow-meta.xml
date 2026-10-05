@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Finance_Review_Email</name>
+        <label>Send Finance Review Email</label>
+        <locationX>176</locationX>
+        <locationY>288</locationY>
+        <actionName>FinanceEmailNotifier</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>recordId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>templateDeveloperName</name>
+            <value>
+                <elementReference>frmTemplate</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>queueDeveloperName</name>
+            <value>
+                <elementReference>frmQueueDevName</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>FinanceEmailNotifier</nameSegment>
+    </actionCalls>
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>Sends the Digital Edge finance review notification to the country Finance queue when a Special Instruction of type Billing Mode Change (B2), Different Invoice Currency (B3), Credit Limit (B4), or Security Deposit Required (B5) is created with Status = Pending. Reuses the FinanceEmailNotifier invocable and the country Finance queues. Does not modify any existing flow.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>frmQueueDevName</name>
+        <dataType>String</dataType>
+        <expression>CASE({!$Record.Country__c},
+&quot;Japan&quot;, &quot;DE_JP_Country_Finance&quot;,
+&quot;South Korea&quot;, &quot;DE_KR_Country_Finance&quot;,
+&quot;Korea&quot;, &quot;DE_KR_Country_Finance&quot;,
+&quot;Indonesia&quot;, &quot;DE_ID_Country_Finance&quot;,
+&quot;Philippines&quot;, &quot;DE_PH_Country_Finance&quot;,
+&quot;China&quot;, &quot;DE_CN_Country_Finance&quot;,
+&quot;India&quot;, &quot;DE_IN_Country_Finance&quot;,
+&quot;Thailand&quot;, &quot;DE_TH_Country_Finance&quot;,
+&quot;Malaysia&quot;, &quot;DE_MY_Country_Finance&quot;,
+&quot;Singapore&quot;, &quot;DE_SG_Country_Finance&quot;,
+&quot;Hong Kong&quot;, &quot;DE_HK_Country_Finance&quot;,
+&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>frmTemplate</name>
+        <dataType>String</dataType>
+        <expression>CASE(TEXT({!$Record.Type__c}),
+&quot;Billing Mode Change&quot;, &quot;DE_Billing_Mode_Change_Notification&quot;,
+&quot;Different Invoice Currency&quot;, &quot;DE_Different_Invoice_Currency_Notification&quot;,
+&quot;Credit Limit&quot;, &quot;DE_Finance_Review_Notification&quot;,
+&quot;Security Deposit Required&quot;, &quot;DE_Security_Deposit_Notification&quot;,
+&quot;&quot;)</expression>
+    </formulas>
+    <interviewLabel>SI Finance Review Notify {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Special Instruction - After Save - Finance Review Notify</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Send_Finance_Review_Email</targetReference>
+        </connector>
+        <filterLogic>1 AND (2 OR 3 OR 4 OR 5)</filterLogic>
+        <filters>
+            <field>Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Pending</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Billing Mode Change</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Different Invoice Currency</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Credit Limit</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Security Deposit Required</stringValue>
+            </value>
+        </filters>
+        <object>Special_Instruction__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

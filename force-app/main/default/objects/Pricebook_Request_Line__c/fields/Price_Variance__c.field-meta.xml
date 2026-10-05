@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Price_Variance__c</fullName>
+    <description>Formula: (Unit_Price - Min_Price) / Min_Price * 100. Negative = below floor price, requires escalated approval.</description>
+    <externalId>false</externalId>
+    <formula>IF(AND(NOT(ISBLANK(Min_Price__c)), Min_Price__c &gt; 0, NOT(ISBLANK(Unit_Price__c))),
+    ((Unit_Price__c - Min_Price__c) / Min_Price__c) * 100,
+    NULL)</formula>
+    <inlineHelpText>Percentage difference between requested Unit Price and Min Price. Negative means below floor. Calculated only when both Unit Price and Min Price are populated.</inlineHelpText>
+    <label>Price Variance %</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>1</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

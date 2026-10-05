@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Submit this order for Country Manager approval. Requires a Country Manager to be selected. The order will be locked for editing until approved or rejected.</description>
+    <flowDefinition>Order_Screen_SubmitForApproval</flowDefinition>
+    <label>Submit for Approval</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>

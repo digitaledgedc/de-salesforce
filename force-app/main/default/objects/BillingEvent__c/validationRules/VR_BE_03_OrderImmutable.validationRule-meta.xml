@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_BE_03_OrderImmutable</fullName>
+    <active>true</active>
+    <description>Parent Order cannot be changed on a BillingEvent after creation.</description>
+    <errorConditionFormula>AND(NOT(ISNEW()), ISCHANGED(Order__c))</errorConditionFormula>
+    <errorDisplayField>Order__c</errorDisplayField>
+    <errorMessage>The parent Order cannot be changed on a BillingEvent.</errorMessage>
+</ValidationRule>

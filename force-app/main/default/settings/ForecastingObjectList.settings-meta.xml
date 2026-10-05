@@ -54,6 +54,10 @@
             <label>Amount</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000004AWdp</field>
             <label>SP2 Split</label>
         </forecastingObjectListLabelMappings>
@@ -76,6 +80,10 @@
         <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.PUSH_COUNT</field>
             <label>Push Count</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -154,8 +162,16 @@
             <label>Won Reason</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTt</field>
             <label>Reservation / ROFR (kW)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTu</field>
@@ -164,6 +180,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTv</field>
             <label>Resurrection Date</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTw</field>
@@ -294,6 +314,10 @@
             <label>Monthly Recurring Charge</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
         </forecastingObjectListLabelMappings>
@@ -304,6 +328,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgdq</field>
             <label>Annual Contract Value (ACV)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -332,6 +360,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTc</field>
             <label>Original Order</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -682,6 +714,10 @@
             <label>Champion - Status</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.TYPE</field>
             <label>Type</label>
         </forecastingObjectListLabelMappings>
@@ -793,6 +829,10 @@
             <field>FORECAST_CATEGORY</field>
             <label>Forecast Category</label>
         </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </forecastingObjectListLabelMappings>
         <forecastingObjectListSelectedSettings>
             <field>OPPORTUNITY.NAME</field>
             <field>ACCOUNT.NAME</field>
@@ -853,6 +893,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -927,7 +968,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -947,12 +992,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -966,6 +1014,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -983,6 +1032,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -1051,6 +1101,10 @@
             <label>Amount</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000004AWdp</field>
             <label>SP2 Split</label>
         </forecastingObjectListLabelMappings>
@@ -1073,6 +1127,10 @@
         <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.PUSH_COUNT</field>
             <label>Push Count</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -1151,8 +1209,16 @@
             <label>Won Reason</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTt</field>
             <label>Reservation / ROFR (kW)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTu</field>
@@ -1161,6 +1227,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTv</field>
             <label>Resurrection Date</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTw</field>
@@ -1291,6 +1361,10 @@
             <label>Monthly Recurring Charge</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
         </forecastingObjectListLabelMappings>
@@ -1301,6 +1375,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgdq</field>
             <label>Annual Contract Value (ACV)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -1329,6 +1407,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTc</field>
             <label>Original Order</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -1679,6 +1761,10 @@
             <label>Champion - Status</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.TYPE</field>
             <label>Type</label>
         </forecastingObjectListLabelMappings>
@@ -1790,6 +1876,10 @@
             <field>FORECAST_CATEGORY</field>
             <label>Forecast Category</label>
         </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </forecastingObjectListLabelMappings>
         <forecastingObjectListSelectedSettings>
             <field>OPPORTUNITY.NAME</field>
             <field>ACCOUNT.NAME</field>
@@ -1855,6 +1945,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -1929,7 +2020,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -1949,12 +2044,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -1968,6 +2066,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -1985,6 +2084,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -2048,6 +2148,10 @@
             <label>Amount</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000004AWdp</field>
             <label>SP2 Split</label>
         </forecastingObjectListLabelMappings>
@@ -2070,6 +2174,10 @@
         <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.PUSH_COUNT</field>
             <label>Push Count</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -2148,8 +2256,16 @@
             <label>Won Reason</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTt</field>
             <label>Reservation / ROFR (kW)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTu</field>
@@ -2158,6 +2274,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTv</field>
             <label>Resurrection Date</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTw</field>
@@ -2288,6 +2408,10 @@
             <label>Monthly Recurring Charge</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
         </forecastingObjectListLabelMappings>
@@ -2298,6 +2422,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgdq</field>
             <label>Annual Contract Value (ACV)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -2326,6 +2454,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTc</field>
             <label>Original Order</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -2676,6 +2808,10 @@
             <label>Champion - Status</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.TYPE</field>
             <label>Type</label>
         </forecastingObjectListLabelMappings>
@@ -2787,6 +2923,10 @@
             <field>FORECAST_CATEGORY</field>
             <label>Forecast Category</label>
         </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </forecastingObjectListLabelMappings>
         <forecastingObjectListSelectedSettings>
             <field>OPPORTUNITY.NAME</field>
             <field>ACCOUNT.NAME</field>
@@ -2847,6 +2987,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -2921,7 +3062,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -2941,12 +3086,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -2960,6 +3108,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -2977,6 +3126,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -3045,6 +3195,10 @@
             <label>Amount</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>SPLITAMOUNT</field>
             <label>Forecasted Amount</label>
         </forecastingObjectListLabelMappings>
@@ -3071,6 +3225,10 @@
         <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.PUSH_COUNT</field>
             <label>Push Count</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -3149,8 +3307,16 @@
             <label>Won Reason</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTt</field>
             <label>Reservation / ROFR (kW)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTu</field>
@@ -3159,6 +3325,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTv</field>
             <label>Resurrection Date</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTw</field>
@@ -3289,6 +3459,10 @@
             <label>Monthly Recurring Charge</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
         </forecastingObjectListLabelMappings>
@@ -3299,6 +3473,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgdq</field>
             <label>Annual Contract Value (ACV)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -3327,6 +3505,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTc</field>
             <label>Original Order</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -3677,6 +3859,10 @@
             <label>Champion - Status</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.TYPE</field>
             <label>Type</label>
         </forecastingObjectListLabelMappings>
@@ -3788,6 +3974,10 @@
             <field>FORECAST_CATEGORY</field>
             <label>Forecast Category</label>
         </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </forecastingObjectListLabelMappings>
         <forecastingObjectListSelectedSettings>
             <field>OPPORTUNITY.NAME</field>
             <field>ACCOUNT.NAME</field>
@@ -3849,6 +4039,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -3923,7 +4114,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -3943,12 +4138,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -3962,6 +4160,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -3979,6 +4178,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -4047,6 +4247,10 @@
             <label>Amount</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000004AWdp</field>
             <label>SP2 Split</label>
         </forecastingObjectListLabelMappings>
@@ -4069,6 +4273,10 @@
         <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.PUSH_COUNT</field>
             <label>Push Count</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -4147,8 +4355,16 @@
             <label>Won Reason</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTt</field>
             <label>Reservation / ROFR (kW)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTu</field>
@@ -4157,6 +4373,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTv</field>
             <label>Resurrection Date</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTw</field>
@@ -4287,6 +4507,10 @@
             <label>Monthly Recurring Charge</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
         </forecastingObjectListLabelMappings>
@@ -4297,6 +4521,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgdq</field>
             <label>Annual Contract Value (ACV)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -4325,6 +4553,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTc</field>
             <label>Original Order</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -4675,6 +4907,10 @@
             <label>Champion - Status</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.TYPE</field>
             <label>Type</label>
         </forecastingObjectListLabelMappings>
@@ -4786,6 +5022,10 @@
             <field>FORECAST_CATEGORY</field>
             <label>Forecast Category</label>
         </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </forecastingObjectListLabelMappings>
         <forecastingObjectListSelectedSettings>
             <field>OPPORTUNITY.NAME</field>
             <field>ACCOUNT.NAME</field>
@@ -4846,6 +5086,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -4920,7 +5161,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -4940,12 +5185,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -4959,6 +5207,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -4976,6 +5225,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -5044,6 +5294,10 @@
             <label>Amount</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>SPLITAMOUNT</field>
             <label>Forecasted Amount</label>
         </forecastingObjectListLabelMappings>
@@ -5070,6 +5324,10 @@
         <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.PUSH_COUNT</field>
             <label>Push Count</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -5148,8 +5406,16 @@
             <label>Won Reason</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTt</field>
             <label>Reservation / ROFR (kW)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTu</field>
@@ -5158,6 +5424,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTv</field>
             <label>Resurrection Date</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTw</field>
@@ -5288,6 +5558,10 @@
             <label>Monthly Recurring Charge</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
         </forecastingObjectListLabelMappings>
@@ -5298,6 +5572,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgdq</field>
             <label>Annual Contract Value (ACV)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -5326,6 +5604,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTc</field>
             <label>Original Order</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -5676,6 +5958,10 @@
             <label>Champion - Status</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.TYPE</field>
             <label>Type</label>
         </forecastingObjectListLabelMappings>
@@ -5787,6 +6073,10 @@
             <field>FORECAST_CATEGORY</field>
             <label>Forecast Category</label>
         </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </forecastingObjectListLabelMappings>
         <forecastingObjectListSelectedSettings>
             <field>OPPORTUNITY.NAME</field>
             <field>ACCOUNT.NAME</field>
@@ -5848,6 +6138,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -5922,7 +6213,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -5942,12 +6237,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -5961,6 +6259,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -5978,6 +6277,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -6046,6 +6346,10 @@
             <label>Amount</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000004AWdp</field>
             <label>SP2 Split</label>
         </forecastingObjectListLabelMappings>
@@ -6068,6 +6372,10 @@
         <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.PUSH_COUNT</field>
             <label>Push Count</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -6146,8 +6454,16 @@
             <label>Won Reason</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTt</field>
             <label>Reservation / ROFR (kW)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTu</field>
@@ -6156,6 +6472,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTv</field>
             <label>Resurrection Date</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTw</field>
@@ -6286,6 +6606,10 @@
             <label>Monthly Recurring Charge</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
         </forecastingObjectListLabelMappings>
@@ -6296,6 +6620,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgdq</field>
             <label>Annual Contract Value (ACV)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -6324,6 +6652,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTc</field>
             <label>Original Order</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -6674,6 +7006,10 @@
             <label>Champion - Status</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.TYPE</field>
             <label>Type</label>
         </forecastingObjectListLabelMappings>
@@ -6785,6 +7121,10 @@
             <field>FORECAST_CATEGORY</field>
             <label>Forecast Category</label>
         </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </forecastingObjectListLabelMappings>
         <forecastingObjectListSelectedSettings>
             <field>OPPORTUNITY.NAME</field>
             <field>ACCOUNT.NAME</field>
@@ -6845,6 +7185,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -6919,7 +7260,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -6939,12 +7284,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -6958,6 +7306,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -6975,6 +7324,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -7043,6 +7393,10 @@
             <label>Amount</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>SPLITAMOUNT</field>
             <label>Forecasted Amount</label>
         </forecastingObjectListLabelMappings>
@@ -7069,6 +7423,10 @@
         <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.PUSH_COUNT</field>
             <label>Push Count</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -7147,8 +7505,16 @@
             <label>Won Reason</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTt</field>
             <label>Reservation / ROFR (kW)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTu</field>
@@ -7157,6 +7523,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTv</field>
             <label>Resurrection Date</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTw</field>
@@ -7287,6 +7657,10 @@
             <label>Monthly Recurring Charge</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
         </forecastingObjectListLabelMappings>
@@ -7297,6 +7671,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgdq</field>
             <label>Annual Contract Value (ACV)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -7325,6 +7703,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTc</field>
             <label>Original Order</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -7675,6 +8057,10 @@
             <label>Champion - Status</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.TYPE</field>
             <label>Type</label>
         </forecastingObjectListLabelMappings>
@@ -7786,6 +8172,10 @@
             <field>FORECAST_CATEGORY</field>
             <label>Forecast Category</label>
         </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </forecastingObjectListLabelMappings>
         <forecastingObjectListSelectedSettings>
             <field>OPPORTUNITY.NAME</field>
             <field>ACCOUNT.NAME</field>
@@ -7847,6 +8237,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -7921,7 +8312,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -7941,12 +8336,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -7960,6 +8358,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -7977,6 +8376,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -8045,6 +8445,10 @@
             <label>Amount</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000004AWdp</field>
             <label>SP2 Split</label>
         </forecastingObjectListLabelMappings>
@@ -8067,6 +8471,10 @@
         <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.PUSH_COUNT</field>
             <label>Push Count</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -8145,8 +8553,16 @@
             <label>Won Reason</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTt</field>
             <label>Reservation / ROFR (kW)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTu</field>
@@ -8155,6 +8571,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTv</field>
             <label>Resurrection Date</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTw</field>
@@ -8285,6 +8705,10 @@
             <label>Monthly Recurring Charge</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
         </forecastingObjectListLabelMappings>
@@ -8295,6 +8719,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgdq</field>
             <label>Annual Contract Value (ACV)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -8323,6 +8751,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTc</field>
             <label>Original Order</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -8673,6 +9105,10 @@
             <label>Champion - Status</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.TYPE</field>
             <label>Type</label>
         </forecastingObjectListLabelMappings>
@@ -8784,6 +9220,10 @@
             <field>FORECAST_CATEGORY</field>
             <label>Forecast Category</label>
         </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </forecastingObjectListLabelMappings>
         <forecastingObjectListSelectedSettings>
             <field>OPPORTUNITY.NAME</field>
             <field>ACCOUNT.NAME</field>
@@ -8844,6 +9284,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -8918,7 +9359,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -8938,12 +9383,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -8957,6 +9405,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -8974,6 +9423,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -9042,6 +9492,10 @@
             <label>Amount</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>SPLITAMOUNT</field>
             <label>Forecasted Amount</label>
         </forecastingObjectListLabelMappings>
@@ -9068,6 +9522,10 @@
         <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.PUSH_COUNT</field>
             <label>Push Count</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -9146,8 +9604,16 @@
             <label>Won Reason</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTt</field>
             <label>Reservation / ROFR (kW)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTu</field>
@@ -9156,6 +9622,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTv</field>
             <label>Resurrection Date</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTw</field>
@@ -9286,6 +9756,10 @@
             <label>Monthly Recurring Charge</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
         </forecastingObjectListLabelMappings>
@@ -9296,6 +9770,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgdq</field>
             <label>Annual Contract Value (ACV)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -9324,6 +9802,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTc</field>
             <label>Original Order</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -9674,6 +10156,10 @@
             <label>Champion - Status</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.TYPE</field>
             <label>Type</label>
         </forecastingObjectListLabelMappings>
@@ -9785,6 +10271,10 @@
             <field>FORECAST_CATEGORY</field>
             <label>Forecast Category</label>
         </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </forecastingObjectListLabelMappings>
         <forecastingObjectListSelectedSettings>
             <field>OPPORTUNITY.NAME</field>
             <field>ACCOUNT.NAME</field>
@@ -9846,6 +10336,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -9920,7 +10411,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -9940,12 +10435,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -9959,6 +10457,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -9976,6 +10475,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -10044,6 +10544,10 @@
             <label>Amount</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000004AWdp</field>
             <label>SP2 Split</label>
         </forecastingObjectListLabelMappings>
@@ -10066,6 +10570,10 @@
         <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.PUSH_COUNT</field>
             <label>Push Count</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -10144,8 +10652,16 @@
             <label>Won Reason</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTt</field>
             <label>Reservation / ROFR (kW)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTu</field>
@@ -10154,6 +10670,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTv</field>
             <label>Resurrection Date</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTw</field>
@@ -10284,6 +10804,10 @@
             <label>Monthly Recurring Charge</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
         </forecastingObjectListLabelMappings>
@@ -10294,6 +10818,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgdq</field>
             <label>Annual Contract Value (ACV)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -10322,6 +10850,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTc</field>
             <label>Original Order</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -10672,6 +11204,10 @@
             <label>Champion - Status</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.TYPE</field>
             <label>Type</label>
         </forecastingObjectListLabelMappings>
@@ -10783,6 +11319,10 @@
             <field>FORECAST_CATEGORY</field>
             <label>Forecast Category</label>
         </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </forecastingObjectListLabelMappings>
         <forecastingObjectListSelectedSettings>
             <field>OPPORTUNITY.NAME</field>
             <field>ACCOUNT.NAME</field>
@@ -10843,6 +11383,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -10917,7 +11458,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -10937,12 +11482,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -10956,6 +11504,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -10973,6 +11522,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -11041,6 +11591,10 @@
             <label>Amount</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>SPLITAMOUNT</field>
             <label>Forecasted Amount</label>
         </forecastingObjectListLabelMappings>
@@ -11067,6 +11621,10 @@
         <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.PUSH_COUNT</field>
             <label>Push Count</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -11145,8 +11703,16 @@
             <label>Won Reason</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTt</field>
             <label>Reservation / ROFR (kW)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTu</field>
@@ -11155,6 +11721,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTv</field>
             <label>Resurrection Date</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTw</field>
@@ -11285,6 +11855,10 @@
             <label>Monthly Recurring Charge</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
         </forecastingObjectListLabelMappings>
@@ -11295,6 +11869,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgdq</field>
             <label>Annual Contract Value (ACV)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -11323,6 +11901,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTc</field>
             <label>Original Order</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -11673,6 +12255,10 @@
             <label>Champion - Status</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.TYPE</field>
             <label>Type</label>
         </forecastingObjectListLabelMappings>
@@ -11784,6 +12370,10 @@
             <field>FORECAST_CATEGORY</field>
             <label>Forecast Category</label>
         </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </forecastingObjectListLabelMappings>
         <forecastingObjectListSelectedSettings>
             <field>OPPORTUNITY.NAME</field>
             <field>ACCOUNT.NAME</field>
@@ -11845,6 +12435,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -11919,7 +12510,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -11939,12 +12534,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -11958,6 +12556,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -11975,6 +12574,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -12043,6 +12643,10 @@
             <label>Amount</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000004AWdp</field>
             <label>SP2 Split</label>
         </forecastingObjectListLabelMappings>
@@ -12065,6 +12669,10 @@
         <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.PUSH_COUNT</field>
             <label>Push Count</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -12143,8 +12751,16 @@
             <label>Won Reason</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTt</field>
             <label>Reservation / ROFR (kW)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTu</field>
@@ -12153,6 +12769,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTv</field>
             <label>Resurrection Date</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTw</field>
@@ -12283,6 +12903,10 @@
             <label>Monthly Recurring Charge</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
         </forecastingObjectListLabelMappings>
@@ -12293,6 +12917,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgdq</field>
             <label>Annual Contract Value (ACV)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -12321,6 +12949,10 @@
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgTc</field>
             <label>Original Order</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -12671,6 +13303,10 @@
             <label>Champion - Status</label>
         </forecastingObjectListLabelMappings>
         <forecastingObjectListLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
+        </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
             <field>OPPORTUNITY.TYPE</field>
             <label>Type</label>
         </forecastingObjectListLabelMappings>
@@ -12782,6 +13418,10 @@
             <field>FORECAST_CATEGORY</field>
             <label>Forecast Category</label>
         </forecastingObjectListLabelMappings>
+        <forecastingObjectListLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </forecastingObjectListLabelMappings>
         <forecastingObjectListSelectedSettings>
             <field>OPPORTUNITY.NAME</field>
             <field>ACCOUNT.NAME</field>
@@ -12842,6 +13482,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -12916,7 +13557,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -12936,12 +13581,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -12955,6 +13603,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -12972,6 +13621,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>

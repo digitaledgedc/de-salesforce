@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Target_Country__c</fullName>
+    <description>The single APAC country this opportunity is targeting. Set at lead conversion from the lead&apos;s Target_Country__c (one opportunity created per country). Drives site selection during Qualify.</description>
+    <inlineHelpText>The country where the prospect wants DE services for this deal. One opportunity per country; this field holds the single value for this opportunity.</inlineHelpText>
+    <label>Target Country</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>HK</fullName>
+                <default>false</default>
+                <label>HK</label>
+            </value>
+            <value>
+                <fullName>SG</fullName>
+                <default>false</default>
+                <label>SG</label>
+            </value>
+            <value>
+                <fullName>JP</fullName>
+                <default>false</default>
+                <label>JP</label>
+            </value>
+            <value>
+                <fullName>KR</fullName>
+                <default>false</default>
+                <label>KR</label>
+            </value>
+            <value>
+                <fullName>PH</fullName>
+                <default>false</default>
+                <label>PH</label>
+            </value>
+            <value>
+                <fullName>ID</fullName>
+                <default>false</default>
+                <label>ID</label>
+            </value>
+            <value>
+                <fullName>CN</fullName>
+                <default>false</default>
+                <label>CN</label>
+            </value>
+            <value>
+                <fullName>IN</fullName>
+                <default>false</default>
+                <label>IN</label>
+            </value>
+            <value>
+                <fullName>TH</fullName>
+                <default>false</default>
+                <label>TH</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

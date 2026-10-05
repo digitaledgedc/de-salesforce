@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_BAN_09_AdditionalEmailFmt</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(NOT(ISBLANK(Additional_Invoice_Email__c)), NOT(REGEX(Additional_Invoice_Email__c, &quot;^\\s*[^@\\s,]+@[^@\\s,]+\\.[^@\\s,]+(\\s*,\\s*[^@\\s,]+@[^@\\s,]+\\.[^@\\s,]+)?\\s*$&quot;)))</errorConditionFormula>
+    <errorDisplayField>Additional_Invoice_Email__c</errorDisplayField>
+    <errorMessage>Enter up to two valid email addresses, separated by a comma (e.g. first@example.com, second@example.com). A space alone is not a valid separator.</errorMessage>
+</ValidationRule>

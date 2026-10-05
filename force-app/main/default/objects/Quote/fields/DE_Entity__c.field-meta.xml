@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DE_Entity__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The DE subsidiary for this Quote. Lookup to Account with RecordType = DE_Entity. Auto-populated from the Opportunity. Drives BAN creation and contract entity.</description>
+    <inlineHelpText>The DE subsidiary for this deal. Auto-set from the Opportunity.</inlineHelpText>
+    <label>DE Subsidiary</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Quotes (DE Company)</relationshipLabel>
+    <relationshipName>Subsidiary_Quotes</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

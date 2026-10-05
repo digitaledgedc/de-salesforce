@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sales_Motion__c</fullName>
+    <description>When Referral: Referral_Partner__c required. When Resale or via Indonet: Channel_Partner__c required.</description>
+    <inlineHelpText>How this deal was originated. Referral requires a Referral Partner; Resale and via Indonet require a Channel Partner. Direct means no partner involvement.</inlineHelpText>
+    <label>Sales Motion</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Direct</fullName>
+                <default>true</default>
+                <label>Direct</label>
+            </value>
+            <value>
+                <fullName>Resale</fullName>
+                <default>false</default>
+                <label>Resale</label>
+            </value>
+            <value>
+                <fullName>Referral</fullName>
+                <default>false</default>
+                <label>Referral</label>
+            </value>
+            <value>
+                <fullName>via Indonet</fullName>
+                <default>false</default>
+                <label>via Indonet</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

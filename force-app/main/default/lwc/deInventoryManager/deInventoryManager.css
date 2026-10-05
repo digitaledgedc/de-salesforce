@@ -1959,7 +1959,7 @@
     flex-wrap: wrap;
 }
 .dim-asgn-search-bar {
-    margin-left: auto;
+    margin-left: 0;
     margin-bottom: 0;
 }
 .dim-asgn-filter-label {
@@ -1969,6 +1969,19 @@
     letter-spacing: 0.06em;
     color: var(--text-3);
     margin-right: 0.375rem;
+}
+.dim-asgn-fulfill-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-left: auto;
+}
+.dim-asgn-fulfill-select {
+    width: auto;
+    min-width: 8.5rem;
+    height: 32px;
+    font-size: 13px;
+    padding: 0 1.75rem 0 10px;
 }
 
 .dim-st-draft         { background: #f5f5f5; color: #737373; }
@@ -2018,4 +2031,14 @@
     .dim-asgn-metrics { flex-direction: column; }
     .dim-asgn-quote-head { flex-direction: column; align-items: stretch; gap: 0.5rem; }
     .dim-asgn-quote-right { justify-content: flex-end; }
+}
+/* CHANGE 2026-08-24b (quote cap): truncation notice under the filter bar. */
+.dim-asgn-trunc {
+    margin: 0 0 8px 0;
+    padding: 6px 10px;
+    font-size: 12px;
+    color: #8c4b00;
+    background: #fef5e7;
+    border: 1px solid #f5c26b;
+    border-radius: 4px;
 }

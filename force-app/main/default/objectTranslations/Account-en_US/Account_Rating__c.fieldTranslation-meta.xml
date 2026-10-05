@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Credit and renewal priority rating assigned by Finance. A = highest priority / lowest risk. C = highest risk / lowest renewal priority. Used to sequence the renewals team&apos;s work queue. --></help>
+    <label><!-- Account Rating --></label>
+    <name>Account_Rating__c</name>
+    <picklistValues>
+        <masterLabel>A</masterLabel>
+        <translation><!-- A --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>B</masterLabel>
+        <translation><!-- B --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>C</masterLabel>
+        <translation><!-- C --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

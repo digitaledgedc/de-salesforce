@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Capacity Type --></label>
+    <name>Capacity_Type__c</name>
+    <picklistValues>
+        <masterLabel>Cross Connect Port</masterLabel>
+        <translation><!-- Cross Connect Port --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Power Circuit</masterLabel>
+        <translation><!-- Power Circuit --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

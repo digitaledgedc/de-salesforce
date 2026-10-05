@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Phase__c</fullName>
+    <label>Billing System Phase</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Phase 1 (Odoo)</fullName>
+                <default>true</default>
+                <label>Phase 1 (Odoo)</label>
+            </value>
+            <value>
+                <fullName>Phase 2 (NetSuite)</fullName>
+                <default>false</default>
+                <label>Phase 2 (NetSuite)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

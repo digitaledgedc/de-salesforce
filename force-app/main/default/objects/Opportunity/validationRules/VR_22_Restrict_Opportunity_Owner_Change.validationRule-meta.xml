@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_22_Restrict_Opportunity_Owner_Change</fullName>
+    <active>true</active>
+    <description>Prevents changing the OO for SD (via Restrict_Opp_Owner_Change_All_Stage custom permission, granted through their Permission Set Groups). Also prevents the owner from reassigning ownership on their own record. Blocks SS OO Change if stage is beyond 4</description>
+    <errorConditionFormula>AND(
+	NOT(ISNEW()),
+	ISCHANGED(OwnerId),
+	$Profile.Name &lt;&gt; &quot;System Administrator&quot;,
+
+	OR(
+		AND(
+			PRIORVALUE(OwnerId) = $User.Id,
+			NOT(
+				AND(
+					$Permission.Restrict_Opp_Owner_Change_till_stage_4,
+					OR(
+						ISPICKVAL(StageName, &quot;1-Suspect&quot;),
+						ISPICKVAL(StageName, &quot;2-Prospect&quot;),
+						ISPICKVAL(StageName, &quot;3-Quote&quot;),
+						ISPICKVAL(StageName, &quot;4-Negotiate&quot;)
+					  )
+					)
+				)
+			),
+$Permission.Restrict_Opp_Owner_Change_All_Stages,
+AND(
+$Permission.Restrict_Opp_Owner_Change_till_stage_4,
+NOT(ISPICKVAL(StageName, &quot;1-Suspect&quot;)),
+NOT(ISPICKVAL(StageName, &quot;2-Prospect&quot;)),
+NOT(ISPICKVAL(StageName, &quot;3-Quote&quot;)),
+NOT(ISPICKVAL(StageName, &quot;4-Negotiate&quot;))
+)
+)
+)</errorConditionFormula>
+    <errorMessage>You do not have permission to change the Opportunity Owner. Please contact your Revenue Operation Team or Salesforce Administrator if this needs to be updated</errorMessage>
+</ValidationRule>

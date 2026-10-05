@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_ORD_11_BAN_Required</fullName>
+    <active>true</active>
+    <description>Gate G-01: Order cannot be activated without a BAN assigned. The BAN determines invoicing, payment terms, and credit limits for the Order.</description>
+    <errorConditionFormula>AND(
+    ISCHANGED(Status),
+    ISPICKVAL(Status, &apos;Activated&apos;),
+    ISBLANK(BillingAccount__c)
+)</errorConditionFormula>
+    <errorDisplayField>BillingAccount__c</errorDisplayField>
+    <errorMessage>A BAN must be assigned before this Order can be activated. Select the BAN on the Order detail page.</errorMessage>
+</ValidationRule>

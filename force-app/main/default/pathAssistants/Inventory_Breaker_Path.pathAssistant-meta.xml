@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Inventory__c</entityName>
+    <fieldName>Status__c</fieldName>
+    <masterLabel>Inventory Breaker Path</masterLabel>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Assigned&lt;/b&gt; - breaker is assigned to a Quote or Opportunity.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Soft hold for the linked deal&lt;/li&gt;&lt;li&gt;If the deal falls through, return to Available&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Assigned</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Available&lt;/b&gt; - breaker/port is unallocated and ready for assignment.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Confirm capacity type (Power Circuit/Cross Connect Port) and kW rating&lt;/li&gt;&lt;li&gt;Unit is visible in feasibility checks for new Opportunities&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Available</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Installed&lt;/b&gt; - circuit is live and energized.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Customer has active power feed&lt;/li&gt;&lt;li&gt;Monitor for capacity changes and contract renewal&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Installed</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Pending Available&lt;/b&gt; - breaker is transitioning back to the available pool.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Previous allocation ended or circuit was released&lt;/li&gt;&lt;li&gt;Ops to verify circuit is physically cleared before marking Available&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Pending Available</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;ROFR&lt;/b&gt; - Right of First Refusal active.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Existing customer has contractual right to this breaker&lt;/li&gt;&lt;li&gt;Cannot sell without offering to ROFR holder first&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>ROFR</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Reserved&lt;/b&gt; - Order confirmed, awaiting provisioning.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Breaker is hard-allocated to the Order&lt;/li&gt;&lt;li&gt;Ops to schedule electrical provisioning&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Reserved</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Sold&lt;/b&gt; - breaker is contractually committed.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Linked to an Order Item&lt;/li&gt;&lt;li&gt;Service Commencement Date set&lt;/li&gt;&lt;li&gt;Customer billing begins on SCD&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Sold</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Stranded&lt;/b&gt; - breaker cannot be allocated in current state.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Electrical or infrastructure issue prevents allocation&lt;/li&gt;&lt;li&gt;Ops to investigate and resolve before returning to Available&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Stranded</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>Inventory_Breaker</recordTypeName>
+</PathAssistant>

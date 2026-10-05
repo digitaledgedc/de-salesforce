@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_ACC_02_Name_Locked</fullName>
+    <active>true</active>
+    <description>VR-ACC-02: Prevents Account Name change after Finance Approval.</description>
+    <errorConditionFormula>AND(NOT(ISNEW()), ISCHANGED(Name), Entity_Locked__c)</errorConditionFormula>
+    <errorDisplayField>Name</errorDisplayField>
+    <errorMessage>Account Name (legal entity name) cannot be changed after Finance Approval. Contact Finance to re-run the approval process.</errorMessage>
+</ValidationRule>

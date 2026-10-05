@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Account reference ID from the legacy BOSS system. Used for migration traceability only. Do not edit. --></help>
+    <label><!-- BOSS Account ID --></label>
+    <name>Migration_Source_Id__c</name>
+</CustomFieldTranslation>

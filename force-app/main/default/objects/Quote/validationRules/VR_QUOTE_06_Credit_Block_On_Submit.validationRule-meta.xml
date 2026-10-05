@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_06_Credit_Block_On_Submit</fullName>
+    <active>true</active>
+    <description>VR-QUOTE-06: Block Quote leaving Draft if Account has credit block, pending Finance Approval, cumulative MRC/NRC exceeds limits, or Account has overdue 90+ days. Fires on Draft-to-non-Draft transition.</description>
+    <errorConditionFormula>AND(
+  ISCHANGED(Status),
+  ISPICKVAL(PRIORVALUE(Status), &apos;Draft&apos;),
+  NOT(ISPICKVAL(Status, &apos;Draft&apos;)),
+  NOT(ISPICKVAL(Status, &apos;Cancelled&apos;)),
+  NOT(ISPICKVAL(Status, &apos;Rejected&apos;)),
+  NOT(ISPICKVAL(Status, &apos;Void&apos;)),
+  OR(
+    Opportunity.Account.Credit_Block__c = TRUE,
+    AND(
+      NOT(ISPICKVAL(Opportunity.Account.Finance_Approval_Phase__c, &apos;Approved&apos;)),
+      NOT(ISPICKVAL(Opportunity.Account.Finance_Approval_Phase__c, &apos;Not_Required&apos;)),
+      NOT(ISBLANK(TEXT(Opportunity.Account.Finance_Approval_Phase__c)))
+    ),
+    AND(
+      NOT(Credit_Finance_Approved__c),
+      Opportunity.Account.Active_Quote_Count__c &gt; 1,
+      Opportunity.Account.Credit_Limit_MRC__c &gt; 0,
+      Opportunity.Account.Total_Active_Quoted_MRC__c &gt; Opportunity.Account.Credit_Limit_MRC__c
+    ),
+    AND(
+      NOT(Credit_Finance_Approved__c),
+      Opportunity.Account.Active_Quote_Count__c &gt; 1,
+      Opportunity.Account.Credit_Limit_NRC__c &gt; 0,
+      Opportunity.Account.Total_Active_Quoted_NRC__c &gt; Opportunity.Account.Credit_Limit_NRC__c
+    ),
+    Opportunity.Account.Overdue_90_Days__c &gt; 0
+  )
+)</errorConditionFormula>
+    <errorDisplayField>Status</errorDisplayField>
+    <errorMessage>This Quote cannot leave Draft. Possible reasons: Account Finance Approval incomplete, cumulative credit limit exceeded across active quotes, or Account has overdue balances beyond 90 days.</errorMessage>
+</ValidationRule>

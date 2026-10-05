@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Group_Finance_Review_Required__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Auto-set TRUE by F-05 when: D&amp;B rating below FAIR, AR &gt; 90 days with waiver, or credit limit exceeded with no waiver. Routes to Group Finance queue.</description>
+    <inlineHelpText>Auto-checked when the account has a high-risk credit profile (poor D&amp;B rating, overdue AR with waiver, or credit limit exceeded). Routes to the Group Finance queue.</inlineHelpText>
+    <label>Group Finance Review Required</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

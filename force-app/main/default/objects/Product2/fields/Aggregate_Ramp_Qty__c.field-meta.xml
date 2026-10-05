@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Aggregate_Ramp_Qty__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>When true, ramp phases use independent quantities (each phase = total at that point, not split from a total). Used for Cage and HyperScale products where Phase 1=25, Phase 2=100, Phase 3=300 means 300 total, not 25+100+300.</description>
+    <inlineHelpText>Check for products where ramp phase quantities represent cumulative totals (e.g. Cage, HyperScale) rather than splits from a base quantity.</inlineHelpText>
+    <label>Aggregate Ramp Qty</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

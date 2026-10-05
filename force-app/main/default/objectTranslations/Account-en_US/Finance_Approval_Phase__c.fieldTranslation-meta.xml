@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Current step in the Finance approval workflow. Set automatically by the Finance Approval flow. Read-only for Sales. --></help>
+    <label><!-- Finance Approval Phase --></label>
+    <name>Finance_Approval_Phase__c</name>
+    <picklistValues>
+        <masterLabel>Approved</masterLabel>
+        <translation><!-- Approved --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>D&amp;B Pending</masterLabel>
+        <translation><!-- D&amp;B Pending --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>KYC Pending</masterLabel>
+        <translation><!-- KYC Pending --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Legal Review Pending</masterLabel>
+        <translation><!-- Legal Review Pending --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Not Required</masterLabel>
+        <translation><!-- Not Required --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Not Started</masterLabel>
+        <translation><!-- Not Started --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Rejected - D&amp;B</masterLabel>
+        <translation><!-- Rejected - D&amp;B --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Rejected - KYC</masterLabel>
+        <translation><!-- Rejected - KYC --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

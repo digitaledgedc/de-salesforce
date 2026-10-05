@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Customer_PO_Reference__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>Customer&apos;s Purchase Order number for this order. Passed to Odoo as the invoice reference. Carried from the Quote automatically.</inlineHelpText>
+    <label>Customer PO Reference</label>
+    <length>100</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

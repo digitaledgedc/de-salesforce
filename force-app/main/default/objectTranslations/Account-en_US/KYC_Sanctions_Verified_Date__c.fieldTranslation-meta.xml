@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Date and time when the sanctions screening was confirmed by finance. --></help>
+    <label><!-- KYC Sanctions Verified --></label>
+    <name>KYC_Sanctions_Verified_Date__c</name>
+</CustomFieldTranslation>

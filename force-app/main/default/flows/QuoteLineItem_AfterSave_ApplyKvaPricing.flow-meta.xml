@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>applyKvaPricing</name>
+        <label>Apply kVA Pricing</label>
+        <locationX>50</locationX>
+        <locationY>160</locationY>
+        <actionName>KvaPricingService</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>qliIds</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>KvaPricingService</nameSegment>
+    </actionCalls>
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>Applies kVA Draw Capacity attribute-based pricing to Cabinet product QuoteLineItems when created. Calls KvaPricingService.applyKvaPricing which reads the QuoteLineItemAttribute for the Draw Cap in kVA attribute and sets UnitPrice from kVA_Draw_Pricing__mdt. Fires on QLI create only to avoid recursion - Sales reps should click Refresh kVA Pricing on the Quote when changing kVA tier on an existing line.</description>
+    <environments>Default</environments>
+    <label>QuoteLineItem After Save Apply kVA Pricing</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <filterLogic>1 AND 2</filterLogic>
+        <filters>
+            <field>ProductCode</field>
+            <operator>Contains</operator>
+            <value>
+                <stringValue>.RC</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>ProductCode</field>
+            <operator>Contains</operator>
+            <value>
+                <stringValue>CAB</stringValue>
+            </value>
+        </filters>
+        <object>QuoteLineItem</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <scheduledPaths>
+            <connector>
+                <targetReference>applyKvaPricing</targetReference>
+            </connector>
+            <pathType>AsyncAfterCommit</pathType>
+        </scheduledPaths>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

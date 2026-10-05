@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Land Price per IT MW (LC) --></label>
+    <name>Land_Price_Per_IT_MW_LC__c</name>
+</CustomFieldTranslation>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Referral_Partner__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>TRUE when the account is a referral partner. Aligned with Odoo boolean column. Decoupled from record type - an account can be both a customer and a referral partner.</description>
+    <inlineHelpText>Checked when this account refers business to DE. Referral partners may or may not be customers themselves. Aligned with Odoo Referral Partner flag.</inlineHelpText>
+    <label>Referral Partner</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

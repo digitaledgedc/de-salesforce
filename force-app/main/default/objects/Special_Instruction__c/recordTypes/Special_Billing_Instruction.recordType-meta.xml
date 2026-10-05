@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Special_Billing_Instruction</fullName>
+    <active>true</active>
+    <description>Special Billing Instructions created automatically when billing conditions require Finance attention: Billing Mode changes, Different Invoice Currency, or Security Deposit Required.</description>
+    <label>Special Billing Instruction</label>
+    <picklistValues>
+        <picklist>Status__c</picklist>
+        <values>
+            <fullName>Acknowledged</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Expired</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pending</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Rejected</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Subscription_Management__c</picklist>
+        <values>
+            <fullName>Change Order</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Creation</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Renewal</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type__c</picklist>
+        <values>
+            <fullName>Billing Mode Change</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Credit Limit</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Different Invoice Currency</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Security Deposit Required</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

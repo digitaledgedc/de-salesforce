@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_ORD_14_Restrict_Order_Owner_Change</fullName>
+    <active>true</active>
+    <description>Prevents changing the Order Owner for Sales Director. Also prevents the current record owner from reassigning</description>
+    <errorConditionFormula>AND(
+  NOT(ISNEW()),
+  ISCHANGED(OwnerId),
+  $Profile.Name &lt;&gt; &quot;System Administrator&quot;,
+  OR(
+    $Permission.Restrict_Order_Owner_Change,
+    PRIORVALUE(OwnerId) = $User.Id
+  )
+)</errorConditionFormula>
+    <errorMessage>You do not have permission to change the Order Owner. Please contact your Revenue Operation Team or Salesforce Administrator if this needs to be updated.</errorMessage>
+</ValidationRule>

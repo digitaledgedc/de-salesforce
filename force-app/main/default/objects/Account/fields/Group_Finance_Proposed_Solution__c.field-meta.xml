@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Group_Finance_Proposed_Solution__c</fullName>
+    <description>Required when Group_Finance_Review_Required__c = TRUE. Group Finance documents proposed resolution.</description>
+    <inlineHelpText>Required when Group Finance Review is triggered. Group Finance documents the proposed resolution or risk acceptance decision here.</inlineHelpText>
+    <label>Group Finance Resolution</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

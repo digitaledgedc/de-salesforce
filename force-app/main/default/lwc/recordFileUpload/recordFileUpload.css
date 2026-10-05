@@ -526,3 +526,31 @@
     .su-doc-row { grid-template-columns: minmax(0,1fr) 80px 56px; }
     .su-hdr-date, .su-hdr-size, .su-cell--date, .su-cell--size { display: none; }
 }
+
+/* ══════════════════════════════════════════════════════════
+   SFDC-303 — soft panel holding the native dropzone
+   lightning-file-upload owns its click and drop targets inside a shadow root
+   with no published styling hooks, so its dashed box is the only interactive
+   element and the only border. An outer dashed rectangle would advertise a
+   target it has not got, so this panel drops the border and keeps the surface.
+   Matches the SLDS file selector pattern: a panel that holds the dropzone.
+══════════════════════════════════════════════════════════ */
+.su-dropzone--plain {
+    border: none;
+    background: var(--clr-surface);
+    border-radius: var(--r-md);
+    cursor: default;
+    padding: 16px 1rem 18px;
+}
+.su-dropzone--plain:hover {
+    background: var(--clr-surface);
+    border-color: transparent;
+}
+/* Host-level only — the element is in this template, not in the shadow root. */
+.dz-uploader {
+    margin-top: 12px;
+}
+.dz-uploader lightning-file-upload {
+    display: block;
+    width: 100%;
+}

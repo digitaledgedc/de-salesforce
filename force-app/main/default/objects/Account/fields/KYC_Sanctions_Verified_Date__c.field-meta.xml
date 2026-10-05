@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>KYC_Sanctions_Verified_Date__c</fullName>
+    <description>Timestamp when finance confirmed completion of the sanctions screening (OFAC and other sanctions lists) during KYC review. Set automatically by the Finance Approval flow.</description>
+    <inlineHelpText>Date and time when the sanctions screening was confirmed by finance.</inlineHelpText>
+    <label>KYC Sanctions Verified</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>DateTime</type>
+</CustomField>

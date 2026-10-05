@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_OPP_03_Competitor_Required</fullName>
+    <active>true</active>
+    <description>VR-OPP-03: Competitor Won field required when Loss Reason = Competitor Decision.</description>
+    <errorConditionFormula>AND( ISPICKVAL(Loss_Reason__c, &quot;Competitor Decision&quot;), ISPICKVAL(Competitor__c, &quot;&quot;) )</errorConditionFormula>
+    <errorDisplayField>Competitor__c</errorDisplayField>
+    <errorMessage>Please select the competitor that won this deal.</errorMessage>
+</ValidationRule>

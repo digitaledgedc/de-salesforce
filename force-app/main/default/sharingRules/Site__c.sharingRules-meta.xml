@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>Site_Country_China</fullName>
+        <accessLevel>Edit</accessLevel>
+        <label>Site Country China</label>
+        <sharedTo>
+            <role>Capacity_Manager_China</role>
+        </sharedTo>
+        <criteriaItems>
+            <field>Name</field>
+            <operation>startsWith</operation>
+            <value>PEK</value>
+        </criteriaItems>
+        <includeRecordsOwnedByAll>true</includeRecordsOwnedByAll>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Site_Country_India</fullName>
+        <accessLevel>Edit</accessLevel>
+        <label>Site Country India</label>
+        <sharedTo>
+            <role>Capacity_Manager_India</role>
+        </sharedTo>
+        <criteriaItems>
+            <field>Name</field>
+            <operation>startsWith</operation>
+            <value>BOM</value>
+        </criteriaItems>
+        <includeRecordsOwnedByAll>true</includeRecordsOwnedByAll>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Site_Country_Indonesia</fullName>
+        <accessLevel>Edit</accessLevel>
+        <label>Site Country Indonesia</label>
+        <sharedTo>
+            <role>Capacity_Manager_Indonesia</role>
+        </sharedTo>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <criteriaItems>
+            <field>Name</field>
+            <operation>startsWith</operation>
+            <value>JKT</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Name</field>
+            <operation>startsWith</operation>
+            <value>CGK</value>
+        </criteriaItems>
+        <includeRecordsOwnedByAll>true</includeRecordsOwnedByAll>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Site_Country_Korea</fullName>
+        <accessLevel>Edit</accessLevel>
+        <label>Site Country Korea</label>
+        <sharedTo>
+            <role>Capacity_Manager_Korea</role>
+        </sharedTo>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <criteriaItems>
+            <field>Name</field>
+            <operation>startsWith</operation>
+            <value>SEL</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Name</field>
+            <operation>startsWith</operation>
+            <value>PUS</value>
+        </criteriaItems>
+        <includeRecordsOwnedByAll>true</includeRecordsOwnedByAll>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Site_Country_Philippines</fullName>
+        <accessLevel>Edit</accessLevel>
+        <label>Site Country Philippines</label>
+        <sharedTo>
+            <role>Capacity_Manager_Philippines</role>
+        </sharedTo>
+        <criteriaItems>
+            <field>Name</field>
+            <operation>startsWith</operation>
+            <value>MNL</value>
+        </criteriaItems>
+        <includeRecordsOwnedByAll>true</includeRecordsOwnedByAll>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Site_Name_Osaka</fullName>
+        <accessLevel>Edit</accessLevel>
+        <label>Site Name Osaka</label>
+        <sharedTo>
+            <role>Capacity_Manager_Osaka</role>
+        </sharedTo>
+        <criteriaItems>
+            <field>Name</field>
+            <operation>startsWith</operation>
+            <value>OSA</value>
+        </criteriaItems>
+        <includeRecordsOwnedByAll>true</includeRecordsOwnedByAll>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Site_Name_Tokyo</fullName>
+        <accessLevel>Edit</accessLevel>
+        <label>Site Name Tokyo</label>
+        <sharedTo>
+            <role>Capacity_Manager_Tokyo</role>
+        </sharedTo>
+        <criteriaItems>
+            <field>Name</field>
+            <operation>startsWith</operation>
+            <value>TYO</value>
+        </criteriaItems>
+        <includeRecordsOwnedByAll>true</includeRecordsOwnedByAll>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Site_RevOps_ReadAll</fullName>
+        <accessLevel>Read</accessLevel>
+        <label>Site RevOps Read All</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Revenue_Operations</roleAndSubordinatesInternal>
+        </sharedTo>
+        <criteriaItems>
+            <field>Name</field>
+            <operation>notEqual</operation>
+            <value></value>
+        </criteriaItems>
+        <includeRecordsOwnedByAll>true</includeRecordsOwnedByAll>
+    </sharingCriteriaRules>
+    <sharingOwnerRules>
+        <fullName>Edit_for_Product</fullName>
+        <accessLevel>Edit</accessLevel>
+        <label>Edit for Product</label>
+        <sharedTo>
+            <role>Product</role>
+        </sharedTo>
+        <sharedFrom>
+            <allInternalUsers></allInternalUsers>
+        </sharedFrom>
+    </sharingOwnerRules>
+</SharingRules>

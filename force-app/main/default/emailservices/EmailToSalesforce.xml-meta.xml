@@ -11,6 +11,13 @@
         <localPart>emailtosalesforce</localPart>
         <runAsUser>akira.ooyama@digitaledgedc.com</runAsUser>
     </emailServicesAddresses>
+    <emailServicesAddresses>
+        <authorizedSenders>darren.wahyono@digitaledgedc.com</authorizedSenders>
+        <developerName>emailtosalesforce1</developerName>
+        <isActive>true</isActive>
+        <localPart>emailtosalesforce</localPart>
+        <runAsUser>darren.wahyono@digitaledgedc.com</runAsUser>
+    </emailServicesAddresses>
     <functionInactiveAction>Bounce</functionInactiveAction>
     <functionName>EmailToSalesforce</functionName>
     <isActive>true</isActive>

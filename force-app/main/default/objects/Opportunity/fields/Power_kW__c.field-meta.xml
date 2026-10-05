@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Power_kW__c</fullName>
+    <description>Required for all Platform/hyperscale opportunities. Passes to Quote for pricebook selection.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Total committed power in kilowatts. Required for Platform and hyperscale deals. Used for pricebook selection on child quotes.</inlineHelpText>
+    <label>Power Requirement (kW)</label>
+    <precision>12</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- How do we beat them? What DE advantages should we lead with? --></help>
+    <label><!-- How to Win --></label>
+    <name>Comp_How_To_Win__c</name>
+</CustomFieldTranslation>

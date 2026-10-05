@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SCD_Override_Approved__c</fullName>
+    <defaultValue>false</defaultValue>
+    <inlineHelpText>Check once a finance or operations manager has approved a manual change to the Service Commencement Date. Required before SCD can be edited outside of normal provisioning workflow.</inlineHelpText>
+    <label>SCD Override Approved</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

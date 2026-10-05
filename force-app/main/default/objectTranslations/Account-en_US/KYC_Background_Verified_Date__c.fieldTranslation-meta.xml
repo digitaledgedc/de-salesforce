@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Date and time when the background verification was confirmed by finance. --></help>
+    <label><!-- KYC Background Verified --></label>
+    <name>KYC_Background_Verified_Date__c</name>
+</CustomFieldTranslation>

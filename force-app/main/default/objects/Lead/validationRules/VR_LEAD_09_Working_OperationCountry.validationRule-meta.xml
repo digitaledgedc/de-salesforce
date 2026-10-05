@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_LEAD_09_Working_OperationCountry</fullName>
+    <active>true</active>
+    <description>Operation Country is required before a Lead can be moved to Working. Allows Disqualified status without this field so reps can close unqualified inbound leads immediately.</description>
+    <errorConditionFormula>AND(
+  ISPICKVAL(Status, &apos;Working&apos;),
+  ISBLANK(Target_Country__c)
+)</errorConditionFormula>
+    <errorDisplayField>Target_Country__c</errorDisplayField>
+    <errorMessage>Operation Country is required to move this Lead to Working status.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Decision_Criteria_Options__c</fullName>
+    <description>Multi-select checklist of criteria the client uses to judge vendors. Stored semi-colon separated.</description>
+    <label>Decision Criteria - Key Factors</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Price / Commercial Terms</fullName>
+                <default>false</default>
+                <label>Price / Commercial Terms</label>
+            </value>
+            <value>
+                <fullName>Technical Fit</fullName>
+                <default>false</default>
+                <label>Technical Fit</label>
+            </value>
+            <value>
+                <fullName>Vendor Stability</fullName>
+                <default>false</default>
+                <label>Vendor Stability</label>
+            </value>
+            <value>
+                <fullName>Implementation Timeline</fullName>
+                <default>false</default>
+                <label>Implementation Timeline</label>
+            </value>
+            <value>
+                <fullName>References / Track Record</fullName>
+                <default>false</default>
+                <label>References / Track Record</label>
+            </value>
+            <value>
+                <fullName>Compliance &amp; Security</fullName>
+                <default>false</default>
+                <label>Compliance &amp; Security</label>
+            </value>
+            <value>
+                <fullName>Support Model</fullName>
+                <default>false</default>
+                <label>Support Model</label>
+            </value>
+            <value>
+                <fullName>Scalability</fullName>
+                <default>false</default>
+                <label>Scalability</label>
+            </value>
+            <value>
+                <fullName>Integration Capability</fullName>
+                <default>false</default>
+                <label>Integration Capability</label>
+            </value>
+            <value>
+                <fullName>Innovation &amp; Roadmap</fullName>
+                <default>false</default>
+                <label>Innovation &amp; Roadmap</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

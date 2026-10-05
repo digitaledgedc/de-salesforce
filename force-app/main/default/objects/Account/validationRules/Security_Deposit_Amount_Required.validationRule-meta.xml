@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Security_Deposit_Amount_Required</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(Security_Deposit_Required__c = TRUE, ISBLANK(Security_Deposit_Amount__c))</errorConditionFormula>
+    <errorDisplayField>Security_Deposit_Amount__c</errorDisplayField>
+    <errorMessage>Security Deposit Amount is required when Security Deposit Required is checked.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Cancel this order. Requires a cancellation reason. This action cannot be undone. If the order is in Odoo, notify operations to cancel it in the billing system.</description>
+    <flowDefinition>Order_Screen_CancelOrder</flowDefinition>
+    <label>Cancel Order</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>

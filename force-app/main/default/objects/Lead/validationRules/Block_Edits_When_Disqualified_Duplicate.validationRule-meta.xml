@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Block_Edits_When_Disqualified_Duplicate</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    OR(
+        ISPICKVAL(Status, &quot;Disqualified&quot;),
+        ISPICKVAL(Status, &quot;Duplicate&quot;),
+        ISPICKVAL(Status, &quot;Converted&quot;)
+    ),
+    NOT(ISCHANGED(Status)),
+    NOT(ISNEW())
+)</errorConditionFormula>
+    <errorMessage>Disqualified/Duplicate records cannot be edited.</errorMessage>
+</ValidationRule>

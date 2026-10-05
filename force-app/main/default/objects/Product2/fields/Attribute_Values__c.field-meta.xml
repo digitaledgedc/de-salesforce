@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Attribute_Values__c</fullName>
+    <description>Comma-separated valid attribute values for this product (e.g., 2kVA,3kVA,4kVA,5kVA,6kVA). Used by the quote line editor to populate the attribute selector. Values sourced from Odoo Product Attribute Combinations.</description>
+    <inlineHelpText>Valid attribute values for this product, comma-separated. Controls what options appear in the attribute selector on quote lines.</inlineHelpText>
+    <label>Product Attribute Values</label>
+    <length>1000</length>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>2</visibleLines>
+</CustomField>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Due_Date__c</fullName>
+    <inlineHelpText>Payment due date from Odoo invoice. Used to derive Overdue status when today &gt; due_date and balance &gt; 0.</inlineHelpText>
+    <label>Due Date</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

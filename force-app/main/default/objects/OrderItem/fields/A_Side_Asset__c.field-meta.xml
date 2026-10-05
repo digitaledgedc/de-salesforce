@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>A_Side_Asset__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>A-side cross-connect asset for Cross Connect order lines. Passed to Odoo in IP-1.</description>
+    <inlineHelpText>The A-side cross-connect asset for this line.</inlineHelpText>
+    <label>A-Side Asset</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>Asset.Product2.Family</field>
+            <operation>equals</operation>
+            <value>Interconnect</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Asset</referenceTo>
+    <relationshipLabel>Order Lines (A-Side)</relationshipLabel>
+    <relationshipName>A_Side_Order_Lines</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

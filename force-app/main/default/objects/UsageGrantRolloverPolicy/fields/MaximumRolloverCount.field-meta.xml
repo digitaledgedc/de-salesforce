@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MaximumRolloverCount</fullName>
+    <inlineHelpText>The maximum number of times that the usage grants can roll over to the next cycle.</inlineHelpText>
+    <trackHistory>false</trackHistory>
+</CustomField>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Finance user who approved. --></help>
+    <label><!-- Finance Approver --></label>
+    <name>Finance_Approver__c</name>
+    <relationshipLabel><!-- Accounts (Finance Approver) --></relationshipLabel>
+</CustomFieldTranslation>

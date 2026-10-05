@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Shared (S), Private Cage (C), or Private Hall (H). Affects the auto-generated inventory name. --></help>
+    <label><!-- Usage Type --></label>
+    <name>Usage_Type__c</name>
+    <picklistValues>
+        <masterLabel>Private Cage</masterLabel>
+        <translation><!-- Private Cage --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Private Hall</masterLabel>
+        <translation><!-- Private Hall --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Shared</masterLabel>
+        <translation><!-- Shared --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

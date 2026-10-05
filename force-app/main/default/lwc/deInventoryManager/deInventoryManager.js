@@ -23,6 +23,7 @@ import checkDuplicate        from '@salesforce/apex/DeInventoryManagerController
 import addHallToFloor        from '@salesforce/apex/DeInventoryManagerController.addHallToFloor';
 import getCageHallOptions    from '@salesforce/apex/DeInventoryManagerController.getCageHallOptions';
 import getAssignmentDemand   from '@salesforce/apex/DeInventoryManagerController.getAssignmentDemand';
+import getAssignmentDemandMeta from '@salesforce/apex/DeInventoryManagerController.getAssignmentDemandMeta';
 import getAvailableByType    from '@salesforce/apex/DeInventoryManagerController.getAvailableByType';
 import decommissionInventory from '@salesforce/apex/DeInventoryManagerController.decommissionInventory';
 
@@ -34,6 +35,11 @@ const STATUS_ORDER = [
 // returns ('In Review', 'Presented', 'Approved'); 'Accepted' is fetched only when
 // picked, since closed quotes outnumber live demand there (DIG-863).
 const ASGN_STAGES = ['All', 'In Review', 'Approved', 'Presented', 'Accepted'];
+
+// CHANGE 2026-08-24 (search): the Assignment search queries the database instead
+// of filtering loaded rows, so it waits for enough characters to be worth a round
+// trip. Keep in step with MIN_SEARCH_LENGTH in DeInventoryManagerController.
+const MIN_ASGN_SEARCH = 3;
 
 const STATUS_COLOR = {
     'Available':          '#2e844a',
@@ -228,8 +234,18 @@ export default class DeInventoryManager extends NavigationMixin(LightningElement
     @track _assignmentsLoading = false;
     @track _openAssgnSections = new Set();
     @track _asgnStatusFilter = 'All';
+    @track _asgnFulfillmentFilter = 'All';
     @track _asgnSearch = '';
     _asgnSearchTimer;
+    // CHANGE 2026-08-24 (search): the term the current rows were fetched with.
+    // _asgnSearch follows every keystroke; this one only moves when a query is
+    // actually issued, so it is what a stage re-query has to send along and what
+    // tells us a re-query is needed at all.
+    _asgnSearchApplied = '';
+    // CHANGE 2026-08-24b (quote cap): true totals for the current filters. The
+    // rows are capped to whole quotes that fit the line budget, so without this
+    // a truncated result looked identical to a complete one.
+    @track _asgnMeta = {};
     @track _availByType = {};
     _demandReqToken = 0;            // guards against out-of-order stage re-queries
 
@@ -462,21 +478,95 @@ export default class DeInventoryManager extends NavigationMixin(LightningElement
                 return scMap[sc] === this._countryFilter;
             });
         }
-        const q = (this._asgnSearch || '').trim().toLowerCase();
-        if (q) {
-            records = records.filter(r => {
-                const quote = r.Quote || {};
-                const opp = quote.Opportunity || {};
-                const acct = opp.Account || {};
-                const accountName = (acct.Name || opp.Name || '').toLowerCase();
-                const quoteNumber = (quote.QuoteNumber || '').toLowerCase();
-                return accountName.includes(q) || quoteNumber.includes(q);
+        // Fulfillment status narrows the Stage/search result set in the browser.
+        // A quote is Fulfilled when every reservable line is Reserved; Unfulfilled
+        // when any reservable line is still open. N/A-only quotes are excluded from
+        // both Fulfilled and Unfulfilled (they are not demand to reserve).
+        if (this._asgnFulfillmentFilter === 'Fulfilled'
+                || this._asgnFulfillmentFilter === 'Unfulfilled') {
+            const byQuote = new Map();
+            records.forEach(r => {
+                if (!byQuote.has(r.QuoteId)) byQuote.set(r.QuoteId, []);
+                byQuote.get(r.QuoteId).push(r);
             });
+            const keep = new Set();
+            byQuote.forEach((lines, qid) => {
+                const reservable = lines.filter(l => l.Reserved__c !== 'N/A');
+                if (reservable.length === 0) return;
+                const allFulfilled = reservable.every(l => l.Reserved__c === 'Reserved');
+                if (this._asgnFulfillmentFilter === 'Fulfilled' && allFulfilled) {
+                    keep.add(qid);
+                } else if (this._asgnFulfillmentFilter === 'Unfulfilled' && !allFulfilled) {
+                    keep.add(qid);
+                }
+            });
+            records = records.filter(r => keep.has(r.QuoteId));
         }
+        // CHANGE 2026-08-24 (search): search moved into SOQL, so the rows below
+        // are already the search result — re-filtering them here would hide
+        // valid matches, because this predicate only consults opp.Name when the
+        // account name is blank while the query matches either field on its own.
+        // Kept for reference: restore this block and drop searchTerm from the
+        // getAssignmentDemand calls to return to client-side searching.
+        //
+        // const q = (this._asgnSearch || '').trim().toLowerCase();
+        // if (q) {
+        //     records = records.filter(r => {
+        //         const quote = r.Quote || {};
+        //         const opp = quote.Opportunity || {};
+        //         const acct = opp.Account || {};
+        //         const accountName = (acct.Name || opp.Name || '').toLowerCase();
+        //         const quoteNumber = (quote.QuoteNumber || '').toLowerCase();
+        //         return accountName.includes(q) || quoteNumber.includes(q);
+        //     });
+        // }
         return records;
     }
 
     get hasAsgnSearch() { return (this._asgnSearch || '').trim().length > 0; }
+
+    // CHANGE 2026-08-24 (search): the Stage chips and the search box must stay
+    // mounted even when the current query returned nothing — they are the only
+    // way to undo the search or filter that emptied the list. Keeping them
+    // rendered also stops the input being torn out from under the cursor on
+    // every query, which lost focus and any keystroke still in flight.
+    get _asgnFilterActive() {
+        return this.hasAsgnSearch
+            || this._asgnStatusFilter !== 'All'
+            || this._asgnFulfillmentFilter !== 'All';
+    }
+
+    get asgnFulfillmentOptions() {
+        return ['All', 'Fulfilled', 'Unfulfilled'].map(v => ({
+            value: v,
+            label: v,
+            selected: this._asgnFulfillmentFilter === v
+        }));
+    }
+    get showAsgnFilterBar() {
+        return this.hasAssignments || this._asgnFilterActive;
+    }
+    // Nothing came back, but the user narrowed it — say so, and keep the
+    // controls. The full "No Active Assignments" illustration is for a genuinely
+    // empty pipeline, which is a different message and offers nothing to undo.
+    get showAsgnNoMatch() {
+        return !this.hasAssignments && this._asgnFilterActive;
+    }
+    get showAsgnEmptyState() {
+        return !this.hasAssignments && !this._asgnFilterActive;
+    }
+
+    // CHANGE 2026-08-24b (quote cap): say so when the budget cut the result.
+    // Silence here is what made "All=301 quotes" look like the whole answer when
+    // 641 quotes actually matched.
+    get isAsgnTruncated() { return this._asgnMeta.truncated === true; }
+    get asgnTruncationNote() {
+        const m = this._asgnMeta || {};
+        const shown = m.shownQuotes || 0;
+        const total = m.scanCapped ? `${m.totalQuotes}+` : (m.totalQuotes || 0);
+        return `Showing ${shown} of ${total} matching quotes — narrow your search`
+             + ' to see the rest.';
+    }
     get asgnSearchCount() {
         return new Set(this.filteredAssignmentRecords.map(r => r.QuoteId)).size;
     }
@@ -1350,16 +1440,28 @@ export default class DeInventoryManager extends NavigationMixin(LightningElement
     }
 
     async _loadAssignments() {
+        // CHANGE 2026-08-24 (search): a debounce armed just before a site change
+        // or view toggle would otherwise fire afterwards and repopulate the rows
+        // from a search the user had already navigated away from.
+        clearTimeout(this._asgnSearchTimer);
         this._assignmentsLoading = true;
         this._openAssgnSections = new Set();
         this._asgnStatusFilter = 'All';
+        this._asgnFulfillmentFilter = 'All';
         this._asgnSearch = '';
+        this._asgnSearchApplied = '';
         const token = ++this._demandReqToken;
         try {
             const promises = [
                 getAssignmentDemand({
                     siteId: this.selectedSiteId || null,
-                    stage: this._asgnStatusFilter
+                    stage: this._asgnStatusFilter,
+                    searchTerm: ''
+                }),
+                getAssignmentDemandMeta({
+                    siteId: this.selectedSiteId || null,
+                    stage: this._asgnStatusFilter,
+                    searchTerm: ''
                 })
             ];
             if (this.selectedSiteId) {
@@ -1368,7 +1470,8 @@ export default class DeInventoryManager extends NavigationMixin(LightningElement
             const results = await Promise.all(promises);
             if (token !== this._demandReqToken) return;   // a newer request won
             this._assignmentRecords = results[0];
-            if (results[1]) this._availByType = results[1];
+            this._asgnMeta = results[1] || {};
+            if (results[2]) this._availByType = results[2];
         } catch (e) {
             if (token !== this._demandReqToken) return;
             this._toast('Error loading assignments', this._err(e), 'error');
@@ -1383,15 +1486,29 @@ export default class DeInventoryManager extends NavigationMixin(LightningElement
         const token = ++this._demandReqToken;
         this._assignmentsLoading = true;
         try {
-            const rows = await getAssignmentDemand({
+            const args = {
                 siteId: this.selectedSiteId || null,
-                stage: this._asgnStatusFilter
-            });
+                stage: this._asgnStatusFilter,
+                // CHANGE 2026-08-24 (search): switching a chip mid-search
+                // re-queries with both, so the chip narrows the search result
+                // rather than replacing it.
+                searchTerm: this._asgnSearchApplied
+            };
+            const [rows, meta] = await Promise.all([
+                getAssignmentDemand(args),
+                getAssignmentDemandMeta(args)
+            ]);
             if (token !== this._demandReqToken) return;
             this._assignmentRecords = rows;
+            this._asgnMeta = meta || {};
             this._openAssgnSections = new Set();
         } catch (e) {
             if (token !== this._demandReqToken) return;
+            // CHANGE 2026-08-24 (search): clear the rows on failure. Leaving the
+            // previous result up under an active search term presented
+            // non-matching quotes as matches, with the count badge agreeing.
+            this._assignmentRecords = [];
+            this._asgnMeta = {};
             this._toast('Error loading assignments', this._err(e), 'error');
         } finally {
             if (token === this._demandReqToken) this._assignmentsLoading = false;
@@ -1484,14 +1601,43 @@ export default class DeInventoryManager extends NavigationMixin(LightningElement
         this._reloadAssignmentDemand();
     }
 
+    handleAsgnFulfillmentFilter(e) {
+        const next = e.target.value || 'All';
+        if (next === this._asgnFulfillmentFilter) return;
+        this._asgnFulfillmentFilter = next;
+    }
+
+    // CHANGE 2026-08-24 (search): was a 200ms debounce that only set _asgnSearch
+    // and let the getter filter loaded rows:
+    //     this._asgnSearchTimer = setTimeout(() => { this._asgnSearch = v; }, 200);
+    // Now it queries the org, so the debounce is longer and short terms are held
+    // back. 1-2 characters intentionally do nothing at all — they neither query
+    // nor filter, since a two-letter LIKE over every quote is not a search.
     handleAsgnSearch(e) {
         clearTimeout(this._asgnSearchTimer);
         const v = e.target.value;
-        this._asgnSearchTimer = setTimeout(() => { this._asgnSearch = v; }, 200);
+        this._asgnSearchTimer = setTimeout(() => {
+            this._asgnSearch = v;
+            const term = (v || '').trim();
+            const next = term.length >= MIN_ASGN_SEARCH ? term : '';
+            // Only two transitions are worth a round trip: a term becoming long
+            // enough, and a term being abandoned. Everything else is noise.
+            if (next !== this._asgnSearchApplied) {
+                this._asgnSearchApplied = next;
+                this._reloadAssignmentDemand();
+            }
+        }, 350);
     }
 
     clearAsgnSearch() {
+        clearTimeout(this._asgnSearchTimer);
         this._asgnSearch = '';
+        // CHANGE 2026-08-24 (search): clearing has to put the unsearched rows
+        // back, which is now a query rather than a getter re-run.
+        if (this._asgnSearchApplied) {
+            this._asgnSearchApplied = '';
+            this._reloadAssignmentDemand();
+        }
     }
 
     /* ════════════════════════════════════════════════════════════

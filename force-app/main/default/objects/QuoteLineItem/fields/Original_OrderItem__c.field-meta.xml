@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Original_OrderItem__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>For Change Order quotes: references the original active OrderItem this line amends. Used by the SOFHandler to carry the link to the CO OrderItem, and by IP-4 to resolve the Odoo subscription line.</description>
+    <inlineHelpText>The original Order line item this change applies to. Set automatically by the Change Order Creator.</inlineHelpText>
+    <label>Original Order Item</label>
+    <referenceTo>OrderItem</referenceTo>
+    <relationshipLabel>Change Order Quote Lines</relationshipLabel>
+    <relationshipName>Change_Order_Quote_Lines</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

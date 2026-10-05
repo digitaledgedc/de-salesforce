@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Marks Fortune 500 / subsidiary --></help>
+    <label><!-- Fortune 500 --></label>
+    <name>Fortune_500__c</name>
+</CustomFieldTranslation>

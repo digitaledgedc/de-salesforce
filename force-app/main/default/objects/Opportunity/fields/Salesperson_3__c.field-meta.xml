@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Salesperson_3__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <inlineHelpText>Third rep on this deal. Used for three-way split commission calculations. Populate SP3 Split % and SP3 Quota Relief % fields alongside this.</inlineHelpText>
+    <label>Salesperson 3 (SP3)</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>SP3_Opportunities</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

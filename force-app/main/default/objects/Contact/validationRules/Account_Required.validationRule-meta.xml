@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Account_Required</fullName>
+    <active>true</active>
+    <description>Every Contact must be associated with an Account. Orphaned contacts are not permitted in the DE data model. Contact visibility is Controlled by Parent (Account), so a contact without an Account would be invisible to all non-admin users.</description>
+    <errorConditionFormula>ISBLANK(AccountId)</errorConditionFormula>
+    <errorDisplayField>AccountId</errorDisplayField>
+    <errorMessage>Every Contact must be associated with an Account.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Logo_Type__c</fullName>
+    <label>Logo Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>New Logo</fullName>
+                <default>false</default>
+                <label>New Logo</label>
+            </value>
+            <value>
+                <fullName>Expansion</fullName>
+                <default>false</default>
+                <label>Expansion</label>
+            </value>
+            <value>
+                <fullName>Existing</fullName>
+                <default>false</default>
+                <label>Existing</label>
+            </value>
+            <value>
+                <fullName>Internal</fullName>
+                <default>false</default>
+                <label>Internal</label>
+            </value>
+            <value>
+                <fullName>Expansion - Country</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Expansion - Country</label>
+            </value>
+            <value>
+                <fullName>Expansion - Site</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Expansion - Site</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

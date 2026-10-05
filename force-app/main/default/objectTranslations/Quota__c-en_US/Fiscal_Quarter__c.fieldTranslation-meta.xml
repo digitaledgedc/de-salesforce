@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Quarter within the fiscal year (Q1 = Jan-Mar, Q2 = Apr-Jun, Q3 = Jul-Sep, Q4 = Oct-Dec). --></help>
+    <label><!-- Fiscal Quarter --></label>
+    <name>Fiscal_Quarter__c</name>
+    <picklistValues>
+        <masterLabel>Q1</masterLabel>
+        <translation><!-- Q1 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Q2</masterLabel>
+        <translation><!-- Q2 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Q3</masterLabel>
+        <translation><!-- Q3 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Q4</masterLabel>
+        <translation><!-- Q4 --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

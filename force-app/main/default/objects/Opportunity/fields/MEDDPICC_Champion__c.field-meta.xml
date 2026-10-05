@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MEDDPICC_Champion__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Internal advocate with access to Economic Buyer.</description>
+    <inlineHelpText>MEDDPICC: The internal advocate who supports DE and has access to the Economic Buyer. Link to the contact record who is your champion at this account.</inlineHelpText>
+    <label>Champion (C)</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipName>Champion_Opps</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

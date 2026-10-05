@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Country_Manager_Max__c</fullName>
+    <description>Maximum discount a Country Manager can approve without escalation.</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Country Manager Max (%)</label>
+    <precision>5</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Percent</type>
+</CustomField>

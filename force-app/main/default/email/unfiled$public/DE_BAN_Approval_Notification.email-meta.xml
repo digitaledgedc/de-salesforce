@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Object-specific approval-request notification for the BAN approval process. Digital Edge orange card theme with record details + Review &amp; Approve link.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>DE BAN Approval Notification</name>
+    <style>none</style>
+    <subject>BAN Approval Required: {!BillingAccount__c.Name} - {!BillingAccount__c.DE_Subsidiary_Name__c}</subject>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

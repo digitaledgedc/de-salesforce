@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Invoice Delivery --></label>
+    <name>InvoiceDeliveryMode__c</name>
+    <picklistValues>
+        <masterLabel>Online</masterLabel>
+        <translation><!-- Online --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Paper</masterLabel>
+        <translation><!-- Paper --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

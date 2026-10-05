@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <description>Check whether KYC_Last_Review_Date__c is older than 365 days. Null date is treated as overdue.</description>
+        <name>KYC_Overdue</name>
+        <label>KYC Overdue?</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <defaultConnectorLabel>KYC Current (no action)</defaultConnectorLabel>
+        <rules>
+            <name>Is_Overdue</name>
+            <conditionLogic>1 OR 2</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.KYC_Last_Review_Date__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.KYC_Last_Review_Date__c</leftValueReference>
+                <operator>LessThan</operator>
+                <rightValue>
+                    <elementReference>ThresholdDate</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Finance_Queue</targetReference>
+            </connector>
+            <label>KYC Overdue</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Only create task if a Country Finance queue was found for this Account&apos;s Operation_Country__c.</description>
+        <name>Queue_Found</name>
+        <label>Finance Queue Found?</label>
+        <locationX>44</locationX>
+        <locationY>374</locationY>
+        <defaultConnectorLabel>No Queue (skip task)</defaultConnectorLabel>
+        <rules>
+            <name>Has_Queue</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Finance_Queue.Queue_Id__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_KYC_Task</targetReference>
+            </connector>
+            <label>Queue Found</label>
+        </rules>
+    </decisions>
+    <description>Scheduled flow - runs daily. For each Account with Finance_Approval_Phase__c = Approved AND Status__c = Active, checks if KYC_Last_Review_Date__c is older than 365 days. Sets KYC_Status__c = Submitted to Finance and creates a High-priority Task on the Country Finance queue (resolved via Country_Queue__mdt). SDD §F-06.</description>
+    <environments>Default</environments>
+    <formulas>
+        <description>Task due date - 2 business days from today.</description>
+        <name>TaskDueDate</name>
+        <dataType>Date</dataType>
+        <expression>TODAY() + 2</expression>
+    </formulas>
+    <formulas>
+        <description>Task subject including Account Name.</description>
+        <name>TaskSubject</name>
+        <dataType>String</dataType>
+        <expression>&quot;ANNUAL KYC REVIEW OVERDUE - &quot; &amp; {!$Record.Name}</expression>
+    </formulas>
+    <formulas>
+        <description>Date 365 days ago - KYC reviews older than this date are overdue.</description>
+        <name>ThresholdDate</name>
+        <dataType>Date</dataType>
+        <expression>TODAY() - 365</expression>
+    </formulas>
+    <interviewLabel>KYC Annual Recheck {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>KYC Annual Recheck</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <description>Create a high-priority task on the Country Finance queue to prompt KYC review.</description>
+        <name>Create_KYC_Task</name>
+        <label>Create KYC Review Task</label>
+        <locationX>44</locationX>
+        <locationY>494</locationY>
+        <connector>
+            <targetReference>Set_KYC_Status</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>ActivityDate</field>
+            <value>
+                <elementReference>TaskDueDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <stringValue>Last KYC review was on {!$Record.KYC_Last_Review_Date__c}. Annual review is now overdue. Please initiate KYC review using the Submit for Finance Approval action on the Account.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>Get_Finance_Queue.Queue_Id__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>High</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Not Started</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <elementReference>TaskSubject</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhatId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordLookups>
+        <description>Look up Country Finance queue from Country_Queue__mdt using Account&apos;s Operation_Country__c.</description>
+        <name>Get_Finance_Queue</name>
+        <label>Get Country Finance Queue</label>
+        <locationX>44</locationX>
+        <locationY>254</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Queue_Found</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Country_Code__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Operation_Country__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Queue_Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Finance</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Is_Active__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Country_Queue__mdt</object>
+        <queriedFields>Queue_Id__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <description>Mark the Account KYC status as requiring Finance review.</description>
+        <name>Set_KYC_Status</name>
+        <label>Set KYC Status: Submitted to Finance</label>
+        <locationX>44</locationX>
+        <locationY>614</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>KYC_Status__c</field>
+            <value>
+                <stringValue>Submitted to Finance</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Account</object>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>KYC_Overdue</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Finance_Approval_Phase__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Approved</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Active</stringValue>
+            </value>
+        </filters>
+        <object>Account</object>
+        <schedule>
+            <frequency>Daily</frequency>
+            <startDate>2026-04-01</startDate>
+            <startTime>01:00:00.000Z</startTime>
+        </schedule>
+        <triggerType>Scheduled</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

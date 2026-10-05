@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Select the breaker phase type for this unit. --></help>
+    <label><!-- Breaker Type --></label>
+    <name>Breaker_Type__c</name>
+    <picklistValues>
+        <masterLabel>1 Phase</masterLabel>
+        <translation><!-- 1 Phase --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>3 Phase</masterLabel>
+        <translation><!-- 3 Phase --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

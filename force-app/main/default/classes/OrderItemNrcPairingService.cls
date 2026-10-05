@@ -2,15 +2,14 @@
  * OrderItemNrcPairingService
  *
  * After Quote_AfterSave_SOFHandler (F-15) bulk-creates OrderItems from QLIs,
- * sets Paired_MRC_OrderItem__c on each NRC OrderItem by deriving the expected
- * NRC product code from the MRC product code (.RC suffix → .NR suffix).
+ * sets Paired_MRC_OrderItem__c on each NRC OrderItem using the MRC product's
+ * explicit Paired_NRC_Product__c lookup.
  *
  * Called from Quote_AfterSave_SOFHandler as an Apex action immediately after
  * the Create_OrderItems element.
  *
- * Pairing rule: strip ".RC" from MRC product code, append ".NR".
- * Single-letter variant suffixes (e.g. CAB001C.RC → CAB001.NR) are stripped
- * to match the way NrcPairingService creates the NRC QLI.
+ * Pairing rule: use Product2.Paired_NRC_Product__c only — no product-code
+ * derivation. A product with this field blank is never paired.
  *
  * Bypass: TriggerBypass__mdt DeveloperName = 'OrderItemNrcPairing', Is_Active__c = true.
  */
@@ -66,12 +65,10 @@ public without sharing class OrderItemNrcPairingService {
         for (OrderItem oi : allOIs) {
             if (oi.Charge_Type__c != 'MRC') continue;
             if (oi.Product2 == null || String.isBlank(oi.Product2.ProductCode)) continue;
-            // Prefer explicit Paired_NRC_Product lookup; fall back to code-based derivation
             String nrcCode = oi.Product2.Paired_NRC_Product__r != null
-                    && String.isNotBlank(oi.Product2.Paired_NRC_Product__r.ProductCode)
                 ? oi.Product2.Paired_NRC_Product__r.ProductCode
-                : deriveNrcCode(oi.Product2.ProductCode);
-            if (nrcCode == null) continue;
+                : null;
+            if (String.isBlank(nrcCode)) continue;
             nrcKeyToMrcOIId.put(oi.OrderId + ':' + nrcCode, oi.Id);
         }
 
@@ -94,20 +91,4 @@ public without sharing class OrderItemNrcPairingService {
         update toUpdate;
     }
 
-    /**
-     * Derives the expected NRC product code from an MRC product code.
-     *   CAB001.RC  → CAB001.NR
-     *   CAB001C.RC → CAB001.NR  (strips single-letter variant suffix preceded by digit)
-     * Returns null if productCode is blank or does not end with '.RC'.
-     */
-    @TestVisible
-    private static String deriveNrcCode(String mrcProductCode) {
-        if (String.isBlank(mrcProductCode)) return null;
-        if (!mrcProductCode.endsWith('.RC')) return null;
-        String base = mrcProductCode.removeEnd('.RC');
-        if (Pattern.matches('.*\\d[A-Z]$', base)) {
-            base = base.left(base.length() - 1);
-        }
-        return base + '.NR';
-    }
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_08_BAN_Country_Match</fullName>
+    <active>true</active>
+    <description>VR-QUOTE-08: The BAN&apos;s Subsidiary must match the Quote&apos;s Subsidiary. Prevents cross-subsidiary BAN assignment by comparing the lookup fields directly.</description>
+    <errorConditionFormula>AND(
+    NOT(ISBLANK(BillingAccount__c)),
+    NOT(ISBLANK(DE_Entity__c)),
+    NOT(ISBLANK(BillingAccount__r.DE_Entity__c)),
+    DE_Entity__c &lt;&gt; BillingAccount__r.DE_Entity__c
+)</errorConditionFormula>
+    <errorDisplayField>BillingAccount__c</errorDisplayField>
+    <errorMessage>The BAN&apos;s DE Company must match the Quote&apos;s DE Company. Select a BAN that belongs to the same DE Company as this Quote.</errorMessage>
+</ValidationRule>

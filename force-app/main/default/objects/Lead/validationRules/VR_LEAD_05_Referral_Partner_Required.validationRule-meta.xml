@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_LEAD_05_Referral_Partner_Required</fullName>
+    <active>true</active>
+    <description>A Referral Partner account must be linked when Lead Source is Referral.</description>
+    <errorConditionFormula>AND(
+  ISPICKVAL(LeadSource, &quot;Referral&quot;),
+  ISBLANK(Referral_Partner__c)
+)</errorConditionFormula>
+    <errorDisplayField>Referral_Partner__c</errorDisplayField>
+    <errorMessage>A Referral Partner account must be linked when Lead Source is Referral.</errorMessage>
+</ValidationRule>

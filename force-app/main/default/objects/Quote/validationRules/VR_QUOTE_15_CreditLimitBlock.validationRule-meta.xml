@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_15_CreditLimitBlock</fullName>
+    <active>false</active>
+    <description>VR-QUOTE-15: Blocks Quote from being Presented or Accepted while Credit Limit is exceeded and not approved by Finance. Quote remains locked at Approved status until Finance reviews.</description>
+    <errorConditionFormula>AND(
+    Credit_Limit_Exceeded__c,
+    NOT(Credit_Finance_Approved__c),
+    Opportunity.Account.Active_Quote_Count__c &gt; 1,
+    OR(
+        ISPICKVAL(Status, &quot;Presented&quot;),
+        ISPICKVAL(Status, &quot;Accepted&quot;)
+    )
+)</errorConditionFormula>
+    <errorDisplayField>Status</errorDisplayField>
+    <errorMessage>This quote exceeds the account credit limit and is pending Finance review. The quote cannot be presented or accepted until Finance approves the credit limit.</errorMessage>
+</ValidationRule>

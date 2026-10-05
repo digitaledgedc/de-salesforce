@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Finance_Approval_Pending_Days__c</fullName>
+    <description>Days in pending finance approval phase. Blank when not in a pending phase.</description>
+    <externalId>false</externalId>
+    <formula>IF(
+  AND(
+    OR(
+      ISPICKVAL(Finance_Approval_Phase__c, &apos;DnB_Pending&apos;),
+      ISPICKVAL(Finance_Approval_Phase__c, &apos;KYC_Pending&apos;)
+    ),
+    NOT(ISBLANK(Finance_Approval_Phase_Changed__c))
+  ),
+  TODAY() - Finance_Approval_Phase_Changed__c,
+  NULL
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Finance Approval Pending Days</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

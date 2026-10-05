@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Salesperson_2__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <inlineHelpText>Second rep on this deal. Used for split commission calculations. Populate SP2 Split % and SP2 Quota Relief % fields alongside this.</inlineHelpText>
+    <label>Salesperson 2 (SP2)</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>SP2_Opportunities</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

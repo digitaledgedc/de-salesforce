@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Billing_Contact_Name__c</fullName>
+    <description>Display-only name of the Billing Contact. Exists because the Flow data table on the Quote &quot;Link BAN&quot; screen can only render fields on this record, not fields across a lookup - without this it would show the raw Contact Id.</description>
+    <externalId>false</externalId>
+    <formula>IF(ISBLANK(Billing_Contact__r.FirstName), Billing_Contact__r.LastName, Billing_Contact__r.FirstName &amp; &quot; &quot; &amp; Billing_Contact__r.LastName)</formula>
+    <label>Billing Contact Name</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

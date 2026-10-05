@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>BAN</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>BANs</value>
+    </caseValues>
+    <layouts>
+        <layout>DE BAN Layout</layout>
+        <sections>
+            <label><!-- BAN Identity --></label>
+            <section>BAN Identity</section>
+        </sections>
+        <sections>
+            <label><!-- Billing Configuration --></label>
+            <section>Billing Configuration</section>
+        </sections>
+        <sections>
+            <label><!-- Billing Contact &amp; Delivery --></label>
+            <section>Billing Contact &amp; Delivery</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Odoo Integration --></label>
+            <section>Odoo Integration</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>DE BAN Layout - Admin</layout>
+        <sections>
+            <label><!-- BAN Information --></label>
+            <section>BAN Information</section>
+        </sections>
+        <sections>
+            <label><!-- Billing Address --></label>
+            <section>Billing Address</section>
+        </sections>
+        <sections>
+            <label><!-- Billing Configuration --></label>
+            <section>Billing Configuration</section>
+        </sections>
+        <sections>
+            <label><!-- Finance Approval --></label>
+            <section>Finance Approval</section>
+        </sections>
+        <sections>
+            <label><!-- Integration --></label>
+            <section>Integration</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>DE BAN Layout - Finance</layout>
+        <sections>
+            <label><!-- BAN Information --></label>
+            <section>BAN Information</section>
+        </sections>
+        <sections>
+            <label><!-- Billing Address --></label>
+            <section>Billing Address</section>
+        </sections>
+        <sections>
+            <label><!-- Billing Configuration --></label>
+            <section>Billing Configuration</section>
+        </sections>
+        <sections>
+            <label><!-- Finance Approval --></label>
+            <section>Finance Approval</section>
+        </sections>
+        <sections>
+            <label><!-- Integration --></label>
+            <section>Integration</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>DE BAN Layout - Ops</layout>
+        <sections>
+            <label><!-- BAN Information --></label>
+            <section>BAN Information</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>DE BAN Layout - Sales</layout>
+        <sections>
+            <label><!-- BAN Information --></label>
+            <section>BAN Information</section>
+        </sections>
+        <sections>
+            <label><!-- Billing Details --></label>
+            <section>Billing Details</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- Submit for Approval --></label>
+        <name>Submit_For_Approval</name>
+    </quickActions>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- BAN currency must match the source Quote currency. --></errorMessage>
+        <name>VR_BAN_01_Currency_Match_Quote</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Enter up to two valid email addresses, separated by a comma (e.g. first@example.com, second@example.com). A space alone is not a valid separator. --></errorMessage>
+        <name>VR_BAN_09_AdditionalEmailFmt</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- This billing account is already tagged to a quote, so its currency can&apos;t be changed. It must stay the same currency as the quotes and orders that use it. Contact an admin if a correction is genuinely required. --></errorMessage>
+        <name>VR_BAN_Currency_Locked</name>
+    </validationRules>
+</CustomObjectTranslation>

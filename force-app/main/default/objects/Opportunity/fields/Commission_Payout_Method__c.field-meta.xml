@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Commission_Payout_Method__c</fullName>
+    <description>Phase 1 data capture only.</description>
+    <inlineHelpText>How commission is paid out for this deal. Used for commissions reporting and Rev Ops calculations.</inlineHelpText>
+    <label>Commission Payout Method</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Amortise</fullName>
+                <default>false</default>
+                <label>Amortise</label>
+            </value>
+            <value>
+                <fullName>Upfront</fullName>
+                <default>false</default>
+                <label>Upfront</label>
+            </value>
+            <value>
+                <fullName>Back-End</fullName>
+                <default>false</default>
+                <label>Back-End</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

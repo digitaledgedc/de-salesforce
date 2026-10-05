@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_INV_04_RecordTypeImmutable</fullName>
+    <active>true</active>
+    <description>Record Type cannot be changed after creation. VR-INV-04.</description>
+    <errorConditionFormula>AND( NOT(ISNEW()), ISCHANGED(RecordTypeId) )</errorConditionFormula>
+    <errorDisplayField>Asset__c</errorDisplayField>
+    <errorMessage>Record Type cannot be changed after an Inventory record is created.</errorMessage>
+</ValidationRule>

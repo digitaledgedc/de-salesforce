@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Legal_Entity_Name__c</fullName>
+    <description>Read-only display of the Account&apos;s Legal Entity Name (English). Sourced live from the Account; if incorrect, the Account record must be updated via RevOps/Finance. (DIG feedback: Legal Entity Name.)</description>
+    <externalId>false</externalId>
+    <formula>Account.Legal_Entity_Name__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>The legal entity name (English) from the Account. Read-only — to change it, update the Account record (contact RevOps/Finance).</inlineHelpText>
+    <label>Legal Entity Name (English)</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

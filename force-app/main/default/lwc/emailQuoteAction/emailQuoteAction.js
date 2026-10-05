@@ -3,6 +3,7 @@ import { ShowToastEvent }              from 'lightning/platformShowToastEvent';
 import { CloseActionScreenEvent }      from 'lightning/actions';
 import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
 import { refreshApex }                 from '@salesforce/apex';  // ← ADDED
+import DE_LOGO                         from '@salesforce/resourceUrl/DE_Logo';
 
 import getQuoteDefaults   from '@salesforce/apex/EmailQuoteController.getQuoteDefaults';
 import getLineItemCount   from '@salesforce/apex/EmailQuoteController.getLineItemCount'; // FB-739 fix — fresh, non-cached product count
@@ -16,6 +17,9 @@ import createTandCRecord  from '@salesforce/apex/TermsAndConditionController.cre
 
 export default class EmailQuoteAction extends LightningElement {
     @api recordId;
+
+    // Header logo — same DE_Logo static resource used by DE_QuoteTemplate VF page
+    logoUrl = DE_LOGO;
 
     // ── UI state ────────────────────────────────────────────────────
     @track isLoading    = true;

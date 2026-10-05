@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Odoo_Project_Task_IDs__c</fullName>
+    <description>Odoo project.task IDs linked to this order line (ns_project_task_id). Populated by IP-2 new_service callback. Required by IP-4 change orders for delete/change/price_change line types. Stored as comma-separated integer string e.g. &quot;33783,33784&quot;.</description>
+    <externalId>false</externalId>
+    <label>Odoo Project Task IDs</label>
+    <length>255</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

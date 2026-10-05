@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Charge Type --></label>
+    <name>Charge_Type__c</name>
+    <picklistValues>
+        <masterLabel>MRC</masterLabel>
+        <translation><!-- MRC --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>NRC</masterLabel>
+        <translation><!-- NRC --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tags__c</fullName>
+    <label>Tags</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>22FX</fullName>
+                <default>false</default>
+                <label>22FX</label>
+            </value>
+            <value>
+                <fullName>API</fullName>
+                <default>false</default>
+                <label>API</label>
+            </value>
+            <value>
+                <fullName>Approved-Churn</fullName>
+                <default>false</default>
+                <label>Approved-Churn</label>
+            </value>
+            <value>
+                <fullName>Backlog-JP</fullName>
+                <default>false</default>
+                <label>Backlog-JP</label>
+            </value>
+            <value>
+                <fullName>Comm Amortization</fullName>
+                <default>false</default>
+                <label>Comm Amortization</label>
+            </value>
+            <value>
+                <fullName>Contracted 2023</fullName>
+                <default>false</default>
+                <label>Contracted 2023</label>
+            </value>
+            <value>
+                <fullName>DR 2022</fullName>
+                <default>false</default>
+                <label>DR 2022</label>
+            </value>
+            <value>
+                <fullName>DR 2023</fullName>
+                <default>false</default>
+                <label>DR 2023</label>
+            </value>
+            <value>
+                <fullName>DR 2024</fullName>
+                <default>false</default>
+                <label>DR 2024</label>
+            </value>
+            <value>
+                <fullName>DR 2025</fullName>
+                <default>false</default>
+                <label>DR 2025</label>
+            </value>
+            <value>
+                <fullName>DR 2026</fullName>
+                <default>false</default>
+                <label>DR 2026</label>
+            </value>
+            <value>
+                <fullName>EPIX Promo JKT2 2025</fullName>
+                <default>false</default>
+                <label>EPIX Promo JKT2 2025</label>
+            </value>
+            <value>
+                <fullName>Fixed</fullName>
+                <default>false</default>
+                <label>Fixed</label>
+            </value>
+            <value>
+                <fullName>Interconnect</fullName>
+                <default>false</default>
+                <label>Interconnect</label>
+            </value>
+            <value>
+                <fullName>Internal Orders</fullName>
+                <default>false</default>
+                <label>Internal Orders</label>
+            </value>
+            <value>
+                <fullName>MNL Promotion 2025</fullName>
+                <default>false</default>
+                <label>MNL Promotion 2025</label>
+            </value>
+            <value>
+                <fullName>Non Bookable</fullName>
+                <default>false</default>
+                <label>Non Bookable</label>
+            </value>
+            <value>
+                <fullName>Novated-Arteria</fullName>
+                <default>false</default>
+                <label>Novated-Arteria</label>
+            </value>
+            <value>
+                <fullName>Novated-CTC</fullName>
+                <default>false</default>
+                <label>Novated-CTC</label>
+            </value>
+            <value>
+                <fullName>Novated-EDGE</fullName>
+                <default>false</default>
+                <label>Novated-EDGE</label>
+            </value>
+            <value>
+                <fullName>Novated-Japan</fullName>
+                <default>false</default>
+                <label>Novated-Japan</label>
+            </value>
+            <value>
+                <fullName>Novated-Sejong</fullName>
+                <default>false</default>
+                <label>Novated-Sejong</label>
+            </value>
+            <value>
+                <fullName>Novation</fullName>
+                <default>false</default>
+                <label>Novation</label>
+            </value>
+            <value>
+                <fullName>NRC Amortization</fullName>
+                <default>false</default>
+                <label>NRC Amortization</label>
+            </value>
+            <value>
+                <fullName>NSP SPIFF 2024</fullName>
+                <default>false</default>
+                <label>NSP SPIFF 2024</label>
+            </value>
+            <value>
+                <fullName>Potential NSP SPIFF 2024</fullName>
+                <default>false</default>
+                <label>Potential NSP SPIFF 2024</label>
+            </value>
+            <value>
+                <fullName>Prelease 2024</fullName>
+                <default>false</default>
+                <label>Prelease 2024</label>
+            </value>
+            <value>
+                <fullName>Prelease 2025</fullName>
+                <default>false</default>
+                <label>Prelease 2025</label>
+            </value>
+            <value>
+                <fullName>Prelease 2026</fullName>
+                <default>false</default>
+                <label>Prelease 2026</label>
+            </value>
+            <value>
+                <fullName>To Fix</fullName>
+                <default>false</default>
+                <label>To Fix</label>
+            </value>
+            <value>
+                <fullName>via Indonet</fullName>
+                <default>false</default>
+                <label>via Indonet</label>
+            </value>
+            <value>
+                <fullName>WH</fullName>
+                <default>false</default>
+                <label>WH</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

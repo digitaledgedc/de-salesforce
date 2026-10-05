@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Service_Order_Terms__c</fullName>
+    <description>The Terms and Conditions printed on the binding Quote document. Required on all binding Quotes (Is_Binding__c = TRUE). Populated by Revenue Ops from standard GTC template. Read-only for Sales Reps. VR-QUOTE-06 blocks submission if blank when Is_Binding__c = TRUE.</description>
+    <inlineHelpText>The GTC Terms and Conditions printed on the binding Quote document. Pre-populated by Revenue Ops from the standard template. Required on all binding quotes. Read-only for Sales reps.</inlineHelpText>
+    <label>Service Order Terms</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>10</visibleLines>
+</CustomField>

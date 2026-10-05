@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Select the current rating for this breaker. --></help>
+    <label><!-- Current Rating (A) --></label>
+    <name>Current_Rating__c</name>
+    <picklistValues>
+        <masterLabel>15A</masterLabel>
+        <translation><!-- 15A --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>16A</masterLabel>
+        <translation><!-- 16A --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>20A</masterLabel>
+        <translation><!-- 20A --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>30A</masterLabel>
+        <translation><!-- 30A --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>32A</masterLabel>
+        <translation><!-- 32A --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>40A</masterLabel>
+        <translation><!-- 40A --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>50A</masterLabel>
+        <translation><!-- 50A --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

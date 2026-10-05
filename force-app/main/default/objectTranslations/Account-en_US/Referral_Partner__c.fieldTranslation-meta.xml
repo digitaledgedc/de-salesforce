@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Checked when this account refers business to DE. Referral partners may or may not be customers themselves. Aligned with Odoo Referral Partner flag. --></help>
+    <label><!-- Referral Partner --></label>
+    <name>Referral_Partner__c</name>
+</CustomFieldTranslation>

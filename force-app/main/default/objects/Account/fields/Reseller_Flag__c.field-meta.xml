@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reseller_Flag__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Auto-set TRUE for Reseller record type via Flow. Read-only on layout.</description>
+    <label>Reseller Flag</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

@@ -163,19 +163,22 @@ private class DE_QuoteTemplateControllerTest {
         Product2 prod = [SELECT Id FROM Product2 LIMIT 1];
         PricebookEntry pbe = [SELECT Id FROM PricebookEntry WHERE Pricebook2Id = :pbId LIMIT 1];
 
+        // A real ramp group: the phase-1 line is the anchor (no Ramp_Parent_Line__c)
+        // and later phases point back at it. Phase 2 carries an escalated unit price
+        // so the first-vs-last phase price choice is actually observable below.
         QuoteLineItem anchor = new QuoteLineItem(
             QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = prod.Id,
             Quantity = 2, UnitPrice = 3000000, Charge_Type__c = 'MRC',
             Line_Origin__c = 'Ramp', Ramp_Phase__c = 1, SortOrder = 10
         );
-        insert new List<QuoteLineItem>{
-            anchor,
-            new QuoteLineItem(
-                QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = prod.Id,
-                Quantity = 4, UnitPrice = 3000000, Charge_Type__c = 'MRC',
-                Line_Origin__c = 'Ramp', Ramp_Phase__c = 2, SortOrder = 11
-            )
-        };
+        insert anchor;
+
+        insert new QuoteLineItem(
+            QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = prod.Id,
+            Quantity = 4, UnitPrice = 3300000, Charge_Type__c = 'MRC',
+            Line_Origin__c = 'Ramp', Ramp_Phase__c = 2, SortOrder = 11,
+            Ramp_Parent_Line__c = anchor.Id
+        );
 
         Test.startTest();
         ApexPages.StandardController sc = new ApexPages.StandardController(q);
@@ -184,7 +187,7 @@ private class DE_QuoteTemplateControllerTest {
 
         System.assertEquals(true, ctrl.isRampDeal, 'Should be a ramp deal');
         // Every ramp phase — including phase 1 — now gets its own schedule table;
-        // the base table is the aggregated "Lines view" built from phase-1 anchors.
+        // the base table is the aggregated "Lines view" built from the group anchors.
         System.assertEquals(2, ctrl.rampPhases.size(), 'Phases 1 and 2 each get a ramp schedule table');
         System.assertEquals('Ramp-1', ctrl.rampPhases[0].phaseNumber, 'Displayed schedule starts at Ramp-1');
         System.assertEquals('Ramp-2', ctrl.rampPhases[1].phaseNumber, 'Second table is Ramp-2');
@@ -193,18 +196,72 @@ private class DE_QuoteTemplateControllerTest {
         System.assert(ctrl.rampPhases[0].subtotalMRC > 0, 'Phase 1 MRC subtotal should be > 0');
 
         // Base table = the @TestSetup non-ramp MRC line (8,000,000, see
-        // testController_standardQuote) plus the aggregated phase-1 anchor.
+        // testController_standardQuote) plus one aggregated row for the ramp group.
         System.assertEquals(2, ctrl.mrcLines.size(), 'Setup MRC line plus the aggregated ramp anchor');
         Set<Id> baseMrcIds = new Set<Id>();
         for (QuoteLineItem li : ctrl.mrcLines) baseMrcIds.add(li.Id);
-        System.assert(baseMrcIds.contains(anchor.Id), 'Phase-1 anchor carries the aggregated base row');
+        System.assert(baseMrcIds.contains(anchor.Id), 'The group anchor carries the aggregated base row');
 
-        // No Ramp_Parent_Line__c link and Merge_IB_Task__c false, so the anchor
-        // aggregates to itself: qty 2 @ 3,000,000, no discount.
-        System.assertEquals(2, ctrl.displayQtyByLineId.get(anchor.Id).intValue(), 'Aggregated qty = phase-1 qty');
-        System.assertEquals(3000000, ctrl.displayUnitByLineId.get(anchor.Id).intValue(), 'Unit price from last phase');
-        System.assertEquals(6000000, ctrl.displaySubtotalByLineId.get(anchor.Id).intValue(), 'Aggregated subtotal = qty * unit');
-        System.assertEquals(14000000, ctrl.grandTotalMRC, 'MRC grand total = 8,000,000 setup line + 6,000,000 aggregated anchor');
+        // Neither phase sets Ramp_Linked_Phase__c, so both are "new" quantity and the
+        // aggregated qty is their sum. Merge_IB_Task__c is false, so this is not an
+        // aggregate product and the running-capacity rule does not apply.
+        System.assertEquals(6, ctrl.displayQtyByLineId.get(anchor.Id).intValue(), 'Aggregated qty = phase 1 + phase 2');
+        // SFDC-275: the first table prints the FIRST phase price (3,000,000), not the
+        // escalated phase-2 price (3,300,000) — escalations belong in the ramp tables.
+        System.assertEquals(3000000, ctrl.displayUnitByLineId.get(anchor.Id).intValue(), 'Unit price from the first phase');
+        System.assertEquals(18000000, ctrl.displaySubtotalByLineId.get(anchor.Id).intValue(), 'Aggregated subtotal = qty * first-phase unit');
+        System.assertEquals(26000000, ctrl.grandTotalMRC, 'MRC grand total = 8,000,000 setup line + 18,000,000 aggregated group');
+    }
+
+    @IsTest
+    static void testController_rampGroupAnchoredAfterPhase1() {
+        // SFDC-349 regression guard. A space that only comes online partway through
+        // the ramp anchors at phase 2, not phase 1. The old rule collected anchors on
+        // "Ramp_Phase__c <= 1", so that whole group vanished from the aggregated first
+        // table (48,000 of 60,000 kVA missing on NAVKRUSD-OR-021346). Anchors are now
+        // keyed on Ramp_Parent_Line__c == null, so the group renders.
+        Quote q = [SELECT Id FROM Quote LIMIT 1];
+
+        Id pbId = Test.getStandardPricebookId();
+        Product2 prod = [SELECT Id FROM Product2 LIMIT 1];
+        PricebookEntry pbe = [SELECT Id FROM PricebookEntry WHERE Pricebook2Id = :pbId LIMIT 1];
+
+        QuoteLineItem phase1Anchor = new QuoteLineItem(
+            QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = prod.Id,
+            Quantity = 2, UnitPrice = 3000000, Charge_Type__c = 'MRC',
+            Line_Origin__c = 'Ramp', Ramp_Phase__c = 1, SortOrder = 10
+        );
+        // Anchors at phase 2 — no parent line, so it is a group in its own right.
+        QuoteLineItem lateAnchor = new QuoteLineItem(
+            QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = prod.Id,
+            Quantity = 5, UnitPrice = 2000000, Charge_Type__c = 'MRC',
+            Line_Origin__c = 'Ramp', Ramp_Phase__c = 2, SortOrder = 20
+        );
+        insert new List<QuoteLineItem>{ phase1Anchor, lateAnchor };
+
+        insert new QuoteLineItem(
+            QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = prod.Id,
+            Quantity = 4, UnitPrice = 3000000, Charge_Type__c = 'MRC',
+            Line_Origin__c = 'Ramp', Ramp_Phase__c = 2, SortOrder = 11,
+            Ramp_Parent_Line__c = phase1Anchor.Id
+        );
+
+        Test.startTest();
+        ApexPages.StandardController sc = new ApexPages.StandardController(q);
+        DE_QuoteTemplateController ctrl = new DE_QuoteTemplateController(sc);
+        Test.stopTest();
+
+        // Setup MRC line + phase-1 group + the group that anchors at phase 2.
+        System.assertEquals(3, ctrl.mrcLines.size(), 'The phase-2 anchored group must not be dropped');
+        Set<Id> baseMrcIds = new Set<Id>();
+        for (QuoteLineItem li : ctrl.mrcLines) baseMrcIds.add(li.Id);
+        System.assert(baseMrcIds.contains(phase1Anchor.Id), 'Phase-1 group renders');
+        System.assert(baseMrcIds.contains(lateAnchor.Id), 'Group anchored at phase 2 renders — this is the SFDC-349 fix');
+
+        System.assertEquals(6, ctrl.displayQtyByLineId.get(phase1Anchor.Id).intValue(), 'Phase-1 group aggregates both its phases');
+        System.assertEquals(5, ctrl.displayQtyByLineId.get(lateAnchor.Id).intValue(), 'Late group carries its own qty');
+        System.assertEquals(10000000, ctrl.displaySubtotalByLineId.get(lateAnchor.Id).intValue(), 'Late group subtotal = 5 * 2,000,000');
+        System.assertEquals(36000000, ctrl.grandTotalMRC, 'MRC grand total = 8,000,000 + 18,000,000 + 10,000,000');
     }
 
     @IsTest
@@ -690,6 +747,37 @@ private class DE_QuoteTemplateControllerTest {
     }
 
     @IsTest
+    static void testController_zeroCustomAttributePrintsBlank() {
+        // SFDEV-5: a Custom_Attribute_Value__c of 0 is "not entered" and must
+        // not print as 0.00 on the quote.
+        Quote q = [SELECT Id FROM Quote LIMIT 1];
+        Id pbId = Test.getStandardPricebookId();
+        Product2 prod = [SELECT Id FROM Product2 LIMIT 1];
+        PricebookEntry pbe = [SELECT Id FROM PricebookEntry WHERE Pricebook2Id = :pbId LIMIT 1];
+
+        List<QuoteLineItem> lines = new List<QuoteLineItem>{
+            new QuoteLineItem(
+                QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = prod.Id,
+                Quantity = 1, UnitPrice = 1000, Charge_Type__c = 'MRC', SortOrder = 50,
+                Custom_Attribute_Value__c = 0
+            ),
+            new QuoteLineItem(
+                QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = prod.Id,
+                Quantity = 1, UnitPrice = 1000, Charge_Type__c = 'MRC', SortOrder = 51,
+                Product_Attribute_Value__c = '10Gbps', Custom_Attribute_Value__c = 0
+            )
+        };
+        insert lines;
+
+        Test.startTest();
+        DE_QuoteTemplateController ctrl = new DE_QuoteTemplateController(new ApexPages.StandardController(q));
+        Test.stopTest();
+
+        System.assertEquals('', ctrl.attributeDisplayByLineId.get(lines[0].Id), 'Zero custom value alone prints blank');
+        System.assertEquals('10Gbps', ctrl.attributeDisplayByLineId.get(lines[1].Id), 'Zero custom value not appended to the attribute');
+    }
+
+    @IsTest
     static void testController_translatedProductName() {
         // Covers the Product2DataTranslation lookup + translatedProductNames
         // containsKey true branch in productNameByLineId assembly.
@@ -711,5 +799,288 @@ private class DE_QuoteTemplateControllerTest {
             if (name == '日本語製品名') foundTranslated = true;
         }
         System.assert(foundTranslated, 'Translated product name used for ja document language');
+    }
+
+    // ─── SFDC-404: CJK / long-token line breaking in the PDF ─────────────────
+    // The PDF renderer breaks a line only at whitespace, so an unbroken CJK
+    // phrase overflows its fixed-width column and is cut at the page margin.
+    // pdfWrapText escapes the value and injects <wbr/> at each legal break.
+
+    // The exact string from the ticket, kept verbatim so a regression is
+    // recognisable against the reported document.
+    private static final String SFDC404_REMARKS =
+        'アイネス W3F-16　BPOオフィスエリア設備利用料(パーティション、分電盤、防災法令対応他)';
+
+    @IsTest
+    static void testPdfWrapText_cjkGainsBreaksWithoutLosingText() {
+        String wrapped = DE_QuoteTemplateController.pdfWrapText(SFDC404_REMARKS);
+
+        System.assert(wrapped.contains('<wbr/>'),
+            'CJK text must gain break opportunities: ' + wrapped);
+        // The whole point of the fix: nothing may be dropped. Strip the markup
+        // back out and the original must be intact, character for character.
+        System.assertEquals(SFDC404_REMARKS, wrapped.replace('<wbr/>', ''),
+            'Removing the injected <wbr/> must restore the original exactly');
+    }
+
+    @IsTest
+    static void testPdfWrapText_kinsokuNeverBreaksBeforeClosingPunctuation() {
+        String wrapped = DE_QuoteTemplateController.pdfWrapText(SFDC404_REMARKS);
+
+        // A line must not begin with closing punctuation, so no break may be
+        // inserted directly in front of one.
+        for (String closer : new List<String>{ '、', '。', ')', '）', '」' }) {
+            System.assert(!wrapped.contains('<wbr/>' + closer),
+                'No break opportunity may precede "' + closer + '": ' + wrapped);
+        }
+    }
+
+    @IsTest
+    static void testPdfWrapText_escapesHtmlBeforeInjecting() {
+        // The page renders this with escape="false", so the escaping done here
+        // is the only thing standing between customer text and the markup.
+        String wrapped = DE_QuoteTemplateController.pdfWrapText('設備 & 保守 <重要> "至急"');
+
+        System.assert(wrapped.contains('&amp;'),  'Ampersand escaped: '   + wrapped);
+        System.assert(wrapped.contains('&lt;'),   'Less-than escaped: '   + wrapped);
+        System.assert(wrapped.contains('&gt;'),   'Greater-than escaped: '+ wrapped);
+        System.assert(wrapped.contains('&quot;'), 'Double quote escaped: '+ wrapped);
+        // The raw characters must not survive anywhere outside an entity.
+        System.assert(!wrapped.contains('<重要>'), 'Raw angle brackets must not reach the page: ' + wrapped);
+    }
+
+    @IsTest
+    static void testPdfWrapText_longAsciiRunIsBroken() {
+        // Not a CJK-only bug: any token longer than a column clips the same way.
+        String token = 'SupplementaryPowerInstallationChargeForCabinetA12IncludingUPSRedundancy';
+        String wrapped = DE_QuoteTemplateController.pdfWrapText(token);
+
+        System.assert(wrapped.contains('<wbr/>'),
+            'A long unbroken ASCII token must gain break opportunities: ' + wrapped);
+        System.assertEquals(token, wrapped.replace('<wbr/>', ''),
+            'Removing the injected <wbr/> must restore the original exactly');
+    }
+
+    @IsTest
+    static void testPdfWrapText_ordinaryEnglishLeftAlone() {
+        // Prose already breaks at its spaces; injecting anything would risk
+        // splitting words that render correctly today.
+        String prose = 'Additional power install for Rack A-12, includes UPS redundancy.';
+        System.assertEquals(prose, DE_QuoteTemplateController.pdfWrapText(prose),
+            'Ordinary spaced English must pass through untouched');
+    }
+
+    @IsTest
+    static void testPdfWrapText_blankInputReturnsEmptyString() {
+        // Visualforce map[key] EL treats a null value as a missing key
+        // ("Map key ... not found in map"), so null must never be returned.
+        System.assertEquals('', DE_QuoteTemplateController.pdfWrapText(null),  'Null becomes empty string');
+        System.assertEquals('', DE_QuoteTemplateController.pdfWrapText(''),    'Empty stays empty');
+        System.assertEquals('', DE_QuoteTemplateController.pdfWrapText('   '), 'Blank becomes empty string');
+    }
+
+    @IsTest
+    static void testController_htmlColumnMapsWrapCjk() {
+        // End-to-end: the maps the page actually reads must carry the breaks,
+        // while the plain maps stay clean for any non-HTML consumer.
+        Quote q = [SELECT Id FROM Quote LIMIT 1];
+        Id pbId = Test.getStandardPricebookId();
+        Product2 prod = [SELECT Id FROM Product2 LIMIT 1];
+        PricebookEntry pbe = [SELECT Id FROM PricebookEntry WHERE Pricebook2Id = :pbId LIMIT 1];
+
+        QuoteLineItem line = new QuoteLineItem(
+            QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = prod.Id,
+            Quantity = 1, UnitPrice = 1000, Charge_Type__c = 'MRC', SortOrder = 60,
+            Line_Remarks__c = SFDC404_REMARKS,
+            Product_Attribute_Value__c = '二百ボルト三十アンペア二重化対応'
+        );
+        insert line;
+
+        Test.startTest();
+        DE_QuoteTemplateController ctrl = new DE_QuoteTemplateController(new ApexPages.StandardController(q));
+        Test.stopTest();
+
+        String remarksHtml = ctrl.remarksHtmlByLineId.get(line.Id);
+        System.assert(remarksHtml.contains('<wbr/>'), 'Remarks column carries break opportunities: ' + remarksHtml);
+        System.assertEquals(SFDC404_REMARKS, remarksHtml.replace('<wbr/>', ''), 'Remarks text preserved in full');
+
+        String attrHtml = ctrl.attributeHtmlByLineId.get(line.Id);
+        System.assert(attrHtml.contains('<wbr/>'), 'Attribute column carries break opportunities: ' + attrHtml);
+
+        // The plain map is what non-HTML callers use — it must stay markup-free.
+        System.assertEquals(SFDC404_REMARKS, line.Line_Remarks__c, 'Stored value untouched');
+        System.assert(!ctrl.attributeDisplayByLineId.get(line.Id).contains('<wbr/>'),
+            'The plain attribute map must not carry markup');
+
+        // Every free-text column in the grid needs an entry, never a null.
+        System.assertNotEquals(null, ctrl.productNameHtmlByLineId.get(line.Id), 'Product Name HTML present');
+        System.assertNotEquals(null, ctrl.assetNameHtmlByLineId.get(line.Id),   'Service ID HTML present');
+        System.assertNotEquals(null, ctrl.unitHtmlByLineId.get(line.Id),        'Unit HTML present');
+    }
+
+    @IsTest
+    static void testController_rampWrapperHtmlGetters() {
+        // The ramp grid renders through RampLineWrapper, not the line maps, so
+        // its HTML getters need their own coverage — they are otherwise only
+        // ever reached from Visualforce EL.
+        Quote q = [SELECT Id FROM Quote LIMIT 1];
+        Id pbId = Test.getStandardPricebookId();
+        Product2 prod = [SELECT Id FROM Product2 LIMIT 1];
+        PricebookEntry pbe = [SELECT Id FROM PricebookEntry WHERE Pricebook2Id = :pbId LIMIT 1];
+
+        insert new QuoteLineItem(
+            QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = prod.Id,
+            Quantity = 2, UnitPrice = 750000, Charge_Type__c = 'MRC',
+            Line_Origin__c = 'Ramp', Ramp_Phase__c = 2,
+            Ramp_Start_Date__c = Date.today().addMonths(1), SortOrder = 61,
+            Line_Remarks__c = SFDC404_REMARKS,
+            Product_Attribute_Value__c = '二百ボルト三十アンペア二重化対応'
+        );
+
+        Test.startTest();
+        DE_QuoteTemplateController ctrl = new DE_QuoteTemplateController(new ApexPages.StandardController(q));
+        Test.stopTest();
+
+        DE_QuoteTemplateController.RampLineWrapper rlw = null;
+        for (DE_QuoteTemplateController.RampPhaseWrapper pw : ctrl.rampPhases) {
+            if (!pw.mrcLines.isEmpty()) { rlw = pw.mrcLines[0]; break; }
+        }
+        System.assertNotEquals(null, rlw, 'A ramp MRC wrapper was built');
+
+        System.assert(rlw.NotesHtml.contains('<wbr/>'),
+            'Ramp Remarks carries break opportunities: ' + rlw.NotesHtml);
+        System.assertEquals(SFDC404_REMARKS, rlw.NotesHtml.replace('<wbr/>', ''),
+            'Ramp Remarks text preserved in full');
+        System.assert(rlw.ProductAttributeHtml.contains('<wbr/>'),
+            'Ramp Attribute carries break opportunities: ' + rlw.ProductAttributeHtml);
+        System.assertNotEquals(null, rlw.displayProductNameHtml, 'Ramp Product Name HTML present');
+        System.assertNotEquals(null, rlw.UnitHtml,               'Ramp Unit HTML present');
+    }
+
+    // ─── SFDC-143: Additional Qty per phase ──────────────────────────────
+    // The old rule was EndQuantity - StartQuantity. StartQuantity is never
+    // populated, so it degenerated to the phase TOTAL. These two lock in the
+    // replacement: subtract the previous phase only on an aggregate product,
+    // where Quantity is a running total.
+
+    private static PricebookEntry newPbe(Boolean isAggregate, String name) {
+        Product2 p = new Product2(Name = name, ProductCode = name,
+                                  IsActive = true, Merge_IB_Task__c = isAggregate,
+                                  QuantityUnitOfMeasure = 'Unit');
+        insert p;
+        PricebookEntry pbe = new PricebookEntry(
+            Pricebook2Id = Test.getStandardPricebookId(), Product2Id = p.Id,
+            UnitPrice = 100, IsActive = true);
+        insert pbe;
+        return pbe;
+    }
+
+    @IsTest
+    static void testController_additionalQtyAggregateIsThePhaseDelta() {
+        Quote q = [SELECT Id FROM Quote LIMIT 1];
+        PricebookEntry pbe = newPbe(true, 'SFDC143 Aggregate');
+
+        // Running total 1 -> 3 -> 3. Phase 3 only reprices, so it adds nothing.
+        QuoteLineItem anchor = new QuoteLineItem(
+            QuoteId = q.Id, PricebookEntryId = pbe.Id, Quantity = 1, UnitPrice = 100,
+            Charge_Type__c = 'MRC', Line_Origin__c = 'Ramp', Ramp_Phase__c = 1, SortOrder = 10);
+        insert anchor;
+        insert new List<QuoteLineItem>{
+            new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = pbe.Id, Quantity = 3,
+                UnitPrice = 100, Charge_Type__c = 'MRC', Line_Origin__c = 'Ramp',
+                Ramp_Phase__c = 2, SortOrder = 11, Ramp_Parent_Line__c = anchor.Id),
+            new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = pbe.Id, Quantity = 3,
+                UnitPrice = 110, Charge_Type__c = 'MRC', Line_Origin__c = 'Ramp',
+                Ramp_Phase__c = 3, SortOrder = 12, Ramp_Parent_Line__c = anchor.Id)
+        };
+
+        Test.startTest();
+        DE_QuoteTemplateController ctrl =
+            new DE_QuoteTemplateController(new ApexPages.StandardController(q));
+        Test.stopTest();
+
+        Map<String, Decimal> additionalByPhase = new Map<String, Decimal>();
+        for (DE_QuoteTemplateController.RampPhaseWrapper pw : ctrl.rampPhases) {
+            for (DE_QuoteTemplateController.RampLineWrapper rl : pw.mrcLines) {
+                if (rl.Product2.Name == 'SFDC143 Aggregate') {
+                    additionalByPhase.put(pw.phaseNumber, rl.rampAdditionalQty);
+                }
+            }
+        }
+        // Phase 1 has no predecessor, so the whole running total reads as additional —
+        // that is what makes the column sum to the aggregate total (1 + 2 + 0 = 3).
+        System.assertEquals(1, additionalByPhase.get('Ramp-1'), 'Phase 1 additional = its own running total');
+        System.assertEquals(2, additionalByPhase.get('Ramp-2'), 'Phase 2 additional = 3 - 1, NOT the total 3');
+        System.assertEquals(0, additionalByPhase.get('Ramp-3'), 'Phase 3 only reprices, so it adds nothing');
+    }
+
+    @IsTest
+    static void testController_additionalQtyNonAggregateIsTheLineQuantity() {
+        Quote q = [SELECT Id FROM Quote LIMIT 1];
+        PricebookEntry pbe = newPbe(false, 'SFDC143 Plain');
+
+        // Quantity is ALREADY the per-phase increment here, so it must not be
+        // subtracted. Phase 3 reprices phase 1 and therefore adds nothing.
+        QuoteLineItem anchor = new QuoteLineItem(
+            QuoteId = q.Id, PricebookEntryId = pbe.Id, Quantity = 2, UnitPrice = 100,
+            Charge_Type__c = 'MRC', Line_Origin__c = 'Ramp', Ramp_Phase__c = 1, SortOrder = 10);
+        insert anchor;
+        insert new List<QuoteLineItem>{
+            new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = pbe.Id, Quantity = 3,
+                UnitPrice = 100, Charge_Type__c = 'MRC', Line_Origin__c = 'Ramp',
+                Ramp_Phase__c = 2, SortOrder = 11, Ramp_Parent_Line__c = anchor.Id),
+            new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = pbe.Id, Quantity = 2,
+                UnitPrice = 120, Charge_Type__c = 'MRC', Line_Origin__c = 'Ramp',
+                Ramp_Phase__c = 3, SortOrder = 12, Ramp_Parent_Line__c = anchor.Id,
+                Ramp_Linked_Phase__c = 1)
+        };
+
+        Test.startTest();
+        DE_QuoteTemplateController ctrl =
+            new DE_QuoteTemplateController(new ApexPages.StandardController(q));
+        Test.stopTest();
+
+        Map<String, Decimal> additionalByPhase = new Map<String, Decimal>();
+        for (DE_QuoteTemplateController.RampPhaseWrapper pw : ctrl.rampPhases) {
+            for (DE_QuoteTemplateController.RampLineWrapper rl : pw.mrcLines) {
+                if (rl.Product2.Name == 'SFDC143 Plain') {
+                    additionalByPhase.put(pw.phaseNumber, rl.rampAdditionalQty);
+                }
+            }
+        }
+        System.assertEquals(2, additionalByPhase.get('Ramp-1'), 'Non-aggregate phase 1 additional = its quantity');
+        System.assertEquals(3, additionalByPhase.get('Ramp-2'), 'Non-aggregate phase 2 additional = its quantity, not 3 - 2');
+        System.assertEquals(0, additionalByPhase.get('Ramp-3'), 'A repricing phase adds no quantity');
+    }
+
+    // SFDC-585: the Indonet logo needs an EPIX (IXP) line AND an Indonesian entity.
+    private static Boolean epixLogoFor(String entityCountry) {
+        Quote q = [SELECT Id FROM Quote LIMIT 1];
+        Product2 prod = [SELECT Id FROM Product2 WHERE Name = 'Full Cab' LIMIT 1];
+        prod.ProductCode = 'IXP001.RC';
+        update prod;
+
+        Id deEntityRtId = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('DE_Entity').getRecordTypeId();
+        Account entity = new Account(
+            Name = 'DE ' + entityCountry + ' Entity', RecordTypeId = deEntityRtId, Operation_Country__c = entityCountry
+        );
+        insert entity;
+        q.DE_Entity__c = entity.Id;
+        update q;
+
+        Test.startTest();
+        DE_QuoteTemplateController ctrl = new DE_QuoteTemplateController(new ApexPages.StandardController(q));
+        Test.stopTest();
+        return ctrl.hasEpixProduct;
+    }
+
+    @IsTest
+    static void testEpixLogo_indonesianEntity() {
+        System.assertEquals(true, epixLogoFor('Indonesia'), 'IXP line on an Indonesian entity shows the Indonet logo');
+    }
+
+    @IsTest
+    static void testEpixLogo_philippineEntity() {
+        System.assertEquals(false, epixLogoFor('Philippines'), 'IXP line on a Philippine entity must not show the Indonet logo');
     }
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Feasibility_Status__c</fullName>
+    <description>Must = Feasible or Conditional before Stage 3 advance.</description>
+    <inlineHelpText>Technical feasibility assessment for this deal. Must be Feasible or Conditional before advancing to Stage 3. Updated by the Facilities or Technical team.</inlineHelpText>
+    <label>Feasibility Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Not Started</fullName>
+                <default>true</default>
+                <label>Not Started</label>
+            </value>
+            <value>
+                <fullName>In Progress</fullName>
+                <default>false</default>
+                <label>In Progress</label>
+            </value>
+            <value>
+                <fullName>Feasible</fullName>
+                <default>false</default>
+                <label>Feasible</label>
+            </value>
+            <value>
+                <fullName>Conditional</fullName>
+                <default>false</default>
+                <label>Conditional</label>
+            </value>
+            <value>
+                <fullName>Not Feasible</fullName>
+                <default>false</default>
+                <label>Not Feasible</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

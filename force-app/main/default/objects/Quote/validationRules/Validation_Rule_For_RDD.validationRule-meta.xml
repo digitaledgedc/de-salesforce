@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validation_Rule_For_RDD</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+ISCHANGED(Status),
+ISPICKVAL(PRIORVALUE(Status), &apos;Presented&apos;),
+ISPICKVAL(Status, &apos;Accepted&apos;),
+ISBLANK(RDD__c)
+)</errorConditionFormula>
+    <errorMessage>Requested Delivery Date (RDD) is required before this quote can be Accepted. This quote cannot proceed to Accepted without a valid RDD please set it before submitting again.</errorMessage>
+</ValidationRule>

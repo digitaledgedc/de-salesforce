@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_LEAD_01_Disq_Reason_Required</fullName>
+    <active>true</active>
+    <description>Requires Disqualification Reason when Status is set to Disqualified.</description>
+    <errorConditionFormula>AND(
+  ISPICKVAL(Status, &quot;Disqualified&quot;),
+  ISPICKVAL(Disqualification_Reason__c, &quot;&quot;)
+)</errorConditionFormula>
+    <errorDisplayField>Disqualification_Reason__c</errorDisplayField>
+    <errorMessage>You must select a Disqualification Reason before marking this Lead as Disqualified.</errorMessage>
+</ValidationRule>

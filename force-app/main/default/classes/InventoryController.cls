@@ -20,6 +20,13 @@ public with sharing class InventoryController {
     private static final Set<String> AVAILABLE_STATUSES = new Set<String>{ 'Available', 'Pending Available' };
     private static final Set<String> SPACE_BREAKER_RTS  = new Set<String>{ 'Inventory_Space', 'Inventory_Breaker' };
 
+    // SFDC-472: cap on the rows getLineInventory hands the reserve panel in one call.
+    // The old cap was 500, applied after ORDER BY Floor__r.Name — at a site whose first
+    // floor alone holds more available rows than the cap, every later floor was cut off
+    // and could never be reserved. Callers narrow with the floorId / hallId filters below;
+    // 'availableTotal' in the response says whether the cap actually bit.
+    @TestVisible private static Integer LINE_AVAILABLE_LIMIT = 2000;
+
     // ── Read: Site info from Quote ──────────────────────────────────
 
     @AuraEnabled
@@ -65,7 +72,7 @@ public with sharing class InventoryController {
             + 'Floor__c, Floor__r.Name, '
             + 'Data_Hall__c, Data_Hall__r.Name, '
             + 'Space_Type__c, Status__c, '
-            + 'Unit_Reference__c, Hall__c, Cage_ID__c, '
+            + 'Unit_Reference__c, Hall__c, '
             + 'Total_Capacity_kVA__c, Total_IT_Power_kVA__c, CabE_Count__c, '
             + 'Power_kVA__c, Total_Area_sqm__c, '
             + 'Account__c, Account__r.Name, '
@@ -201,7 +208,13 @@ public with sharing class InventoryController {
     // ── Read: Inventory context for a specific Quote Line Item ─────
 
     @AuraEnabled
-    public static Map<String, Object> getLineInventory(Id quoteLineItemId, Id quoteId, String inventoryType) {
+    public static Map<String, Object> getLineInventory(
+        Id quoteLineItemId,
+        Id quoteId,
+        String inventoryType,
+        Id floorId,
+        Id hallId
+    ) {
         List<Quote> quotes = [
             SELECT Id, Opportunity.Target_Site__c
             FROM Quote WHERE Id = :quoteId
@@ -209,8 +222,10 @@ public with sharing class InventoryController {
         ];
         if (quotes.isEmpty() || quotes[0].Opportunity.Target_Site__c == null) {
             return new Map<String, Object>{
-                'assigned' => new List<Inventory__c>(),
-                'available' => new List<Inventory__c>()
+                'assigned'       => new List<Inventory__c>(),
+                'available'      => new List<Inventory__c>(),
+                'availableTotal' => 0,
+                'availableLimit' => LINE_AVAILABLE_LIMIT
             };
         }
         Id siteId = quotes[0].Opportunity.Target_Site__c;
@@ -237,26 +252,40 @@ public with sharing class InventoryController {
               AND RecordType.DeveloperName IN :SPACE_BREAKER_RTS
         ];
 
-        // Available inventory at the site — filtered by type
-        List<Inventory__c> available = [
-            SELECT Id, Name, RecordType.DeveloperName,
-                   Unit_Reference__c, Space_Type__c, Status__c,
-                   Floor__r.Name, Data_Hall__r.Name,
-                   Total_IT_Power_kVA__c, Total_Capacity_kVA__c,
-                   Power_kVA__c, CabE_Count__c
-            FROM Inventory__c
-            WHERE Site_Id__c = :siteId
-              AND RecordType.DeveloperName IN :rtFilter
-              AND Status__c IN :AVAILABLE_STATUSES
-              AND Assigned_To_Quote__c = null
-            ORDER BY Floor__r.Name ASC NULLS LAST,
-                     Data_Hall__r.Name ASC NULLS LAST, Name ASC
-            LIMIT 500
-        ];
+        // Available inventory at the site — filtered by type, and optionally
+        // narrowed to one Floor / Data Hall so the row cap is never the thing
+        // that decides which floors a user can see (SFDC-472).
+        String filters =
+            ' WHERE Site_Id__c = :siteId'
+          + ' AND RecordType.DeveloperName IN :rtFilter'
+          + ' AND Status__c IN :AVAILABLE_STATUSES'
+          + ' AND Assigned_To_Quote__c = null';
+        if (floorId != null) filters += ' AND Floor__c = :floorId';
+        if (hallId  != null) filters += ' AND Data_Hall__c = :hallId';
+
+        // How many rows actually match, so the UI can say "showing 2000 of 3200"
+        // instead of silently hiding the rest.
+        Integer availableTotal = Database.countQuery(
+            'SELECT COUNT() FROM Inventory__c' + filters
+        );
+
+        List<Inventory__c> available = Database.query(
+            'SELECT Id, Name, RecordType.DeveloperName,'
+          + ' Unit_Reference__c, Space_Type__c, Status__c,'
+          + ' Floor__c, Floor__r.Name, Data_Hall__c, Data_Hall__r.Name,'
+          + ' Total_IT_Power_kVA__c, Total_Capacity_kVA__c,'
+          + ' Power_kVA__c, CabE_Count__c'
+          + ' FROM Inventory__c' + filters
+          + ' ORDER BY Floor__r.Name ASC NULLS LAST,'
+          + ' Data_Hall__r.Name ASC NULLS LAST, Name ASC'
+          + ' LIMIT ' + LINE_AVAILABLE_LIMIT
+        );
 
         return new Map<String, Object>{
-            'assigned'  => stripped(assigned),
-            'available' => stripped(available)
+            'assigned'       => stripped(assigned),
+            'available'      => stripped(available),
+            'availableTotal' => availableTotal,
+            'availableLimit' => LINE_AVAILABLE_LIMIT
         };
     }
 

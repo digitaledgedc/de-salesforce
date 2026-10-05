@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Quote_Type__c</fullName>
+    <description>Quote type drives Order.Order_Type__c mapping. New = New Service. Amendment (Termination reason) = Termination. Amendment (other) = Change_Upsell. Renewal = Renewal.</description>
+    <inlineHelpText>The type of commercial action this quote represents. Drives the Order type on SOF acceptance: New creates a New Service order, Amendment creates a Change order, Renewal creates a Renewal order.</inlineHelpText>
+    <label>Quote Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>New</fullName>
+                <default>false</default>
+                <label>New</label>
+            </value>
+            <value>
+                <fullName>Amendment</fullName>
+                <default>false</default>
+                <label>Amendment</label>
+            </value>
+            <value>
+                <fullName>Renewal</fullName>
+                <default>false</default>
+                <label>Renewal</label>
+            </value>
+            <value>
+                <fullName>Termination</fullName>
+                <default>false</default>
+                <label>Termination</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

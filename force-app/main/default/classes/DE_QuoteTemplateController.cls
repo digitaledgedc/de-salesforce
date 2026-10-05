@@ -7,6 +7,11 @@ public with sharing class DE_QuoteTemplateController {
     public String              contactName     { get; private set; }
     public Boolean             showContactName { get; private set; }
     public String              currencySymbol  { get; private set; }
+    // MessageFormat pattern for every money figure on the page. JPY / KRW / IDR are
+    // configured with DecimalPlaces = 0 in this org and have no minor unit, so a
+    // blanket "#,##0.00" would print ¥ 1,234,567.00 on the ~85% of quotes raised
+    // in those currencies. Resolved per quote from CurrencyType.
+    public String              moneyPattern    { get; private set; }
     public List<QuoteLineItem> nrcLines        { get; private set; }
     public List<QuoteLineItem> mrcLines        { get; private set; }
     public Decimal             grandTotalNRC   { get; private set; }
@@ -28,9 +33,28 @@ public with sharing class DE_QuoteTemplateController {
     // Attribute column display value: Product_Attribute_Value__c, with
     // Custom_Attribute_Value__c appended when also present (FB-455).
     public Map<Id, String>     attributeDisplayByLineId { get; private set; }
+    // SFDC-366: the unit printed in the UoM column. Blank UoM__c inherits the product
+    // default, so this map is what the page binds — never li.Product2.QuantityUnitOfMeasure
+    // directly, or every pre-SFDC-366 line would print an empty cell.
+    public Map<Id, String>     uomByLineId { get; private set; }
+    // SFDC-404: the same four column values with HTML break opportunities added,
+    // plus the Unit column which the page previously read straight off the
+    // record. The page renders these with escape="false"; the plain maps above
+    // stay untouched for any non-HTML consumer. See pdfWrapText.
+    public Map<Id, String>     productNameHtmlByLineId { get; private set; }
+    public Map<Id, String>     assetNameHtmlByLineId { get; private set; }
+    public Map<Id, String>     attributeHtmlByLineId { get; private set; }
+    public Map<Id, String>     remarksHtmlByLineId { get; private set; }
+    public Map<Id, String>     unitHtmlByLineId { get; private set; }
     public String              requestedDeliveryDateStr { get; private set; }
     public String              expirationDateStr { get; private set; }
     public String              initialTermStr  { get; private set; }
+    // SFDC-382: drives the Initial Term header row. The page cannot decide this
+    // for itself — rendered="{!NOT(ISBLANK(initialTermStr))}" does NOT suppress
+    // the row when the string is '', because Visualforce EL treats a non-null
+    // Apex String as present no matter how empty it is. That left the label
+    // printing with a blank value. An explicit Boolean is unambiguous.
+    public Boolean             showInitialTerm { get; private set; }
     public String              termsHeading    { get; private set; }
     public String              termsContent    { get; private set; }
 
@@ -76,6 +100,7 @@ public with sharing class DE_QuoteTemplateController {
     // <apex:repeat> emits no <col>/<th>/<td>, so the column disappears with no
     // hidden placeholder <span> to break the PDF table grid.
     public Boolean hasAnyDiscount { get; private set; }
+    public Boolean hasEpixProduct { get; private set; }
     public List<Integer> getDiscountCol() {
         return (hasAnyDiscount == true) ? new List<Integer>{ 1 } : new List<Integer>();
     }
@@ -101,6 +126,9 @@ public with sharing class DE_QuoteTemplateController {
     // ─── China VAT rate (tax-inclusive) ──────────────────────────────────
 
     private static final Decimal CHINA_TAX_RATE = 6;
+    private static final String  EPIX_CODE_PREFIX = 'IXP';
+    // SFDC-585: the Indonet logo is for Indonesian entities only
+    private static final String  EPIX_LOGO_COUNTRY = 'Indonesia';
 
     // ─── Inner wrapper for a ramp phase ──────────────────────────────────
 
@@ -116,6 +144,22 @@ public with sharing class DE_QuoteTemplateController {
         public Decimal       groupedQuantity   { get; set; }
         public Decimal       groupedTotalPrice { get; set; }
 
+        // SFDC-143: inputs for the Additional Qty second pass below. Additional
+        // quantity is a property of the phase SERIES, not of one line, so it
+        // cannot be computed while the lines are still being read — these carry
+        // what the pass needs and are not bound by the page.
+        //   rampGroupKey  identifies the series: charge type + ramp group
+        //   rampPhaseNum  orders the series
+        //   isAggregate   Quantity holds a RUNNING TOTAL, not a per-phase delta
+        //   runningQty    the cell's running total (max, so a fan-out cell does
+        //                 not multiply it the way groupedQuantity's sum would)
+        //   unlinkedQty   summed quantity of the cell's non-repricing lines
+        public String        rampGroupKey { get; set; }
+        public Integer       rampPhaseNum { get; set; }
+        public Boolean       isAggregate  { get; set; }
+        public Decimal       runningQty   { get; set; }
+        public Decimal       unlinkedQty  { get; set; }
+
         // Delegate common QuoteLineItem fields so VF can use {!rl.Product2.Name} etc.
         public Product2         Product2                { get { return line.Product2; } }
         public String           Product_Attribute_Value { get { return combineAttributeDisplay(line.Product_Attribute_Value__c, line.Custom_Attribute_Value__c); } }
@@ -125,6 +169,13 @@ public with sharing class DE_QuoteTemplateController {
         public Decimal          TotalPrice              { get { return groupedTotalPrice != null ? groupedTotalPrice : line.TotalPrice; } }
         public String           Description             { get { return line.Line_Remarks__c; } }
         public String           Notes                   { get { return line.Line_Remarks__c; } }
+        // SFDC-404: HTML variants for the ramp grid's free-text columns. See
+        // pdfWrapText — the page renders these with escape="false".
+        public String           displayProductNameHtml  { get { return pdfWrapText(displayProductName); } }
+        public String           ProductAttributeHtml    { get { return pdfWrapText(Product_Attribute_Value); } }
+        // SFDC-366: the line's own unit wins; blank inherits the product default.
+        public String           UnitHtml                { get { return pdfWrapText(String.isNotBlank(line.UoM__c) ? line.UoM__c : (line.Product2 != null ? line.Product2.QuantityUnitOfMeasure : null)); } }
+        public String           NotesHtml               { get { return pdfWrapText(line.Line_Remarks__c); } }
     }
 
     public class RampPhaseWrapper {
@@ -144,6 +195,9 @@ public with sharing class DE_QuoteTemplateController {
         // Tallies behind isAllPhasesLinked, filled while the phase is being built.
         public Boolean                 hasMrcLine         { get; set; }
         public Boolean                 hasUnlinkedMrcLine { get; set; }
+        // SFDC-370: phase remark; stored per line in Ramp_Phase_Notes__c, same text on every line of the phase.
+        public String                  phaseNote          { get; set; }
+        public String                  notesHtml          { get { return pdfWrapText(phaseNote); } }
 
         public RampPhaseWrapper() {
             nrcLines       = new List<RampLineWrapper>();
@@ -243,7 +297,8 @@ public with sharing class DE_QuoteTemplateController {
         Boolean useTranslatedAccount = q.Account != null
             && DE_QuotePDFLocalization.preferenceMatches(q.Account.Preferred_Language__c, documentLanguage)
             && String.isNotBlank(q.Account.Translated_Name__c);
-        Boolean useLegacyLocalAccountName = q.Account != null
+        Boolean useLegacyLocalAccountName = documentLanguage != 'en_US'
+            && q.Account != null
             && q.Account.Local_Language__c == true
             && String.isNotBlank(q.Account.Local_Entity_Name__c);
         String accountDisplayName = useTranslatedAccount
@@ -298,6 +353,7 @@ public with sharing class DE_QuoteTemplateController {
         showContactName = String.isNotBlank(contactName);
         String code     = String.isNotBlank(q.CurrencyIsoCode) ? q.CurrencyIsoCode : 'USD';
         currencySymbol  = CURR_SYMBOL.containsKey(code) ? CURR_SYMBOL.get(code) : code;
+        moneyPattern    = '{0,number,#,##0' + (currencyDecimals(code) == 0 ? '' : '.00') + '}';
 
         // ── DE contracting entity display name ───────────────────────────
         Boolean useTranslatedEntity = q.DE_Entity__r != null
@@ -315,7 +371,8 @@ public with sharing class DE_QuoteTemplateController {
         Boolean useTranslatedQuoteAccount = q.QuoteAccount != null
             && DE_QuotePDFLocalization.preferenceMatches(q.QuoteAccount.Preferred_Language__c, documentLanguage)
             && String.isNotBlank(q.QuoteAccount.Translated_Name__c);
-        Boolean useLegacyLocalQuoteAccountName = q.QuoteAccount != null
+        Boolean useLegacyLocalQuoteAccountName = documentLanguage != 'en_US'
+            && q.QuoteAccount != null
             && q.QuoteAccount.Local_Language__c == true
             && String.isNotBlank(q.QuoteAccount.Local_Entity_Name__c);
         quoteAccountName = q.QuoteAccount == null
@@ -337,9 +394,19 @@ public with sharing class DE_QuoteTemplateController {
         );
         requestedDeliveryDateStr = DE_QuotePDFLocalization.formatDate(q.RDD__c, documentLanguage);
         expirationDateStr = DE_QuotePDFLocalization.formatDate(q.ExpirationDate, documentLanguage);
-        initialTermStr = q.Contract_Term_Months__c == null
-            ? ''
-            : formatInitialTerm(q.Contract_Term_Months__c);
+        // SFDC-382: the Initial Term header belongs on New and Renewal orders
+        // only. A Change Order (Quote_Type__c = Amendment) and a Termination
+        // both inherit Contract_Term_Months__c from the order they act on, but
+        // neither document re-sets the contract term — printing it there reads
+        // as a term being agreed and misrepresents the document. Whitelist the
+        // two types that do set a term rather than blacklisting the others, so
+        // a future quote type stays silent until it is deliberately added.
+        Boolean setsContractTerm =
+            (q.Quote_Type__c == 'New' || q.Quote_Type__c == 'Renewal');
+        showInitialTerm = setsContractTerm && q.Contract_Term_Months__c != null;
+        initialTermStr = showInitialTerm
+            ? formatInitialTerm(q.Contract_Term_Months__c)
+            : '';
 
         // ── Site lookup ──────────────────────────────────────────────────
         if (q.Target_Site__c != null) {
@@ -388,9 +455,10 @@ public with sharing class DE_QuoteTemplateController {
         // ── Load all line items ──────────────────────────────────────────
         List<QuoteLineItem> lines = [
             SELECT Id, Product2Id, Product2.Name, Product2.ProductCode, Product2.QuantityUnitOfMeasure,
+                   UoM__c,
                    Product_Attribute_Value__c, Custom_Attribute_Value__c, Charge_Type__c, BillingFrequency,
                    Quantity, ListPrice, UnitPrice, Discount, TotalPrice,
-                   Description, SortOrder, Line_Remarks__c,
+                   Description, SortOrder, Line_Remarks__c, Ramp_Phase_Notes__c,
                    Line_Origin__c, Ramp_Phase__c, Ramp_Step_Number__c,
                    Ramp_Start_Date__c, SegmentName,
                    StartQuantity, EndQuantity,
@@ -403,9 +471,14 @@ public with sharing class DE_QuoteTemplateController {
 
         Set<Id> productIds = new Set<Id>();
         hasAnyDiscount = false;
+        hasEpixProduct = false;
+        Boolean isEpixLogoEntity = q.DE_Entity__r != null
+            && q.DE_Entity__r.Operation_Country__c == EPIX_LOGO_COUNTRY;
         for (QuoteLineItem li : lines) {
             if (li.Product2Id != null) productIds.add(li.Product2Id);
             if (li.Discount != null) hasAnyDiscount = true;
+            if (isEpixLogoEntity && li.Product2 != null && li.Product2.ProductCode != null
+                && li.Product2.ProductCode.startsWith(EPIX_CODE_PREFIX)) hasEpixProduct = true;
         }
         Map<Id, String> translatedProductNames = new Map<Id, String>();
         if (documentLanguage != 'en_US' && !productIds.isEmpty()) {
@@ -446,6 +519,29 @@ public with sharing class DE_QuoteTemplateController {
             attributeDisplayByLineId.put(li.Id, combineAttributeDisplay(li.Product_Attribute_Value__c, li.Custom_Attribute_Value__c));
         }
 
+        // ── SFDC-366: UoM column — the line's own unit, falling back to the product ──
+        uomByLineId = new Map<Id, String>();
+        for (QuoteLineItem li : lines) {
+            uomByLineId.put(li.Id, String.isNotBlank(li.UoM__c)
+                ? li.UoM__c
+                : (li.Product2 != null ? li.Product2.QuantityUnitOfMeasure : null));
+        }
+
+        // ── SFDC-404: HTML variants of every free-text column in the line grids ─
+        productNameHtmlByLineId = new Map<Id, String>();
+        assetNameHtmlByLineId   = new Map<Id, String>();
+        attributeHtmlByLineId   = new Map<Id, String>();
+        remarksHtmlByLineId     = new Map<Id, String>();
+        unitHtmlByLineId        = new Map<Id, String>();
+        for (QuoteLineItem li : lines) {
+            productNameHtmlByLineId.put(li.Id, pdfWrapText(productNameByLineId.get(li.Id)));
+            assetNameHtmlByLineId.put(  li.Id, pdfWrapText(assetDisplayNameByLineId.get(li.Id)));
+            attributeHtmlByLineId.put(  li.Id, pdfWrapText(attributeDisplayByLineId.get(li.Id)));
+            remarksHtmlByLineId.put(    li.Id, pdfWrapText(li.Line_Remarks__c));
+            // SFDC-366: same coalesce as uomByLineId above
+            unitHtmlByLineId.put(       li.Id, pdfWrapText(uomByLineId.get(li.Id)));
+        }
+
         // ── Separate base lines from ramp lines ──────────────────────────
         // Is_Ramp_Deal__c removed from Quote — derive ramp status from Ramp_Schedule__c
         // or from the QLIs themselves (any Ramp_Line__c = true).
@@ -476,11 +572,11 @@ public with sharing class DE_QuoteTemplateController {
         Map<String, RampLineWrapper>   rampLineByKey = new Map<String, RampLineWrapper>();
 
         // FB: ramp PDF layout —
-        //   First table  = aggregated "Lines view" (built post-loop from Phase-1 anchors).
+        //   First table  = aggregated "Lines view" (built post-loop from group anchors).
         //   Next tables  = one per ramp phase (Ramp-1, Ramp-2, ...), EVERY phase incl. 1.
-        // Phase-1 anchors + their cross-phase siblings (linked via Ramp_Parent_Line__c)
+        // Group anchors + their cross-phase siblings (linked via Ramp_Parent_Line__c)
         // feed the aggregation below.
-        List<QuoteLineItem>              phase1Anchors    = new List<QuoteLineItem>();
+        List<QuoteLineItem>              groupAnchors     = new List<QuoteLineItem>();
         Map<Id, List<QuoteLineItem>>     siblingsByAnchor = new Map<Id, List<QuoteLineItem>>();
 
         for (QuoteLineItem li : lines) {
@@ -519,6 +615,8 @@ public with sharing class DE_QuoteTemplateController {
                     phaseOrder.add(phaseNum);
                 }
                 RampPhaseWrapper pw = phaseMap.get(phaseNum);
+                // SFDC-370: phase remark for the phase header row — first line of the phase that carries one
+                if (String.isBlank(pw.phaseNote)) pw.phaseNote = li.Ramp_Phase_Notes__c;
 
                 // (1a) Collapse the QuoteLineItems a repricing phase saves per
                 // superseded phase into ONE displayed row. They share phase +
@@ -530,15 +628,20 @@ public with sharing class DE_QuoteTemplateController {
                 // untouched by the grouping.
                 Id     groupKey   = (li.Ramp_Parent_Line__c != null) ? li.Ramp_Parent_Line__c : li.Id;
                 String wrapperKey = phaseNum + '|' + (isNRC ? 'NRC' : 'MRC') + '|' + groupKey;
-                Decimal startQ    = li.StartQuantity != null ? li.StartQuantity : 0;
-                Decimal endQ      = li.EndQuantity   != null ? li.EndQuantity   : li.Quantity;
+                // SFDC-143: additional quantity used to be EndQuantity - StartQuantity.
+                // StartQuantity is never populated (0 of 390 ramp lines in de-prod carry
+                // one), so that expression collapsed to EndQuantity and the column printed
+                // each phase's TOTAL instead of its increment. It is now derived per phase
+                // series in the second pass below; only the inputs are collected here.
+                Boolean lineIsAgg = (li.Merge_IB_Task__c == true)
+                                    || (li.Product2 != null && li.Product2.Merge_IB_Task__c == true);
+                Decimal lineQty   = (li.Quantity   != null ? li.Quantity   : 0);
                 // A linked line reprices quantity an earlier phase already delivered, so
                 // it contributes no additional quantity — whether it supersedes one phase
-                // or all of them. Grouped rows sum this, so a fan-out group totals 0 too.
-                Decimal addQty    = (li.Ramp_Linked_Phase__c != null)
-                                    ? 0
-                                    : (endQ != null ? endQ : 0) - startQ;
-                Decimal lineQty   = (li.Quantity   != null ? li.Quantity   : 0);
+                // or all of them. Only non-aggregate products need this: on an aggregate
+                // product a repricing phase repeats the previous running total, so the
+                // subtraction already yields 0.
+                Decimal unlinkedQ = (li.Ramp_Linked_Phase__c != null) ? 0 : lineQty;
                 Decimal lineTotal = (li.TotalPrice != null ? li.TotalPrice : 0);
 
                 RampLineWrapper rlw = rampLineByKey.get(wrapperKey);
@@ -548,7 +651,13 @@ public with sharing class DE_QuoteTemplateController {
                     rlw.displayProductName = productNameByLineId.get(li.Id);
                     rlw.groupedQuantity    = lineQty;
                     rlw.groupedTotalPrice  = lineTotal;
-                    rlw.rampAdditionalQty  = addQty;
+                    // SFDC-143: series inputs; rampAdditionalQty is set by the pass below
+                    rlw.rampGroupKey       = (isNRC ? 'NRC' : 'MRC') + '|' + groupKey;
+                    rlw.rampPhaseNum       = phaseNum;
+                    rlw.isAggregate        = lineIsAgg;
+                    rlw.runningQty         = lineQty;
+                    rlw.unlinkedQty        = unlinkedQ;
+                    rlw.rampAdditionalQty  = 0;
                     rampLineByKey.put(wrapperKey, rlw);
                     if (isNRC) { pw.nrcLines.add(rlw); } else { pw.mrcLines.add(rlw); }
                 } else {
@@ -565,7 +674,13 @@ public with sharing class DE_QuoteTemplateController {
                     }
                     rlw.groupedQuantity   += lineQty;
                     rlw.groupedTotalPrice += lineTotal;
-                    rlw.rampAdditionalQty += addQty;
+                    // SFDC-143: a fan-out cell repeats the same running total on every
+                    // line, so take the max rather than summing it the way the displayed
+                    // Quantity does. unlinkedQty does sum — each unlinked line is real
+                    // new quantity on a non-aggregate product.
+                    rlw.isAggregate        = rlw.isAggregate || lineIsAgg;
+                    if (lineQty > rlw.runningQty) rlw.runningQty = lineQty;
+                    rlw.unlinkedQty       += unlinkedQ;
                 }
 
                 if (isNRC) {
@@ -578,12 +693,17 @@ public with sharing class DE_QuoteTemplateController {
                     if (li.Ramp_Linked_Phase__c == null) pw.hasUnlinkedMrcLine = true;
                 }
 
-                // (2) Collect anchors (phase 1) and siblings (phase 2+ → their parent)
-                if (phaseNum <= 1) {
-                    phase1Anchors.add(li);
+                // (2) Collect anchors and siblings. The anchor of a ramp group is the
+                // line with no Ramp_Parent_Line__c — the same convention groupKey above
+                // already uses. It is NOT necessarily a phase-1 line: a space that only
+                // comes online partway through the ramp anchors at phase 2, 3 or 4.
+                // Keying on "phase <= 1" dropped those groups from the aggregated table
+                // entirely (SFDC-349: 48,000 of 60,000 kVA missing from the first table).
+                if (li.Ramp_Parent_Line__c == null) {
+                    groupAnchors.add(li);
                     if (!siblingsByAnchor.containsKey(li.Id)) siblingsByAnchor.put(li.Id, new List<QuoteLineItem>());
                     siblingsByAnchor.get(li.Id).add(li);
-                } else if (li.Ramp_Parent_Line__c != null) {
+                } else {
                     if (!siblingsByAnchor.containsKey(li.Ramp_Parent_Line__c)) {
                         siblingsByAnchor.put(li.Ramp_Parent_Line__c, new List<QuoteLineItem>());
                     }
@@ -595,11 +715,80 @@ public with sharing class DE_QuoteTemplateController {
             }
         }
 
-        // Build the aggregated first table from Phase-1 anchors (mirrors the LWC
+        // A sibling group whose parent line is not in this quote has no anchor and
+        // would silently vanish from the table — the same failure mode as above.
+        // Promote its earliest-phase member so the row is still rendered.
+        Set<Id> anchorIds = new Set<Id>();
+        for (QuoteLineItem a : groupAnchors) anchorIds.add(a.Id);
+        for (Id parentId : siblingsByAnchor.keySet()) {
+            if (anchorIds.contains(parentId)) continue;
+            QuoteLineItem earliest = null;
+            Integer earliestPhase = null;
+            for (QuoteLineItem s2 : siblingsByAnchor.get(parentId)) {
+                Integer sp = (s2.Ramp_Phase__c != null) ? Integer.valueOf(s2.Ramp_Phase__c) : 0;
+                if (earliest == null || sp < earliestPhase) {
+                    earliest = s2;
+                    earliestPhase = sp;
+                }
+            }
+            if (earliest != null) {
+                System.debug(LoggingLevel.WARN,
+                    'DE_QuoteTemplateController: ramp group ' + parentId +
+                    ' has no anchor line in this quote — promoting ' + earliest.Id +
+                    ' (phase ' + earliest.Ramp_Phase__c + ') so the row still renders.');
+                groupAnchors.add(earliest);
+            }
+        }
+
+        // ── SFDC-143: Additional Qty per phase ───────────────────────────────
+        // "Additional Qty should be = Current Total Qty - Last Phase Total Qty"
+        // (Henry Wang, SFDC-143). That is only true for an AGGREGATE product,
+        // where Quantity holds the running total — the same Merge_IB_Task__c
+        // distinction the aggregated first table below already makes. On a
+        // non-aggregate product Quantity is ALREADY the per-phase increment (the
+        // first table sums it), so subtracting would understate every phase; the
+        // additional quantity there is the quantity itself.
+        //
+        // Walking the series needs every phase of the group in hand, so it runs
+        // here rather than inside the line loop above. A group whose anchor lives
+        // on another quote simply starts at the earliest phase present, which
+        // then prints its full running total.
+        Map<String, Map<Integer, RampLineWrapper>> rampSeries =
+            new Map<String, Map<Integer, RampLineWrapper>>();
+        for (RampLineWrapper rlw : rampLineByKey.values()) {
+            Map<Integer, RampLineWrapper> byPhase = rampSeries.get(rlw.rampGroupKey);
+            if (byPhase == null) {
+                byPhase = new Map<Integer, RampLineWrapper>();
+                rampSeries.put(rlw.rampGroupKey, byPhase);
+            }
+            byPhase.put(rlw.rampPhaseNum, rlw);
+        }
+        for (Map<Integer, RampLineWrapper> byPhase : rampSeries.values()) {
+            List<Integer> seriesPhases = new List<Integer>(byPhase.keySet());
+            seriesPhases.sort();
+            Decimal prevRunning = 0;
+            for (Integer sp : seriesPhases) {
+                RampLineWrapper rlw = byPhase.get(sp);
+                if (rlw.isAggregate == true) {
+                    // First phase of the series has no predecessor, so prevRunning
+                    // is 0 and the whole quantity reads as additional. That keeps the
+                    // column summing to the aggregate total shown in the first table.
+                    rlw.rampAdditionalQty = rlw.runningQty - prevRunning;
+                    prevRunning = rlw.runningQty;
+                } else {
+                    rlw.rampAdditionalQty = rlw.unlinkedQty;
+                }
+            }
+        }
+
+        // Build the aggregated first table from the group anchors (mirrors the LWC
         // Lines tab: aggregate products show running/last-phase qty; everything else
         // sums the "new" phases, skipping "price change" phases (Ramp_Linked_Phase__c)).
-        for (QuoteLineItem anchor : phase1Anchors) {
+        for (QuoteLineItem anchor : groupAnchors) {
             List<QuoteLineItem> sibs = siblingsByAnchor.get(anchor.Id);
+            if ((sibs == null || sibs.isEmpty()) && anchor.Ramp_Parent_Line__c != null) {
+                sibs = siblingsByAnchor.get(anchor.Ramp_Parent_Line__c);
+            }
             if (sibs == null || sibs.isEmpty()) sibs = new List<QuoteLineItem>{ anchor };
             Boolean isNRC = isNrcLine(anchor);
             Boolean isAgg = (anchor.Merge_IB_Task__c == true)
@@ -612,6 +801,15 @@ public with sharing class DE_QuoteTemplateController {
                 if (sp > lp) lastSib = s;
             }
 
+            // SFDC-275: the first table prints the FIRST phase price. Later phases carry
+            // escalations that belong only in the Ramp-Up Orders tables below.
+            QuoteLineItem firstSib = anchor;
+            for (QuoteLineItem s : sibs) {
+                Integer sp = (s.Ramp_Phase__c != null) ? Integer.valueOf(s.Ramp_Phase__c) : 0;
+                Integer fp = (firstSib.Ramp_Phase__c != null) ? Integer.valueOf(firstSib.Ramp_Phase__c) : 0;
+                if (sp < fp) firstSib = s;
+            }
+
             Decimal aggQty;
             if (isAgg) {
                 aggQty = (lastSib.Quantity != null) ? lastSib.Quantity : 0;
@@ -621,8 +819,8 @@ public with sharing class DE_QuoteTemplateController {
                     if (s.Ramp_Linked_Phase__c == null) aggQty += (s.Quantity != null ? s.Quantity : 0);
                 }
             }
-            Decimal unit = (lastSib.UnitPrice != null) ? lastSib.UnitPrice : 0;
-            Decimal disc = (lastSib.Discount  != null) ? lastSib.Discount  : 0;
+            Decimal unit = (firstSib.UnitPrice != null) ? firstSib.UnitPrice : 0;
+            Decimal disc = (firstSib.Discount  != null) ? firstSib.Discount  : 0;
             Decimal total = aggQty * unit * (1 - disc / 100);
 
             // Keep the original anchor object (Product2 etc. stay resolvable and the
@@ -655,6 +853,29 @@ public with sharing class DE_QuoteTemplateController {
         grandTotalInclTax = grandTotalNRC + grandTotalMRC;
     }
 
+    // ─── Helper: decimal places configured for a currency ──────────────
+    // Read from CurrencyType so the PDF follows org currency setup rather than a
+    // hard-coded list. Non-multi-currency orgs and unknown codes fall back to 2.
+
+    private static Map<String, Integer> decimalsByIso;
+
+    private static Integer currencyDecimals(String isoCode) {
+        if (decimalsByIso == null) {
+            decimalsByIso = new Map<String, Integer>();
+            if (UserInfo.isMultiCurrencyOrganization()) {
+                for (SObject ct : Database.query(
+                        'SELECT IsoCode, DecimalPlaces FROM CurrencyType')) {
+                    decimalsByIso.put(
+                        String.valueOf(ct.get('IsoCode')),
+                        Integer.valueOf(ct.get('DecimalPlaces'))
+                    );
+                }
+            }
+        }
+        Integer d = decimalsByIso.get(isoCode);
+        return (d == null) ? 2 : d;
+    }
+
     // ─── Helper: strip the trailing ": <Product Name>" suffix Odoo appends ─
     // to Asset.Name (e.g. "ggVAiAAM-IB-000325315: 19\" Cabinet" → "ggVAiAAM-IB-000325315").
     // Mirrors deOrderAssets.js's displayName trim so the Service ID column
@@ -681,17 +902,109 @@ public with sharing class DE_QuoteTemplateController {
     // when present — the two are typically mutually exclusive per product
     // (Product2.Show_Custom_Attribute_Value__c), but combine defensively.
 
+    // ── SFDC-404: line-break opportunities for the PDF renderer ──────────────
+    // The PDF renderer breaks a line only at whitespace. Japanese, Chinese and
+    // Korean are written without spaces, so a whole phrase is a single
+    // unbreakable token: it overflows its fixed-width column (the line grids
+    // are table-layout:fixed), paints straight over the neighbouring cells, and
+    // is finally cut off at the page margin. In the Remarks column — the last
+    // one — that reads as the truncation reported in SFDC-404; in the Product
+    // Name or Attribute column the same overflow silently overprints Qty and
+    // Unit, so the numbers are still on the page but unreadable.
+    //
+    // CSS cannot fix it. Measured against the live renderer on 31-Aug-2026:
+    // word-wrap:break-word, word-break:break-all and a U+200B zero-width space
+    // are all ignored; &shy; works but prints visible hyphens; table-layout:auto
+    // works but resizes every column. A <wbr/> element IS honoured, so the text
+    // is HTML-escaped here and <wbr/> inserted at each legal break point. The
+    // page renders the result with escape="false" — escaping happens first, so
+    // customer text containing & or < stays literal.
+    private static final String NO_LINE_START =
+        '、。，．）」』】〕〉》”’!?:;,.)]}%％‰・ーぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮヵヶ';
+    // A non-CJK run only needs breaking once it is long enough to overflow a
+    // column on its own; normal prose has spaces well before this.
+    private static final Integer LONG_RUN_START = 20;
+    private static final Integer LONG_RUN_EVERY = 10;
+
+    @TestVisible
+    private static String pdfWrapText(String raw) {
+        // Visualforce's map[key] EL treats a null value the same as a missing
+        // key ("Map key ... not found in map") — never return null.
+        if (String.isBlank(raw)) return '';
+        List<String> out = new List<String>();
+        Integer runLen = 0;
+        Integer len = raw.length();
+        for (Integer i = 0; i < len; i++) {
+            String  ch     = raw.substring(i, i + 1);
+            Integer code   = raw.charAt(i);
+            Boolean isLast = (i == len - 1);
+            String  nextCh = isLast ? null : raw.substring(i + 1, i + 2);
+
+            out.add(escapeForPdf(ch));
+
+            if (isCjkChar(code)) {
+                runLen = 0;
+                // Kinsoku: a line must not begin with closing punctuation.
+                if (!isLast && !NO_LINE_START.contains(nextCh)) out.add('<wbr/>');
+            } else if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r') {
+                runLen = 0;
+            } else {
+                runLen++;
+                if (runLen >= LONG_RUN_START
+                    && Math.mod(runLen, LONG_RUN_EVERY) == 0
+                    && !isLast
+                    && nextCh != ' ') {
+                    out.add('<wbr/>');
+                }
+            }
+        }
+        return String.join(out, '');
+    }
+
+    private static Boolean isCjkChar(Integer c) {
+        // Apex has no hex literals, so the ranges are decimal; the U+ form is in
+        // the comment.
+        return (c >= 12288 && c <= 12351)    // U+3000-303F CJK symbols and punctuation
+            || (c >= 12352 && c <= 12447)    // U+3040-309F hiragana
+            || (c >= 12448 && c <= 12543)    // U+30A0-30FF katakana
+            || (c >= 12592 && c <= 12687)    // U+3130-318F hangul compatibility jamo
+            || (c >= 19968 && c <= 40959)    // U+4E00-9FFF CJK unified ideographs
+            || (c >= 44032 && c <= 55215)    // U+AC00-D7AF hangul syllables
+            || (c >= 63744 && c <= 64255)    // U+F900-FAFF CJK compatibility ideographs
+            || (c >= 65280 && c <= 65519);   // U+FF00-FFEF full-width and half-width forms
+    }
+
+    private static String escapeForPdf(String ch) {
+        if (ch == '&') return '&amp;';
+        if (ch == '<') return '&lt;';
+        if (ch == '>') return '&gt;';
+        if (ch == '"') return '&quot;';
+        return ch;
+    }
+
     private static String combineAttributeDisplay(String attributeValue, Object customRaw) {
         // Custom_Attribute_Value__c is Text in some orgs and Number in others;
         // accept it as Object and normalize to String so this compiles against
         // either schema.
         String customValue = (customRaw == null) ? null : String.valueOf(customRaw);
+        // SFDEV-5: a zero custom value means "not entered" — quoteLineEditor
+        // already shows it blank, so the PDF must not print 0.00 either.
+        if (isZeroNumber(customValue)) customValue = null;
         // Visualforce's map[key] EL syntax treats a null value the same as a
         // missing key ("Map key ... not found in map") — never return null.
         if (String.isBlank(customValue)) {
             return attributeValue != null ? attributeValue : '';
         }
         return String.isBlank(attributeValue) ? customValue : (attributeValue + ' / ' + customValue);
+    }
+
+    private static Boolean isZeroNumber(String value) {
+        if (String.isBlank(value)) return false;
+        try {
+            return Decimal.valueOf(value.trim()) == 0;
+        } catch (TypeException e) {
+            return false;
+        }
     }
 
     // ─── Helper: determine if a line is NRC ──────────────────────────────
@@ -796,6 +1109,7 @@ public with sharing class DE_QuoteTemplateController {
         contactName        = '';
         showContactName    = false;
         currencySymbol     = '$';
+        moneyPattern       = '{0,number,#,##0.00}';
         nrcLines           = new List<QuoteLineItem>();
         mrcLines           = new List<QuoteLineItem>();
         grandTotalNRC      = 0;
@@ -817,6 +1131,7 @@ public with sharing class DE_QuoteTemplateController {
         isChangeOrder      = false;
         amendedOrderNumber = '';
         hasAnyDiscount     = false;
+        hasEpixProduct     = false;
         isRampDeal         = false;
         rampPhases         = new List<RampPhaseWrapper>();
         deEntityName       = 'Digital Edge';
@@ -830,6 +1145,7 @@ public with sharing class DE_QuoteTemplateController {
         requestedDeliveryDateStr = '';
         expirationDateStr  = '';
         initialTermStr     = '';
+        showInitialTerm    = false;
         termsHeading       = pdfLabels.get('Heading_Terms_NonBinding');
     }
 }

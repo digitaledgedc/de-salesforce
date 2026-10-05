@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Capacity_kW__c</fullName>
+    <description>Required when Customer_Type__c = Platform. The prospect&apos;s power requirement in kW. VR-LEAD-02 enforces. Carries to Opportunity.Power_kW__c on conversion.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Prospect&apos;s total power requirement in kilowatts. Required for Platform (hyperscaler) leads. Carries to the Opportunity on conversion.</inlineHelpText>
+    <label>Capacity (kVA)</label>
+    <precision>10</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

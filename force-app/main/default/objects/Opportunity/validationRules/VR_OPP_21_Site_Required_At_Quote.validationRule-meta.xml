@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_OPP_21_Site_Required_At_Quote</fullName>
+    <active>true</active>
+    <description>FB-925: Site optional at Stage 1/2, required from 3-Quote on. Fires only on stage change or create (as DE_Opp_Stage1_Gate does) so pre-existing siteless opps at 3-Quote+ stay editable. 9-Lost exempt.</description>
+    <errorConditionFormula>AND(
+  NOT(Skip_Stage_Gate__c),
+  ISBLANK(Target_Site__c),
+  OR(ISNEW(), ISCHANGED(StageName)),
+  CASE(TEXT(StageName), &apos;3-Quote&apos;, 3, &apos;4-Negotiate&apos;, 4, &apos;5-Won&apos;, 5, 0) &gt;= 3
+)</errorConditionFormula>
+    <errorDisplayField>Target_Site__c</errorDisplayField>
+    <errorMessage>Operation Site is required from Stage 3-Quote onwards. Select the site this opportunity will be delivered from.</errorMessage>
+</ValidationRule>

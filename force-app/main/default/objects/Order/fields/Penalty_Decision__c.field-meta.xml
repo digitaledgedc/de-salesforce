@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Penalty_Decision__c</fullName>
+    <description>Records the commercial decision on early termination penalty for churn orders that violate the GTC notice period.</description>
+    <inlineHelpText>Decision on early termination fee. Waive = no ETF charged. Enforce = full ETF applied. Negotiate = custom ETF amount agreed with customer.</inlineHelpText>
+    <label>Penalty Decision</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Enforce ETF</fullName>
+                <default>false</default>
+                <label>Enforce ETF</label>
+            </value>
+            <value>
+                <fullName>Negotiate</fullName>
+                <default>false</default>
+                <label>Negotiate</label>
+            </value>
+            <value>
+                <fullName>Waive</fullName>
+                <default>false</default>
+                <label>Waive</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

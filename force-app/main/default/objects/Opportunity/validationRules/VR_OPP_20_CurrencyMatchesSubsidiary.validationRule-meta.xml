@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_OPP_20_CurrencyMatchesSubsidiary</fullName>
+    <active>true</active>
+    <description>VR-OPP-20: Opportunity currency must be the Operation Country&apos;s local currency (country map) or USD. Rebased off the subsidiary currency field so USD-billing entities in non-USD countries pass.</description>
+    <errorConditionFormula>AND(
+  NOT(ISBLANK(TEXT(Operation_Country__c))),
+  TEXT(CurrencyIsoCode) &lt;&gt; CASE(TEXT(Operation_Country__c),
+    &quot;China&quot;, &quot;CNY&quot;,
+    &quot;India&quot;, &quot;INR&quot;,
+    &quot;Indonesia&quot;, &quot;IDR&quot;,
+    &quot;Japan&quot;, &quot;JPY&quot;,
+    &quot;Korea&quot;, &quot;KRW&quot;,
+    &quot;South Korea&quot;, &quot;KRW&quot;,
+    &quot;Hong Kong&quot;, &quot;HKD&quot;,
+    &quot;Singapore&quot;, &quot;SGD&quot;,
+    &quot;Malaysia&quot;, &quot;MYR&quot;,
+    &quot;Philippines&quot;, &quot;PHP&quot;,
+    &quot;Thailand&quot;, &quot;THB&quot;,
+    &quot;USD&quot;),
+  TEXT(CurrencyIsoCode) &lt;&gt; &quot;USD&quot;
+)</errorConditionFormula>
+    <errorDisplayField>CurrencyIsoCode</errorDisplayField>
+    <errorMessage>Opportunity Currency must be the operation country&apos;s local currency or USD. Set the currency to the local currency or USD, or change the Operation Country.</errorMessage>
+</ValidationRule>

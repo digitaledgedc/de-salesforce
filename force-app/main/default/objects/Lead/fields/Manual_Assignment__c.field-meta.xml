@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Manual_Assignment__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set by Lead_BeforeSave_QueueAssignment when an internal (Standard) user creates the lead (manual/CSV intake). Locks the lead from auto owner/queue routing on later edits. Web-to-lead (Guest) and integration users are not flagged, so they still route.</description>
+    <inlineHelpText>System-managed. TRUE = created manually/CSV by an internal user; auto-routing skipped.</inlineHelpText>
+    <label>Manual Assignment</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

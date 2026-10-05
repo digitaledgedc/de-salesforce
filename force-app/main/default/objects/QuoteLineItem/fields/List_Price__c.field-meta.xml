@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>List_Price__c</fullName>
+    <description>Custom list price that can be updated when attribute or KVA changes occur. Populated from PricebookEntry.UnitPrice on creation. Unlike the standard ListPrice field, this field is editable.</description>
+    <label>List Price</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

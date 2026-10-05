@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>KYC_TPI_Verified_Date__c</fullName>
+    <description>Timestamp when finance confirmed completion of the Third Party Intelligence (TPI) check during KYC review. Set automatically by the Finance Approval flow.</description>
+    <inlineHelpText>Date and time when the TPI/transparency check was confirmed by finance.</inlineHelpText>
+    <label>KYC TPI Verified</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>DateTime</type>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SI_Quote_Number__c</fullName>
+    <description>Text formula = related Quote number, so it renders as a direct field in Classic email templates (used by DE_Finance_Review_Notification).</description>
+    <externalId>false</externalId>
+    <formula>Quote__r.Quote_Number__c</formula>
+    <label>SI Quote Number</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

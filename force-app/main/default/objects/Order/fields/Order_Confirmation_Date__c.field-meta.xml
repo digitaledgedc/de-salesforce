@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Order_Confirmation_Date__c</fullName>
+    <description>Operational record of when the order was confirmed. Set by Order_Screen_ConfirmOrder flow on successful confirmation.</description>
+    <inlineHelpText>Date the Order was confirmed (all gates passed and Status set to Activated). Set by the Confirm Order flow.</inlineHelpText>
+    <label>Order Confirmation Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

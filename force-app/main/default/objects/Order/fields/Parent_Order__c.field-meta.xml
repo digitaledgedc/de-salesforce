@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Parent_Order__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>For ramp deals, links child phase Orders back to the Phase 1 parent Order.</description>
+    <label>Parent Order</label>
+    <referenceTo>Order</referenceTo>
+    <relationshipLabel>Ramp Phase Orders</relationshipLabel>
+    <relationshipName>Ramp_Phase_Orders</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

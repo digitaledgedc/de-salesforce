@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Lead</entityName>
+    <fieldName>Status</fieldName>
+    <masterLabel>Default</masterLabel>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Lead converted to Account, Contact, and Opportunity.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Verify the linked Account and Contact were created correctly&lt;/li&gt;&lt;li&gt;Review the Opportunity and set next steps&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Converted</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Lead does not meet qualification criteria.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Select a Disqualification Reason - required&lt;/li&gt;&lt;li&gt;Add any notes for future reference&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Disqualified</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;New lead - gather initial details.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Assign to a representative&lt;/li&gt;&lt;li&gt;Gather key details from the lead&amp;#39;s company website&lt;/li&gt;&lt;li&gt;Create a plan to build a connection&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>New</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <fieldNames>LeadSource</fieldNames>
+        <info>&lt;p&gt;&lt;b&gt;Sales Approved - lead meets qualification criteria.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Confirm product interest and target market&lt;/li&gt;&lt;li&gt;Obtain VP Sales sign-off&lt;/li&gt;&lt;li&gt;Prepare for conversion to Opportunity&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Sales Approved</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Actively working this lead.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Identify the right contact&lt;/li&gt;&lt;li&gt;Save contact information&lt;/li&gt;&lt;li&gt;Execute your outreach plan&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Working</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>__MASTER__</recordTypeName>
+</PathAssistant>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tied_Product_RC__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>For NRC products: lookup to the paired MRC (recurring charge) product. Reverse of Paired_NRC_Product__c. Used for bidirectional product tie navigation in the Product Manager.</description>
+    <label>Tied Product (RC)</label>
+    <referenceTo>Product2</referenceTo>
+    <relationshipLabel>NRC Pairs</relationshipLabel>
+    <relationshipName>NRC_Pairs</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

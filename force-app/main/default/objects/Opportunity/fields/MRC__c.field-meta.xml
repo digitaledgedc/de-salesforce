@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MRC__c</fullName>
+    <description>Salesperson&apos;s estimated MRC. For Change Orders and Renewals: net incremental/decremental value. Negative for Price Decrease and Churn.</description>
+    <inlineHelpText>Estimated monthly revenue for this deal. For Change Orders and Renewals, enter the net change (negative for churn or price decreases). Used for booking and pipeline reporting.</inlineHelpText>
+    <label>Monthly Recurring Charge</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Currency</type>
+</CustomField>

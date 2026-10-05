@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SBI_Finance_Approved__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Finance approval of SBI terms at the Order level. Inherited from Quote on Order creation. Required for ConfirmOrder gate G-07 (Module 9).</description>
+    <inlineHelpText>Set to true when Finance has approved the Special Billing Instruction. Required for Order confirmation when SBI_Flag__c is true. Inherited from Quote.SBI_Finance_Approved__c.</inlineHelpText>
+    <label>SBI Finance Approved</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

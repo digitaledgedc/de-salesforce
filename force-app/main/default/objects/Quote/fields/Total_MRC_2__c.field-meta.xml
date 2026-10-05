@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_MRC_2__c</fullName>
+    <description>FB-798: replaces Total_MRC__c (deleted was a Roll-Up Summary, which Salesforce
+        does not allow converting to Currency in place). Apex-calculated (QuoteMrcRollupService,
+        via QuoteLineItemTriggerHandler), ramp-phase aware  see QuoteMrcRollupService for the
+        calculation rules. Used in credit limit check and commission forecast.</description>
+    <inlineHelpText>Sum of recurring monthly charges across quote lines, ramp-phase aware. Auto-calculated from line items on every save - do not edit manually. Used for TCV calculation and credit limit validation.</inlineHelpText>
+    <label>Total MRC (Quote)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

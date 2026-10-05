@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Opportunity__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The Opportunity this inventory slot is reserved for. Set by the capacity team when earmarking space for a deal at Prospect or Quote stage. Cleared on release.</description>
+    <inlineHelpText>Link to the Opportunity this slot is being held for. Set during capacity confirmation; cleared when released.</inlineHelpText>
+    <label>Opportunity</label>
+    <referenceTo>Opportunity</referenceTo>
+    <relationshipLabel>Reserved Inventory</relationshipLabel>
+    <relationshipName>ReservedInventory</relationshipName>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

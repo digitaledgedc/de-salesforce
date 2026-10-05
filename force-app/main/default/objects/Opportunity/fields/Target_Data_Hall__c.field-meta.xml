@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Target_Data_Hall__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Data Hall</label>
+    <lookupFilter>
+        <active>true</active>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <errorMessage>Choose a Data Hall that belongs to the selected Operation Site and Floor.</errorMessage>
+        <filterItems>
+            <field>DataHall__c.Site__c</field>
+            <operation>equals</operation>
+            <valueField>$Source.Target_Site__c</valueField>
+        </filterItems>
+        <filterItems>
+            <field>DataHall__c.Floor__c</field>
+            <operation>equals</operation>
+            <valueField>$Source.Target_Floor__c</valueField>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>DataHall__c</referenceTo>
+    <relationshipLabel>Opportunities</relationshipLabel>
+    <relationshipName>Opportunities_Data_Hall</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

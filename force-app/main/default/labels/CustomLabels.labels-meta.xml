@@ -460,8 +460,8 @@
         <categories>Quote PDF</categories>
         <language>en_US</language>
         <protected>false</protected>
-        <shortDescription>Unit Cost</shortDescription>
-        <value>Unit Cost</value>
+        <shortDescription>Unit Price</shortDescription>
+        <value>Unit Price</value>
     </labels>
     <labels>
         <fullName>Total_Grand_MRC</fullName>

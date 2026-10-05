@@ -266,16 +266,6 @@
                 <identifier>fld_sp_THSensorGroupID</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.CabE_Count__c</fieldItem>
-                <identifier>RecordCabE_Count_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-sect_space_details-col1-fields</name>
         <type>Facet</type>
     </flexiPageRegions>

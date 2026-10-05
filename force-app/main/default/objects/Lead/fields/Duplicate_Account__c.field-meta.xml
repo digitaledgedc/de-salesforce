@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Duplicate_Account__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Populated by F-01 when a matching Account is found during dedup check. Displayed on Lead record as a clickable link so Sales Rep can review the existing Account.</description>
+    <inlineHelpText>Auto-populated when a matching existing account is found during the deduplication check. Review this account before converting the lead.</inlineHelpText>
+    <label>Possible Duplicate Account</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Leads (Possible Duplicate Account)</relationshipLabel>
+    <relationshipName>Duplicate_Account_Leads</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Lookup</type>
+</CustomField>

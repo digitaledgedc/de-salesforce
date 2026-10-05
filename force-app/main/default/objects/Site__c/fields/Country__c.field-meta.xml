@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Country__c</fullName>
+    <label>Country</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>SG</fullName>
+                <default>false</default>
+                <label>SG - Singapore</label>
+            </value>
+            <value>
+                <fullName>HK</fullName>
+                <default>false</default>
+                <label>HK - Hong Kong</label>
+            </value>
+            <value>
+                <fullName>JP</fullName>
+                <default>false</default>
+                <label>JP - Japan</label>
+            </value>
+            <value>
+                <fullName>KR</fullName>
+                <default>false</default>
+                <label>KR - South Korea</label>
+            </value>
+            <value>
+                <fullName>PH</fullName>
+                <default>false</default>
+                <label>PH - Philippines</label>
+            </value>
+            <value>
+                <fullName>ID</fullName>
+                <default>false</default>
+                <label>ID - Indonesia</label>
+            </value>
+            <value>
+                <fullName>CN</fullName>
+                <default>false</default>
+                <label>CN - China</label>
+            </value>
+            <value>
+                <fullName>IN</fullName>
+                <default>false</default>
+                <label>IN - India</label>
+            </value>
+            <value>
+                <fullName>TH</fullName>
+                <default>false</default>
+                <label>TH - Thailand</label>
+            </value>
+            <value>
+                <fullName>MY</fullName>
+                <default>false</default>
+                <label>MY - Malaysia</label>
+            </value>
+            <value>
+                <fullName>BD</fullName>
+                <default>false</default>
+                <label>BD</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

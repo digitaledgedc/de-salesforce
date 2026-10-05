@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ramp_Identifier__c</fullName>
+    <description>Identifies whether this order line is a new addition (Add) or a change to a linked prior phase (Change). Carried from QuoteLineItem.</description>
+    <label>Ramp Identifier</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Add</fullName>
+                <default>false</default>
+                <label>Add</label>
+            </value>
+            <value>
+                <fullName>Change</fullName>
+                <default>false</default>
+                <label>Change</label>
+            </value>
+            <value>
+                <fullName>Price_Change</fullName>
+                <default>false</default>
+                <label>Price Change</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

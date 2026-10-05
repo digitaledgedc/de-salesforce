@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Floor__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <label>Floor</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>Floor__c.Site__c</field>
+            <operation>equals</operation>
+            <valueField>$Source.Site__c</valueField>
+        </filterItems>
+        <infoMessage>Only floors from the selected site are shown. Select a site first.</infoMessage>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Floor__c</referenceTo>
+    <relationshipLabel>Data Halls</relationshipLabel>
+    <relationshipName>DataHalls</relationshipName>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

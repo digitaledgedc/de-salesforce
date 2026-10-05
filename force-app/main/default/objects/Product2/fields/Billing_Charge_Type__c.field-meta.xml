@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Billing_Charge_Type__c</fullName>
+    <description>Determines whether this product is billed in advance or in arrears. ADVANCE = billed before service period, ARREAR = billed after. Drives SBI approval logic and Odoo invoice timing.</description>
+    <label>Billing Charge Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>ADVANCE</fullName>
+                <default>true</default>
+                <label>ADVANCE</label>
+            </value>
+            <value>
+                <fullName>ARREAR</fullName>
+                <default>false</default>
+                <label>ARREAR</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

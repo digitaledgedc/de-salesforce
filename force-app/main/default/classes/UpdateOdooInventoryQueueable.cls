@@ -7,7 +7,17 @@
  * Odoo endpoint: POST /api/v1/create_inventory  (event_type: "update")
  *
  * Tracked fields: Name, Status__c, Space_Type__c, Site_Id__c, Data_Hall__c,
- *                 Hall__c, CabE_Count__c, Breaker_Panel__c, Notes__c
+ *                 Hall__c, CabE_Count__c, Breaker_Panel__c, Notes__c,
+ *                 Unit_Reference__c, TH_Sensor_ID__c, TH_Sensor_Group_ID__c
+ *                 (2026-09-23 fix — SFDEV-18: these three were queried/tracked
+ *                 by InventoryTriggerHandler in some cases but never actually
+ *                 written into the Odoo payload below).
+ *
+ * Unit_Reference__c (Other Inventory Name) maps to ns_other_breaker_name for
+ * breakers and x_studio_other_space_name for spaces — different Odoo fields
+ * per inventory type, per the client's mapping. TH_Sensor_ID__c and
+ * TH_Sensor_Group_ID__c are space-only in Odoo (er_th_sensor_id /
+ * er_th_sensor_group_id) and are only sent for space records.
  *
  * GOVERNOR LIMIT: Max 100 callouts per async transaction. Each Inventory record
  * consumes one callout. Batches larger than 100 self-chain: records beyond the
@@ -53,6 +63,7 @@ public without sharing class UpdateOdooInventoryQueueable implements Queueable, 
                    Odoo_Space_ID__c, Odoo_Inventory_Id__c,
                    Status__c, Space_Type__c, Capacity_Type__c,
                    Unit_Reference__c, Hall__c, Breaker_Panel__c,
+                   TH_Sensor_ID__c, TH_Sensor_Group_ID__c,
                    Total_Capacity_kVA__c, Total_IT_Power_kVA__c,
                    CabE_Count__c, Total_Area_sqm__c,
                    Power_kVA__c, Power_Circuit_kVA__c, Total_kW__c,
@@ -148,6 +159,13 @@ public without sharing class UpdateOdooInventoryQueueable implements Queueable, 
         }
 		if(inv.Site_Id__r.Odoo_Company_ID__c != null) gen.writeNumberField('company_id', inv.Site_Id__r.Odoo_Company_ID__c );
 
+        if (isSpace) {
+            if (inv.Unit_Reference__c != null) gen.writeStringField('x_studio_other_space_name', inv.Unit_Reference__c);
+            if (inv.TH_Sensor_ID__c != null) gen.writeStringField('er_th_sensor_id', inv.TH_Sensor_ID__c);
+            if (inv.TH_Sensor_Group_ID__c != null) gen.writeStringField('er_th_sensor_group_id', inv.TH_Sensor_Group_ID__c);
+        } else {
+            if (inv.Unit_Reference__c != null) gen.writeStringField('ns_other_breaker_name', inv.Unit_Reference__c);
+        }
 
         gen.writeEndObject(); // data
         gen.writeEndObject(); // params

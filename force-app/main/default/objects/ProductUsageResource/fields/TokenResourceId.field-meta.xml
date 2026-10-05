@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TokenResourceId</fullName>
+    <inlineHelpText>Enter a value manually or leave the field blank to automatically populate it with the value from the associated Usage Resource’s Token Resource field.</inlineHelpText>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

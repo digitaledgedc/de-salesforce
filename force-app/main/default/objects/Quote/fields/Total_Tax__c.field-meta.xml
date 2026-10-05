@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Tax__c</fullName>
+    <description>Total tax amount across all Quote Lines. In Phase 1 may be zero where tax is handled externally by Odoo. Read-only - set by system. Displayed on Quote PDF summary totals.</description>
+    <inlineHelpText>Total tax amount calculated across all quote lines. May be zero in Phase 1 where tax is calculated directly by Odoo at invoicing. Displayed on the Quote PDF summary. Read-only.</inlineHelpText>
+    <label>Total Tax</label>
+    <precision>12</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

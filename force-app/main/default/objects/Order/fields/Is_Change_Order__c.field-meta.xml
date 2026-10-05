@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Change_Order__c</fullName>
+    <description>TRUE when this Order was created as a Change Order (Original_Order__c is populated). Used for record page button visibility rules.</description>
+    <formula>NOT(ISBLANK(Original_Order__c))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Is Change Order</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

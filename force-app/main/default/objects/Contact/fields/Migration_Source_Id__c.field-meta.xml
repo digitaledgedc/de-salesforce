@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Migration_Source_Id__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>BOSS contact reference for migration traceability. FLS hidden from Sales and Finance.</description>
+    <externalId>true</externalId>
+    <inlineHelpText>Contact reference ID from the legacy BOSS system. Used for migration traceability only. Do not edit.</inlineHelpText>
+    <label>BOSS Contact ID</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DE_HK_Country_Finance_BillingAccount</fullName>
+    <filterScope>Queue</filterScope>
+    <label>DE HK Country Finance</label>
+    <queue>DE_HK_Country_Finance</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

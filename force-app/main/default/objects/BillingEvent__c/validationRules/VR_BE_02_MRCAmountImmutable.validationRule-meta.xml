@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_BE_02_MRCAmountImmutable</fullName>
+    <active>true</active>
+    <description>MRC Amount is immutable after creation - the billing instruction cannot be changed.</description>
+    <errorConditionFormula>AND(NOT(ISNEW()), ISCHANGED(MRC_Amount__c))</errorConditionFormula>
+    <errorDisplayField>MRC_Amount__c</errorDisplayField>
+    <errorMessage>MRC Amount is immutable on a BillingEvent. The billing instruction cannot be changed. Create a Change Order to modify the service.</errorMessage>
+</ValidationRule>

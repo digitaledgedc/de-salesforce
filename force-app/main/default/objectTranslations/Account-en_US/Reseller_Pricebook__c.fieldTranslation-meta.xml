@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Pricebook assigned to this reseller account containing DE wholesale rates. Applied automatically to quotes created for this reseller. --></help>
+    <label><!-- Reseller Pricebook --></label>
+    <name>Reseller_Pricebook__c</name>
+    <relationshipLabel><!-- Reseller Accounts --></relationshipLabel>
+</CustomFieldTranslation>

@@ -134,6 +134,9 @@ global with sharing class OdooOrderConfirmHandler {
 
         // Build update list
         List<OrderItem> toUpdate = new List<OrderItem>();
+        // itemId -> subscription line id, so the Asset backfill below (step 3b)
+        // can key off the same values without re-parsing p.lines.
+        Map<Id, String> subLineIdByItem = new Map<Id, String>();
         for (LineConfirm lc : p.lines) {
             if (lc.sf_orderitem_id == null) continue;
             Id itemId = (Id) lc.sf_orderitem_id;
@@ -150,6 +153,9 @@ global with sharing class OdooOrderConfirmHandler {
             if (lc.odoo_origin_line_id != null) oi.Odoo_Origin_Line_ID__c = String.valueOf(lc.odoo_origin_line_id);
             toUpdate.add(oi);
             updatedLines++;
+            if (lc.odoo_sub_line_id != null) {
+                subLineIdByItem.put(itemId, String.valueOf(lc.odoo_sub_line_id));
+            }
         }
 
         if (!toUpdate.isEmpty()) {
@@ -170,6 +176,29 @@ global with sharing class OdooOrderConfirmHandler {
                     a.Odoo_Subscription_ID__c = String.valueOf(p.subscription_id);
                 }
                 update assets;
+            }
+        }
+
+        // 3b. Back-fill Asset.Odoo_Sub_Line_ID__c the same way — Assets created by
+        // IP-5 new_service carry no line ID until IP-2 confirms it. Without this,
+        // only OrderItem stays current; the Asset's line ID silently goes stale on
+        // any future gap (Darren Wahyono, 2026-09-11).
+        if (!subLineIdByItem.isEmpty()) {
+            List<Asset> lineIdAssets = [
+                SELECT Id, Source_OrderItem__c
+                FROM Asset
+                WHERE Source_OrderItem__c IN :subLineIdByItem.keySet()
+                  AND Odoo_Sub_Line_ID__c = null
+            ];
+            if (!lineIdAssets.isEmpty()) {
+                List<Asset> assetsToUpdate = new List<Asset>();
+                for (Asset a : lineIdAssets) {
+                    assetsToUpdate.add(new Asset(
+                        Id = a.Id,
+                        Odoo_Sub_Line_ID__c = subLineIdByItem.get(a.Source_OrderItem__c)
+                    ));
+                }
+                update assetsToUpdate;
             }
         }
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Reusable notification to the country Finance queue for Special Instruction items worked on the Finance Dashboard - covers Billing Mode Change (B2), Different Invoice Currency (B3), and Credit Limit (B4). Type is shown dynamically. Button links to the DE Finance dashboard where Finance acknowledges/approves/rejects. Notification only. Digital Edge orange theme.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>DE Finance Review Notification</name>
+    <style>none</style>
+    <subject>Finance Review Required: {!Special_Instruction__c.Type__c} - {!Special_Instruction__c.Name} - {!Special_Instruction__c.DE_Subsidiary_Name__c}</subject>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

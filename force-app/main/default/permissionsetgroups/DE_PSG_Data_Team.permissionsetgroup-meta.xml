@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE PSG Data Team</label>
+    <permissionSets>DE_Apex_Access</permissionSets>
+    <permissionSets>DE_Read_All_Data</permissionSets>
+    <permissionSets>DE_Sales_Manager</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>

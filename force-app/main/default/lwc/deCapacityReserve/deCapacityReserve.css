@@ -558,3 +558,21 @@
 .dcr-form-field {
     margin-bottom: 0.75rem;
 }
+/* SFDC-472: Floor / Data Hall scope filter + row-cap notice */
+.dcr-scope-filter {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    min-width: 24rem;
+}
+.dcr-scope-filter lightning-combobox {
+    min-width: 11rem;
+}
+.dcr-truncation-notice {
+    margin: 0.25rem 0 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-left: 3px solid #fe9339;
+    background: #fef5e9;
+    color: #514f4d;
+    font-size: 0.8125rem;
+}

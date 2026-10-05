@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Auto-checked when the account has a high-risk credit profile (poor D&amp;B rating, overdue AR with waiver, or credit limit exceeded). Routes to the Group Finance queue. --></help>
+    <label><!-- Group Finance Review Required --></label>
+    <name>Group_Finance_Review_Required__c</name>
+</CustomFieldTranslation>

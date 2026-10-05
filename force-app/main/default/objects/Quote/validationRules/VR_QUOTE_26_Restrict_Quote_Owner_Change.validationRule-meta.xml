@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_26_Restrict_Quote_Owner_Change</fullName>
+    <active>true</active>
+    <description>Prevents changing the Quote Owner for Sales Director across all stages. Also prevents the current record owner from reassigning owners</description>
+    <errorConditionFormula>AND(
+  NOT(ISNEW()),
+  ISCHANGED(OwnerId),
+  $Profile.Name &lt;&gt; &quot;System Administrator&quot;,
+  OR(
+    $Permission.Restrict_Quote_Owner_Change,
+    PRIORVALUE(OwnerId) = $User.Id
+  )
+)</errorConditionFormula>
+    <errorMessage>You do not have permission to change the Quote Owner. Please contact Revenue Operation Team or Salesforce Administrator if this needs to be updated.</errorMessage>
+</ValidationRule>

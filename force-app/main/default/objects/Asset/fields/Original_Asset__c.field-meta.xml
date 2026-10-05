@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Original_Asset__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <inlineHelpText>Direct pointer to the first asset in this CO chain (the original provisioned service). Enables one-hop navigation to chain origin without traversing the full chain. Populated automatically when this asset is created from a Change Order.</inlineHelpText>
+    <label>Original Asset</label>
+    <referenceTo>Asset</referenceTo>
+    <relationshipLabel>Assets (CO Chain Descendants)</relationshipLabel>
+    <relationshipName>CO_Chain_Descendants</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

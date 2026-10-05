@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ramp_Invoice_Display__c</fullName>
+    <description>Controls how Odoo presents ramp order quantities on invoices. Final_Value = show total committed quantity per ramp phase. Incremental_Value = show only the incremental quantity added. Defaults from Product2.Ramp_Behavior__c. Passed to Odoo in IP-1 as Ramp_Invoice_Display__c.</description>
+    <label>Ramp Invoice Display</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Final_Value</fullName>
+                <default>false</default>
+                <label>Final Value</label>
+            </value>
+            <value>
+                <fullName>Incremental_Value</fullName>
+                <default>false</default>
+                <label>Incremental Value</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

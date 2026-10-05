@@ -26,6 +26,7 @@
     <tabs>BillingEvent__c</tabs>
     <tabs>Inventory__c</tabs>
     <tabs>standard-Product2</tabs>
+    <tabs>DE_Integration_Error__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>DE_Admin_UtilityBar</utilityBar>
 </CustomApplication>

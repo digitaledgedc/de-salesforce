@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Event Type --></label>
+    <name>Event_Type__c</name>
+    <picklistValues>
+        <masterLabel>Churn</masterLabel>
+        <translation><!-- Churn --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>NRC</masterLabel>
+        <translation><!-- NRC --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>New Service</masterLabel>
+        <translation><!-- New Service --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Partial Churn</masterLabel>
+        <translation><!-- Partial Churn --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Price Change</masterLabel>
+        <translation><!-- Price Change --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Ramp Activation</masterLabel>
+        <translation><!-- Ramp Activation --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Resumption</masterLabel>
+        <translation><!-- Resumption --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Security Deposit Refund</masterLabel>
+        <translation><!-- Security Deposit Refund --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Suspension</masterLabel>
+        <translation><!-- Suspension --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Upsell</masterLabel>
+        <translation><!-- Upsell --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

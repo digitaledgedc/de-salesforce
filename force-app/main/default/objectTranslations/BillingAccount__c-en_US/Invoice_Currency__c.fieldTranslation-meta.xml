@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Invoice Currency --></label>
+    <name>Invoice_Currency__c</name>
+    <picklistValues>
+        <masterLabel>CNY</masterLabel>
+        <translation><!-- CNY --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>HKD</masterLabel>
+        <translation><!-- HKD --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>IDR</masterLabel>
+        <translation><!-- IDR --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>INR</masterLabel>
+        <translation><!-- INR --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>JPY</masterLabel>
+        <translation><!-- JPY --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>KRW</masterLabel>
+        <translation><!-- KRW --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>MYR</masterLabel>
+        <translation><!-- MYR --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PHP</masterLabel>
+        <translation><!-- PHP --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SGD</masterLabel>
+        <translation><!-- SGD --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>THB</masterLabel>
+        <translation><!-- THB --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>USD</masterLabel>
+        <translation><!-- USD --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

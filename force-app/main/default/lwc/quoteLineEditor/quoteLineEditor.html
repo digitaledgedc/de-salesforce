@@ -189,6 +189,7 @@
                                                         hide-draft-bar
                                                         ondraftchange={handleDraftChange}
                                                         read-only={isQuoteLocked}
+                                                        allow-reorder={allowLineReorder}
                                                     ></c-quote-line-datatable>
                                                 </div>
                                             </div>
@@ -211,6 +212,7 @@
                                             hide-draft-bar
                                             ondraftchange={handleDraftChange}
                                             read-only={isQuoteLocked}
+                                            allow-reorder={allowLineReorder}
                                         ></c-quote-line-datatable>
                                     </template>
 
@@ -675,6 +677,32 @@
                                     </template>
                                 </div>
 
+                                <!-- SFDC-472: Floor / Data Hall scope. Filters server-side, so floors
+                                     past the Apex row cap stay reachable. -->
+                                <div class="qle-inv-scope-row">
+                                    <lightning-combobox
+                                        label="Floor"
+                                        variant="label-stacked"
+                                        value={invFloorId}
+                                        options={invFloorOptions}
+                                        onchange={handleInvFloorChange}
+                                        class="qle-inv-scope-field">
+                                    </lightning-combobox>
+                                    <lightning-combobox
+                                        label="Data Hall"
+                                        variant="label-stacked"
+                                        value={invHallId}
+                                        options={invHallOptions}
+                                        disabled={noInvHallOptions}
+                                        onchange={handleInvHallChange}
+                                        class="qle-inv-scope-field">
+                                    </lightning-combobox>
+                                </div>
+
+                                <template lwc:if={invIsTruncated}>
+                                    <div class="qle-inv-truncation">{invTruncationNotice}</div>
+                                </template>
+
                                 <div class="qle-inv-search-wrap">
                                     <input
                                         type="text"
@@ -856,7 +884,7 @@
                                             <template lwc:if={isQtyRamp}>
                                                 <lightning-input
                                                     type="number" label="Qty"
-                                                    value={phase.quantity} min="1"
+                                                    value={phase.quantity} min="0"
                                                     data-phase-id={phase.id} data-field="quantity"
                                                     onchange={handleRampPhaseChange}
                                                     variant="label-stacked"
@@ -888,6 +916,7 @@
                                                 value={phase.startDate}
                                                 data-phase-id={phase.id} data-field="startDate"
                                                 onchange={handleRampPhaseChange}
+                                                disabled={phase.startDateLocked}
                                                 variant="label-stacked"
                                             ></lightning-input>
                                         </div>
@@ -1142,6 +1171,7 @@
                                         value={phase.startDate}
                                         data-phase-id={phase.id}
                                         onchange={handleRampModalPhaseDate}
+                                        disabled={phase.startDateLocked}
                                         variant="label-hidden"
                                         class="qle-ramp-grid-date"
                                     ></lightning-input>
@@ -1167,7 +1197,7 @@
                                     </div>
                                     <div class="qle-ramp-grid-base-qty">
                                         <span class="qle-ramp-grid-base-label" title="Total quantity to distribute across phases">Base Qty</span>
-                                        <input type="number" value={row.baseQty} min="0" step="any"
+                                        <input type="number" value={row.baseQty} min="0" step="1"
                                                data-line-id={row.lineId}
                                                onchange={handleRampBaseQtyChange}
                                                class="qle-ramp-grid-base-input" />
@@ -1209,7 +1239,7 @@
                                             </div>
                                         </template>
                                             <lightning-input
-                                                type="number" label="Qty" value={cell.quantity} min="0" step="any"
+                                                type="number" label="Qty" value={cell.quantity} min="0" step="1"
                                                 data-phase-id={cell.phaseId} data-line-id={cell.lineId} data-field="quantity"
                                                 onchange={handleRampModalProdChange}
                                                 variant="label-hidden"
@@ -1232,17 +1262,14 @@
                                                         <div class="qle-ramp-pill-wrap">
                                                             <button class={cell.pillClass}
                                                                     data-phase-id={cell.phaseId} data-line-id={cell.lineId}
-                                                                    disabled={cell.linkLocked} title={cell.pillTitle}
                                                                     onclick={handlePillClick}>{cell.pillLabel}</button>
                                                             <template lwc:if={cell.showPillMenu}>
-                                                                <!-- Multi-select stays open while toggling — this catches the outside click -->
-                                                                <div class="qle-ramp-pill-backdrop" onclick={handlePillMenuClose}></div>
                                                                 <div class="qle-ramp-pill-menu" style={cell.pillMenuStyle}>
                                                                     <template for:each={cell.pillOptions} for:item="po">
                                                                         <button key={po.value} class={po.cls}
                                                                                 data-phase-id={cell.phaseId} data-line-id={cell.lineId}
                                                                                 data-target={po.value}
-                                                                                onclick={handlePillSelect}><span class="qle-ramp-pill-mark">{po.mark}</span>{po.label}</button>
+                                                                                onclick={handlePillSelect}>{po.label}</button>
                                                                     </template>
                                                                 </div>
                                                             </template>

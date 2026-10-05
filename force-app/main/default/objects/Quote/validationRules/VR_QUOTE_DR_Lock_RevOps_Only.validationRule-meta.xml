@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_DR_Lock_RevOps_Only</fullName>
+    <active>true</active>
+    <description>DR-required quotes past Draft are editable only by Revenue Ops (Edit_DR_Locked_Quote custom permission). AE can still build in Draft. Mirrors the VR_ACC_10 lock idiom.</description>
+    <errorConditionFormula>AND(
+  DR_Required__c = true,
+  NOT(ISPICKVAL(Status, &quot;Draft&quot;)),
+  NOT($Permission.Edit_DR_Locked_Quote),
+  NOT(ISCHANGED(Credit_Finance_Approved__c)),
+  NOT(ISCHANGED(Pending_Instructions_Count__c))
+)</errorConditionFormula>
+    <errorMessage>This quote requires Deal Review — only Revenue Ops can edit it once it has been submitted. Contact Revenue Ops.</errorMessage>
+</ValidationRule>

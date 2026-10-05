@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Percentage difference between requested Unit Price and Min Price. Negative means below floor. Calculated only when both Unit Price and Min Price are populated. --></help>
+    <label><!-- Price Variance % --></label>
+    <name>Price_Variance__c</name>
+</CustomFieldTranslation>

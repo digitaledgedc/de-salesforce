@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Type --></label>
+    <name>Type__c</name>
+    <picklistValues>
+        <masterLabel>Billing Mode Change</masterLabel>
+        <translation><!-- Billing Mode Change --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Credit Limit</masterLabel>
+        <translation><!-- Credit Limit --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Different Invoice Currency</masterLabel>
+        <translation><!-- Different Invoice Currency --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Security Deposit Required</masterLabel>
+        <translation><!-- Security Deposit Required --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>T&amp;C</masterLabel>
+        <translation><!-- T&amp;C --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

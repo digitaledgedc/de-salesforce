@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_22_Opportunity_Required</fullName>
+    <active>true</active>
+    <description>FB-910. No Opportunity means QuoteAccountId is never stamped, which breaks the enforced BAN and Contact lookup filters. Such a Quote cannot be repaired once the field is off the page.</description>
+    <errorConditionFormula>ISBLANK(OpportunityId)</errorConditionFormula>
+    <errorDisplayField>OpportunityId</errorDisplayField>
+    <errorMessage>A Quote must belong to an Opportunity. Create the Quote from the Opportunity rather than from the Quotes tab.</errorMessage>
+</ValidationRule>

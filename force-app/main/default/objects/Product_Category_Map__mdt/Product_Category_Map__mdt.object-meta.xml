@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Maps product code prefixes (first 3 characters) to display categories. Used by the Product Manager LWC to group products into categories like Space, Power, Cross Connect, etc. Data-driven replacement for hardcoded PREFIX_TO_CATEGORY map.</description>
+    <label>Product Category Map</label>
+    <pluralLabel>Product Category Maps</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

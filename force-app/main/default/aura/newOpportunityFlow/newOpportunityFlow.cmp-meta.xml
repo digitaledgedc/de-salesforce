@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuraDefinitionBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <description>Overrides the Opportunity New action to launch the guided stage-1 Opportunity_Screen_NewOpportunity flow. Passes parent recordId for related-list (Account) context.</description>
+</AuraDefinitionBundle>

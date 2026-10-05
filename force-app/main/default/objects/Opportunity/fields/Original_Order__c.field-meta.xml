@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Original_Order__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Populated on Change Orders and Renewals to link back to the original confirmed Order.</description>
+    <inlineHelpText>For Change Orders and Renewals, link to the original confirmed Order that this opportunity is amending or renewing. Leave blank for new business.</inlineHelpText>
+    <label>Original Order</label>
+    <referenceTo>Order</referenceTo>
+    <relationshipName>Change_Order_Opportunities</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

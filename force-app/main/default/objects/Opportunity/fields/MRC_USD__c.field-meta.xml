@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MRC_USD__c</fullName>
+    <description>Monthly Recurring Charge in USD. Computed as MRC (Local Currency) / FX Rate (to USD). Read-only.</description>
+    <externalId>false</externalId>
+    <formula>IF(
+  OR(ISBLANK(FX_Rate__c), FX_Rate__c = 0),
+  NULL,
+  MRC__c / FX_Rate__c
+)</formula>
+    <label>MRC (USD)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

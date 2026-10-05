@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MEDDPICC_Decision_Process__c</fullName>
+    <description>How customer makes the buying decision.</description>
+    <inlineHelpText>MEDDPICC: How does this customer make a buying decision? Capture the steps, approvals, timelines, and people involved in selecting a vendor.</inlineHelpText>
+    <label>Decision Process (D)</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

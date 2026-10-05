@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Required to delete any record document, including one the holder uploaded themselves. Also allows setting the document type on another user&apos;s file. Without it a user can upload and type their own files but never delete.</description>
+    <isLicensed>false</isLicensed>
+    <label>Manage All Record Documents</label>
+</CustomPermission>

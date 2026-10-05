@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DE_Order_Compact</fullName>
+    <fields>Order_Number__c</fields>
+    <fields>AccountId</fields>
+    <fields>EffectiveDate</fields>
+    <fields>RDD__c</fields>
+    <fields>Status</fields>
+    <fields>Order_Type__c</fields>
+    <fields>TotalAmount</fields>
+    <label>DE Order Compact</label>
+</CompactLayout>

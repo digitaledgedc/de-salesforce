@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Which DE product categories does this competitor compete in? --></help>
+    <label><!-- Product Focus --></label>
+    <name>Comp_Products__c</name>
+    <picklistValues>
+        <masterLabel>Cloud Connect</masterLabel>
+        <translation><!-- Cloud Connect --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Colocation</masterLabel>
+        <translation><!-- Colocation --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Cross Connect</masterLabel>
+        <translation><!-- Cross Connect --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Edge / Hyperscale</masterLabel>
+        <translation><!-- Edge / Hyperscale --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Managed Services</masterLabel>
+        <translation><!-- Managed Services --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Network / Connectivity</masterLabel>
+        <translation><!-- Network / Connectivity --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Remote Hands</masterLabel>
+        <translation><!-- Remote Hands --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

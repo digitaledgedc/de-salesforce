@@ -46,16 +46,6 @@ public with sharing class ChangeOrderController {
      */
     @AuraEnabled(cacheable=true)
     public static List<OrderLineRow> getActiveOrderItems(Id orderId) {
-        // Step 1: collect active MRC OrderItem IDs for this order
-        Set<Id> oiIds = new Set<Id>();
-        for (OrderItem oi : [
-            SELECT Id FROM OrderItem
-            WHERE OrderId = :orderId AND Is_Active__c = true AND Charge_Type__c = 'MRC'
-        ]) {
-            oiIds.add(oi.Id);
-        }
-        if (oiIds.isEmpty()) { return new List<OrderLineRow>(); }
-
         // Order currency — surfaced so the LWC formats amounts in the order's
         // currency instead of a hardcoded symbol.
         String orderCurrency;
@@ -63,7 +53,16 @@ public with sharing class ChangeOrderController {
             orderCurrency = o.CurrencyIsoCode;
         }
 
-        // Step 2: query Assets linked to those OrderItems
+        // Query Assets keyed off the Asset's own Source_Order__c — same pattern as
+        // OrderAssetsController.getByOrder (the "Order Details / Asset Manager" view,
+        // which never had this bug). Deriving eligibility from OrderItem.OrderId first
+        // (the old approach) silently dropped Assets whose *original* OrderItem lives
+        // on an older order even though the Asset itself correctly belongs to this
+        // order (DE-Asset Manager parity bug: Cross Connect / AC Single Phase vanishing
+        // from the CO modal on NEXJP-OR-003806). Source_OrderItem__c may legitimately
+        // be null (imported data) or point at an OrderItem on a different order now —
+        // the Charge_Type__c check below is null-safe for both, and every downstream
+        // read of Source_OrderItem__r already null-checks before dereferencing.
         List<SObject> stripped = Security.stripInaccessible(AccessType.READABLE, [
             SELECT Id, Name, Product2Id, Product2.Name, Product2.ProductCode,
                    Product2.Billing_Charge_Type__c,
@@ -72,7 +71,7 @@ public with sharing class ChangeOrderController {
                    Description, MRC__c, Price, Quantity,
                    Status, Asset_Lifecycle_Status__c,
                    Odoo_Subscription_ID__c, Odoo_IB_ID__c,
-                   Source_OrderItem__c,
+                   Source_OrderItem__c, Product_Attribute__c,
                    Source_OrderItem__r.PricebookEntryId,
                    Source_OrderItem__r.Billing_Mode__c,
                    Source_OrderItem__r.Odoo_Product_ID__c,
@@ -82,7 +81,9 @@ public with sharing class ChangeOrderController {
                    Inventory__c, Inventory__r.Name,
                    A_Side_Asset__c, Z_Side_Asset__c
             FROM Asset
-            WHERE Source_OrderItem__c IN :oiIds
+            WHERE Source_Order__c = :orderId
+              AND Product2Id != null
+              AND (Source_OrderItem__c = null OR Source_OrderItem__r.Charge_Type__c = 'MRC')
               AND Status NOT IN ('Pending Change', 'Closed', 'Obsolete')
             ORDER BY Product2.Name, Name
         ]).getRecords();
@@ -134,8 +135,8 @@ public with sharing class ChangeOrderController {
             r.assetName        = a.Name;
             r.status           = a.Status;
             r.lifecycleStatus  = a.Asset_Lifecycle_Status__c;
-            r.attribute        = (a.Source_OrderItem__r != null && a.Source_OrderItem__r.QuoteLineItem != null)
-                ? a.Source_OrderItem__r.QuoteLineItem.Product_Attribute_Value__c : null;
+            
+            r.attribute        = a.Product_Attribute__c;
             r.attributeValues  = a.Product2 != null ? a.Product2.Attribute_Values__c : null;
             r.hasAttribute     = a.Product2 != null && a.Product2.Attribute_Type__c != null;
             r.odooIbId         = a.Odoo_IB_ID__c;
@@ -163,13 +164,14 @@ public with sharing class ChangeOrderController {
      */
     @AuraEnabled
     public static Id createChangeOrder(
-        Id     originalOrderId,
-        String orderType,
-        String amendmentReason,
-        String rddStr,
-        String poReference,
-        String linesJson,
-        Id     newBillingAccountId
+        Id      originalOrderId,
+        String  orderType,
+        String  amendmentReason,
+        String  rddStr,
+        String  poReference,
+        String  linesJson,
+        Id      newBillingAccountId,
+        Integer renewalTermMonths
     ) {
         // ── CRUD checks ────────────────────────────────────────────────
         if (!Schema.sObjectType.Opportunity.isCreateable()) { throw new AuraHandledException('Insufficient permissions to create Opportunity records.');
@@ -195,8 +197,8 @@ public with sharing class ChangeOrderController {
         try {
         // ── Query source order ─────────────────────────────────────────
         Order orig = [
-            SELECT AccountId, Account.Name, BillingAccount__c, Operation_Site__c,
-                   Pricebook2Id, Contract_Term_Months__c,
+            SELECT AccountId, Account.Name, Account.Account_Tier__c, BillingAccount__c, Operation_Site__c,
+                   Pricebook2Id, Contract_Term_Months__c, Contract_End_Date__c,
                    Target_Site__c, Target_Site__r.Site_Code__c,
                    Target_Site__r.Pricebook2__c, Target_Site__r.DE_Entity__c,
                    Target_Site__r.Country_Name__c,
@@ -205,7 +207,7 @@ public with sharing class ChangeOrderController {
                    Opportunity.Operation_Country__c,
                    Opportunity.DE_Entity__c,
                    Opportunity.Sales_Motion__c,
-                   Order_Number__c, CurrencyIsoCode
+                   Order_Number__c, CurrencyIsoCode, Odoo_Subscription_ID__c
             FROM Order WHERE Id = :originalOrderId
         ];
 
@@ -272,6 +274,14 @@ public with sharing class ChangeOrderController {
         String quoteAmendReason = mapAmendmentReasonToQuote(orderType, amendmentReason);
         Date   rddDate         = (rddStr != null && rddStr != '') ? Date.valueOf(rddStr) : null;
 
+        // Churn: users only supply RDD in the termination wizard. Term must be 0 so
+        // Quote_BeforeSave_ContractEndDate (FB-946) derives end date as RDD + 0mo − 1 day.
+        Decimal quoteContractTerm = (renewalTermMonths != null)
+            ? renewalTermMonths : orig.Contract_Term_Months__c;
+        if (orderType == 'Churn') {
+            quoteContractTerm = 0;
+        }
+
         // ── 1. Create Opportunity ──────────────────────────────────────
         // CO number format: {parentOrderNumber}-CO{N}.
         // FB-687: rapid/concurrent clicks each ran COUNT() before the others
@@ -322,9 +332,11 @@ public with sharing class ChangeOrderController {
             Operation_Country__c = orig.Opportunity.Operation_Country__c != null
                                         ? orig.Opportunity.Operation_Country__c : siteCountry,
             DE_Entity__c         = siteDeEntity != null ? siteDeEntity : orig.Opportunity.DE_Entity__c,
+            Account_Type__c      = orig.Account.Account_Tier__c,
             Target_Site__c       = siteId,
             Skip_Stage_Gate__c   = true,
-            CurrencyIsoCode      = orig.CurrencyIsoCode
+            CurrencyIsoCode      = orig.CurrencyIsoCode,
+            Contract_End_Date__c = orig.Contract_End_Date__c
         );
         insert opp;
 
@@ -337,7 +349,7 @@ public with sharing class ChangeOrderController {
             Amendment_Reason__c   = quoteAmendReason,
             BillingAccount__c     = (orderType == 'BAN Change' && newBillingAccountId != null)
                                         ? newBillingAccountId : orig.BillingAccount__c,
-            Contract_Term_Months__c = orig.Contract_Term_Months__c,
+            Contract_Term_Months__c = quoteContractTerm,
             Customer_PO_Reference__c = poReference,
             RDD__c                = rddDate,
             Target_Site__c        = siteId,
@@ -346,7 +358,9 @@ public with sharing class ChangeOrderController {
             DE_Entity__c          = siteDeEntity != null ? siteDeEntity : (quoteDeEntity != null ? quoteDeEntity : orig.Opportunity.DE_Entity__c),
             Original_Order__c     = originalOrderId,
             CurrencyIsoCode       = orig.CurrencyIsoCode,
-            Invoice_Frequency__c  = origInvoiceFrequency
+            Invoice_Frequency__c  = origInvoiceFrequency,
+            ExpirationDate = (system.Today() + 60 ),
+            Contract_End_Date__c = orig.Contract_End_Date__c
         );
         insert q;
 
@@ -427,6 +441,7 @@ public with sharing class ChangeOrderController {
                 Change_Type__c         = changeType,
                 Description            = (String) line.get('description'),
                 Original_OrderItem__c  = line.get('itemId') != null ? (Id) line.get('itemId') : null,
+                Subscription_Id__c    = orig.Odoo_Subscription_ID__c,
                 Charge_Type__c         = 'MRC',
                 Odoo_Project_Task_IDs__c = (String) line.get('odooIbId'),
                 Product_Attribute_Value__c = (String) line.get('attribute'),
@@ -456,6 +471,12 @@ public with sharing class ChangeOrderController {
         //   CHANGE/CHANGE_PRICE → newPrice*newQty − oldPrice*oldQty
         opp.Amount = totalMrcDelta;
         opp.MRC__c = totalMrcDelta;
+        // Remaining_Month__c / Total_Deal_MRC__c (TCV): same day-aware model as
+        // RampOppService.fractionalMonthsBetween — this CO's RDD through the
+        // original order's Contract_End_Date__c, times the net MRC delta.
+        Decimal remainingMonths = fractionalMonthsBetween(rddDate, orig.Contract_End_Date__c).setScale(2);
+        opp.Remaining_Month__c = remainingMonths;
+        opp.Total_Deal_MRC__c = (totalMrcDelta * remainingMonths).setScale(2);
         update opp;
 
         // ── Auto-create paired NRC installation lines for NEW .RC products ──
@@ -634,7 +655,7 @@ public with sharing class ChangeOrderController {
         List<PricebookEntry> pbes = (List<PricebookEntry>) Security.stripInaccessible(
             AccessType.READABLE,
             [SELECT Id, Product2Id, Product2.Name, Product2.ProductCode,
-                    Product2.Family, Product2.QuantityUnitOfMeasure,
+                    Product2.Family, Product2.QuantityUnitOfMeasure, Product2.Allowed_UoM__c,
                     Product2.Charge_Type__c, Product2.Charge_Frequency__c,
                     Product2.Billing_Charge_Type__c, Product2.Odoo_Product_Id__c,
                     Product2.Attribute_Type__c, Product2.Attribute_Values__c,
@@ -675,6 +696,7 @@ public with sharing class ChangeOrderController {
                 'family'       => pbe.Product2.Family,
                 'unitPrice'    => effectivePrice,
                 'unit'         => pbe.Product2.QuantityUnitOfMeasure,
+                'allowedUom'   => pbe.Product2.Allowed_UoM__c,
                 'chargeType'      => pbe.Product2.Charge_Type__c,
                 'billingMode'     => pbe.Product2.Billing_Charge_Type__c,
                 'odooProductId'   => pbe.Product2.Odoo_Product_Id__c,
@@ -733,5 +755,33 @@ public with sharing class ChangeOrderController {
         if (prefix == 'CAB' || prefix == 'CAG' || prefix == 'HYS' || prefix == 'SPC') return 'Space';
         if (prefix == 'POW' || prefix == 'PCM') return 'Power'; if (prefix == 'CCL' || prefix == 'CCX' || prefix == 'DPP' || prefix == 'RIS') return 'Cross Connect';
         if (prefix == 'IPT' || prefix == 'IXP') return 'IP & Internet'; if (prefix == 'RMH') return 'Remote Hands'; if (prefix == 'EMS' || prefix == 'VAS') return 'Managed Services'; return 'Other';
+    }
+
+    /**
+     * Day-aware month count from fromDate through toDate, inclusive of both
+     * endpoints — sums, for every calendar month the span touches, (days of
+     * that month covered) / (that month's own length). Same model as
+     * RampOppService.fractionalMonthsBetween / QuoteMrcRollupService's copy
+     * (2026-09-03 client-confirmed day-summation model), mirrored here so
+     * Change Order TCV/remaining-month uses the identical calculation ramps do.
+     */
+    private static Decimal fractionalMonthsBetween(Date fromDate, Date toDate) {
+        if (fromDate == null || toDate == null || toDate < fromDate) return 0;
+        Decimal total = 0;
+        Integer year = fromDate.year();
+        Integer month = fromDate.month();
+        Integer startDay = fromDate.day();
+        while (true) {
+            Integer daysInThisMonth = Date.daysInMonth(year, month);
+            Boolean isLastMonth = (year == toDate.year() && month == toDate.month());
+            Integer endDay = isLastMonth ? toDate.day() : daysInThisMonth;
+            Integer daysCounted = endDay - startDay + 1;
+            total += Decimal.valueOf(daysCounted) / daysInThisMonth;
+            if (isLastMonth) break;
+            month += 1;
+            if (month > 12) { month = 1; year += 1; }
+            startDay = 1;
+        }
+        return total;
     }
 }

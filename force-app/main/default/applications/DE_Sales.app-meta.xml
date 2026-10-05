@@ -982,6 +982,7 @@
     <tabs>standard-Opportunity</tabs>
     <tabs>standard-Quote</tabs>
     <tabs>standard-Order</tabs>
+    <tabs>standard-report</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>DE_Sales_UtilityBar2</utilityBar>
 </CustomApplication>

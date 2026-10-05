@@ -24,15 +24,9 @@ private class NrcPairingServiceTest {
         );
         insert opp;
 
-        // MRC product
-        Product2 mrcProd = new Product2(
-            Name = 'Test MRC Cabinet',
-            ProductCode = 'TEST001.RC',
-            IsActive = true
-        );
-        insert mrcProd;
-
-        // NRC product
+        // NRC products inserted first so their Ids are available to wire onto the
+        // MRC products' Paired_NRC_Product__c — pairing now keys off that field
+        // only, not the .RC/.NR code convention.
         Product2 nrcProd = new Product2(
             Name = 'Test NRC Installation',
             ProductCode = 'TEST001.NR',
@@ -40,15 +34,34 @@ private class NrcPairingServiceTest {
         );
         insert nrcProd;
 
-        // Non-paired MRC product (NRC exists in Product2 but not in pricebook)
+        // Paired NRC target for the "unpaired" MRC — deliberately given no
+        // PricebookEntry in the custom pricebook so pairing skips on missing PBE.
+        Product2 unpairedNrc = new Product2(
+            Name = 'Test Unpaired NRC',
+            ProductCode = 'TEST002.NR',
+            IsActive = true
+        );
+        insert unpairedNrc;
+
+        // MRC product
+        Product2 mrcProd = new Product2(
+            Name = 'Test MRC Cabinet',
+            ProductCode = 'TEST001.RC',
+            IsActive = true,
+            Paired_NRC_Product__c = nrcProd.Id
+        );
+        insert mrcProd;
+
+        // Non-paired MRC product (paired NRC product exists but has no PricebookEntry)
         Product2 unpaired = new Product2(
             Name = 'Test Unpaired MRC',
             ProductCode = 'TEST002.RC',
-            IsActive = true
+            IsActive = true,
+            Paired_NRC_Product__c = unpairedNrc.Id
         );
         insert unpaired;
 
-        // Non-RC product
+        // Product with no Paired_NRC_Product__c configured
         Product2 otherProd = new Product2(
             Name = 'Test Other Product',
             ProductCode = 'TEST003.GEN',
@@ -83,27 +96,6 @@ private class NrcPairingServiceTest {
             CurrencyIsoCode = 'USD'
         );
         insert q;
-    }
-
-    // ── buildNrcCode utility ─────────────────────────────────────────────────
-
-    @IsTest
-    static void testBuildNrcCode_rcSuffix() {
-        System.assertEquals('CAB001.NR', NrcPairingService.buildNrcCode('CAB001.RC'));
-        System.assertEquals('POW001.NR', NrcPairingService.buildNrcCode('POW001.RC'));
-        System.assertEquals('TEST001.NR', NrcPairingService.buildNrcCode('TEST001.RC'));
-    }
-
-    @IsTest
-    static void testBuildNrcCode_nonRcReturnsNull() {
-        System.assertEquals(null, NrcPairingService.buildNrcCode('CAB001.NR'),
-            '.NR code should return null');
-        System.assertEquals(null, NrcPairingService.buildNrcCode('PRODUCT'),
-            'Generic code should return null');
-        System.assertEquals(null, NrcPairingService.buildNrcCode(null),
-            'Null should return null');
-        System.assertEquals(null, NrcPairingService.buildNrcCode(''),
-            'Blank should return null');
     }
 
     // ── Integration tests ────────────────────────────────────────────────────

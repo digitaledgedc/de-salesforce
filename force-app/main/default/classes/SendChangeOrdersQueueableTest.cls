@@ -475,6 +475,179 @@ private class SendChangeOrdersQueueableTest {
             'Integration status should be set (Synced or Failed)');
     }
 
+    // ─── ns_subscription_line_id: Asset fallback for migrated/legacy lines ───
+    // The original OrderItem this change order references never got
+    // Odoo_Sub_Line_ID__c populated (simulates a migrated/legacy order) — only
+    // the Asset created off it has the value. buildIP4Payload must fall back to
+    // Asset.Odoo_Sub_Line_ID__c (via Source_OrderItem__c) instead of silently
+    // omitting the field.
+    @IsTest
+    static void testNonAddLine_AssetFallback_ResolvesSubscriptionLineId() {
+        Account acc = [SELECT Id FROM Account WHERE Name = 'IP4 Test Customer' LIMIT 1];
+        BillingAccount__c ban = [SELECT Id FROM BillingAccount__c WHERE Odoo_BAN_ID__c = 8001 LIMIT 1];
+        PricebookEntry pbe = [SELECT Id, Pricebook2Id FROM PricebookEntry WHERE Product2.ProductCode = 'TESTIP4' LIMIT 1];
+
+        Order origOrder = new Order(
+            AccountId                = acc.Id,
+            BillingAccount__c        = ban.Id,
+            Status                   = 'Draft',
+            EffectiveDate            = Date.today().addMonths(-6),
+            Operation_Site__c        = 'JKT1',
+            Pricebook2Id             = pbe.Pricebook2Id,
+            Order_Type__c            = 'New Service',
+            Order_Number__c          = 'IP4-TEST-ASSETFB-OR-1',
+            Odoo_Order_ID__c         = '5099',
+            Odoo_Subscription_ID__c  = '6099',
+            Contract_Term_Months__c  = 24
+        );
+        insert origOrder;
+
+        // Legacy/migrated original line — no Odoo_Sub_Line_ID__c, matching real data
+        // where that value was only ever stamped onto the Asset, not the OrderItem.
+        OrderItem origLine = new OrderItem(
+            OrderId          = origOrder.Id,
+            PricebookEntryId = pbe.Id,
+            Quantity         = 1,
+            UnitPrice        = 2000.00,
+            Charge_Type__c   = 'MRC',
+            Billing_Mode__c  = 'Arrear',
+            Description      = 'Legacy Cabinet MRC',
+            Odoo_Product_ID__c = 101,
+            Is_Active__c     = true
+        );
+        insert origLine;
+
+        insert new Asset(
+            Name                 = 'IP4 Test Asset - Legacy Cabinet',
+            AccountId            = acc.Id,
+            Source_OrderItem__c  = origLine.Id,
+            Odoo_Sub_Line_ID__c  = '64173',
+            Quantity             = 1
+        );
+
+        Order changeOrder = new Order(
+            AccountId                = acc.Id,
+            BillingAccount__c        = ban.Id,
+            Status                   = 'Draft',
+            EffectiveDate            = Date.today(),
+            Operation_Site__c        = 'JKT1',
+            Pricebook2Id             = pbe.Pricebook2Id,
+            Order_Type__c            = 'Change/Upsell',
+            Order_Number__c          = 'IP4-TEST-ASSETFB-CO1',
+            Original_Order__c        = origOrder.Id,
+            Contract_Term_Months__c  = 24,
+            RDD__c                   = Date.today().addDays(30)
+        );
+        insert changeOrder;
+
+        insert new OrderItem(
+            OrderId                = changeOrder.Id,
+            PricebookEntryId       = pbe.Id,
+            Quantity               = 1,
+            UnitPrice              = 2200.00,
+            Charge_Type__c         = 'MRC',
+            Billing_Mode__c        = 'Arrear',
+            Description            = 'Price change on legacy cabinet',
+            Odoo_Product_ID__c     = 101,
+            ns_change_type__c      = 'CHANGE',
+            Original_OrderItem__c  = origLine.Id,
+            Is_Active__c           = true
+        );
+
+        Test.setMock(HttpCalloutMock.class, MockOdooCallout.success(9010));
+
+        Test.startTest();
+        System.enqueueJob(new SendChangeOrdersQueueable(new List<Id>{ changeOrder.Id }));
+        Test.stopTest();
+
+        Order result = [SELECT Odoo_Sync_Payload__c FROM Order WHERE Id = :changeOrder.Id];
+        // Odoo_Sync_Payload__c is an Html (Rich Text) field — Salesforce auto-HTML-encodes
+        // '"' to '&quot;' on save for any Html-type field, so unescape before checking raw JSON.
+        String payload = result.Odoo_Sync_Payload__c.unescapeHtml4();
+        System.assert(payload.contains('"ns_subscription_line_id":64173'),
+            'Non-Add line should resolve ns_subscription_line_id from the Asset when neither '
+            + 'the line nor Original_OrderItem__r has Odoo_Sub_Line_ID__c populated');
+    }
+
+    // Same scenario, but with no Asset at all (nothing can resolve) — the field must
+    // still be present as an explicit false, not silently omitted.
+    @IsTest
+    static void testNonAddLine_NoResolution_WritesFalseNotOmitted() {
+        Account acc = [SELECT Id FROM Account WHERE Name = 'IP4 Test Customer' LIMIT 1];
+        BillingAccount__c ban = [SELECT Id FROM BillingAccount__c WHERE Odoo_BAN_ID__c = 8001 LIMIT 1];
+        PricebookEntry pbe = [SELECT Id, Pricebook2Id FROM PricebookEntry WHERE Product2.ProductCode = 'TESTIP4' LIMIT 1];
+
+        Order origOrder = new Order(
+            AccountId                = acc.Id,
+            BillingAccount__c        = ban.Id,
+            Status                   = 'Draft',
+            EffectiveDate            = Date.today().addMonths(-6),
+            Operation_Site__c        = 'JKT1',
+            Pricebook2Id             = pbe.Pricebook2Id,
+            Order_Type__c            = 'New Service',
+            Order_Number__c          = 'IP4-TEST-NOFB-OR-1',
+            Odoo_Order_ID__c         = '5098',
+            Odoo_Subscription_ID__c  = '6098',
+            Contract_Term_Months__c  = 24
+        );
+        insert origOrder;
+
+        OrderItem origLine = new OrderItem(
+            OrderId          = origOrder.Id,
+            PricebookEntryId = pbe.Id,
+            Quantity         = 1,
+            UnitPrice        = 2000.00,
+            Charge_Type__c   = 'MRC',
+            Billing_Mode__c  = 'Arrear',
+            Description      = 'Unresolvable Cabinet MRC',
+            Odoo_Product_ID__c = 101,
+            Is_Active__c     = true
+        );
+        insert origLine;
+        // Deliberately no Asset created for this line.
+
+        Order changeOrder = new Order(
+            AccountId                = acc.Id,
+            BillingAccount__c        = ban.Id,
+            Status                   = 'Draft',
+            EffectiveDate            = Date.today(),
+            Operation_Site__c        = 'JKT1',
+            Pricebook2Id             = pbe.Pricebook2Id,
+            Order_Type__c            = 'Change/Upsell',
+            Order_Number__c          = 'IP4-TEST-NOFB-CO1',
+            Original_Order__c        = origOrder.Id,
+            Contract_Term_Months__c  = 24,
+            RDD__c                   = Date.today().addDays(30)
+        );
+        insert changeOrder;
+
+        insert new OrderItem(
+            OrderId                = changeOrder.Id,
+            PricebookEntryId       = pbe.Id,
+            Quantity               = 1,
+            UnitPrice              = 2200.00,
+            Charge_Type__c         = 'MRC',
+            Billing_Mode__c        = 'Arrear',
+            Description            = 'Price change, unresolvable',
+            Odoo_Product_ID__c     = 101,
+            ns_change_type__c      = 'CHANGE',
+            Original_OrderItem__c  = origLine.Id,
+            Is_Active__c           = true
+        );
+
+        Test.setMock(HttpCalloutMock.class, MockOdooCallout.success(9011));
+
+        Test.startTest();
+        System.enqueueJob(new SendChangeOrdersQueueable(new List<Id>{ changeOrder.Id }));
+        Test.stopTest();
+
+        Order result = [SELECT Odoo_Sync_Payload__c FROM Order WHERE Id = :changeOrder.Id];
+        String payload = result.Odoo_Sync_Payload__c.unescapeHtml4();
+        System.assert(payload.contains('"ns_subscription_line_id":false'),
+            'When nothing resolves a subscription line id, the field must be explicitly false, '
+            + 'not omitted — matching every other optional field in this payload');
+    }
+
     // ─── NRC lines are included in payload ──────────────────────────────────
 
     @IsTest

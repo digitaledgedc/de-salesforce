@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RDD__c</fullName>
+    <description>Requested Delivery Date - customer&apos;s target go-live date. Inherited from Opportunity.GoLive_Target_Date__c on creation. Passes to Order.RDD__c.</description>
+    <inlineHelpText>Customer&apos;s target date for service go-live. Inherited from the Opportunity on quote creation. Passed to the Order and used by Operations to plan provisioning.</inlineHelpText>
+    <label>Requested Delivery Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Date</type>
+</CustomField>

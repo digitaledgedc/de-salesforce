@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DR_Status__c</fullName>
+    <description>Auto-set to &quot;DR Required&quot; by F-11 when trigger conditions fire.</description>
+    <inlineHelpText>Current status of the Deal Review process. Auto-set to DR Required when trigger conditions fire. Rev Ops updates to Approved or Rejected after review.</inlineHelpText>
+    <label>Deal Review Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Approved</fullName>
+                <default>false</default>
+                <label>Approved</label>
+            </value>
+            <value>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+                <label>Rejected</label>
+            </value>
+            <value>
+                <fullName>Reviewing</fullName>
+                <default>false</default>
+                <label>Reviewing</label>
+            </value>
+            <value>
+                <fullName>Sales Requested</fullName>
+                <default>false</default>
+                <label>Sales Requested</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

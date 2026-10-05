@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DR_Required__c</fullName>
+    <description>Mirrors the parent Opportunity&apos;s Deal Review Required flag. When TRUE, Submit for Review routes the quote through the Revenue Ops approval layer before Country/Capacity Manager, and (per VR_QUOTE_DR_Lock_RevOps_Only) restricts editing to Revenue Ops once the quote is past Draft.</description>
+    <formula>Opportunity.DR_Required__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Deal Review Required</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

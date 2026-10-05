@@ -132,6 +132,48 @@ private class QuoteLineEditorControllerTest {
         return [SELECT Id, Pricebook2Id FROM Quote ORDER BY CreatedDate ASC LIMIT 1];
     }
 
+    static Map<String, Id> pairAutoNrcToCompetingMrc() {
+        QuoteLineItem mrcTemplate = [
+            SELECT QuoteId, PricebookEntryId, UnitPrice
+            FROM QuoteLineItem WHERE Product2.ProductCode = 'CAB001.RC' LIMIT 1
+        ];
+        QuoteLineItem nrcTemplate = [
+            SELECT PricebookEntryId, UnitPrice
+            FROM QuoteLineItem WHERE Product2.ProductCode = 'CAB001.NR' LIMIT 1
+        ];
+        QuoteLineItem sourceMrc = new QuoteLineItem(
+            QuoteId = mrcTemplate.QuoteId,
+            PricebookEntryId = mrcTemplate.PricebookEntryId,
+            Quantity = 8,
+            UnitPrice = mrcTemplate.UnitPrice,
+            StartDate = Date.today(),
+            EndDate = Date.today().addMonths(12)
+        );
+        QuoteLineItem competingMrc = new QuoteLineItem(
+            QuoteId = mrcTemplate.QuoteId,
+            PricebookEntryId = mrcTemplate.PricebookEntryId,
+            Quantity = 9,
+            UnitPrice = mrcTemplate.UnitPrice,
+            StartDate = Date.today(),
+            EndDate = Date.today().addMonths(12)
+        );
+        insert new List<QuoteLineItem>{ sourceMrc, competingMrc };
+        QuoteLineItem autoNrc = new QuoteLineItem(
+            QuoteId = mrcTemplate.QuoteId,
+            PricebookEntryId = nrcTemplate.PricebookEntryId,
+            Quantity = 9,
+            UnitPrice = nrcTemplate.UnitPrice,
+            Paired_MRC_Line__c = competingMrc.Id,
+            Is_Auto_NRC__c = true
+        );
+        insert autoNrc;
+        return new Map<String, Id>{
+            'sourceMrc' => sourceMrc.Id,
+            'competingMrc' => competingMrc.Id,
+            'autoNrc' => autoNrc.Id
+        };
+    }
+
     // The shared @TestSetup quote uses the Standard Price Book as its own
     // pricebook, which collapses "site vs Standard" into the same record —
     // fine for most tests, but ensureCurrencyPbe/ensureQuotePricebookEntry and
@@ -226,6 +268,35 @@ private class QuoteLineEditorControllerTest {
 
         nrc = [SELECT Quantity FROM QuoteLineItem WHERE Id = :nrc.Id];
         System.assertEquals(30, nrc.Quantity, 'NRC qty should cascade from MRC');
+    }
+
+    @IsTest
+    static void testUpdateWithMrcNrcCascade_doesNotRequantityUserOwnedNrc() {
+        QuoteLineItem mrc = [SELECT Id FROM QuoteLineItem WHERE Product2.ProductCode = 'CAB001.RC' LIMIT 1];
+        QuoteLineItem nrcTemplate = [
+            SELECT QuoteId, PricebookEntryId, UnitPrice
+            FROM QuoteLineItem WHERE Product2.ProductCode = 'CAB001.NR' LIMIT 1
+        ];
+        QuoteLineItem userNrc = new QuoteLineItem(
+            QuoteId = nrcTemplate.QuoteId,
+            PricebookEntryId = nrcTemplate.PricebookEntryId,
+            Quantity = 7,
+            UnitPrice = nrcTemplate.UnitPrice,
+            Paired_MRC_Line__c = mrc.Id,
+            Is_Auto_NRC__c = false
+        );
+        insert userNrc;
+
+        Test.startTest();
+        QuoteLineEditorController.updateQuoteLineItems(new List<QuoteLineItem>{
+            new QuoteLineItem(Id = mrc.Id, Quantity = 30)
+        });
+        Test.stopTest();
+
+        userNrc = [SELECT Quantity, Paired_MRC_Line__c, Is_Auto_NRC__c FROM QuoteLineItem WHERE Id = :userNrc.Id];
+        System.assertEquals(7, userNrc.Quantity, 'Save must not re-quantify a user-owned NRC, even when legacy pairing remains');
+        System.assertEquals(mrc.Id, userNrc.Paired_MRC_Line__c, 'This save path must not change existing pairing');
+        System.assertEquals(false, userNrc.Is_Auto_NRC__c);
     }
 
     // ── splitRampLines — 2 phases ─────────────────────────────────────────
@@ -435,6 +506,78 @@ private class QuoteLineEditorControllerTest {
         System.assertEquals(2, allNrc[1].Ramp_Phase__c, 'NRC Phase 2 number');
         System.assertEquals(allMrc[1].Id, allNrc[1].Paired_MRC_Line__c, 'NRC Phase 2 paired to MRC Phase 2');
         System.assertEquals(true, allNrc[1].Is_Auto_NRC__c, 'NRC Phase 2 keeps auto flag');
+    }
+
+    @IsTest
+    static void testSplitRampLines_userOwnedNrcRemainsUnchanged() {
+        Quote q = getTestQuote();
+        QuoteLineItem mrc = [
+            SELECT Id FROM QuoteLineItem
+            WHERE Product2.ProductCode = 'CAB001.RC' LIMIT 1
+        ];
+        QuoteLineItem userNrc = [
+            SELECT Id, Quantity, Paired_MRC_Line__c, Is_Auto_NRC__c
+            FROM QuoteLineItem WHERE Product2.ProductCode = 'CAB001.NR' LIMIT 1
+        ];
+        userNrc.Quantity = 7;
+        userNrc.Paired_MRC_Line__c = null;
+        userNrc.Is_Auto_NRC__c = false;
+        update userNrc;
+
+        String phasesJson = JSON.serialize(new List<Map<String, Object>>{
+            new Map<String, Object>{
+                'quantity' => 20,
+                'startDate' => String.valueOf(Date.today()),
+                'endDate' => String.valueOf(Date.today().addMonths(6))
+            },
+            new Map<String, Object>{
+                'quantity' => 30,
+                'startDate' => String.valueOf(Date.today().addMonths(6).addDays(1)),
+                'endDate' => String.valueOf(Date.today().addMonths(12))
+            }
+        });
+
+        Test.startTest();
+        QuoteLineEditorController.splitRampLines(mrc.Id, phasesJson, 'quantity');
+        Test.stopTest();
+
+        List<QuoteLineItem> nrcLines = [
+            SELECT Id, Quantity, Paired_MRC_Line__c, Is_Auto_NRC__c, Line_Origin__c
+            FROM QuoteLineItem
+            WHERE QuoteId = :q.Id AND Product2.ProductCode = 'CAB001.NR'
+        ];
+        System.assertEquals(1, nrcLines.size(), 'A user-owned NRC must not be split into ramp phases');
+        System.assertEquals(7, nrcLines[0].Quantity, 'The user-entered NRC quantity must be preserved');
+        System.assertEquals(null, nrcLines[0].Paired_MRC_Line__c, 'Ramp creation must not re-pair a user-owned NRC');
+        System.assertEquals(false, nrcLines[0].Is_Auto_NRC__c);
+        System.assertNotEquals('Ramp', nrcLines[0].Line_Origin__c, 'The user-owned NRC must remain outside the ramp');
+    }
+
+    @IsTest
+    static void testSplitRampLines_doesNotStealAutoNrcPairedToAnotherMrc() {
+        Map<String, Id> ids = pairAutoNrcToCompetingMrc();
+        Id autoNrcId = ids.get('autoNrc');
+        String phasesJson = JSON.serialize(new List<Map<String, Object>>{
+            new Map<String, Object>{ 'quantity' => 20, 'startDate' => String.valueOf(Date.today()) }
+        });
+
+        Test.startTest();
+        QuoteLineEditorController.splitRampLines(ids.get('sourceMrc'), phasesJson, 'quantity');
+        Test.stopTest();
+
+        QuoteLineItem afterNrc = [
+            SELECT Quantity, Paired_MRC_Line__c, Line_Origin__c
+            FROM QuoteLineItem WHERE Id = :autoNrcId
+        ];
+        Id sourceMrcId = ids.get('sourceMrc');
+        Integer stolenCount = [
+            SELECT COUNT() FROM QuoteLineItem
+            WHERE Product2.ProductCode = 'CAB001.NR' AND Paired_MRC_Line__c = :sourceMrcId
+        ];
+        System.assertEquals(9, afterNrc.Quantity, 'Fallback must not re-quantity another MRC\'s auto NRC');
+        System.assertEquals(ids.get('competingMrc'), afterNrc.Paired_MRC_Line__c, 'Fallback must not steal another MRC\'s auto NRC');
+        System.assertNotEquals('Ramp', afterNrc.Line_Origin__c, 'Another MRC\'s NRC must stay outside this ramp');
+        System.assertEquals(0, stolenCount, 'No already-paired auto NRC may be reassigned to the ramp source');
     }
 
     // ── splitRampLines — attribute ramp (2 phases) ─────────────────────
@@ -811,6 +954,73 @@ private class QuoteLineEditorControllerTest {
         System.assertEquals(src.Id, phase2[0].Ramp_Parent_Line__c);
     }
 
+    @IsTest
+    static void testSplitRampLinesBulk_userOwnedNrcRemainsUnchanged() {
+        Quote q = getTestQuote();
+        QuoteLineItem mrc = [
+            SELECT Id FROM QuoteLineItem
+            WHERE Product2.ProductCode = 'CAB001.RC' LIMIT 1
+        ];
+        QuoteLineItem userNrc = [
+            SELECT Id, Quantity, Paired_MRC_Line__c, Is_Auto_NRC__c
+            FROM QuoteLineItem WHERE Product2.ProductCode = 'CAB001.NR' LIMIT 1
+        ];
+        userNrc.Quantity = 7;
+        userNrc.Paired_MRC_Line__c = null;
+        userNrc.Is_Auto_NRC__c = false;
+        update userNrc;
+
+        String phasesJson = JSON.serialize(new List<Map<String, Object>>{
+            new Map<String, Object>{ 'quantity' => 20, 'startDate' => String.valueOf(Date.today()) }
+        });
+        String bulkPayload = JSON.serialize(new List<Map<String, Object>>{
+            new Map<String, Object>{ 'sourceLineId' => mrc.Id, 'phasesJson' => phasesJson }
+        });
+
+        Test.startTest();
+        QuoteLineEditorController.splitRampLinesBulk(bulkPayload, 'quantity');
+        Test.stopTest();
+
+        QuoteLineItem afterNrc = [
+            SELECT Quantity, Paired_MRC_Line__c, Is_Auto_NRC__c, Line_Origin__c
+            FROM QuoteLineItem WHERE Id = :userNrc.Id
+        ];
+        System.assertEquals(7, afterNrc.Quantity, 'Bulk ramp creation must preserve the user-entered NRC quantity');
+        System.assertEquals(null, afterNrc.Paired_MRC_Line__c, 'Bulk ramp creation must not re-pair a user-owned NRC');
+        System.assertEquals(false, afterNrc.Is_Auto_NRC__c);
+        System.assertNotEquals('Ramp', afterNrc.Line_Origin__c, 'The user-owned NRC must remain outside the ramp');
+    }
+
+    @IsTest
+    static void testSplitRampLinesBulk_doesNotStealAutoNrcPairedToAnotherMrc() {
+        Map<String, Id> ids = pairAutoNrcToCompetingMrc();
+        Id autoNrcId = ids.get('autoNrc');
+        String phasesJson = JSON.serialize(new List<Map<String, Object>>{
+            new Map<String, Object>{ 'quantity' => 20, 'startDate' => String.valueOf(Date.today()) }
+        });
+        String bulkPayload = JSON.serialize(new List<Map<String, Object>>{
+            new Map<String, Object>{ 'sourceLineId' => ids.get('sourceMrc'), 'phasesJson' => phasesJson }
+        });
+
+        Test.startTest();
+        QuoteLineEditorController.splitRampLinesBulk(bulkPayload, 'quantity');
+        Test.stopTest();
+
+        QuoteLineItem afterNrc = [
+            SELECT Quantity, Paired_MRC_Line__c, Line_Origin__c
+            FROM QuoteLineItem WHERE Id = :autoNrcId
+        ];
+        Id sourceMrcId = ids.get('sourceMrc');
+        Integer stolenCount = [
+            SELECT COUNT() FROM QuoteLineItem
+            WHERE Product2.ProductCode = 'CAB001.NR' AND Paired_MRC_Line__c = :sourceMrcId
+        ];
+        System.assertEquals(9, afterNrc.Quantity, 'Bulk fallback must not re-quantity another MRC\'s auto NRC');
+        System.assertEquals(ids.get('competingMrc'), afterNrc.Paired_MRC_Line__c, 'Bulk fallback must not steal another MRC\'s auto NRC');
+        System.assertNotEquals('Ramp', afterNrc.Line_Origin__c, 'Another MRC\'s NRC must stay outside this ramp');
+        System.assertEquals(0, stolenCount, 'Bulk fallback may not reassign any already-paired auto NRC');
+    }
+
     // ── getRampSiblings / aggregateRampNrcQty / addRampPhase / deleteRampPhases ──
     // These all operate on lines already marked Line_Origin__c='Ramp', which is
     // set by splitRampLines itself — so each test drives a real split first
@@ -902,6 +1112,45 @@ private class QuoteLineEditorControllerTest {
     }
 
     @IsTest
+    static void testAggregateRampNrcQty_skipsUserOwnedNrc() {
+        Quote q = getTestQuote();
+        QuoteLineItem mrc = [
+            SELECT Id FROM QuoteLineItem
+            WHERE Product2.ProductCode = 'CAB001.RC' LIMIT 1
+        ];
+        update new QuoteLineItem(
+            Id = mrc.Id,
+            Quantity = 50,
+            Charge_Type__c = 'MRC',
+            Line_Origin__c = 'Ramp',
+            Ramp_Phase__c = 1,
+            Ramp_Line__c = true
+        );
+
+        QuoteLineItem userNrc = [
+            SELECT Id FROM QuoteLineItem
+            WHERE Product2.ProductCode = 'CAB001.NR' LIMIT 1
+        ];
+        update new QuoteLineItem(
+            Id = userNrc.Id,
+            Quantity = 7,
+            Charge_Type__c = 'NRC',
+            Paired_MRC_Line__c = null,
+            Is_Auto_NRC__c = false,
+            Line_Origin__c = 'Ramp',
+            Ramp_Phase__c = 1,
+            Ramp_Line__c = true
+        );
+
+        Test.startTest();
+        QuoteLineEditorController.aggregateRampNrcQty(q.Id);
+        Test.stopTest();
+
+        QuoteLineItem afterNrc = [SELECT Quantity FROM QuoteLineItem WHERE Id = :userNrc.Id];
+        System.assertEquals(7, afterNrc.Quantity, 'Aggregation must not recalculate a user-owned NRC');
+    }
+
+    @IsTest
     static void testAggregateRampNrcQty_NullQuoteId_NoOp() {
         Test.startTest();
         QuoteLineEditorController.aggregateRampNrcQty(null);
@@ -936,6 +1185,36 @@ private class QuoteLineEditorControllerTest {
     }
 
     @IsTest
+    static void testAddRampPhase_doesNotUseAutoNrcPairedToAnotherMrc() {
+        Map<String, Id> ids = pairAutoNrcToCompetingMrc();
+        Id autoNrcId = ids.get('autoNrc');
+        update new QuoteLineItem(
+            Id = ids.get('sourceMrc'),
+            Line_Origin__c = 'Ramp',
+            Ramp_Line__c = true,
+            Ramp_Phase__c = 1,
+            Ramp_Start_Date__c = Date.today()
+        );
+
+        Test.startTest();
+        QuoteLineEditorController.addRampPhase(
+            ids.get('sourceMrc'), 30, 100,
+            String.valueOf(Date.today().addMonths(6).addDays(1)), null
+        );
+        Test.stopTest();
+
+        QuoteLineItem originalNrc = [
+            SELECT Paired_MRC_Line__c FROM QuoteLineItem WHERE Id = :autoNrcId
+        ];
+        Integer rampNrcCount = [
+            SELECT COUNT() FROM QuoteLineItem
+            WHERE Product2.ProductCode = 'CAB001.NR' AND Line_Origin__c = 'Ramp'
+        ];
+        System.assertEquals(ids.get('competingMrc'), originalNrc.Paired_MRC_Line__c, 'Add phase must preserve another MRC\'s NRC ownership');
+        System.assertEquals(0, rampNrcCount, 'Add phase must not clone another MRC\'s NRC as its template');
+    }
+
+    @IsTest
     static void testDeleteRampPhases_RemovesClonesAndRestoresOriginalQuantity() {
         // Same reasoning as testAggregateRampNrcQty above: buildTwoPhaseRamp()
         // (splitRampLines + addRampPhase together) is just over the 100-query
@@ -967,6 +1246,120 @@ private class QuoteLineEditorControllerTest {
     }
 
     @IsTest
+    static void testDeleteRampPhases_aggregateMrcUsesFinalPhaseQuantity() {
+        Quote q = getTestQuote();
+        Product2 aggregateProduct = new Product2(
+            Name = 'QLE Aggregate Product',
+            ProductCode = 'QLE-AGG-001',
+            IsActive = true,
+            Charge_Type__c = 'MRC',
+            Merge_IB_Task__c = true
+        );
+        insert aggregateProduct;
+        PricebookEntry aggregatePbe = new PricebookEntry(
+            Pricebook2Id = q.Pricebook2Id,
+            Product2Id = aggregateProduct.Id,
+            UnitPrice = 100,
+            IsActive = true,
+            CurrencyIsoCode = 'IDR'
+        );
+        insert aggregatePbe;
+        QuoteLineItem aggregateLine = new QuoteLineItem(
+            QuoteId = q.Id,
+            PricebookEntryId = aggregatePbe.Id,
+            Product2Id = aggregateProduct.Id,
+            Quantity = 2,
+            UnitPrice = 100,
+            Charge_Type__c = 'MRC',
+            StartDate = Date.today(),
+            EndDate = Date.today().addMonths(12)
+        );
+        insert aggregateLine;
+
+        String phasesJson = JSON.serialize(new List<Map<String, Object>>{
+            new Map<String, Object>{
+                'quantity' => 1,
+                'startDate' => String.valueOf(Date.today()),
+                'endDate' => String.valueOf(Date.today().addMonths(6))
+            },
+            new Map<String, Object>{
+                'quantity' => 2,
+                'startDate' => String.valueOf(Date.today().addMonths(6).addDays(1)),
+                'endDate' => String.valueOf(Date.today().addMonths(12))
+            }
+        });
+        QuoteLineEditorController.splitRampLines(aggregateLine.Id, phasesJson, 'quantity');
+
+        Test.startTest();
+        QuoteLineEditorController.deleteRampPhases(aggregateLine.Id);
+        Test.stopTest();
+
+        QuoteLineItem restored = [
+            SELECT Quantity, Line_Origin__c, Ramp_Phase__c
+            FROM QuoteLineItem WHERE Id = :aggregateLine.Id
+        ];
+        System.assertEquals(2, restored.Quantity, 'Aggregate MRC should restore the final level, not 1 + 2');
+        System.assertEquals('New', restored.Line_Origin__c);
+        System.assertEquals(null, restored.Ramp_Phase__c);
+        System.assertEquals(1, [SELECT COUNT() FROM QuoteLineItem WHERE Product2Id = :aggregateProduct.Id]);
+    }
+
+    @IsTest
+    static void testDeleteRampPhases_userOwnedNrcKeepsInputAndUnpairs() {
+        Quote q = getTestQuote();
+        QuoteLineItem mrc = [
+            SELECT Id FROM QuoteLineItem
+            WHERE Product2.ProductCode = 'CAB001.RC' LIMIT 1
+        ];
+        QuoteLineItem userNrc = [
+            SELECT Id, QuoteId, Product2Id, PricebookEntryId, UnitPrice
+            FROM QuoteLineItem WHERE Product2.ProductCode = 'CAB001.NR' LIMIT 1
+        ];
+        update new QuoteLineItem(
+            Id = userNrc.Id,
+            Quantity = 7,
+            Charge_Type__c = 'NRC',
+            Paired_MRC_Line__c = mrc.Id,
+            Is_Auto_NRC__c = false,
+            Line_Origin__c = 'Ramp',
+            Ramp_Phase__c = 1,
+            Ramp_Line__c = true
+        );
+        insert new QuoteLineItem(
+            QuoteId = q.Id,
+            PricebookEntryId = userNrc.PricebookEntryId,
+            Product2Id = userNrc.Product2Id,
+            Quantity = 2,
+            UnitPrice = userNrc.UnitPrice,
+            Charge_Type__c = 'NRC',
+            Paired_MRC_Line__c = mrc.Id,
+            Is_Auto_NRC__c = false,
+            Line_Origin__c = 'Ramp',
+            Ramp_Phase__c = 2,
+            Ramp_Line__c = true,
+            Ramp_Parent_Line__c = userNrc.Id
+        );
+
+        Test.startTest();
+        QuoteLineEditorController.deleteRampPhases(userNrc.Id);
+        Test.stopTest();
+
+        List<QuoteLineItem> remainingNrc = [
+            SELECT Id, Quantity, Paired_MRC_Line__c, Is_Auto_NRC__c,
+                   Line_Origin__c, Ramp_Phase__c
+            FROM QuoteLineItem
+            WHERE QuoteId = :q.Id AND Product2.ProductCode = 'CAB001.NR'
+        ];
+        System.assertEquals(1, remainingNrc.size(), 'The accidental NRC phase clone should be deleted');
+        System.assertEquals(userNrc.Id, remainingNrc[0].Id);
+        System.assertEquals(7, remainingNrc[0].Quantity, 'The user-entered NRC quantity must remain unchanged');
+        System.assertEquals(null, remainingNrc[0].Paired_MRC_Line__c, 'Ramp removal must restore the unpaired state');
+        System.assertEquals(false, remainingNrc[0].Is_Auto_NRC__c);
+        System.assertEquals('New', remainingNrc[0].Line_Origin__c);
+        System.assertEquals(null, remainingNrc[0].Ramp_Phase__c);
+    }
+
+    @IsTest
     static void testDeleteRampPhases_NoRampedLines_NoOp() {
         // Reuse the shared setup's plain (never ramp-split) MRC line rather than
         // hand-building a fresh Quote/Product/PBE chain, which tripped an
@@ -979,5 +1372,61 @@ private class QuoteLineEditorControllerTest {
 
         Integer count = [SELECT COUNT() FROM QuoteLineItem WHERE Id = :plainLine.Id];
         System.assertEquals(1, count, 'A non-ramped line should be left untouched (no-op)');
+    }
+
+    // ── addProductToQuote — SFDC-366 Unit of Measure seeding ─────────────
+    //
+    // The shared @TestSetup products carry no QuantityUnitOfMeasure, so
+    // uomOrNull() short-circuits on String.isNotBlank() and the uomValueSet
+    // describe is never built. These two products force both sides of the
+    // guard: an on-list default that must be stamped, and an off-list one that
+    // must be dropped rather than thrown at the restricted picklist.
+
+    @IsTest
+    static void testAddProductToQuote_seedsUoMFromProductDefault() {
+        Quote q = getTestQuote();
+
+        // 'Each' is an active value on the DE_Unit_Of_Measure global value set
+        // that QuoteLineItem.UoM__c is bound to.
+        Product2 onList = new Product2(
+            Name = 'UOM001.RC', ProductCode = 'UOM001.RC', IsActive = true,
+            Charge_Type__c = 'MRC', QuantityUnitOfMeasure = 'Each'
+        );
+        // Product2.QuantityUnitOfMeasure is UNRESTRICTED, so a value that is not
+        // in the value set can legitimately exist on a product.
+        Product2 offList = new Product2(
+            Name = 'UOM002.RC', ProductCode = 'UOM002.RC', IsActive = true,
+            Charge_Type__c = 'MRC', QuantityUnitOfMeasure = 'Furlongs'
+        );
+        insert new List<Product2>{ onList, offList };
+
+        PricebookEntry onPbe = new PricebookEntry(
+            Pricebook2Id = Test.getStandardPricebookId(), Product2Id = onList.Id,
+            UnitPrice = 10, IsActive = true, CurrencyIsoCode = 'IDR'
+        );
+        PricebookEntry offPbe = new PricebookEntry(
+            Pricebook2Id = Test.getStandardPricebookId(), Product2Id = offList.Id,
+            UnitPrice = 10, IsActive = true, CurrencyIsoCode = 'IDR'
+        );
+        insert new List<PricebookEntry>{ onPbe, offPbe };
+
+        Test.startTest();
+        QuoteLineEditorController.addProductToQuote(q.Id, onPbe.Id, 1, null);
+        QuoteLineEditorController.addProductToQuote(q.Id, offPbe.Id, 1, null);
+        Test.stopTest();
+
+        Map<String, String> uomByCode = new Map<String, String>();
+        for (QuoteLineItem li : [
+            SELECT Product2.ProductCode, UoM__c FROM QuoteLineItem
+            WHERE QuoteId = :q.Id AND Product2.ProductCode IN ('UOM001.RC', 'UOM002.RC')
+        ]) {
+            uomByCode.put(li.Product2.ProductCode, li.UoM__c);
+        }
+
+        System.assertEquals('Each', uomByCode.get('UOM001.RC'),
+            'An on-list Product2.QuantityUnitOfMeasure should be stamped onto QuoteLineItem.UoM__c');
+        System.assertEquals(null, uomByCode.get('UOM002.RC'),
+            'An off-list default must be dropped, not stamped — stamping it would throw '
+            + 'INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST and block the rep from adding the product');
     }
 }

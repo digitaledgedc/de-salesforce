@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FX_Rate_Model__c</fullName>
+    <inlineHelpText>Required when FX Billing is flagged. Standard Reference Rate uses the Odoo country default. Contract Specific Reference uses an agreed rate documented in FX Rate Terms.</inlineHelpText>
+    <label>FX Rate Model</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Standard_Reference_Rate</fullName>
+                <default>true</default>
+                <label>Standard Reference Rate</label>
+            </value>
+            <value>
+                <fullName>Contract_Specific_Reference</fullName>
+                <default>false</default>
+                <label>Contract Specific Reference</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Standard_Product__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Marks products that are standard catalog items (not customer-specific or custom-priced). Standard products appear in all pricebooks by default.</description>
+    <label>Standard Product</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

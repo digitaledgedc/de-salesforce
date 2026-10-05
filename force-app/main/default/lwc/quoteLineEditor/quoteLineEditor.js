@@ -2,20 +2,22 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
-import { getRecord, getFieldValue, updateRecord } from 'lightning/uiRecordApi';
+import { getRecord, getFieldValue, updateRecord, getRecordNotifyChange } from 'lightning/uiRecordApi';
 import { registerRefreshHandler, unregisterRefreshHandler } from 'lightning/refresh';
 import PRICEBOOK2_FIELD      from '@salesforce/schema/Quote.Pricebook2Id';
 import CURRENCY_FIELD        from '@salesforce/schema/Quote.CurrencyIsoCode';
 import IS_BINDING_FIELD      from '@salesforce/schema/Quote.Is_Binding__c';
 import STATUS_FIELD          from '@salesforce/schema/Quote.Status';
 import ORIGINAL_ORDER_FIELD  from '@salesforce/schema/Quote.Original_Order__c';
-
+import CONTRACT_END_DATE_FIELD from '@salesforce/schema/Quote.Contract_End_Date__c';
+import RDD_FIELD               from '@salesforce/schema/Quote.RDD__c';
 import getQuoteLineItems      from '@salesforce/apex/QuoteLineEditorController.getQuoteLineItems';
 import getQuotePricebookInfo  from '@salesforce/apex/QuoteLineEditorController.getQuotePricebookInfo';
 // searchProducts import removed — inline search disabled, products added via Add Product action
 import addProductToQuote      from '@salesforce/apex/QuoteLineEditorController.addProductToQuote';
 import deleteQuoteLineItems   from '@salesforce/apex/QuoteLineEditorController.deleteQuoteLineItems';
 import updateQuoteLineItems   from '@salesforce/apex/QuoteLineEditorController.updateQuoteLineItems';
+import reorderQuoteLineItem   from '@salesforce/apex/QuoteLineEditorController.reorderQuoteLineItem';
 import getLineInventory       from '@salesforce/apex/InventoryController.getLineInventory';
 import assignInventoryToLine  from '@salesforce/apex/InventoryController.assignInventoryToLine';
 import releaseInventoryFromLine from '@salesforce/apex/InventoryController.releaseInventoryFromLine';
@@ -65,7 +67,14 @@ const ALL_COLS = {
     },
     attributeType: { label: 'Attr Type', fieldName: '_attributeType', type: 'text', initialWidth: 130, editable: false, wrapText: false },
     productFamily:  { label: 'Family',        fieldName: 'productFamily',        type: 'text',       initialWidth: 110, editable: false, wrapText: false },
-    productUnit:    { label: 'UoM',           fieldName: 'productUnit',          type: 'text',       initialWidth:  70, editable: false, wrapText: false },
+    // SFDC-366: UoM is now a per-line value, chosen from the product's default plus
+    // Product2.Allowed_UoM__c. The ALL_COLS key stays 'productUnit' — INITIAL_COL_DEFS
+    // and the saved column-preference bitstring index on it positionally, so renaming
+    // or moving it would silently discard every user's saved layout.
+    // editable stays false: the editOptions render path never consults it, and false
+    // keeps handleCellClick from opening a text input over the visible <select>.
+    productUnit:    { label: 'UoM',           fieldName: 'UoM__c',               type: 'text',       initialWidth:  95, editable: false, wrapText: false,
+                      editOptionsField: '_uomOptions' },
     Quantity: {
         label: 'Qty', fieldName: 'Quantity', type: 'number', initialWidth: 75, editable: true,
         typeAttributes: { minimumFractionDigits: 0, maximumFractionDigits: 4 },
@@ -134,7 +143,7 @@ const INITIAL_COL_DEFS = [
     { key: 'Quantity',           label: 'Qty',          required: false, visible: true  },
     { key: 'ListPrice',          label: 'List Price',   required: false, visible: true  },
     { key: 'UnitPrice',          label: 'Sales Price',  required: false, visible: true  },
-    { key: 'Discount',           label: 'Discount (%)', required: false, visible: false },
+    { key: 'Discount',           label: 'Discount (%)', required: false, visible: true },
     { key: 'TotalPrice',         label: 'Total Price',  required: false, visible: true  },
     { key: 'BillingFrequency',   label: 'Billing',      required: false, visible: false },
     { key: 'StartDate',          label: 'Start',        required: false, visible: false },
@@ -188,7 +197,7 @@ const PHASE_PICK_MAX = 12;
 // exact test then rejects a split that is correct, with no way for the user to clear it.
 const QTY_EPSILON = 0.0001;
 const qtyEquals = (a, b) => Math.abs((Number(a) || 0) - (Number(b) || 0)) < QTY_EPSILON;
-const isBlankQty = (v) => v === '' || v === null || v === undefined || Number(v) === 0;
+const isBlankQty = (v) => v === '' || v === null || v === undefined;
 
 export default class QuoteLineEditor extends LightningElement {
     @api recordId;
@@ -230,6 +239,8 @@ export default class QuoteLineEditor extends LightningElement {
     @track _banOptions         = [];
     _defaultBanId              = null;
     _isChangeOrderQuote        = false;
+    _contractEndDate           = null; // Quote.Contract_End_Date__c — ramp must stay within this
+    _quoteRdd                  = null; // Quote.RDD__c — Ramp Phase 1 start (locked)
 
     // ─── Pricebook context ────────────────────────────────────────────
     @track _sitePricebookName    = '';
@@ -286,6 +297,17 @@ export default class QuoteLineEditor extends LightningElement {
 
     // ─── Inventory filter state ──────────────────────────────────
     @track _invTypeFilter   = 'All';
+
+    // SFDC-472: Floor / Data Hall scope for the available list. The Apex query is
+    // row-capped and ordered by Floor name, so at a site whose first floor fills the
+    // cap the later floors never reach the browser. These two send the filter to the
+    // server instead of filtering what already arrived.
+    @track _invFloorId        = '';
+    @track _invHallId         = '';
+    @track _invFloors         = [];
+    @track _invHalls          = [];
+    @track _invAvailableTotal = 0;
+    @track _invAvailableLimit = 0;
     @track _selectedInvIds  = new Set();
 
     // ─── Multi-product ramp modal state ──────────────────────────────
@@ -320,8 +342,12 @@ export default class QuoteLineEditor extends LightningElement {
         const cc = this._currencyCode || 'USD';
         if (!this._fmtCache || this._fmtCacheCode !== cc) {
             this._fmtCacheCode = cc;
+            // No minimumFractionDigits: with style 'currency' Intl uses each
+            // currency's own minor-unit count — JPY/KRW 0, USD/SGD 2. Forcing 2
+            // rendered JPY totals as ¥230,250.72 where BOSS shows ¥230,251
+            // (ITCJP-OR-020349).
             this._fmtCache = new Intl.NumberFormat('en-US', {
-                style: 'currency', currency: cc, minimumFractionDigits: 2
+                style: 'currency', currency: cc
             });
         }
         return this._fmtCache.format(v);
@@ -376,6 +402,10 @@ export default class QuoteLineEditor extends LightningElement {
 
     get showCreateRampButton() {
         return this.hasSelectedRows && !this.isQuoteLocked && this.isLinesTab && !this.hasRampSchedule;
+    }
+
+     get allowLineReorder() {
+        return !this.isQuoteLocked && this._isQuoteDraft && this.isLinesTab;
     }
 
     get showApprovalBar() {
@@ -474,8 +504,9 @@ export default class QuoteLineEditor extends LightningElement {
         // Separate auto-paired NRCs from everything else (MRC + standalone NRC)
         const autoNrcLines = rampLines.filter(l => l.Charge_Type__c === 'NRC' && l.Is_Auto_NRC__c === true);
         const productLines = rampLines.filter(l => !(l.Charge_Type__c === 'NRC' && l.Is_Auto_NRC__c === true));
-        // Legacy compat: also treat paired NRCs as auto
-        const nrcLines = rampLines.filter(l => l.Charge_Type__c === 'NRC');
+        // SFDEV-11: only auto NRCs attach to an MRC row. A standalone NRC is already its own
+        // row in productLines; linking it by product code as well printed it twice.
+        const nrcLines = autoNrcLines;
         const mrcLines = rampLines.filter(l => l.Charge_Type__c !== 'NRC');
 
         const phaseNums = [...new Set(productLines.map(l => l.Ramp_Phase__c))].sort((a, b) => a - b);
@@ -831,7 +862,7 @@ export default class QuoteLineEditor extends LightningElement {
             .then(() => {
                 this._mainTab = 'lines';
                 this._toast('Ramp Removed', 'All phases reverted to base lines.', 'success');
-                return refreshApex(this._wiredResult);
+                return this._refreshAfterLineChange();
             })
             .catch(err => this._toast('Error', err?.body?.message || 'Failed to remove ramp.', 'error'))
             .finally(() => { this.isLoading = false; });
@@ -936,31 +967,33 @@ export default class QuoteLineEditor extends LightningElement {
                         _readOnly: true,
                         _attrDisabled: true,
                     };
-                    // Aggregate products: show LAST phase values (running capacity)
+                    // Price shown on the Lines tab is the FIRST phase price. Later phases
+                    // carry escalations that belong only in the Ramp Schedule tab.
+                    const firstSibling = siblings.reduce((min, s) =>
+                        (s.Ramp_Phase__c || 0) < (min.Ramp_Phase__c || 0) ? s : min, siblings[0]);
+                    // Aggregate products: show LAST phase quantity (running capacity)
                     if (this._isAggregateProduct(l)) {
                         const lastSibling = siblings.reduce((max, s) =>
                             (s.Ramp_Phase__c || 0) > (max.Ramp_Phase__c || 0) ? s : max, siblings[0]);
                         return {
                             ...l,
                             Quantity: lastSibling.Quantity,
-                            UnitPrice: lastSibling.UnitPrice,
-                            List_Price__c: lastSibling.List_Price__c,
-                            TotalPrice: (lastSibling.Quantity || 0) * (lastSibling.UnitPrice || 0) * (1 - ((lastSibling.Discount || 0) / 100)),
+                            UnitPrice: firstSibling.UnitPrice,
+                            List_Price__c: firstSibling.List_Price__c,
+                            TotalPrice: (lastSibling.Quantity || 0) * (firstSibling.UnitPrice || 0) * (1 - ((firstSibling.Discount || 0) / 100)),
                             ...rampMeta,
                         };
                     }
-                    // Non-aggregate: show base qty (sum of unlinked phases) and last phase price
+                    // Non-aggregate: show base qty (sum of unlinked phases) and first phase price
                     const baseQty = siblings
                         .filter(s => !s.Ramp_Linked_Phase__c)
                         .reduce((sum, s) => sum + (s.Quantity || 0), 0);
-                    const lastSib = siblings.reduce((max, s) =>
-                        (s.Ramp_Phase__c || 0) > (max.Ramp_Phase__c || 0) ? s : max, siblings[0]);
                     return {
                         ...l,
                         Quantity: baseQty,
-                        UnitPrice: lastSib.UnitPrice,
-                        List_Price__c: lastSib.List_Price__c,
-                        TotalPrice: (baseQty || 0) * (lastSib.UnitPrice || 0) * (1 - ((lastSib.Discount || 0) / 100)),
+                        UnitPrice: firstSibling.UnitPrice,
+                        List_Price__c: firstSibling.List_Price__c,
+                        TotalPrice: (baseQty || 0) * (firstSibling.UnitPrice || 0) * (1 - ((firstSibling.Discount || 0) / 100)),
                         ...rampMeta,
                     };
                 }
@@ -973,26 +1006,28 @@ export default class QuoteLineEditor extends LightningElement {
                     );
                     const lastNrc = nrcSiblings.reduce((max, s) =>
                         (s.Ramp_Phase__c || 0) > (max.Ramp_Phase__c || 0) ? s : max, nrcSiblings[0]);
+                    const firstNrc = nrcSiblings.reduce((min, s) =>
+                        (s.Ramp_Phase__c || 0) < (min.Ramp_Phase__c || 0) ? s : min, nrcSiblings[0]);
                     if (this._isAggregateProduct(l)) {
                         return {
                             ...l,
                             Quantity: lastNrc.Quantity,
-                            UnitPrice: lastNrc.UnitPrice,
-                            List_Price__c: lastNrc.List_Price__c,
-                            TotalPrice: (lastNrc.Quantity || 0) * (lastNrc.UnitPrice || 0) * (1 - ((lastNrc.Discount || 0) / 100)),
+                            UnitPrice: firstNrc.UnitPrice,
+                            List_Price__c: firstNrc.List_Price__c,
+                            TotalPrice: (lastNrc.Quantity || 0) * (firstNrc.UnitPrice || 0) * (1 - ((firstNrc.Discount || 0) / 100)),
                             _readOnly: true, _attrDisabled: true,
                         };
                     }
-                    // Non-aggregate NRC: sum qty across unlinked phases, last phase price
+                    // Non-aggregate NRC: sum qty across unlinked phases, first phase price
                     const nrcBaseQty = nrcSiblings
                         .filter(s => !s.Ramp_Linked_Phase__c)
                         .reduce((sum, s) => sum + (s.Quantity || 0), 0);
                     return {
                         ...l,
                         Quantity: nrcBaseQty,
-                        UnitPrice: lastNrc.UnitPrice,
-                        List_Price__c: lastNrc.List_Price__c,
-                        TotalPrice: (nrcBaseQty || 0) * (lastNrc.UnitPrice || 0) * (1 - ((lastNrc.Discount || 0) / 100)),
+                        UnitPrice: firstNrc.UnitPrice,
+                        List_Price__c: firstNrc.List_Price__c,
+                        TotalPrice: (nrcBaseQty || 0) * (firstNrc.UnitPrice || 0) * (1 - ((firstNrc.Discount || 0) / 100)),
                         _readOnly: true, _attrDisabled: true,
                     };
                 }
@@ -1159,9 +1194,18 @@ export default class QuoteLineEditor extends LightningElement {
         return refreshApex(this._wiredResult);
     }
 
+    /** Reload QLE lines and invalidate Quote LDS cache so header totals refresh. */
+    _refreshAfterLineChange() {
+        const quoteId = this.resolvedId;
+        if (quoteId) {
+            getRecordNotifyChange([{ recordId: quoteId }]);
+        }
+        return refreshApex(this._wiredResult);
+    }
+
     // ─── Wires ────────────────────────────────────────────────────────────
 
-    @wire(getRecord, { recordId: '$resolvedId', fields: [PRICEBOOK2_FIELD, CURRENCY_FIELD, IS_BINDING_FIELD, STATUS_FIELD, ORIGINAL_ORDER_FIELD] })
+    @wire(getRecord, { recordId: '$resolvedId', fields: [PRICEBOOK2_FIELD, CURRENCY_FIELD, IS_BINDING_FIELD, STATUS_FIELD, ORIGINAL_ORDER_FIELD, CONTRACT_END_DATE_FIELD, RDD_FIELD] })
     wiredQuote({ data }) {
         if (data) {
             this._pricebook2Id      = getFieldValue(data, PRICEBOOK2_FIELD);
@@ -1169,6 +1213,8 @@ export default class QuoteLineEditor extends LightningElement {
             this._isBinding         = getFieldValue(data, IS_BINDING_FIELD);
             this._quoteStatus       = getFieldValue(data, STATUS_FIELD);
             this._isChangeOrderQuote = !!getFieldValue(data, ORIGINAL_ORDER_FIELD);
+            this._contractEndDate   = getFieldValue(data, CONTRACT_END_DATE_FIELD) || null;
+            this._quoteRdd          = getFieldValue(data, RDD_FIELD) || null;
             this._loadActiveApprovals();
         }
     }
@@ -1222,7 +1268,13 @@ export default class QuoteLineEditor extends LightningElement {
                 productCode:        l.Product2?.ProductCode              ?? '',
                 productFamily:      l.Product2?.Family                   ?? '',
                 productDescription: l.Product2?.Description              ?? '',
-                productUnit:        l.Product2?.QuantityUnitOfMeasure    ?? '',
+                // SFDC-366: the effective unit. A blank UoM__c means "inherit the
+                // product default", which is the state of every line created before
+                // this ticket — so both of these coalesce, never read UoM__c raw.
+                // productUnit is kept because the ramp modal still reads it for the
+                // custom-value label/placeholder.
+                UoM__c:             l.UoM__c || l.Product2?.QuantityUnitOfMeasure || '',
+                productUnit:        l.UoM__c || l.Product2?.QuantityUnitOfMeasure || '',
                 Product_Attribute_Value__c: l.Product_Attribute_Value__c
                     || (l.Product2?.Show_Custom_Attribute_Value__c && l.Custom_Attribute_Value__c ? String(l.Custom_Attribute_Value__c) : '')
                     || '',
@@ -1241,6 +1293,29 @@ export default class QuoteLineEditor extends LightningElement {
                     if (cur && !raw.includes(cur)) opts.push({ label: cur, value: cur });
                     return opts;
                 })(),
+                // SFDC-366: the UoM column's per-row choices. An EMPTY array means the
+                // cell renders as read-only text — that is how this one field also acts
+                // as the enable/disable switch (quoteLineDatatable hasEditOptions).
+                //   - Ramp lines are excluded because _executeSave drops every Ramp draft
+                //     anyway, and one ramp family must carry one unit: deleteRampPhases
+                //     SUMS phase quantities back onto the parent when unramping, which is
+                //     meaningless if the phases disagree. Set UoM before ramping.
+                //   - Non-Draft quotes are excluded, same rule as _attrDisabled above.
+                // Note Allowed_UoM__c is a MULTI-SELECT picklist, so it is ';'-delimited —
+                // unlike Attribute_Values__c right above, which is a comma list.
+                _uomOptions:        (() => {
+                    if (!this._isQuoteDraft || l.Line_Origin__c === 'Ramp') return [];
+                    const dflt = l.Product2?.QuantityUnitOfMeasure ?? '';
+                    const allowed = (l.Product2?.Allowed_UoM__c ?? '').split(';').map(v => v.trim()).filter(Boolean);
+                    const vals = [];
+                    if (dflt) vals.push(dflt);
+                    allowed.forEach(v => { if (!vals.includes(v)) vals.push(v); });
+                    // Keep a legacy/orphaned value selectable rather than silently dropping it
+                    const cur = l.UoM__c ?? '';
+                    if (cur && !vals.includes(cur)) vals.push(cur);
+                    // One option is not a choice — show plain text instead of a pointless dropdown
+                    return vals.length > 1 ? vals.map(v => ({ label: v, value: v })) : [];
+                })(),
                 _isCrossConnect:        this._isCrossConnectProduct(l) && !this._isNRC(l),
                 _xcNeedsSetup:          this._isCrossConnectProduct(l) && !this._isNRC(l) && (!l.A_Side_Asset__c || !l.Z_Side_Asset__c),
                 _viewIcon:              this._isCrossConnectProduct(l) && !this._isNRC(l) && (!l.A_Side_Asset__c || !l.Z_Side_Asset__c)
@@ -1250,8 +1325,15 @@ export default class QuoteLineEditor extends LightningElement {
                 _capacityAssignment:    l.Product2?.Capacity_Assignment__c ?? '',
                 _showCustomValue:       l.Product2?.Show_Custom_Attribute_Value__c === true,
                 Custom_Attribute_Value__c: l.Custom_Attribute_Value__c ?? '',
-                Reserved__c: (this._isNRC(l) || !l.Product2?.Capacity_Assignment__c)
-                    ? 'N/A' : (l.Reserved__c || 'Not Reserved'),
+                // SFDEV-7: show the stored value, never a derived one. The old expression
+                // forced 'N/A' on screen for an NRC line and for an MRC line whose product
+                // carries no Capacity_Assignment__c, so a line stored as 'Not Reserved'
+                // looked settled while Quote_Screen_AcceptQuote kept blocking on it — and
+                // picking 'N/A' matched the displayed value, produced no draft row, and
+                // never reached _doSave (line ~2162). No row has a null Reserved__c today
+                // (restricted picklist, default 'Not Reserved'), so '' is a defensive
+                // fallback only: blank reads as "no value", which 'N/A' would misstate.
+                Reserved__c: l.Reserved__c || '',
                 lineUrl: `/lightning/r/QuoteLineItem/${l.Id}/view`,
                 Target_BAN__c: l.Target_BAN__c  || null,
                 // Mirrors VR_QLI_04_No_Edit_Qty_Attr_On_CO: a CO line tied to an
@@ -1358,7 +1440,7 @@ export default class QuoteLineEditor extends LightningElement {
         }
         this._rampSourceQty       = line.Quantity;
         this._rampSourcePrice     = line.UnitPrice || 0;
-        this._rampSourceStartDate = line.StartDate || null;
+        this._rampSourceStartDate = this._getQuoteRddStr();
         this._rampSourceEndDate   = line.EndDate   || null;
         this._rampSourceAttributeOptions = line._attributeOptions || [];
         this._rampSourceAttributeValue   = line.Product_Attribute_Value__c || '';
@@ -1371,7 +1453,7 @@ export default class QuoteLineEditor extends LightningElement {
     handleSectionSaveSuccess() {
         this._editSection = null;
         this._toast('Saved', 'Line item updated.', 'success');
-        refreshApex(this._wiredResult);
+        this._refreshAfterLineChange();
     }
 
     closeDetailPanel() {
@@ -1464,6 +1546,62 @@ export default class QuoteLineEditor extends LightningElement {
         return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
     }
 
+    /** Normalize LDS/Apex date to YYYY-MM-DD for string compare. */
+    _toDateStr(val) {
+        if (!val) return null;
+        if (typeof val === 'string') return val.substring(0, 10);
+        if (val instanceof Date && !Number.isNaN(val.getTime())) {
+            return `${val.getFullYear()}-${String(val.getMonth() + 1).padStart(2, '0')}-${String(val.getDate()).padStart(2, '0')}`;
+        }
+        return String(val).substring(0, 10);
+    }
+
+    _getContractEndDateStr() {
+        return this._toDateStr(this._contractEndDate);
+    }
+
+    _getQuoteRddStr() {
+        return this._toDateStr(this._quoteRdd);
+    }
+
+    /**
+     * Ramp Phase 1 start = Quote RDD (locked). Prefills/forces Phase 1 when RDD is set.
+     */
+    _applyRamp1Rdd(phases, startKey = 'startDate') {
+        const rdd = this._getQuoteRddStr();
+        if (!rdd) return;
+        const p1 = phases.find(p => Number(p.phaseNumber) === 1) || phases[0];
+        if (p1) {
+            p1[startKey] = rdd;
+            p1.startDateLocked = true;
+        }
+    }
+
+    /**
+     * UI-only: block ramp phases that start (or end) after Quote Contract End Date.
+     * phases: array of objects; startKey/endKey select the date fields to check.
+     * Returns error message or null if OK.
+     */
+    _validateRampWithinContract(phases, startKey = 'startDate', endKey = 'endDate') {
+        const contractEnd = this._getContractEndDateStr();
+        if (!contractEnd) {
+            return 'Contract End Date is missing on this Quote. Set Contract Term and RDD before creating a ramp.';
+        }
+        const endLabel = this._fmtDate(contractEnd);
+        for (let i = 0; i < phases.length; i++) {
+            const start = this._toDateStr(phases[i][startKey]);
+            if (start && start > contractEnd) {
+                return `Ramp cannot extend beyond the Contract End Date(${endLabel}).`;
+            }
+            const end = this._toDateStr(phases[i][endKey]);
+            if (end && end > contractEnd) {
+                return `Ramp cannot extend beyond the Contract End Date(${endLabel}).`;
+            }
+        }
+        return null;
+    }
+
+
     handleEditExistingRamp() {
         if (!this._isQuoteDraft) {
             this._toast('Quote Not in Draft', 'Ramp can only be modified when the Quote is in Draft status.', 'warning');
@@ -1478,20 +1616,13 @@ export default class QuoteLineEditor extends LightningElement {
         // Derive unique phase numbers
         const phaseNums = [...new Set(this._existingRampRaw.map(r => r.rampPhase))].sort((a, b) => a - b);
 
-        // Build unique product list by QLI identity (parentLineId as group key)
-        const phase1Raw = this._existingRampRaw.filter(r => r.rampPhase === phaseNums[0]);
-        const phase1Ids = new Set(phase1Raw.map(r => r.id));
-        // Products only in later phases — group key is parentLineId, detected by absence from Phase 1
-        const laterOnlyProducts = [];
-        const seenGroups = new Set(phase1Raw.map(r => r.id)); // Phase 1 IDs are group anchors
-        for (const r of this._existingRampRaw) {
-            const gk = r.parentLineId || r.id;
-            if (!seenGroups.has(gk)) {
-                seenGroups.add(gk);
-                laterOnlyProducts.push(r);
-            }
-        }
-        const allProductRaw = [...phase1Raw, ...laterOnlyProducts];
+        // Build unique product list by ramp family. Each family has exactly one root record
+        // (Ramp_Parent_Line__c == null — the original source line). This is the same rule
+        // deleteRampPhases uses (QuoteLineEditorController.cls:1801): Ramp_Phase__c is
+        // unreliable as an anchor because an excluded Phase 1 leaves the source QLI on
+        // globalPhase > 1, and that family then gets counted twice — once as a stale
+        // "phase 1" row, again as a "later phase" find — producing duplicate rows on reopen.
+        const allProductRaw = this._existingRampRaw.filter(r => r.parentLineId == null);
         const mrcLines = allProductRaw
             .map(r => this._lines.find(l => l.Id === r.id))
             .filter(Boolean);
@@ -1513,7 +1644,9 @@ export default class QuoteLineEditor extends LightningElement {
                 .filter(l => (l.productCode || '').toUpperCase().endsWith('.RC'))
                 .map(l => (l.productCode || '').toUpperCase().replace(/\.RC$/, '.NR'))
             );
+            // SFDEV-11: the save only splits auto NRCs; a standalone one must not be shown as paired
             nrcLines = this._lines.filter(l =>
+                l.Is_Auto_NRC__c === true &&
                 nrcCodes.has((l.productCode || '').toUpperCase()) && !p1Ids.has(l.Id)
             );
         }
@@ -1535,14 +1668,17 @@ export default class QuoteLineEditor extends LightningElement {
             phaseRawEntries.filter(r => r.id === lineId || r.parentLineId === lineId);
 
         // Pre-populate phases from existing ramp data
+        // Pre-populate phases from existing ramp data (Phase 1 start locked to Quote RDD)
+        const rddStr = this._getQuoteRddStr();
         this._rampModalPhases = phaseNums.map((pn, i) => {
             const phaseLines = this._existingRampRaw.filter(r => r.rampPhase === pn);
-            const sd = phaseLines[0]?.startDate || null;
+            const sd = i === 0 ? (rddStr || phaseLines[0]?.startDate || null) : (phaseLines[0]?.startDate || null);
             return {
                 id: i + 1,
                 phaseNumber: i + 1,
                 colClass: this._computeColClass(i + 1, sd),
                 startDate: sd,
+                startDateLocked: i === 0 && !!rddStr,
                 notes: phaseLines[0]?.notes || '',
                 products: mrcLines.map(ml => {
                     const matches = findMatches(phaseLines, ml.Id);
@@ -1663,6 +1799,8 @@ export default class QuoteLineEditor extends LightningElement {
             }
         }
 
+        this._applyRamp1Rdd(this._existingRampPhases);
+
         // Auto-calculate end dates (next phase start - 1 day)
         const sorted = [...this._existingRampPhases].sort((a, b) =>
             a.startDate < b.startDate ? -1 : a.startDate > b.startDate ? 1 : 0
@@ -1670,7 +1808,14 @@ export default class QuoteLineEditor extends LightningElement {
         for (let i = 0; i < sorted.length - 1; i++) {
             sorted[i].endDate = this._prevDay(sorted[i + 1].startDate);
         }
-        sorted[sorted.length - 1].endDate = null; // Last phase open-ended
+        const contractEndExisting = this._getContractEndDateStr();
+        sorted[sorted.length - 1].endDate = contractEndExisting || null;
+
+        const existingErr = this._validateRampWithinContract(sorted);
+        if (existingErr) {
+            this._toast('Error', existingErr, 'error');
+            return;
+        }
 
         const lines = sorted.map(p => {
             const ql = { Id: p.id };
@@ -1687,7 +1832,7 @@ export default class QuoteLineEditor extends LightningElement {
             .then(() => {
                 this._toast('Ramp Updated', 'Ramp phases updated.', 'success');
                 this._isEditingExistingRamp = false;
-                return refreshApex(this._wiredResult);
+                return this._refreshAfterLineChange();
             })
             .then(() => { this._loadExistingRamp(); })
             .catch(err => this._toast('Error', err?.body?.message || 'Could not update ramp.', 'error'))
@@ -1712,7 +1857,7 @@ export default class QuoteLineEditor extends LightningElement {
                 this._existingRampPhases = [];
                 this._panelSection = 'details';
                 this.closeDetailPanel();
-                return refreshApex(this._wiredResult);
+                return this._refreshAfterLineChange();
             })
             .catch(err => this._toast('Error', err?.body?.message || 'Could not delete ramp.', 'error'))
             .finally(() => { this.isLoading = false; });
@@ -1737,7 +1882,7 @@ export default class QuoteLineEditor extends LightningElement {
         })
             .then(() => {
                 this._toast('Phase Added', 'New ramp phase created.', 'success');
-                return refreshApex(this._wiredResult);
+                return this._refreshAfterLineChange();
             })
             .then(() => { this._loadExistingRamp(); })
             .catch(err => this._toast('Error', err?.body?.message || 'Could not add phase.', 'error'))
@@ -1820,7 +1965,7 @@ export default class QuoteLineEditor extends LightningElement {
         addProductToQuote({ quoteId: this.resolvedId, pricebookEntryId: pbeId, quantity: 1, overrideUnitPrice: overridePrice })
             .then(() => {
                 this._toast('Added', `${name} added to the quote.`, 'success');
-                return refreshApex(this._wiredResult);
+                return this._refreshAfterLineChange();
             })
             .then(() => {
                 if (isCrossConnect) {
@@ -1866,6 +2011,18 @@ export default class QuoteLineEditor extends LightningElement {
     handleDraftChange(event) {
         // Set true immediately — actual draft collection happens on save
         this.hasPendingDrafts = event?.detail?.hasDrafts !== false;
+        // SFDC-366: warn as soon as the unit changes, not at save time. Save here is
+        // also auto-scheduled, so a save-time toast could fire from a timer with no
+        // user gesture behind it. Nothing is cleared or recalculated — the rep decides.
+        const ch = event?.detail?.change;
+        if (ch?.field === 'UoM__c' && ch.newValue !== ch.oldValue && !this._uomToastShown) {
+            this._uomToastShown = true;   // one toast per draft batch, not one per row
+            this._toast(
+                'Unit of Measure changed',
+                'Quantity and price were left as they are. Check them against the new unit before saving.',
+                'warning'
+            );
+        }
         this._scheduleAutoSave();
     }
 
@@ -1885,6 +2042,7 @@ export default class QuoteLineEditor extends LightningElement {
         tables.forEach(t => t.clearDrafts());
         this._draftValues = [];
         this.hasPendingDrafts = false;
+        this._uomToastShown = false;   // SFDC-366: new batch, warn again
     }
 
     // ─── Autosave ───────────────────────────────────────────────────────
@@ -2018,6 +2176,9 @@ export default class QuoteLineEditor extends LightningElement {
             if (d.Product_Attribute_Value__c !== undefined) ql.Product_Attribute_Value__c = d.Product_Attribute_Value__c;
             if (d.Custom_Attribute_Value__c !== undefined) ql.Custom_Attribute_Value__c = d.Custom_Attribute_Value__c;
             if (d.List_Price__c !== undefined) ql.List_Price__c = d.List_Price__c;
+            // SFDC-366. This allowlist is the ONLY gate — updateQuoteLineItems does a
+            // bare doUpdate — so a field missing from here is dropped without an error.
+            if (d.UoM__c !== undefined) ql.UoM__c = d.UoM__c || null;
             return ql;
         });
         this.isLoading = true;
@@ -2027,10 +2188,11 @@ export default class QuoteLineEditor extends LightningElement {
                 const tables = this.template.querySelectorAll('c-quote-line-datatable');
                 tables.forEach(t => t.clearDrafts());
                 this.hasPendingDrafts = false;
+                this._uomToastShown = false;   // SFDC-366: new batch, warn again
             })
             .then(() => {
                 this._loadActiveApprovals();
-                return refreshApex(this._wiredResult);
+                return this._refreshAfterLineChange();
             })
             .then(() => {
                 this._draftValues = [];
@@ -2061,12 +2223,12 @@ export default class QuoteLineEditor extends LightningElement {
         updateQuoteLineItems({ lines })
             .then(() => {
                 this._toast('Saved', 'Attribute updated.', 'success');
-                return refreshApex(this._wiredResult);
+                return this._refreshAfterLineChange();
             })
             .catch(err => {
                 this._toast('Save Failed', err?.body?.message || 'Could not save attribute.', 'error');
                 // Revert the picklist to the actual server value on rejection.
-                return refreshApex(this._wiredResult);
+                return this._refreshAfterLineChange();
             })
             .finally(() => { this.isLoading = false; });
     }
@@ -2074,7 +2236,12 @@ export default class QuoteLineEditor extends LightningElement {
     // ─── Row actions ──────────────────────────────────────────────────────
 
     handleRowAction(event) {
-        if (event.detail.action.name === 'view') {
+        const actionName = event.detail.action.name;
+        if (actionName === 'moveUp' || actionName === 'moveDown') {
+            this._reorderLine(event.detail.row.Id, actionName === 'moveUp' ? 'up' : 'down');
+            return;
+        }
+        if (actionName === 'view') {
             this.selectedLineId   = event.detail.row.Id;
             this.selectedLineName = event.detail.row.productName;
             this.selectedLineCode = event.detail.row.productCode;
@@ -2105,6 +2272,27 @@ export default class QuoteLineEditor extends LightningElement {
                 this._panelSection = 'details';
             }
         }
+    }
+
+    _reorderLine(lineId, direction) {
+        if (!this.allowLineReorder || !lineId || this.isLoading) return;
+        if (this.hasPendingDrafts) {
+            this._toast('Save changes first', 'Save or cancel unsaved edits before reordering lines.', 'warning');
+            return;
+        }
+        this.isLoading = true;
+        reorderQuoteLineItem({
+            quoteId: this.resolvedId,
+            lineId,
+            direction
+        })
+            .then(() => this._refreshAfterLineChange())
+            .catch(err => this._toast(
+                'Reorder Failed',
+                err?.body?.message || 'Could not reorder line.',
+                'error'
+            ))
+            .finally(() => { this.isLoading = false; });
     }
 
     /**
@@ -2297,12 +2485,14 @@ export default class QuoteLineEditor extends LightningElement {
 
     _initRampPhases() {
         this._rampNextId = 2;
+        const rdd = this._getQuoteRddStr();
         this.rampPhases = [{
             id: 1, phaseNumber: 1,
             quantity:       this._rampSourceQty,
             unitPrice:      this._rampSourcePrice,
             attributeValue: this._rampSourceAttributeValue,
-            startDate:      this._rampSourceStartDate,
+            startDate:      rdd,
+            startDateLocked: !!rdd,
             canRemove:      false
         }];
     }
@@ -2319,7 +2509,7 @@ export default class QuoteLineEditor extends LightningElement {
         }
         this._rampSourceQty       = line.Quantity;
         this._rampSourcePrice     = line.UnitPrice || 0;
-        this._rampSourceStartDate = line.StartDate || null;
+        this._rampSourceStartDate = this._getQuoteRddStr();
         this._rampSourceEndDate   = line.EndDate   || null;
         this._rampSourceAttributeOptions = line._attributeOptions || [];
         this._rampSourceAttributeValue   = line.Product_Attribute_Value__c || '';
@@ -2358,9 +2548,11 @@ export default class QuoteLineEditor extends LightningElement {
         const phaseId = Number(event.currentTarget.dataset.phaseId);
         const field   = event.currentTarget.dataset.field;
         const value   = event.detail.value;
-        this.rampPhases = this.rampPhases.map(p =>
-            p.id === phaseId ? { ...p, [field]: (field === 'quantity' || field === 'unitPrice') ? Number(value) : value } : p
-        );
+        this.rampPhases = this.rampPhases.map(p => {
+            if (p.id !== phaseId) return p;
+            if (field === 'startDate' && p.startDateLocked) return p;
+            return { ...p, [field]: (field === 'quantity' || field === 'unitPrice') ? Number(value) : value };
+        });
     }
 
     handleCancelRamp() {
@@ -2372,6 +2564,8 @@ export default class QuoteLineEditor extends LightningElement {
 
     handleSaveRamp() {
         let phases = [...this.rampPhases];
+
+        this._applyRamp1Rdd(phases);
 
         // All types: validate start dates present
         for (const p of phases) {
@@ -2426,8 +2620,16 @@ export default class QuoteLineEditor extends LightningElement {
         for (let i = 0; i < phases.length - 1; i++) {
             phases[i].endDate = this._prevDay(phases[i + 1].startDate);
         }
-        // Last phase: use source end date or null (open-ended / contract end)
-        phases[phases.length - 1].endDate = this._rampSourceEndDate || null;
+        // Last phase: close on Quote Contract End (fallback: source end / open)
+        const contractEnd = this._getContractEndDateStr();
+        phases[phases.length - 1].endDate = contractEnd || this._rampSourceEndDate || null;
+
+        // Block ramp dates beyond contract term (UI-only; Apex backstop TBD)
+        const contractErr = this._validateRampWithinContract(phases);
+        if (contractErr) {
+            this._toast('Error', contractErr, 'error');
+            return;
+        }
 
         // SF rejects same-day StartDate/EndDate without EndTime > StartTime.
         // Strip endDate from payload when it equals startDate.
@@ -2458,7 +2660,7 @@ export default class QuoteLineEditor extends LightningElement {
                 this.rampPhases      = [];
                 this._panelSection   = 'details';
                 this.closeDetailPanel();
-                return refreshApex(this._wiredResult);
+                return this._refreshAfterLineChange();
             })
             .catch(err => this._toast('Ramp Failed', err?.body?.message || 'Could not split line into ramp phases.', 'error'))
             .finally(() => { this.isLoading = false; });
@@ -2674,9 +2876,9 @@ export default class QuoteLineEditor extends LightningElement {
                     phaseId: phase.id,
                     lineId: line.Id,
                     cellClass: needsInput ? baseCellClass + ' qle-ramp-cell-empty' : baseCellClass,
-                    quantity: displayQty || '',
+                    quantity: (displayQty === null || displayQty === undefined) ? '' : displayQty,
                     qtyDisabled,
-                    unitPrice: rawPrice || '',
+                    unitPrice: (rawPrice === null || rawPrice === undefined) ? '' : rawPrice,
                     attributeValue: prod ? prod.attributeValue : '',
                     attributeOptions: opts,
                     hasAttribute: line._hasAttribute && Array.isArray(opts) && opts.length > 1,
@@ -2824,7 +3026,7 @@ export default class QuoteLineEditor extends LightningElement {
             const more = blank.length > 3 ? ` +${blank.length - 3} more` : '';
             msgs.push({
                 key: `blank-${phase.id}`,
-                text: `Phase ${phase.phaseNumber}: ${names}${more} need a quantity, or exclude them from this phase`
+                text: `Phase ${phase.phaseNumber}: enter a quantity for ${names}${more}, or exclude from this phase`
             });
         }
         // Qty match: total across phases must equal base qty (skip aggregate products)
@@ -2889,7 +3091,9 @@ export default class QuoteLineEditor extends LightningElement {
             return;
         }
         const selectedLines = this._lines.filter(l => this.selectedRowIds.includes(l.Id));
-        const mrcLines = selectedLines.filter(l => !this._isNRC(l));
+        // Only exclude auto-paired NRC (handled automatically below via the .RC/.NR pairing
+        // loop) — standalone NRC products (Is_Auto_NRC__c false/blank) must stay selectable.
+        const mrcLines = selectedLines.filter(l => !(this._isNRC(l) && l.Is_Auto_NRC__c === true));
 
         // Block already-ramped lines
         const alreadyRamped = mrcLines.filter(l => l.Line_Origin__c === 'Ramp');
@@ -2907,7 +3111,9 @@ export default class QuoteLineEditor extends LightningElement {
             const mrcCode = (mrc.productCode || '').toUpperCase();
             if (mrcCode.endsWith('.RC')) {
                 const nrcCode = mrcCode.replace(/\.RC$/, '.NR');
+                // SFDEV-11: the save only splits auto NRCs; a standalone one must not be shown as paired
                 const paired = this._lines.find(l =>
+                    l.Is_Auto_NRC__c === true &&
                     (l.productCode || '').toUpperCase() === nrcCode &&
                     !freshLines.some(m => m.Id === l.Id) &&
                     !nrcLines.some(n => n.Id === l.Id)
@@ -2919,6 +3125,19 @@ export default class QuoteLineEditor extends LightningElement {
             this._toast('No MRC Lines', 'Select at least one MRC product to create a ramp.', 'warning');
             return;
         }
+
+        // Standalone NRC: any non-auto NRC is its own editable row. SFDEV-11: this used to skip
+        // one whose .RC counterpart was on the quote, but the save never pairs a non-auto NRC,
+        // so that line was left unramped and vanished from the schedule and the PDF.
+        const orphanNrcLines = this._lines.filter(l =>
+            this._isNRC(l) &&
+            l.Is_Auto_NRC__c !== true &&
+            l.Line_Origin__c !== 'Ramp' &&
+            !freshLines.some(m => m.Id === l.Id) &&
+            !nrcLines.some(n => n.Id === l.Id)
+        );
+        freshLines.push(...orphanNrcLines);
+
         const negQty = freshLines.find(l => l.Quantity != null && l.Quantity < 0);
         if (negQty) {
             this._toast('Invalid Quantity', `${negQty.productName} has a negative quantity.`, 'warning');
@@ -3028,17 +3247,19 @@ export default class QuoteLineEditor extends LightningElement {
     _initRampModalPhases() {
         const count = this._rampModalPhaseCount;
         const phases = [];
+        const rdd = this._getQuoteRddStr();
         for (let i = 0; i < count; i++) {
-            const isLast = i === count - 1;
+            const isFirst = i === 0;
+            const sd = isFirst ? rdd : null;
             phases.push({
                 id: i + 1,
                 phaseNumber: i + 1,
-                colClass: ((i + 1) % 2 !== 0 ? 'qle-ramp-grid-col-header qle-ramp-col-tint qle-ramp-col-missing' : 'qle-ramp-grid-col-header qle-ramp-col-missing'),
-                startDate: null,
+                colClass: this._computeColClass(i + 1, sd),
+                startDate: sd,
+                startDateLocked: isFirst && !!rdd,
                 notes: '',
                 products: this._rampMrcLines.map(line => {
                     const totalQty = line.Quantity || 0;
-                    const isFirst = i === 0;
                     return {
                         lineId: line.Id,
                         name: line.productName,
@@ -3064,9 +3285,10 @@ export default class QuoteLineEditor extends LightningElement {
     handleRampModalPhaseDate(event) {
         const phaseId = Number(event.currentTarget.dataset.phaseId);
         const value = event.detail.value;
-        this._rampModalPhases = this._rampModalPhases.map(p =>
-            p.id === phaseId ? { ...p, startDate: value, colClass: this._computeColClass(p.id, value) } : p
-        );
+        this._rampModalPhases = this._rampModalPhases.map(p => {
+            if (p.id !== phaseId || p.startDateLocked) return p;
+            return { ...p, startDate: value, colClass: this._computeColClass(p.id, value) };
+        });
     }
 
     handleRampModalPhaseNotes(event) {
@@ -3455,7 +3677,7 @@ export default class QuoteLineEditor extends LightningElement {
                 ...p,
                 products: p.products.map(pr =>
                     pr.lineId === lineId
-                        ? { ...pr, [field]: (field === 'quantity' || field === 'unitPrice') ? Number(value) : (field === 'customValue' ? value : value) }
+                        ? { ...pr, [field]: (field === 'quantity' || field === 'unitPrice') ? (value === '' ? null : Number(value)) : value }
                         : pr
                 )
             } : p
@@ -3521,12 +3743,14 @@ export default class QuoteLineEditor extends LightningElement {
 
     handleRampModalClick(event) { event.stopPropagation(); }
 
-    // ── Available MRC lines (not already in ramp, not NRC, not already-ramped) ──
+    // ── Available lines (not already in ramp, not auto-paired NRC, not already-ramped) ──
+    // Standalone NRC (Is_Auto_NRC__c false/blank) stays available — only the NRC lines the
+    // ramp engine auto-pairs to their parent .RC line are excluded here.
     get _availableRampLines() {
         const inRampIds = new Set(this._rampMrcLines.map(l => l.Id));
         const nrcIds = new Set(this._rampNrcLines.map(l => l.Id));
         return this._lines.filter(l =>
-            !this._isNRC(l) &&
+            !(this._isNRC(l) && l.Is_Auto_NRC__c === true) &&
             !inRampIds.has(l.Id) &&
             !nrcIds.has(l.Id) &&
             l.Line_Origin__c !== 'Ramp' &&
@@ -3562,7 +3786,9 @@ export default class QuoteLineEditor extends LightningElement {
         const mrcCode = (line.productCode || '').toUpperCase();
         if (mrcCode.endsWith('.RC')) {
             const nrcCode = mrcCode.replace(/\.RC$/, '.NR');
+            // SFDEV-11: only an auto NRC is paired; a standalone one is added as its own line
             const paired = this._lines.find(l =>
+                l.Is_Auto_NRC__c === true &&
                 (l.productCode || '').toUpperCase() === nrcCode &&
                 !this._rampMrcLines.some(m => m.Id === l.Id) &&
                 !this._rampNrcLines.some(n => n.Id === l.Id)
@@ -3604,6 +3830,8 @@ export default class QuoteLineEditor extends LightningElement {
             }
         }
 
+        this._applyRamp1Rdd(this._rampModalPhases, 'startDate');
+
         // Unified validation: qty + price always, attribute for products that have it (skip excluded)
         for (const phase of this._rampModalPhases) {
             for (const prod of phase.products) {
@@ -3634,11 +3862,19 @@ export default class QuoteLineEditor extends LightningElement {
         for (let i = 0; i < sorted.length - 1; i++) {
             sorted[i]._endDate = this._prevDay(sorted[i + 1].startDate);
         }
+        const contractEndModal = this._getContractEndDateStr();
         const latestEnd = this._rampMrcLines.reduce((latest, line) => {
             if (line.EndDate && (!latest || line.EndDate > latest)) return line.EndDate;
             return latest;
         }, null);
-        sorted[sorted.length - 1]._endDate = latestEnd;
+        // Prefer Contract End so last phase cannot run open-ended past the term
+        sorted[sorted.length - 1]._endDate = contractEndModal || latestEnd;
+
+        const modalErr = this._validateRampWithinContract(sorted, 'startDate', '_endDate');
+        if (modalErr) {
+            this._toast('Error', modalErr, 'error');
+            return;
+        }
 
         const safeEnd = (p) => (p._endDate && p._endDate === p.startDate) ? null : (p._endDate || null);
 
@@ -3680,7 +3916,12 @@ export default class QuoteLineEditor extends LightningElement {
                     };
                     if (pd.attributeValue) entry.attributeValue = pd.attributeValue;
                     if (pd.customValue) entry.customValue = pd.customValue;
-                    if (phase.notes) entry.notes = phase.notes;
+                    // SFDEV-3: always send the key, never guard on truthiness. '' is falsy,
+                    // so a cleared note used to drop out of the payload and Apex's
+                    // containsKey('notes') guard (QuoteLineEditorController line ~1019) left the
+                    // phase-1 source line's old note in place. Phases 2+ are deleted and
+                    // re-inserted on edit, so only phase 1 showed the stale text.
+                    entry.notes = phase.notes ? phase.notes : null;
                     return entry;
                 };
                 if (!links.length) {
@@ -3727,11 +3968,11 @@ export default class QuoteLineEditor extends LightningElement {
                     `${this._rampMrcLines.length} product(s) ${isEdit ? 'updated across' : 'split into'} ${sorted.length} phases.`, 'success');
                 this.handleCloseRampModal();
                 this.selectedRowIds = [];
-                return refreshApex(this._wiredResult);
+                return this._refreshAfterLineChange();
             })
             .catch(err => {
                 this._rampModalError = this._cleanRampError(err);
-                return refreshApex(this._wiredResult);
+                return this._refreshAfterLineChange();
             })
             .finally(() => { this.isLoading = false; });
         }).catch(err => {
@@ -3788,11 +4029,23 @@ export default class QuoteLineEditor extends LightningElement {
     _loadLineInventory() {
         this.isInventoryLoading = true;
         this.inventoryLoaded = false;
+        // SFDC-472: the Floor / Data Hall picker needs the site's floors. Every path
+        // into the inventory panel comes through here (handlePanelNav calls it
+        // directly), so this is the one reliable place to populate them.
+        if (this._invFloors.length === 0) this._ensureInvFloors();
         const invType = this._invTypeFilter === 'All' ? null : this._invTypeFilter;
-        getLineInventory({ quoteLineItemId: this.selectedLineId, quoteId: this.resolvedId, inventoryType: invType })
+        getLineInventory({
+            quoteLineItemId: this.selectedLineId,
+            quoteId:         this.resolvedId,
+            inventoryType:   invType,
+            floorId:         this._invFloorId || null,
+            hallId:          this._invHallId  || null
+        })
             .then(result => {
                 this._assignedInventory  = result.assigned  || [];
                 this._availableInventory = result.available || [];
+                this._invAvailableTotal  = result.availableTotal || this._availableInventory.length;
+                this._invAvailableLimit  = result.availableLimit || 0;
                 this.inventoryLoaded = true;
                 this._reconcileSelectedInv();
             })
@@ -3816,7 +4069,7 @@ export default class QuoteLineEditor extends LightningElement {
             .then(() => {
                 this._toast('Assigned', 'Inventory assigned to this line.', 'success');
                 this._loadLineInventory();
-                refreshApex(this._wiredResult);
+                this._refreshAfterLineChange();
             })
             .catch(err => this._toast('Error', err?.body?.message || 'Could not assign inventory.', 'error'))
             .finally(() => { this.isInventoryBusy = false; });
@@ -3829,7 +4082,7 @@ export default class QuoteLineEditor extends LightningElement {
             .then(() => {
                 this._toast('Released', 'Inventory released from this line.', 'success');
                 this._loadLineInventory();
-                refreshApex(this._wiredResult);
+                this._refreshAfterLineChange();
             })
             .catch(err => this._toast('Error', err?.body?.message || 'Could not release inventory.', 'error'))
             .finally(() => { this.isInventoryBusy = false; });
@@ -3848,6 +4101,64 @@ export default class QuoteLineEditor extends LightningElement {
             label: t,
             cls: t === this._invTypeFilter ? 'qle-inv-pill qle-inv-pill-active' : 'qle-inv-pill'
         }));
+    }
+
+    // ─── Floor / Data Hall scope (SFDC-472) ───────────────────────────────
+
+    async _ensureInvFloors() {
+        await this._loadSiteInfo();
+        await this._loadInvFloors();
+    }
+
+    async _loadInvFloors() {
+        if (!this._siteId) return;
+        try {
+            this._invFloors = await getFloorsBySite({ siteId: this._siteId });
+        } catch (_e) { this._invFloors = []; }
+    }
+
+    async _loadInvHalls() {
+        if (!this._invFloorId) { this._invHalls = []; return; }
+        try {
+            this._invHalls = await getHallsByFloor({ floorId: this._invFloorId });
+        } catch (_e) { this._invHalls = []; }
+    }
+
+    get invFloorOptions() {
+        return [{ label: 'All floors', value: '' }]
+            .concat(this._invFloors.map(f => ({ label: f.Name, value: f.Id })));
+    }
+
+    get invHallOptions() {
+        return [{ label: 'All data halls', value: '' }]
+            .concat(this._invHalls.map(h => ({ label: h.Name, value: h.Id })));
+    }
+
+    get invFloorId()       { return this._invFloorId; }
+    get invHallId()        { return this._invHallId; }
+    get noInvHallOptions() { return !this._invFloorId || this._invHalls.length === 0; }
+
+    get invIsTruncated() {
+        return this._invAvailableLimit > 0 && this._invAvailableTotal > this._invAvailableLimit;
+    }
+
+    get invTruncationNotice() {
+        return `Showing the first ${this._invAvailableLimit} of ${this._invAvailableTotal} available records. `
+             + 'Pick a Floor or Data Hall to see the rest.';
+    }
+
+    async handleInvFloorChange(event) {
+        this._invFloorId = event.detail.value || '';
+        this._invHallId  = '';
+        this._selectedInvIds = new Set();
+        await this._loadInvHalls();
+        if (this.selectedLineId) this._loadLineInventory();
+    }
+
+    handleInvHallChange(event) {
+        this._invHallId = event.detail.value || '';
+        this._selectedInvIds = new Set();
+        if (this.selectedLineId) this._loadLineInventory();
     }
 
     handleInvTypeFilter(event) {
@@ -3962,7 +4273,7 @@ export default class QuoteLineEditor extends LightningElement {
                 this._toast('Assigned', `${ids.length} inventory item(s) assigned.`, 'success');
                 this._selectedInvIds = new Set();
                 this._loadLineInventory();
-                refreshApex(this._wiredResult);
+                this._refreshAfterLineChange();
             })
             .catch(err => this._toast('Error', err?.body?.message || 'Could not assign inventory.', 'error'))
             .finally(() => { this.isInventoryBusy = false; });
@@ -4091,7 +4402,7 @@ export default class QuoteLineEditor extends LightningElement {
 
     handleXcSaveSuccess() {
         this._toast('Saved', 'Cross connect assets updated.', 'success');
-        refreshApex(this._wiredResult);
+        this._refreshAfterLineChange();
     }
 
     assetDisplayInfo = { primaryField: 'Name', additionalFields: ['Product2.Name'] };
@@ -4123,7 +4434,7 @@ export default class QuoteLineEditor extends LightningElement {
             this._toast('Saved', 'Cross connect assets updated.', 'success');
             this._pendingASide = undefined;
             this._pendingZSide = undefined;
-            refreshApex(this._wiredResult);
+            this._refreshAfterLineChange();
         })
         .catch(e => {
             this._toast('Error', (e.body && e.body.message) || 'Failed to save Cross.', 'error');
@@ -4164,7 +4475,7 @@ export default class QuoteLineEditor extends LightningElement {
         updateQuoteLineItems({ lines })
             .then(() => {
                 this._toast('Saved', 'Custom attribute value updated.', 'success');
-                return refreshApex(this._wiredResult);
+                return this._refreshAfterLineChange();
             })
             .catch(err => this._toast('Save Failed', err?.body?.message || 'Could not update custom value.', 'error'))
             .finally(() => { this.isLoading = false; });
@@ -4178,7 +4489,7 @@ export default class QuoteLineEditor extends LightningElement {
             .then(() => {
                 this.selectedRowIds = this.selectedRowIds.filter(id => !ids.includes(id));
                 this._toast('Removed', `${ids.length} line item${ids.length > 1 ? 's' : ''} removed.`, 'success');
-                return refreshApex(this._wiredResult);
+                return this._refreshAfterLineChange();
             })
             .catch(err => this._toast('Delete Failed', err?.body?.message || 'Could not remove line items.', 'error'))
             .finally(() => { this.isLoading = false; });

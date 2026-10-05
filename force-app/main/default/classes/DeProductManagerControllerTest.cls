@@ -298,18 +298,21 @@ private class DeProductManagerControllerTest {
     @IsTest
     static void createProduct_full() {
         Test.startTest();
+        // SFDC-366: the catalog modal offers Allowed UoM on create as well as on edit,
+        // so createProduct takes the ';'-delimited list as its last argument.
         String id = DeProductManagerController.createProduct('New Prod', 'NP-001', 'Space', 'desc',
-            true, 'MRC', 'Bandwidth', '1;2;3', true, 'Singapore', 'JKT1');
+            true, 'MRC', 'Bandwidth', '1;2;3', true, 'Singapore', 'JKT1', 'sqm;kVA');
         Test.stopTest();
         System.assertNotEquals(null, id, 'createProduct should return an Id');
-        Product2 p = [SELECT Name, Charge_Type__c, Attribute_Values__c FROM Product2 WHERE Id = :id];
+        Product2 p = [SELECT Name, Charge_Type__c, Attribute_Values__c, Allowed_UoM__c FROM Product2 WHERE Id = :id];
         System.assertEquals('New Prod', p.Name, 'Name should be set');
+        System.assertEquals('sqm;kVA', p.Allowed_UoM__c, 'createProduct should persist Allowed_UoM__c');
     }
 
     @IsTest
     static void createProduct_blankNameThrows() {
         Boolean threw = false;
-        try { DeProductManagerController.createProduct('', null, null, null, true, null, null, null, false, null, null); }
+        try { DeProductManagerController.createProduct('', null, null, null, true, null, null, null, false, null, null, null); }
         catch (AuraHandledException e) { threw = true; }
         System.assert(threw, 'Blank name should throw');
     }
@@ -318,17 +321,47 @@ private class DeProductManagerControllerTest {
     static void updateProduct_andCatalog() {
         Product2 p = firstProduct();
         Test.startTest();
-        DeProductManagerController.updateProduct(p.Id, 'Renamed', 'newdesc', 'Bandwidth', '1;2', true, 'Space', 'Units');
-        DeProductManagerController.updateProductCatalog(p.Id, 'Renamed2', 'CAB-001', 'Space', 'MRC', 'Bandwidth', '1;2', false, 'Singapore', 'JKT1');
+        // SFDC-366: updateProduct now also takes the allowed-UoM list (';'-delimited)
+        DeProductManagerController.updateProduct(p.Id, 'Renamed', 'newdesc', 'Bandwidth', '1;2', true, 'Space', 'Unit', 'sqm;kVA');
+        // SFDC-366: updateProductCatalog now owns Allowed_UoM__c too, so it must carry
+        // the list forward. The catalog modal loads the stored value into its dual-listbox,
+        // which is why an untouched control round-trips the value instead of clearing it.
+        DeProductManagerController.updateProductCatalog(p.Id, 'Renamed2', 'CAB-001', 'Space', 'MRC', 'Bandwidth', '1;2', false, 'Singapore', 'JKT1', 'sqm;kVA');
         Test.stopTest();
         System.assertEquals('Renamed2', [SELECT Name FROM Product2 WHERE Id = :p.Id].Name, 'Catalog update should rename');
+        System.assertEquals('sqm;kVA',
+            [SELECT Allowed_UoM__c FROM Product2 WHERE Id = :p.Id].Allowed_UoM__c,
+            'updateProductCatalog should persist Allowed_UoM__c');
+        // Guard: adding Allowed_UoM__c to this method must not displace the fields that
+        // were already there. Available_Operation_Site__c sits immediately above it.
+        Product2 saved = [SELECT Available_Operation_Site__c, Available_Countries__c
+                          FROM Product2 WHERE Id = :p.Id];
+        System.assertEquals('JKT1', saved.Available_Operation_Site__c,
+            'updateProductCatalog must still write Available_Operation_Site__c');
+        System.assertEquals('Singapore', saved.Available_Countries__c,
+            'updateProductCatalog must still write Available_Countries__c');
+    }
+
+    @IsTest
+    static void updateProductCatalog_clearsAllowedUom() {
+        // SFDC-366: an emptied dual-listbox sends null, and that must clear the field —
+        // the same null-on-blank rule every other field in updateProductCatalog follows.
+        Product2 p = firstProduct();
+        p.Allowed_UoM__c = 'sqm;kVA';
+        update p;
+        Test.startTest();
+        DeProductManagerController.updateProductCatalog(p.Id, 'Cleared', 'CAB-002', 'Space', 'MRC', null, null, false, null, null, null);
+        Test.stopTest();
+        System.assertEquals(null,
+            [SELECT Allowed_UoM__c FROM Product2 WHERE Id = :p.Id].Allowed_UoM__c,
+            'Blank allowedUom should clear Allowed_UoM__c');
     }
 
     @IsTest
     static void updateProductCatalog_guards() {
         Integer threw = 0;
-        try { DeProductManagerController.updateProductCatalog('', 'n', null, null, null, null, null, false, null, null); } catch (AuraHandledException e) { threw++; }
-        try { DeProductManagerController.updateProductCatalog(firstProduct().Id, '', null, null, null, null, null, false, null, null); } catch (AuraHandledException e) { threw++; }
+        try { DeProductManagerController.updateProductCatalog('', 'n', null, null, null, null, null, false, null, null, null); } catch (AuraHandledException e) { threw++; }
+        try { DeProductManagerController.updateProductCatalog(firstProduct().Id, '', null, null, null, null, null, false, null, null, null); } catch (AuraHandledException e) { threw++; }
         System.assertEquals(2, threw, 'Blank id and blank name should each throw');
     }
 

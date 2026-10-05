@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Credit_Override_Requested__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set TRUE by Request Finance Override Quick Action. Used when Credit_Block__c = TRUE due to AR &gt; 90 days overdue. Triggers email to Country Finance for one-time override approval.</description>
+    <inlineHelpText>Use the Request Finance Override quick action to check this when the account has overdue AR and you need a one-time exception. Triggers a Finance approval request. Do not check manually.</inlineHelpText>
+    <label>Credit Override Requested</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

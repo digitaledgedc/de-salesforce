@@ -717,6 +717,7 @@ public with sharing class QuoteLineItemTriggerHandler {
             SELECT Id, Quantity, Product2Id, QuoteId
             FROM QuoteLineItem
             WHERE QuoteId IN :quoteIds AND Product2Id IN :nrcProductIds
+              AND Is_Auto_NRC__c = true
               AND Line_Origin__c != 'Ramp'
         ];
         if (nrcLines.isEmpty()) return;
@@ -772,6 +773,7 @@ public with sharing class QuoteLineItemTriggerHandler {
             SELECT Id, Quantity, Product2Id, QuoteId, Ramp_Phase__c
             FROM QuoteLineItem
             WHERE QuoteId IN :quoteIds AND Product2Id IN :nrcProductIds
+              AND Is_Auto_NRC__c = true
               AND Line_Origin__c = 'Ramp'
         ];
         if (nrcLines.isEmpty()) return;

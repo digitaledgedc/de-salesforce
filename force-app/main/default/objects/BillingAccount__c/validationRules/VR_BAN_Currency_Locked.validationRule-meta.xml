@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_BAN_Currency_Locked</fullName>
+    <active>true</active>
+    <description>Locks a BAN&apos;s currency once it&apos;s tagged to a quote (it must keep matching the quotes/orders using it). Admins with Edit_BAN_Currency can override. Doesn&apos;t fire on create or on untagged BANs.</description>
+    <errorConditionFormula>AND(
+  ISCHANGED(CurrencyIsoCode),
+  Tagged_To_Quote__c,
+  NOT($Permission.Edit_BAN_Currency)
+)</errorConditionFormula>
+    <errorDisplayField>CurrencyIsoCode</errorDisplayField>
+    <errorMessage>This billing account is already tagged to a quote, so its currency can&apos;t be changed. It must stay the same currency as the quotes and orders that use it. Contact an admin if a correction is genuinely required.</errorMessage>
+</ValidationRule>

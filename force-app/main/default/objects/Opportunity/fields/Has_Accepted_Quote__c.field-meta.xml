@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Has_Accepted_Quote__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set to true when a Quote on this Opportunity reaches Accepted status. Used to hide the New Quote action via Dynamic Actions - once a quote is accepted, no further quotes should be created.</description>
+    <inlineHelpText>Indicates a Quote has been accepted on this Opportunity. Set automatically by the Quote acceptance flow.</inlineHelpText>
+    <label>Has Accepted Quote</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

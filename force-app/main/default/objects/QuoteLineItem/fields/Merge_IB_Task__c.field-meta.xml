@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Merge_IB_Task__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Copied from Product2.Merge_IB_Task__c when the line item is added. Tells the integration to merge IB tasks for this line.</description>
+    <label>Merge IB Task</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

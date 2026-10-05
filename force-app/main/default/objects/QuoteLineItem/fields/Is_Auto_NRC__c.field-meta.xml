@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Auto_NRC__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>TRUE on all NRC lines auto-added by the Revenue Cloud bundle mechanism (ProductComponentGroup / ProductRelatedComponent). FALSE on MRC lines. Read-only - set by automation. VR-QLI-01 uses this to block independent deletion of auto-NRC lines.</description>
+    <label>System-Generated NRC Line</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

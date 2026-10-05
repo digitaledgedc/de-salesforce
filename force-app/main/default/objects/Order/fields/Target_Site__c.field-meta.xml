@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Target_Site__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Lookup to the canonical Site__c record for this order. Replaces the Operation_Site__c picklist. Drives integration routing via Site_Code__c and Odoo_Site__mdt.</description>
+    <inlineHelpText>The Digital Edge site where services under this order are delivered.</inlineHelpText>
+    <label>Operation Site</label>
+    <referenceTo>Site__c</referenceTo>
+    <relationshipLabel>Orders</relationshipLabel>
+    <relationshipName>Orders</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

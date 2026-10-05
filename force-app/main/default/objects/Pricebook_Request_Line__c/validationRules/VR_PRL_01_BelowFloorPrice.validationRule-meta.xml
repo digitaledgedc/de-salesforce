@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_PRL_01_BelowFloorPrice</fullName>
+    <active>true</active>
+    <description>VR-PRL-01: Prevents saving a Pricebook Request Line where the requested Unit Price is below the Floor Price (Min Price). Price must be at or above the minimum.</description>
+    <errorConditionFormula>AND(
+    NOT(ISBLANK(Unit_Price__c)),
+    NOT(ISBLANK(Min_Price__c)),
+    Unit_Price__c &lt; Min_Price__c
+)</errorConditionFormula>
+    <errorDisplayField>Unit_Price__c</errorDisplayField>
+    <errorMessage>Requested Unit Price ({!Unit_Price__c}) is below the floor price ({!Min_Price__c}). Price must be at or above the minimum. Contact Product team for exceptions.</errorMessage>
+</ValidationRule>

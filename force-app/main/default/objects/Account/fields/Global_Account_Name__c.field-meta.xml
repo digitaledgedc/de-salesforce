@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Global_Account_Name__c</fullName>
+    <description>Always shows the top-level parent account name regardless of which level you are viewing. If this is the top-level account, shows its own name. If this is a child account, shows the parent name.</description>
+    <externalId>false</externalId>
+    <formula>IF(ISBLANK(ParentId), Name, Parent.Name)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Shows the global parent account name for hierarchy reporting.</inlineHelpText>
+    <label>Global Account Name</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

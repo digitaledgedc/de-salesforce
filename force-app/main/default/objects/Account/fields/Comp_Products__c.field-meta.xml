@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Comp_Products__c</fullName>
+    <description>Product lines this competitor offers - used to identify overlap with DE offerings.</description>
+    <inlineHelpText>Which DE product categories does this competitor compete in?</inlineHelpText>
+    <label>Product Focus</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Colocation</fullName>
+                <default>false</default>
+                <label>Colocation</label>
+            </value>
+            <value>
+                <fullName>Cloud Connect</fullName>
+                <default>false</default>
+                <label>Cloud Connect</label>
+            </value>
+            <value>
+                <fullName>Cross Connect</fullName>
+                <default>false</default>
+                <label>Cross Connect</label>
+            </value>
+            <value>
+                <fullName>Managed Services</fullName>
+                <default>false</default>
+                <label>Managed Services</label>
+            </value>
+            <value>
+                <fullName>Network / Connectivity</fullName>
+                <default>false</default>
+                <label>Network / Connectivity</label>
+            </value>
+            <value>
+                <fullName>Remote Hands</fullName>
+                <default>false</default>
+                <label>Remote Hands</label>
+            </value>
+            <value>
+                <fullName>Edge / Hyperscale</fullName>
+                <default>false</default>
+                <label>Edge / Hyperscale</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

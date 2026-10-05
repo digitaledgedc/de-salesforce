@@ -1,0 +1,561 @@
+<apex:page standardController="Quote" extensions="DE_QuoteTemplateController"
+           renderAs="pdf" applyHtmlTag="false" applyBodyTag="false"
+           showHeader="false" sidebar="false">
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+@page {
+    size: A4 landscape;
+    margin: 12mm 14mm 22mm 14mm;
+    @bottom-center {
+        content: element(footer);
+    }
+}
+body {
+    font-family: Arial Unicode MS, Helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    margin: 0;
+    padding: 0;
+    line-height: 1.45;
+}
+#footer {
+    position: running(footer);
+    text-align: center;
+    font-size: 7pt;
+    color: #000000;
+    font-family: Arial Unicode MS, Helvetica, sans-serif;
+    padding-top: 2pt;
+}
+th {
+    background-color: #f0f0f0;
+    color: #000000;
+    font-weight: bold;
+    font-size: 8pt;
+    padding: 4pt 5pt;
+    border-top: 0.5pt solid #d1d5db;
+    border-bottom: 0.5pt solid #d1d5db;
+    font-family: Arial Unicode MS, Helvetica, sans-serif;
+    text-align: left;
+}
+.lgridwrap table { table-layout: fixed !important; width: 100% !important; }
+td { font-family: Arial Unicode MS, Helvetica, sans-serif; font-size: 8pt; color: #000000; }
+.terms-content { width: 100% !important; max-width: 100% !important; word-wrap: break-word !important; overflow-wrap: break-word !important; }
+.terms-content table { page-break-inside: avoid !important; width: 100% !important; max-width: 100% !important; table-layout: fixed !important; }
+.terms-content tr    { page-break-inside: avoid !important; }
+.terms-content td, .terms-content th { page-break-inside: avoid !important; word-wrap: break-word !important; overflow-wrap: break-word !important; }
+</style>
+</head>
+<body>
+<!-- ═══ RUNNING FOOTER — hardcoded per entity ═══ -->
+<div id="footer">
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+        <tr>
+            <td style="border-top:0.5pt solid #d1d5db; padding:0; font-size:1pt;">&#160;</td>
+        </tr>
+        <tr>
+            <td style="text-align:center; font-size:7pt; color:#555555; font-family:Arial Unicode MS, Helvetica, sans-serif; padding:2pt 0 0 0;">
+                <!-- Japan -->
+                <apex:outputText rendered="{!CONTAINS(q.DE_Entity__r.Name, 'Japan')}">+81 3 6625 5577&#160;&#160;&#160;support@digitaledgedc.com&#160;&#160;&#160;Tax ID: T6010003032265</apex:outputText>
+                <!-- Indonesia -->
+                <apex:outputText rendered="{!CONTAINS(q.DE_Entity__r.Name, 'Ekagrata')}">+62 21 5010 0000&#160;&#160;&#160;support@digitaledgedc.com</apex:outputText>
+                <!-- Korea -->
+                <apex:outputText rendered="{!CONTAINS(q.DE_Entity__r.Name, 'Korea')}">+82 2-2006-6627&#160;&#160;&#160;support@digitaledgedc.com</apex:outputText>
+                <!-- Singapore -->
+                <apex:outputText rendered="{!CONTAINS(q.DE_Entity__r.Name, 'Singapore')}">+65 6812 0000&#160;&#160;&#160;support@digitaledgedc.com</apex:outputText>
+                <!-- China -->
+                <apex:outputText rendered="{!CONTAINS(q.DE_Entity__r.Name, '川隽')}">+86 21 6636 5228&#160;&#160;&#160;support@digitaledgedc.com</apex:outputText>
+                <!-- Fallback if no entity matched -->
+                <apex:outputText rendered="{!NOT(CONTAINS(q.DE_Entity__r.Name, 'Japan') || CONTAINS(q.DE_Entity__r.Name, 'Ekagrata') || CONTAINS(q.DE_Entity__r.Name, 'Korea') || CONTAINS(q.DE_Entity__r.Name, 'Singapore') || CONTAINS(q.DE_Entity__r.Name, '川隽'))}">support@digitaledgedc.com</apex:outputText>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<!-- ═══ HEADER ═══ -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom:4mm; border-collapse:collapse;">
+    <tr>
+        <td style="vertical-align:bottom; width:60%; font-size:22pt; font-weight:bold; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">
+            <b><strong>{!quoteTitle}</strong></b>
+        </td>
+        <td style="text-align:right; vertical-align:top;">
+            <apex:image url="{!$Resource.DE_Logo}" width="130" height="59" alt="Digital Edge DC" style="vertical-align:bottom;"/>
+            <apex:image url="{!$Resource.DE_Logo_Indonet}" width="78" height="59" alt="Indonet" style="vertical-align:bottom; margin-left:6mm;" rendered="{!hasEpixProduct}"/>
+        </td>
+    </tr>
+</table>
+
+<!-- ═══ CUSTOMER + QUOTE DETAILS ═══ -->
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom:3.5mm; border-collapse:collapse;">
+    <tr>
+        <td width="52%" style="vertical-align:top; padding-right:8mm;">
+            <b style="font-size:10pt; color:#000000; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!billingName}</b><br/>
+            <span style="font-size:8pt; color:#000000; font-family:Arial Unicode MS, Helvetica, sans-serif; line-height:1.55;">
+                <!-- <apex:outputText rendered="{!NOT(ISBLANK(billingStreet))}">{!billingStreet}<br/></apex:outputText>
+                <apex:outputText rendered="{!NOT(ISBLANK(billingCity))}">{!billingCity}&#160;</apex:outputText><apex:outputText rendered="{!NOT(ISBLANK(billingState))}">{!billingState}&#160;</apex:outputText><apex:outputText rendered="{!NOT(ISBLANK(billingCountry))}">{!billingCountry}&#160;</apex:outputText><apex:outputText rendered="{!NOT(ISBLANK(billingPostal))}">{!billingPostal}</apex:outputText><br/> -->
+                <apex:outputText rendered="{!NOT(ISBLANK(billingAddress))}">{!billingAddress}<br/></apex:outputText>
+                <apex:outputText rendered="{!showContactName}"><br/>{!pdfLabels['Header_Attention']} {!contactName}</apex:outputText>
+            </span>
+        </td>
+        <td width="48%" style="vertical-align:top;">
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+                <tr>
+                    <td width="44%" style="font-size:8pt; color:#000000; padding:1.5pt 6pt 1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!pdfLabels['Header_Order_Number']}</td>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;"><b>{!q.Opportunity.Opportunity_Number__c}</b></td>
+                </tr>
+                <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(q.Quote_Number__c))}">
+                <tr>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 6pt 1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!pdfLabels['Header_Quote_Number']}</td>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;"><b>{!q.Quote_Number__c}</b></td>
+                </tr>
+                </apex:outputPanel>
+                <tr>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 6pt 1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!pdfLabels['Header_Issued_Date']}</td>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;"><b>{!issuedDateStr}</b></td>
+                </tr>
+                <tr>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 6pt 1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!pdfLabels['Header_Currency']}</td>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;"><b>{!q.CurrencyIsoCode}</b></td>
+                </tr>
+                <apex:outputPanel layout="none" rendered="{!NOT(ISNULL(q.RDD__c))}">
+                <tr>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 6pt 1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!pdfLabels['Header_Requested_Delivery_Date']}</td>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;"><b>{!requestedDeliveryDateStr}</b></td>
+                </tr>
+                </apex:outputPanel>
+                <apex:outputPanel layout="none" rendered="{!showInitialTerm}">
+                <tr>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 6pt 1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!pdfLabels['Header_Initial_Term']}</td>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;"><b>{!initialTermStr}</b></td>
+                </tr>
+                </apex:outputPanel>
+                <apex:outputPanel layout="none" rendered="{!isChangeOrder && NOT(ISBLANK(amendedOrderNumber))}">
+                <tr>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 6pt 1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!pdfLabels['Header_Amended_Order']}</td>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;"><b>{!amendedOrderNumber}</b></td>
+                </tr>
+                </apex:outputPanel>
+                <apex:outputPanel layout="none" rendered="{!NOT(ISNULL(q.ExpirationDate))}">
+                <tr>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 6pt 1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!pdfLabels['Header_Expiration']}</td>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;"><b>{!expirationDateStr}</b></td>
+                </tr>
+                </apex:outputPanel>
+                <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(q.Customer_PO_Reference__c))}">
+                <tr>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 6pt 1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!pdfLabels['Header_Customer_PO_Reference']}</td>
+                    <td style="font-size:8pt; color:#000000; padding:1.5pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;"><b>{!q.Customer_PO_Reference__c}</b></td>
+                </tr>
+                </apex:outputPanel>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<!-- ═══ END CUSTOMER ═══ -->
+<apex:outputPanel rendered="{!showEndCustomer}">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom:2mm; border-collapse:collapse;">
+    <tr>
+        <td style="font-size:8pt; color:#000000; padding:0; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!pdfLabels['Header_End_Customer_Name']} <b style="color:#000000;">{!endCustomer}</b></td>
+    </tr>
+</table>
+</apex:outputPanel>
+
+<!-- Divider -->
+<hr style="border:none; border-top:0.5pt solid #e5e7eb; margin:2.5mm 0;"/>
+
+<!-- ═══ DATA CENTER BAR ═══ -->
+<apex:outputPanel rendered="{!showDataCenter}">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom:4mm; border-collapse:collapse;">
+    <tr>
+        <td width="24mm" style="font-size:8pt; color:#000000; padding:2pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!pdfLabels['Header_Data_Center']}</td>
+        <td width="18mm" style="font-size:8pt; color:#000000; padding:2pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;"><b>{!siteName}</b></td>
+        <td style="font-size:8pt; color:#000000; padding:2pt 0; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!siteAddress}</td>
+    </tr>
+</table>
+</apex:outputPanel>
+
+<!-- ═══ LINE ITEMS TABLE (non-China) ═══ -->
+<apex:outputPanel layout="none" rendered="{!NOT(isChinaEntity)}">
+<div class="lgridwrap">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom:3mm; border-collapse:collapse;">
+    <colgroup>
+        <col style="width:26%;"/>
+        <col style="width:13%;"/>
+        <col style="width:5%;"/>
+        <col style="width:5%;"/>
+        <col style="width:13%;"/>
+        <apex:repeat value="{!discountCol}" var="dc"><col style="width:6%;"/></apex:repeat>
+        <col style="width:15%;"/>
+        <apex:repeat value="{!serviceIdCol}" var="sc"><col style="width:14%;"/></apex:repeat>
+        <col style="width:23%;"/>
+    </colgroup>
+            <tr>
+            <th>{!pdfLabels['Table_Product_Name']}</th>
+            <th>{!pdfLabels['Table_Product_Attribute']}</th>
+            <th style="text-align:right;">{!pdfLabels['Table_Quantity']}</th>
+            <th>{!pdfLabels['Table_Unit']}</th>
+            <th style="text-align:right;">{!pdfLabels['Table_Unit_Cost']}</th>
+            <apex:repeat value="{!discountCol}" var="dc"><th style="text-align:right;">{!pdfLabels['Table_Discount_Percent']}</th></apex:repeat>
+            <th style="text-align:right;">{!pdfLabels['Table_Subtotal']}</th>
+            <apex:repeat value="{!serviceIdCol}" var="sc">
+            <th>{!pdfLabels['Table_Service_ID']}</th>
+            </apex:repeat>
+            <th>{!pdfLabels['Table_Remarks']}</th>
+        </tr>
+
+        <!-- NRC -->
+        <apex:repeat value="{!nrcSectionFlag}" var="nf">
+            <tr>
+                <td colspan="{!IF(isChangeOrder,8,7) + IF(hasAnyDiscount,1,0)}" style="background-color:#f0f0f0; padding:3.5pt 5pt; border-top:0.5pt solid #d1d5db; border-bottom:0.5pt solid #d1d5db; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">
+                    <b>{!pdfLabels['Section_Non_Recurring_Charges']}</b>
+                </td>
+            </tr>
+            <apex:repeat value="{!nrcLines}" var="li">
+                <tr>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!productNameHtmlByLineId[li.Id]}"/></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!attributeHtmlByLineId[li.Id]}"/></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText value="{0,number,#,##0.##}"><apex:param value="{!displayQtyByLineId[li.Id]}"/></apex:outputText></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!unitHtmlByLineId[li.Id]}"/></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!displayUnitByLineId[li.Id]}"/></apex:outputText></td>
+                    <apex:repeat value="{!discountCol}" var="dc"><td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText rendered="{!displayDiscByLineId[li.Id] != 0}" value="{0,number,#,##0}%"><apex:param value="{!displayDiscByLineId[li.Id]}"/></apex:outputText></td></apex:repeat>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!displaySubtotalByLineId[li.Id]}"/></apex:outputText></td>
+                    <apex:repeat value="{!serviceIdCol}" var="sc">
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!assetNameHtmlByLineId[li.Id]}"/></td>
+                    </apex:repeat>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!remarksHtmlByLineId[li.Id]}"/></td>
+                </tr>
+            </apex:repeat>
+        </apex:repeat>
+
+        <!-- MRC -->
+        <apex:repeat value="{!mrcSectionFlag}" var="nf">
+            <tr>
+                <td colspan="{!IF(isChangeOrder,8,7) + IF(hasAnyDiscount,1,0)}" style="background-color:#f0f0f0; padding:3.5pt 5pt; border-top:0.5pt solid #d1d5db; border-bottom:0.5pt solid #d1d5db; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">
+                    <b>{!pdfLabels['Section_Monthly_Recurring_Charges']}</b>
+                </td>
+            </tr>
+            <apex:repeat value="{!mrcLines}" var="li">
+                <tr>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!productNameHtmlByLineId[li.Id]}"/></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!attributeHtmlByLineId[li.Id]}"/></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText value="{0,number,#,##0.##}"><apex:param value="{!displayQtyByLineId[li.Id]}"/></apex:outputText></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!unitHtmlByLineId[li.Id]}"/></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!displayUnitByLineId[li.Id]}"/></apex:outputText></td>
+                    <apex:repeat value="{!discountCol}" var="dc"><td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText rendered="{!displayDiscByLineId[li.Id] != 0}" value="{0,number,#,##0}%"><apex:param value="{!displayDiscByLineId[li.Id]}"/></apex:outputText></td></apex:repeat>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!displaySubtotalByLineId[li.Id]}"/></apex:outputText></td>
+                    <apex:repeat value="{!serviceIdCol}" var="sc">
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!assetNameHtmlByLineId[li.Id]}"/></td>
+                    </apex:repeat>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!remarksHtmlByLineId[li.Id]}"/></td>
+                </tr>
+            </apex:repeat>
+        </apex:repeat>
+
+        <!-- Grand Total NRC — always shown, even when $0 (FB-903) -->
+            <tr>
+                <td colspan="{!5 + IF(hasAnyDiscount,1,0)}" style="text-align:right; padding:4pt 5pt; border-top:0.5pt solid #d1d5db; font-size:8.5pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!pdfLabels['Total_Grand_NRC']}</b></td>
+                <td style="text-align:right; padding:4pt 5pt; border-top:0.5pt solid #d1d5db; font-size:8.5pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!grandTotalNRC}"/></apex:outputText></b></td>
+                <td colspan="{!1 + IF(isChangeOrder,1,0)}" style="border-top:0.5pt solid #d1d5db; padding:4pt 5pt;"></td>
+            </tr>
+
+        <!-- Grand Total MRC — always shown, even when $0 (FB-903) -->
+            <tr>
+                <td colspan="{!5 + IF(hasAnyDiscount,1,0)}" style="text-align:right; padding:4pt 5pt; border-top:0.5pt solid #d1d5db; font-size:8.5pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!pdfLabels['Total_Grand_MRC']}</b></td>
+                <td style="text-align:right; padding:4pt 5pt; border-top:0.5pt solid #d1d5db; font-size:8.5pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!grandTotalMRC}"/></apex:outputText></b></td>
+                <td colspan="{!1 + IF(isChangeOrder,1,0)}" style="border-top:0.5pt solid #d1d5db; padding:4pt 5pt;"></td>
+            </tr>
+
+    </table>
+</div>
+</apex:outputPanel>
+
+<!-- ═══ LINE ITEMS TABLE (China — 6% VAT, tax-inclusive) ═══ -->
+<apex:outputPanel layout="none" rendered="{!isChinaEntity}">
+<div class="lgridwrap">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom:3mm; border-collapse:collapse;">
+    <colgroup>
+        <col style="width:16%;"/>
+        <col style="width:7%;"/>
+        <col style="width:4%;"/>
+        <col style="width:4%;"/>
+        <col style="width:10%;"/>
+        <apex:repeat value="{!discountCol}" var="dc"><col style="width:6%;"/></apex:repeat>
+        <col style="width:6%;"/>
+        <col style="width:10%;"/>
+        <col style="width:10%;"/>
+        <col style="width:10%;"/>
+        <apex:repeat value="{!serviceIdCol}" var="sc"><col style="width:14%;"/></apex:repeat>
+        <col style="width:23%;"/>
+    </colgroup>
+            <tr>
+            <th>{!pdfLabels['Table_Product_Name']}</th>
+            <th>{!pdfLabels['Table_Product_Attribute']}</th>
+            <th style="text-align:right;">{!pdfLabels['Table_Quantity']}</th>
+            <th>{!pdfLabels['Table_Unit']}</th>
+            <th style="text-align:right;">{!pdfLabels['Table_Unit_Cost']}</th>
+            <apex:repeat value="{!discountCol}" var="dc"><th style="text-align:right;">{!pdfLabels['Table_Discount_Percent']}</th></apex:repeat>
+            <th style="text-align:right;">{!pdfLabels['Table_Tax_Rate']}</th>
+            <th style="text-align:right;">{!pdfLabels['Table_Tax_Amount']}</th>
+            <th style="text-align:right;">{!pdfLabels['Table_Amount_Excluding_Tax']}</th>
+            <th style="text-align:right;">{!pdfLabels['Table_Total']}</th>
+            <apex:repeat value="{!serviceIdCol}" var="sc">
+            <th>{!pdfLabels['Table_Service_ID']}</th>
+            </apex:repeat>
+            <th>{!pdfLabels['Table_Remarks']}</th>
+        </tr>
+
+        <!-- NRC -->
+        <apex:repeat value="{!nrcSectionFlag}" var="nf">
+            <tr>
+                <td colspan="{!IF(isChangeOrder,11,10) + IF(hasAnyDiscount,1,0)}" style="background-color:#f0f0f0; padding:3.5pt 5pt; border-top:0.5pt solid #d1d5db; border-bottom:0.5pt solid #d1d5db; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">
+                    <b>{!pdfLabels['Section_Non_Recurring_Charges']}</b>
+                </td>
+            </tr>
+            <apex:repeat value="{!nrcLines}" var="li">
+                <tr>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!productNameHtmlByLineId[li.Id]}"/></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!attributeHtmlByLineId[li.Id]}"/></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText value="{0,number,#,##0.##}"><apex:param value="{!displayQtyByLineId[li.Id]}"/></apex:outputText></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!unitHtmlByLineId[li.Id]}"/></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!displayUnitByLineId[li.Id]}"/></apex:outputText></td>
+                    <apex:repeat value="{!discountCol}" var="dc"><td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText rendered="{!displayDiscByLineId[li.Id] != 0}" value="{0,number,#,##0}%"><apex:param value="{!displayDiscByLineId[li.Id]}"/></apex:outputText></td></apex:repeat>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">6%</td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!taxByLineId[li.Id]}"/></apex:outputText></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!exclByLineId[li.Id]}"/></apex:outputText></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!li.TotalPrice}"/></apex:outputText></td>
+                    <apex:repeat value="{!serviceIdCol}" var="sc">
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!assetNameHtmlByLineId[li.Id]}"/></td>
+                    </apex:repeat>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!remarksHtmlByLineId[li.Id]}"/></td>
+                </tr>
+            </apex:repeat>
+        </apex:repeat>
+
+        <!-- MRC -->
+        <apex:repeat value="{!mrcSectionFlag}" var="nf">
+            <tr>
+                <td colspan="{!IF(isChangeOrder,11,10) + IF(hasAnyDiscount,1,0)}" style="background-color:#f0f0f0; padding:3.5pt 5pt; border-top:0.5pt solid #d1d5db; border-bottom:0.5pt solid #d1d5db; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">
+                    <b>{!pdfLabels['Section_Monthly_Recurring_Charges']}</b>
+                </td>
+            </tr>
+            <apex:repeat value="{!mrcLines}" var="li">
+                <tr>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!productNameHtmlByLineId[li.Id]}"/></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!attributeHtmlByLineId[li.Id]}"/></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText value="{0,number,#,##0.##}"><apex:param value="{!displayQtyByLineId[li.Id]}"/></apex:outputText></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!unitHtmlByLineId[li.Id]}"/></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!displayUnitByLineId[li.Id]}"/></apex:outputText></td>
+                    <apex:repeat value="{!discountCol}" var="dc"><td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText rendered="{!displayDiscByLineId[li.Id] != 0}" value="{0,number,#,##0}%"><apex:param value="{!displayDiscByLineId[li.Id]}"/></apex:outputText></td></apex:repeat>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">6%</td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!taxByLineId[li.Id]}"/></apex:outputText></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!exclByLineId[li.Id]}"/></apex:outputText></td>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!li.TotalPrice}"/></apex:outputText></td>
+                    <apex:repeat value="{!serviceIdCol}" var="sc">
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!assetNameHtmlByLineId[li.Id]}"/></td>
+                    </apex:repeat>
+                    <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!remarksHtmlByLineId[li.Id]}"/></td>
+                </tr>
+            </apex:repeat>
+        </apex:repeat>
+
+        <!-- Grand Total NRC — always shown, even when $0 (FB-903) -->
+            <tr>
+                <td colspan="{!8 + IF(hasAnyDiscount,1,0)}" style="text-align:right; padding:4pt 5pt; border-top:0.5pt solid #d1d5db; font-size:8.5pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!pdfLabels['Total_Grand_NRC']}</b></td>
+                <td style="text-align:right; padding:4pt 5pt; border-top:0.5pt solid #d1d5db; font-size:8.5pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!grandTotalNRC}"/></apex:outputText></b></td>
+                <td colspan="{!1 + IF(isChangeOrder,1,0)}" style="border-top:0.5pt solid #d1d5db; padding:4pt 5pt;"></td>
+            </tr>
+
+        <!-- Grand Total MRC — always shown, even when $0 (FB-903) -->
+            <tr>
+                <td colspan="{!8 + IF(hasAnyDiscount,1,0)}" style="text-align:right; padding:4pt 5pt; border-top:0.5pt solid #d1d5db; font-size:8.5pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!pdfLabels['Total_Grand_MRC']}</b></td>
+                <td style="text-align:right; padding:4pt 5pt; border-top:0.5pt solid #d1d5db; font-size:8.5pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!grandTotalMRC}"/></apex:outputText></b></td>
+                <td colspan="{!1 + IF(isChangeOrder,1,0)}" style="border-top:0.5pt solid #d1d5db; padding:4pt 5pt;"></td>
+            </tr>
+
+        <!-- Total Tax -->
+        <tr>
+            <td colspan="{!8 + IF(hasAnyDiscount,1,0)}" style="text-align:right; padding:4pt 5pt; font-size:8.5pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!pdfLabels['Total_Tax']}</b></td>
+            <td style="text-align:right; padding:4pt 5pt; font-size:8.5pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!chinaTaxTotal}"/></apex:outputText></b></td>
+            <td colspan="{!1 + IF(isChangeOrder,1,0)}" style="padding:4pt 5pt;"></td>
+        </tr>
+
+        <!-- Grand Total (incl. Tax) -->
+        <tr>
+            <td colspan="{!8 + IF(hasAnyDiscount,1,0)}" style="text-align:right; padding:4pt 5pt; border-top:0.5pt solid #d1d5db; font-size:9pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!pdfLabels['Total_Grand_Total']}</b></td>
+            <td style="text-align:right; padding:4pt 5pt; border-top:0.5pt solid #d1d5db; font-size:9pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!grandTotalInclTax}"/></apex:outputText></b></td>
+            <td colspan="{!1 + IF(isChangeOrder,1,0)}" style="border-top:0.5pt solid #d1d5db; padding:4pt 5pt;"></td>
+        </tr>
+
+    </table>
+</div>
+</apex:outputPanel>
+
+<!-- ═══ RAMP-UP ORDERS ═══ -->
+<apex:outputPanel rendered="{!isRampDeal}">
+<p style="margin:6mm 0 2mm 0; font-size:9pt; font-weight:bold; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000; padding-bottom:2pt; border-bottom:1pt solid #000000;">{!pdfLabels['Section_Ramp_Up_Orders']}</p>
+<div class="lgridwrap">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom:3mm; border-collapse:collapse;">
+    <colgroup>
+        <col style="width:24%;"/>
+        <col style="width:10%;"/>
+        <col style="width:7%;"/>
+        <!-- SFDC-143: Additional Qty restored — its calculation is fixed (per phase
+             series, aggregate-aware). Hidden under SFDC-349 while it was wrong. -->
+        <col style="width:7%;"/>
+        <col style="width:6%;"/>
+        <col style="width:12%;"/>
+        <apex:repeat value="{!discountCol}" var="dc"><col style="width:6%;"/></apex:repeat>
+        <col style="width:14%;"/>
+        <apex:repeat value="{!serviceIdCol}" var="sc"><col style="width:14%;"/></apex:repeat>
+        <col style="width:20%;"/>
+    </colgroup>
+            <tr>
+            <th>{!pdfLabels['Table_Product_Name']}</th>
+            <th>{!pdfLabels['Table_Product_Attribute']}</th>
+            <th style="text-align:right;">{!pdfLabels['Table_Quantity']}</th>
+            <th style="text-align:right;">{!pdfLabels['Table_Additional_Quantity']}</th>
+            <th>{!pdfLabels['Table_Unit']}</th>
+            <th style="text-align:right;">{!pdfLabels['Table_Unit_Cost']}</th>
+            <apex:repeat value="{!discountCol}" var="dc"><th style="text-align:right;">{!pdfLabels['Table_Discount_Percent']}</th></apex:repeat>
+            <th style="text-align:right;">{!pdfLabels['Table_Subtotal']}</th>
+            <apex:repeat value="{!serviceIdCol}" var="sc">
+            <th>{!pdfLabels['Table_Service_ID']}</th>
+            </apex:repeat>
+            <th>{!pdfLabels['Table_Remarks']}</th>
+        </tr>
+                <apex:repeat value="{!rampPhases}" var="phase">
+            <!-- Phase header row -->
+            <tr>
+                <td style="padding:3.5pt 5pt; border-top:1pt solid #d1d5db; border-bottom:0.5pt solid #d1d5db; background-color:#f0f0f0; font-size:8pt; font-weight:bold; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!phase.phaseNumber}</b><apex:outputText rendered="{!phase.isAllPhasesLinked}" style="margin-left:6pt; padding:1pt 4pt; border:0.5pt solid #e5c4a8; background-color:#fef9f3; font-size:6.5pt; font-weight:normal; color:#000000;" value="{!pdfLabels['Section_Ramp_All_Phases_Linked']}"/></td>
+                <td style="padding:3.5pt 5pt; border-top:1pt solid #d1d5db; border-bottom:0.5pt solid #d1d5db; background-color:#f0f0f0; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!phase.phaseAttribute}</td>
+                <apex:repeat value="{!serviceIdCol}" var="sc">
+                <td style="border-top:1pt solid #d1d5db; border-bottom:0.5pt solid #d1d5db; background-color:#f0f0f0;"></td>
+                </apex:repeat>
+                <td colspan="3" style="border-top:1pt solid #d1d5db; border-bottom:0.5pt solid #d1d5db; background-color:#f0f0f0;"></td>
+                <td style="padding:3.5pt 5pt; border-top:1pt solid #d1d5db; border-bottom:0.5pt solid #d1d5db; background-color:#f0f0f0; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000; text-align:right;">{!phase.startDateStr}</td>
+                <td colspan="{!1 + IF(hasAnyDiscount,1,0)}" style="padding:3.5pt 5pt; border-top:1pt solid #d1d5db; border-bottom:0.5pt solid #d1d5db; background-color:#f0f0f0; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"></td>
+                <!-- SFDC-370: the phase remark belongs on the phase header row, in the Remarks column -->
+                <td style="padding:3.5pt 5pt; border-top:1pt solid #d1d5db; border-bottom:0.5pt solid #d1d5db; background-color:#f0f0f0; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!phase.notesHtml}"/></td>
+            </tr>
+            <!-- NRC lines -->
+            <apex:outputPanel layout="none" rendered="{!phase.nrcLines.size > 0}">
+                <tr>
+                    <td colspan="{!IF(isChangeOrder,9,8) + IF(hasAnyDiscount,1,0)}" style="background-color:#f9fafb; padding:3pt 5pt; border-bottom:0.5pt solid #e5e7eb; font-size:8pt; font-weight:bold; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!pdfLabels['Section_Non_Recurring_Charges']}</td>
+                </tr>
+                <apex:repeat value="{!phase.nrcLines}" var="rl">
+                    <tr>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!rl.displayProductNameHtml}"/></td>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!rl.ProductAttributeHtml}"/></td>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText value="{0,number,#,##0.##}"><apex:param value="{!rl.Quantity}"/></apex:outputText></td>
+                        <!-- SFDC-143: Additional Qty restored; calculation fixed per phase series -->
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText value="{0,number,#,##0.##}"><apex:param value="{!rl.rampAdditionalQty}"/></apex:outputText></td>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!rl.UnitHtml}"/></td>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!rl.UnitPrice}"/></apex:outputText></td>
+                        <apex:repeat value="{!discountCol}" var="dc"><td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText rendered="{!rl.Discount != null}" value="{0,number,#,##0}%"><apex:param value="{!rl.Discount}"/></apex:outputText></td></apex:repeat>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!rl.TotalPrice}"/></apex:outputText></td>
+                        <apex:repeat value="{!serviceIdCol}" var="sc">
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!assetNameHtmlByLineId[rl.line.Id]}"/></td>
+                        </apex:repeat>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!rl.NotesHtml}"/></td>
+                    </tr>
+                </apex:repeat>
+                <tr>
+                    <td colspan="{!6 + IF(hasAnyDiscount,1,0)}" style="text-align:right; padding:3pt 5pt; background-color:#fef9f3; border-top:0.5pt solid #e5c4a8; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!pdfLabels['Total_Subtotal_NRC']}</b></td>
+                    <td style="text-align:right; padding:3pt 5pt; background-color:#fef9f3; border-top:0.5pt solid #e5c4a8; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!phase.subtotalNRC}"/></apex:outputText></b></td>
+                    <td colspan="{!1 + IF(isChangeOrder,1,0)}" style="background-color:#fef9f3; border-top:0.5pt solid #e5c4a8; padding:3pt 5pt;"></td>
+                </tr>
+            </apex:outputPanel>
+            <!-- MRC lines -->
+            <apex:outputPanel layout="none" rendered="{!phase.mrcLines.size > 0}">
+                <tr>
+                    <td colspan="{!IF(isChangeOrder,9,8) + IF(hasAnyDiscount,1,0)}" style="background-color:#f9fafb; padding:3pt 5pt; border-bottom:0.5pt solid #e5e7eb; font-size:8pt; font-weight:bold; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!pdfLabels['Section_Monthly_Recurring_Charges']}</td>
+                </tr>
+                <apex:repeat value="{!phase.mrcLines}" var="rl">
+                    <tr>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!rl.displayProductNameHtml}"/></td>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!rl.ProductAttributeHtml}"/></td>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText value="{0,number,#,##0.##}"><apex:param value="{!rl.Quantity}"/></apex:outputText></td>
+                        <!-- SFDC-143: Additional Qty restored; calculation fixed per phase series -->
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText value="{0,number,#,##0.##}"><apex:param value="{!rl.rampAdditionalQty}"/></apex:outputText></td>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!rl.UnitHtml}"/></td>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!rl.UnitPrice}"/></apex:outputText></td>
+                        <apex:repeat value="{!discountCol}" var="dc"><td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText rendered="{!rl.Discount != null}" value="{0,number,#,##0}%"><apex:param value="{!rl.Discount}"/></apex:outputText></td></apex:repeat>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; text-align:right; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;">{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!rl.TotalPrice}"/></apex:outputText></td>
+                        <apex:repeat value="{!serviceIdCol}" var="sc">
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!assetNameHtmlByLineId[rl.line.Id]}"/></td>
+                        </apex:repeat>
+                        <td style="padding:3.5pt 5pt; border-bottom:0.5pt solid #e5e7eb; vertical-align:top; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><apex:outputText escape="false" value="{!rl.NotesHtml}"/></td>
+                    </tr>
+                </apex:repeat>
+                <tr>
+                    <td colspan="{!6 + IF(hasAnyDiscount,1,0)}" style="text-align:right; padding:3pt 5pt; background-color:#fef9f3; border-top:0.5pt solid #e5c4a8; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!pdfLabels['Total_Subtotal_MRC']}</b></td>
+                    <td style="text-align:right; padding:3pt 5pt; background-color:#fef9f3; border-top:0.5pt solid #e5c4a8; font-size:8pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!currencySymbol}&nbsp;<apex:outputText value="{!moneyPattern}"><apex:param value="{!phase.subtotalMRC}"/></apex:outputText></b></td>
+                    <td colspan="{!1 + IF(isChangeOrder,1,0)}" style="background-color:#fef9f3; border-top:0.5pt solid #e5c4a8; padding:3pt 5pt;"></td>
+                </tr>
+            </apex:outputPanel>
+        </apex:repeat>
+    </table>
+</div>
+</apex:outputPanel>
+
+<!-- ═══ TERMS AND CONDITIONS ═══ -->
+<apex:outputPanel rendered="{!NOT(ISBLANK(q.Service_Order_Terms__c))}">
+    <p style="margin:7mm 0 4pt 0; padding:0; font-size:9pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b>{!termsHeading}</b></p>
+    <div class="terms-content" style="margin:0; padding:0; font-size:8pt; color:#000000; line-height:1.6; font-family:Arial Unicode MS, Helvetica, sans-serif;"><apex:outputText value="{!termsContent}" escape="false"/></div>
+</apex:outputPanel>
+
+<!-- ═══ SPECIAL NOTE ═══ -->
+<apex:outputPanel rendered="{!showSpecialNote}">
+    <p style="margin:5mm 0 4pt 0; padding:0; font-size:9pt; font-family:Arial Unicode MS, Helvetica, sans-serif; color:#000000;"><b><i>{!pdfLabels['Heading_Special_Note']}</i></b></p>
+    <div style="margin:0; padding:0; font-size:8pt; color:#000000; line-height:1.6; font-family:Arial Unicode MS, Helvetica, sans-serif; white-space:pre-line;"><apex:outputText value="{!specialNote}" escape="false"/></div>
+</apex:outputPanel>
+
+<!-- ═══ SIGNATURE BLOCK ═══ -->
+<apex:outputPanel rendered="{!q != null && q.Is_Binding__c == true}">
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top:8mm; border-collapse:collapse;">
+        <tr>
+            <td width="50%" style="vertical-align:top; padding:2pt 8mm 2pt 0;">
+                <b style="font-size:8.5pt; color:#000000; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!quoteAccountName}</b>
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; margin-top:6mm;">
+                    <tr>
+                        <td width="35%" style="font-size:7pt; color:#000000; font-family:Arial Unicode MS, Helvetica, sans-serif; vertical-align:bottom; white-space:nowrap; padding:8mm 6pt 1pt 0;">{!pdfLabels['Signature_Authorized_Signatory']}</td>
+                        <td style="border-bottom:0.5pt solid #9ca3af; vertical-align:bottom; padding-top:8mm;">&#160;</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:7pt; color:#000000; font-family:Arial Unicode MS, Helvetica, sans-serif; vertical-align:bottom; white-space:nowrap; padding:8mm 6pt 1pt 0;">{!pdfLabels['Signature_Name']} / {!pdfLabels['Signature_Title']}</td>
+                        <td style="border-bottom:0.5pt solid #9ca3af; vertical-align:bottom; padding-top:8mm;">&#160;</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:7pt; color:#000000; font-family:Arial Unicode MS, Helvetica, sans-serif; vertical-align:bottom; white-space:nowrap; padding:8mm 6pt 1pt 0;">{!pdfLabels['Signature_Date']}</td>
+                        <td style="border-bottom:0.5pt solid #9ca3af; vertical-align:bottom; padding-top:8mm;">&#160;</td>
+                    </tr>
+                </table>
+            </td>
+            <td width="50%" style="vertical-align:top; padding:2pt 0 2pt 8mm;">
+                <b style="font-size:8.5pt; color:#000000; font-family:Arial Unicode MS, Helvetica, sans-serif;">{!deEntityName}</b>
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; margin-top:6mm;">
+                    <tr>
+                        <td width="35%" style="font-size:7pt; color:#000000; font-family:Arial Unicode MS, Helvetica, sans-serif; vertical-align:bottom; white-space:nowrap; padding:8mm 6pt 1pt 0;">{!pdfLabels['Signature_Authorized_Signatory']}</td>
+                        <td style="border-bottom:0.5pt solid #9ca3af; vertical-align:bottom; padding-top:8mm;">&#160;</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:7pt; color:#000000; font-family:Arial Unicode MS, Helvetica, sans-serif; vertical-align:bottom; white-space:nowrap; padding:8mm 6pt 1pt 0;">{!pdfLabels['Signature_Name']} / {!pdfLabels['Signature_Title']}</td>
+                        <td style="border-bottom:0.5pt solid #9ca3af; vertical-align:bottom; padding-top:8mm;">&#160;</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:7pt; color:#000000; font-family:Arial Unicode MS, Helvetica, sans-serif; vertical-align:bottom; white-space:nowrap; padding:8mm 6pt 1pt 0;">{!pdfLabels['Signature_Date']}</td>
+                        <td style="border-bottom:0.5pt solid #9ca3af; vertical-align:bottom; padding-top:8mm;">&#160;</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</apex:outputPanel>
+
+
+</body>
+</html>
+</apex:page>

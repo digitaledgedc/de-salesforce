@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Customer_PO_Line__c</fullName>
+    <description>Line-level PO reference if customer requires per-line PO tracking. Passed in IP-1 order line payload.</description>
+    <externalId>false</externalId>
+    <label>Customer PO Line Reference</label>
+    <length>50</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

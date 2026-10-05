@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Finance_Approval_Email</name>
+        <label>Send Finance Approval Email</label>
+        <locationX>50</locationX>
+        <locationY>539</locationY>
+        <actionName>FinanceEmailNotifier</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>recordId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>templateDeveloperName</name>
+            <value>
+                <stringValue>DE_Finance_Approval_Notification</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>queueDeveloperName</name>
+            <value>
+                <elementReference>frmQueueDevName</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>FinanceEmailNotifier</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Decision_Is_Customer</name>
+        <label>Is Customer Account?</label>
+        <locationX>182</locationX>
+        <locationY>431</locationY>
+        <defaultConnectorLabel>Not Customer - End</defaultConnectorLabel>
+        <rules>
+            <name>Is_Customer</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Customer_RecordType</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.RecordTypeId</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Get_Customer_RecordType.Id</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_Finance_Approval_Email</targetReference>
+            </connector>
+            <label>Yes - Customer</label>
+        </rules>
+    </decisions>
+    <description>Sends DE_Finance_Approval_Notification to the country Finance queue when Account.Finance_Approval_Phase__c becomes Not_Started, only for Customer record type. Resolves Customer RT by DeveloperName (portable across orgs).</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>frmQueueDevName</name>
+        <dataType>String</dataType>
+        <expression>CASE(TEXT({!$Record.Operation_Country__c}),
+&quot;Japan&quot;, &quot;DE_JP_Country_Finance&quot;,
+&quot;South Korea&quot;, &quot;DE_KR_Country_Finance&quot;,
+&quot;Korea&quot;, &quot;DE_KR_Country_Finance&quot;,
+&quot;Indonesia&quot;, &quot;DE_ID_Country_Finance&quot;,
+&quot;Philippines&quot;, &quot;DE_PH_Country_Finance&quot;,
+&quot;China&quot;, &quot;DE_CN_Country_Finance&quot;,
+&quot;India&quot;, &quot;DE_IN_Country_Finance&quot;,
+&quot;Thailand&quot;, &quot;DE_TH_Country_Finance&quot;,
+&quot;Malaysia&quot;, &quot;DE_MY_Country_Finance&quot;,
+&quot;Singapore&quot;, &quot;DE_SG_Country_Finance&quot;,
+&quot;Hong Kong&quot;, &quot;DE_HK_Country_Finance&quot;,
+&quot;&quot;)</expression>
+    </formulas>
+    <interviewLabel>Account Finance Approval Notify {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Account - After Save - Finance Approval Notify</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Customer_RecordType</name>
+        <label>Get Customer Record Type</label>
+        <locationX>182</locationX>
+        <locationY>323</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Decision_Is_Customer</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>SobjectType</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Account</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Customer</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>RecordType</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Customer_RecordType</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Finance_Approval_Phase__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Not_Started</stringValue>
+            </value>
+        </filters>
+        <object>Account</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

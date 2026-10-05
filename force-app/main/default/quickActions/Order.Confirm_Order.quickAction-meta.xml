@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Run confirmation gate checks and confirm this Order for Odoo integration. Irreversible once confirmed.</description>
+    <flowDefinition>Order_Screen_ConfirmOrder</flowDefinition>
+    <label>Confirm Order</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>

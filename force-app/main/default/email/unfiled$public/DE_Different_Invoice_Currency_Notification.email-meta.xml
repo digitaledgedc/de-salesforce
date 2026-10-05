@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Notification to the country Finance queue for a Different Invoice Currency Special Instruction (created by the Assign BAN flow). Detail is the body; button links to the Account page where Finance acknowledges/rejects. Notification only. Digital Edge theme.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>DE Different Invoice Currency Notification</name>
+    <style>none</style>
+    <subject>Finance Review Required: Different Invoice Currency - {!Special_Instruction__c.Name} - {!Special_Instruction__c.DE_Subsidiary_Name__c}</subject>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

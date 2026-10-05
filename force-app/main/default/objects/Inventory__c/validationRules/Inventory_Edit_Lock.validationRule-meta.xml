@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Inventory_Edit_Lock</fullName>
+    <active>false</active>
+    <description>Locks Sold/Installed Inventory from non-admin edits. Bypassed when Status is transitioning (automated lifecycle). SDD §Capacity Manager.</description>
+    <errorConditionFormula>AND(
+    OR(
+        ISPICKVAL(Status__c, &apos;Installed&apos;)
+    ),
+    NOT($Permission.Inventory_Admin),
+    NOT(ISCHANGED(Status__c))
+)</errorConditionFormula>
+    <errorMessage>This inventory record is in a provisioned state (Installed) and cannot be edited. Contact a DE Admin if a change is required.</errorMessage>
+</ValidationRule>

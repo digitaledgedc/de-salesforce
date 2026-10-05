@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Check_Queue_Found</name>
+        <label>Queue Found?</label>
+        <locationX>176</locationX>
+        <locationY>180</locationY>
+        <defaultConnectorLabel>No Queue - Skip</defaultConnectorLabel>
+        <rules>
+            <name>Queue_Exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_RevOps_Queue</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Notification_Task</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <description>H-29: When a Product&apos;s IsActive flag changes (activation or deactivation), creates a notification task on the Revenue Operations queue so the product catalog change is tracked and communicated.</description>
+    <formulas>
+        <name>frmDescription</name>
+        <dataType>String</dataType>
+        <expression>IF({!$Record.IsActive},
+    &quot;Product has been activated and is now available in pricebooks. Verify pricing entries are current and notify the sales team if this is a new product offering.&quot;,
+    &quot;Product has been deactivated and is no longer available for new Quotes. Existing Quotes and Orders with this product are not affected. Confirm this change was intentional and update any active pricebook entries.&quot;
+)</expression>
+    </formulas>
+    <formulas>
+        <name>frmDueDate</name>
+        <dataType>Date</dataType>
+        <expression>TODAY() + 1</expression>
+    </formulas>
+    <formulas>
+        <name>frmSubject</name>
+        <dataType>String</dataType>
+        <expression>IF({!$Record.IsActive},
+    &quot;Product Activated: &quot; &amp; {!$Record.Name} &amp; &quot; (&quot; &amp; {!$Record.ProductCode} &amp; &quot;)&quot;,
+    &quot;Product Deactivated: &quot; &amp; {!$Record.Name} &amp; &quot; (&quot; &amp; {!$Record.ProductCode} &amp; &quot;)&quot;
+)</expression>
+    </formulas>
+    <interviewLabel>Product Catalog Change Notification {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Product - After Save - Catalog Change Notification</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Notification_Task</name>
+        <label>Create Catalog Change Task</label>
+        <locationX>176</locationX>
+        <locationY>240</locationY>
+        <inputAssignments>
+            <field>ActivityDate</field>
+            <value>
+                <elementReference>frmDueDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <elementReference>frmDescription</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>Get_RevOps_Queue.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>Normal</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Not Started</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <elementReference>frmSubject</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_RevOps_Queue</name>
+        <label>Get Revenue Operations Queue</label>
+        <locationX>176</locationX>
+        <locationY>120</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Queue_Found</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>DE_Revenue_Operations</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Type</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Queue</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Group</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>176</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_RevOps_Queue</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>IsActive</field>
+            <operator>IsChanged</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <object>Product2</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_OPP_17_TargetFloor_Site</fullName>
+    <active>true</active>
+    <description>Target Floor must belong to the selected Target Site. Backs up the Target_Floor__c lookup filter now that it is optional.</description>
+    <errorConditionFormula>AND(
+    NOT(ISBLANK(Target_Floor__c)),
+    Target_Floor__r.Site__c &lt;&gt; Target_Site__c
+)</errorConditionFormula>
+    <errorDisplayField>Target_Floor__c</errorDisplayField>
+    <errorMessage>Floor must belong to the selected Target Site.</errorMessage>
+</ValidationRule>

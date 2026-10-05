@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Unique Entity Number issued by ACRA for Singapore-registered entities. Required for SG customers before Finance Approval. Format: 9 or 10 alphanumeric characters. --></help>
+    <label><!-- UEN (Singapore) --></label>
+    <name>UEN__c</name>
+</CustomFieldTranslation>

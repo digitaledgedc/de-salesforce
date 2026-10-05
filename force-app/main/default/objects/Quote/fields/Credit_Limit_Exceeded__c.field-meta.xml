@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Credit_Limit_Exceeded__c</fullName>
+    <description>TRUE when cumulative active Quote MRC/NRC across the Account exceeds credit limits, or Account has overdue 90+ days. Triggers Credit Limit Finance Approval.</description>
+    <formula>IF(
+  ISBLANK(Opportunity.Account.Credit_Limit_MRC__c) &amp;&amp; ISBLANK(Opportunity.Account.Credit_Limit_NRC__c) &amp;&amp; Opportunity.Account.Overdue_90_Days__c = 0,
+  FALSE,
+  (NOT(ISBLANK(Opportunity.Account.Credit_Limit_MRC__c)) &amp;&amp; Opportunity.Account.Total_Active_Quoted_MRC__c &gt; Opportunity.Account.Credit_Limit_MRC__c)
+  ||
+  (NOT(ISBLANK(Opportunity.Account.Credit_Limit_NRC__c)) &amp;&amp; Opportunity.Account.Total_Active_Quoted_NRC__c &gt; Opportunity.Account.Credit_Limit_NRC__c)
+  ||
+  Opportunity.Account.Overdue_90_Days__c &gt; 0
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>TRUE when cumulative active quotes exceed the account credit limits (MRC or NRC), or the account has overdue balances beyond 90 days. Triggers Credit Limit Finance Approval.</inlineHelpText>
+    <label>Credit Limit Exceeded</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

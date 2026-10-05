@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Group_Suffix__c</fullName>
+    <description>Suffix of the public group receiving this grant. Scope=Country resolves to DE_{Country}_{Suffix}; Scope=All resolves to DE_All_{Suffix}. Groups are auto-provisioned by the engine.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Group Suffix</label>
+    <length>40</length>
+    <required>true</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

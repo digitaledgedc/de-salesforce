@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Floor price for this product. Requested Unit Price cannot be below this amount. Auto-populated from the standard pricebook entry if available. --></help>
+    <label><!-- Min Price (Floor) --></label>
+    <name>Min_Price__c</name>
+</CustomFieldTranslation>

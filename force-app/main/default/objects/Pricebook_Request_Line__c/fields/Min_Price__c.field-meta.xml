@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Min_Price__c</fullName>
+    <description>Minimum acceptable price for this product line. Used by VR to block submission of requests below floor price. Typically set at 70% of list price.</description>
+    <inlineHelpText>Floor price for this product. Requested Unit Price cannot be below this amount. Auto-populated from the standard pricebook entry if available.</inlineHelpText>
+    <label>Min Price (Floor)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

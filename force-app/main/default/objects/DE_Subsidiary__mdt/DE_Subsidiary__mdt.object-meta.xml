@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Maps DE Contracting Subsidiary picklist values to Odoo res.company internal IDs for IP-1 Customer Master payload. Also stores Odoo company configuration per contracting entity.</description>
+    <label>DE Company</label>
+    <pluralLabel>DE Companies</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

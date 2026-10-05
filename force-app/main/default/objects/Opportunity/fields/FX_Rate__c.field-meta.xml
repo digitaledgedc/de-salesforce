@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FX_Rate__c</fullName>
+    <description>Exchange rate from local currency to USD. Used to compute MRC (USD) and NRC (USD). Enter the rate as: 1 local unit = FX_Rate USD (e.g. 1 HKD = 0.128 USD → enter 0.128).</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enter the exchange rate to USD. For example, if 1 HKD = 0.128 USD, enter 0.128. Leave blank if deal is priced directly in USD.</inlineHelpText>
+    <label>FX Rate (to USD)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>6</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

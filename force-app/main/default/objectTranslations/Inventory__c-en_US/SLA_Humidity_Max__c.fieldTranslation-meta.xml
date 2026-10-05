@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- SLA Humidity Max --></label>
+    <name>SLA_Humidity_Max__c</name>
+    <picklistValues>
+        <masterLabel>50%</masterLabel>
+        <translation><!-- 50% --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>55%</masterLabel>
+        <translation><!-- 55% --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>60%</masterLabel>
+        <translation><!-- 60% --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>65%</masterLabel>
+        <translation><!-- 65% --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>70%</masterLabel>
+        <translation><!-- 70% --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>75%</masterLabel>
+        <translation><!-- 75% --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>80%</masterLabel>
+        <translation><!-- 80% --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

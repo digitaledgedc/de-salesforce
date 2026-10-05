@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Credit_Adjust_Requested__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set TRUE by Request Credit Adjustment Quick Action. Triggers Finance to permanently review and update Account credit limits.</description>
+    <inlineHelpText>Use the Request Credit Adjustment quick action to check this. Triggers Finance to permanently review and revise the account&apos;s credit limits. Do not check manually.</inlineHelpText>
+    <label>Credit Limit Adjust Requested</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

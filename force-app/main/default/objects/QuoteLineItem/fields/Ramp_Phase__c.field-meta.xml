@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ramp_Phase__c</fullName>
+    <description>Required when Quote.Is_Ramp_Deal__c = TRUE. Values 1-6. Which delivery phase this line belongs to. Lines in Phase 1 deliver first; Phase 2 next.</description>
+    <externalId>false</externalId>
+    <label>Ramp Phase</label>
+    <precision>2</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

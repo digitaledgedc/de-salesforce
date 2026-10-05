@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- NRC credit limit --></help>
+    <label><!-- Credit Limit NRC --></label>
+    <name>Credit_Limit_NRC__c</name>
+</CustomFieldTranslation>

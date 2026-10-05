@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Termination_Date__c</fullName>
+    <inlineHelpText>The date this asset&apos;s service was or will be terminated. Set when a Churn Order is activated. Billing stops from this date in Odoo.</inlineHelpText>
+    <label>Termination Date</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

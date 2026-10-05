@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Set_Invoice_Currency</name>
+        <label>Set Invoice Currency</label>
+        <locationX>176</locationX>
+        <locationY>276</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Invoice_Currency__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>formula_InvoiceCurrency</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <description>Derives Invoice Currency from Different Invoice Currency on the Quote, consistent with the BAN logic: Different + USD quote -&gt; subsidiary local currency; Different + non-USD quote -&gt; USD; unchecked -&gt; blank.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>formula_InvoiceCurrency</name>
+        <dataType>String</dataType>
+        <expression>IF({!$Record.Different_Invoice_Currency__c}, IF(TEXT({!$Record.CurrencyIsoCode}) = &quot;USD&quot;, TEXT({!$Record.DE_Entity__r.CurrencyIsoCode}), &quot;USD&quot;), &quot;&quot;)</expression>
+    </formulas>
+    <interviewLabel>Quote Invoice Currency {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Quote - Before Save - Invoice Currency</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Set_Invoice_Currency</targetReference>
+        </connector>
+        <filterFormula>OR(ISNEW(), ISCHANGED({!$Record.Different_Invoice_Currency__c}), ISCHANGED({!$Record.CurrencyIsoCode}))</filterFormula>
+        <object>Quote</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- VAT or GST registration number for non-APAC customers and jurisdictions where VAT applies. Printed on invoices where required by local tax regulations. --></help>
+    <label><!-- VAT / GST Number --></label>
+    <name>VAT_Number__c</name>
+</CustomFieldTranslation>

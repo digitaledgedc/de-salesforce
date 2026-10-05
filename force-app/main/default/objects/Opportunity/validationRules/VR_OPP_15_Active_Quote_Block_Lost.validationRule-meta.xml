@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_OPP_15_Active_Quote_Block_Lost</fullName>
+    <active>true</active>
+    <description>Blocks marking Opportunity as 9-Lost while there are active (non-Rejected, non-Accepted) Quotes. Reject or accept all quotes first.</description>
+    <errorConditionFormula>AND(
+    NOT(ISNEW()),
+    ISCHANGED(StageName),
+    ISPICKVAL(StageName, &quot;9-Lost&quot;),
+    Active_Quotes_Count__c &gt; 0
+)</errorConditionFormula>
+    <errorMessage>This opportunity has active quotes that have not been rejected or accepted. Please reject all active quotes before marking this opportunity as Lost.</errorMessage>
+</ValidationRule>

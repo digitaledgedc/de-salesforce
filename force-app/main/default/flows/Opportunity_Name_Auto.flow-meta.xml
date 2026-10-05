@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Set_Opportunity_Name</name>
+        <label>Set Opportunity Name</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Name</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>GeneratedName</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <description>Before-save flow on Opportunity. Sets Name = {Account.Name} - {SiteName} - {Opportunity_Number__c}, falling back to the CloseDate stamp when the number is blank (regular opps where OppNumberGenerator hasn&apos;t run yet). Operation Site is optional until Stage 3-Quote (FB-925), so the site segment is omitted while it is blank and the name is regenerated when a site is later set. SDD §Opportunity - Naming Convention.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>CloseDateStr</name>
+        <dataType>String</dataType>
+        <expression>TEXT(YEAR({!$Record.CloseDate})) &amp; IF(MONTH({!$Record.CloseDate}) &lt; 10, &quot;0&quot;, &quot;&quot;) &amp; TEXT(MONTH({!$Record.CloseDate})) &amp; IF(DAY({!$Record.CloseDate}) &lt; 10, &quot;0&quot;, &quot;&quot;) &amp; TEXT(DAY({!$Record.CloseDate}))</expression>
+    </formulas>
+    <formulas>
+        <name>GeneratedName</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.Account.Name} &amp; &quot; - &quot; &amp; {!SiteSegment} &amp; {!NameSuffix}</expression>
+    </formulas>
+    <formulas>
+        <name>NameSuffix</name>
+        <dataType>String</dataType>
+        <expression>IF(NOT(ISBLANK({!$Record.Opportunity_Number__c})), {!$Record.Opportunity_Number__c}, {!CloseDateStr})</expression>
+    </formulas>
+    <formulas>
+        <name>SiteSegment</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!$Record.Target_Site__c}), &quot;&quot;, {!$Record.Target_Site__r.Name} &amp; &quot; - &quot;)</expression>
+    </formulas>
+    <interviewLabel>Opportunity Name Auto {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Opportunity Name Auto</label>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Set_Opportunity_Name</targetReference>
+        </connector>
+        <filterFormula>AND(
+  NOT(ISBLANK({!$Record.CloseDate})),
+  OR(ISNEW(), ISCHANGED({!$Record.Target_Site__c}))
+)</filterFormula>
+        <object>Opportunity</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

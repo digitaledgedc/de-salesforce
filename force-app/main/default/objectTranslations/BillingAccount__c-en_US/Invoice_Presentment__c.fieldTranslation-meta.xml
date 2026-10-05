@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Invoice template style. EDGE Default uses the standard Digital Edge format. Customer Remarks adds custom text or remarks in a dedicated section. --></help>
+    <label><!-- Invoice Presentment --></label>
+    <name>Invoice_Presentment__c</name>
+    <picklistValues>
+        <masterLabel>Customer Remarks</masterLabel>
+        <translation><!-- Customer Remarks --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>EDGE Default</masterLabel>
+        <translation><!-- EDGE Default --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

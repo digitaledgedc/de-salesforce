@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Error Type --></label>
+    <name>Error_Type__c</name>
+    <picklistValues>
+        <masterLabel>Asset Sync Error</masterLabel>
+        <translation><!-- Asset Sync Error --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>BillingEvent Retry Failure</masterLabel>
+        <translation><!-- BillingEvent Retry Failure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Concurrency Block</masterLabel>
+        <translation><!-- Concurrency Block --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Flow Error</masterLabel>
+        <translation><!-- Flow Error --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>IP-1 Callout Failure</masterLabel>
+        <translation><!-- IP-1 Callout Failure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>IP-3 Callout Failure</masterLabel>
+        <translation><!-- IP-3 Callout Failure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>IP-4 Callout Failure</masterLabel>
+        <translation><!-- IP-4 Callout Failure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>IP-5 Webhook Error</masterLabel>
+        <translation><!-- IP-5 Webhook Error --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>IP-7 Sync Error</masterLabel>
+        <translation><!-- IP-7 Sync Error --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SOF Processing Error</masterLabel>
+        <translation><!-- SOF Processing Error --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

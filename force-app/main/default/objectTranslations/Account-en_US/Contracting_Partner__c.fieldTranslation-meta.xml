@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- The direct contracting party for end-customer accounts. Set when a reseller or channel partner holds the commercial contract on behalf of this end customer. --></help>
+    <label><!-- Contracting Partner --></label>
+    <name>Contracting_Partner__c</name>
+    <relationshipLabel><!-- End Customer Accounts --></relationshipLabel>
+</CustomFieldTranslation>

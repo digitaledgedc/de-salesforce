@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UoM__c</fullName>
+    <description>SFDC-366. Unit of Measure booked on this order line. BLANK MEANS THE LINE INHERITS Product2.QuantityUnitOfMeasure - every reader must coalesce. Populated from QuoteLineItem.UoM__c by the Quote_AfterSave_SOFHandler flow at order creation, and carried onto child ramp orders by RampOrderService (which clones only the fields its SOQL loads). Blank on every order migrated from BOSS; correcting those is a separate data patch that is blocked on a BOSS export.</description>
+    <inlineHelpText>Unit this line&apos;s quantity is expressed in. Blank means the product&apos;s own unit is used.</inlineHelpText>
+    <label>UoM</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>DE_Unit_Of_Measure</valueSetName>
+    </valueSet>
+</CustomField>

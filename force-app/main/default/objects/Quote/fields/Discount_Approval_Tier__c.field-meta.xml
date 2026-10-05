@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Discount_Approval_Tier__c</fullName>
+    <description>Approval tier required based on maximum line discount vs Discount_Threshold__mdt. Auto = no approval needed. CM = Country Manager. VP = Country Manager + VP. DRC = Deal Review Committee.</description>
+    <inlineHelpText>Approval level required for the discount on this quote. Set automatically based on line item discounts.</inlineHelpText>
+    <label>Discount Approval Tier</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Auto</fullName>
+                <default>false</default>
+                <label>Auto</label>
+            </value>
+            <value>
+                <fullName>Country Manager</fullName>
+                <default>false</default>
+                <label>Country Manager</label>
+            </value>
+            <value>
+                <fullName>Country Manager + VP</fullName>
+                <default>false</default>
+                <label>Country Manager + VP</label>
+            </value>
+            <value>
+                <fullName>Deal Review Committee</fullName>
+                <default>false</default>
+                <label>Deal Review Committee</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

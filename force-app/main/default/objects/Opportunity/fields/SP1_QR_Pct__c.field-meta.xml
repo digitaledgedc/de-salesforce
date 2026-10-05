@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SP1_QR_Pct__c</fullName>
+    <inlineHelpText>Percentage of this deal&apos;s MRC that counts toward Salesperson 1&apos;s quota. Used by Finance for incentive compensation calculations.</inlineHelpText>
+    <label>SP1 Booking credit %</label>
+    <precision>7</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Percent</type>
+</CustomField>

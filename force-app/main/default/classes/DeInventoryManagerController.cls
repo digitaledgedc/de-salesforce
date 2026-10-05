@@ -1467,10 +1467,32 @@ public with sharing class DeInventoryManagerController {
     @TestVisible
     private static final Integer ASSIGNMENT_DEMAND_LIMIT = 2000;
 
+    // CHANGE 2026-08-24 (search): minimum characters before a search reaches the
+    // database. Under this length the term is ignored and the plain stage query
+    // runs, exactly as it did before this change.
+    @TestVisible
+    private static final Integer MIN_SEARCH_LENGTH = 3;
+
     /**
      * @param siteId Site to scope demand to; null = all sites.
      * @param stage  Single quote status to return. Blank / 'All' / unrecognised
-     *               falls back to PENDING_DEMAND_STATUSES.
+     *               falls back to PENDING_DEMAND_STATUSES (or, while searching,
+     *               to SELECTABLE_DEMAND_STATUSES — see searchTerm).
+     * @param searchTerm Account name / opportunity name / quote number fragment.
+     *               Ignored below MIN_SEARCH_LENGTH characters.
+     *
+     * CHANGE 2026-08-24 (search): search used to run in the browser over
+     * whatever rows the LIMIT had already returned, so it could only ever find
+     * matches inside the loaded page — an account whose quotes were all
+     * Accepted was unfindable under 'All', which never fetched Accepted at all.
+     * The term is filtered in SOQL now, so a search reads the whole table.
+     *
+     * While a term is active and no single stage is picked, the status set
+     * widens from PENDING_DEMAND_STATUSES (In Review / Presented / Approved) to
+     * SELECTABLE_DEMAND_STATUSES, i.e. those three plus Accepted. That keeps the
+     * search set identical to what the stage chips can display: every row a
+     * search returns stays reachable by then clicking a chip. Draft, Void and
+     * Rejected are deliberately still excluded — no chip renders them.
      *
      * DIG-863: stage is filtered in SOQL, not in the browser. It used to be
      * filtered client side over whatever survived 'LIMIT 500', and because the
@@ -1479,38 +1501,174 @@ public with sharing class DeInventoryManagerController {
      * returned nothing at all and the stage chips had nothing to filter.
      * Filtering in the query means the cap can never starve a picked stage.
      */
-    @AuraEnabled
-    public static List<QuoteLineItem> getAssignmentDemand(Id siteId, String stage) {
-        Set<String> demandStatuses =
-            (String.isNotBlank(stage) && SELECTABLE_DEMAND_STATUSES.contains(stage))
-                ? new Set<String>{ stage }
-                : PENDING_DEMAND_STATUSES;
-        String q = 'SELECT Id, QuoteId, Quote.QuoteNumber, Quote.Name, Quote.Status, '
-            + 'Quote.RDD__c, '
-            + 'Quote.Target_Site__c, Quote.Target_Site__r.Site_Code__c, '
-            + 'Quote.Opportunity.Name, '
-            + 'Quote.Opportunity.Account.Name, '
-            + 'Product2.Name, Product2.ProductCode, '
-            + 'Quantity, Reserved__c, '
-            + 'Space_ID__c, Space_ID__r.Name, Space_ID__r.Site_Id__c, '
-            + 'Breaker_ID__c, Breaker_ID__r.Name, Breaker_ID__r.Site_Id__c, '
-            + 'Power_kVA__c, CabE__c, '
-            + 'Assigned_Inventory_Location__c '
-            + 'FROM QuoteLineItem '
-            // Status gates every row now. It used to sit inside the first OR
-            // branch only, so a QLI matched via assigned space/breaker came
-            // back at ANY status — Void, Rejected, Draft — and ate the cap.
-            + 'WHERE Quote.Status IN :demandStatuses';
-        if (siteId != null) {
+    /* CHANGE 2026-08-24b (quote cap): the row cap used to be spent on LINES, and
+     * because the sort is site code first, a term matching more lines than the cap
+     * came back as a geographic slice of PARTIAL quotes with nothing saying so.
+     * Measured: term "ITOCHU" truly matches 3,275 lines across 641 quotes, but
+     * `All` returned 2,000 lines covering 301 quotes and `Accepted` returned a
+     * DIFFERENT 2,000 lines covering 279 — which is why the chips could not be
+     * reconciled with All. The budget is now spent on WHOLE quotes: quotes are
+     * taken in display order until the next one would not fit, so every quote
+     * rendered is complete. getAssignmentDemandMeta() reports the true totals so
+     * the UI can say how much was left out.
+     *
+     * The line budget itself is unchanged at ASSIGNMENT_DEMAND_LIMIT, deliberately:
+     * a 2,000-row response already measures ~5.2 MB against the 6 MB Apex heap
+     * limit, so raising it would trade this bug for a LimitException.
+     */
+
+    // Fields the Assignment rows render. Shared by the row query so the phase-1
+    // scan and the phase-2 fetch cannot drift apart.
+    private static final String DEMAND_SELECT =
+          'SELECT Id, QuoteId, Quote.QuoteNumber, Quote.Name, Quote.Status, '
+        + 'Quote.RDD__c, '
+        + 'Quote.Target_Site__c, Quote.Target_Site__r.Site_Code__c, '
+        + 'Quote.Opportunity.Name, '
+        + 'Quote.Opportunity.Account.Name, '
+        + 'Product2.Name, Product2.ProductCode, '
+        + 'Quantity, Reserved__c, '
+        + 'Space_ID__c, Space_ID__r.Name, Space_ID__r.Site_Id__c, '
+        + 'Breaker_ID__c, Breaker_ID__r.Name, Breaker_ID__r.Site_Id__c, '
+        + 'Power_kVA__c, CabE__c, '
+        + 'Assigned_Inventory_Location__c '
+        + 'FROM QuoteLineItem ';
+
+    private static final String DEMAND_ORDER =
+        ' ORDER BY Quote.Target_Site__r.Site_Code__c ASC NULLS LAST, '
+        + 'Quote.QuoteNumber ASC, Product2.Name ASC ';
+
+    // Phase 1 selects QuoteId only, so its heap cost is negligible and it can
+    // afford to see far more rows than the render budget. Beyond this the totals
+    // become a floor rather than a count, which scanCapped reports.
+    @TestVisible
+    private static final Integer ASSIGNMENT_SCAN_LIMIT = 20000;
+
+    /* Builds the shared WHERE fragment. CALLER CONTRACT: the calling method must
+     * hold locals named exactly `demandStatuses`, `siteId` and `search`, because
+     * the returned text binds to them. */
+    private static String demandWhere(Boolean bySite, Boolean isSearch) {
+        // Status gates every row now. It used to sit inside the first OR branch
+        // only, so a QLI matched via assigned space/breaker came back at ANY
+        // status - Void, Rejected, Draft - and ate the cap.
+        String w = 'WHERE Quote.Status IN :demandStatuses';
+        if (bySite) {
             // Show QLIs that target this site via quote OR have inventory assigned at this site
-            q += ' AND (Quote.Target_Site__c = :siteId '
+            w += ' AND (Quote.Target_Site__c = :siteId '
                + 'OR Space_ID__r.Site_Id__c = :siteId '
                + 'OR Breaker_ID__r.Site_Id__c = :siteId)';
         }
-        q += ' ORDER BY Quote.Target_Site__r.Site_Code__c ASC NULLS LAST, '
-           + 'Quote.QuoteNumber ASC, Product2.Name ASC '
-           + 'LIMIT ' + ASSIGNMENT_DEMAND_LIMIT;
+        if (isSearch) {
+            // The three fields the Assignment rows display - the account name, the
+            // opportunity name it falls back to when the account is blank, and the
+            // quote number. Bound, never concatenated.
+            w += ' AND (Quote.Opportunity.Account.Name LIKE :search'
+               + ' OR Quote.Opportunity.Name LIKE :search'
+               + ' OR Quote.QuoteNumber LIKE :search)';
+        }
+        return w;
+    }
+
+    private static Set<String> demandStatusesFor(String stage, Boolean isSearch) {
+        Boolean stagePicked =
+            String.isNotBlank(stage) && SELECTABLE_DEMAND_STATUSES.contains(stage);
+        // A picked chip narrows to that one status, searching or not. 'All' widens
+        // to include Accepted only once a term is active.
+        return stagePicked
+            ? new Set<String>{ stage }
+            : (isSearch ? SELECTABLE_DEMAND_STATUSES : PENDING_DEMAND_STATUSES);
+    }
+
+    private static Boolean isSearchTerm(String searchTerm) {
+        String term = String.isBlank(searchTerm) ? '' : searchTerm.trim();
+        return term.length() >= MIN_SEARCH_LENGTH;
+    }
+
+    /* Which quotes to render, and what the true totals are. */
+    private class DemandScope {
+        List<Id> pick = new List<Id>();
+        Integer totalQuotes = 0;
+        Integer totalLines  = 0;
+        Integer shownLines  = 0;
+        Boolean scanCapped  = false;
+        Boolean truncated() { return totalQuotes > pick.size(); }
+    }
+
+    private static DemandScope demandScope(Id siteId, String stage, String searchTerm) {
+        Boolean isSearch = isSearchTerm(searchTerm);
+        Set<String> demandStatuses = demandStatusesFor(stage, isSearch);
+        String search = likeTerm(String.isBlank(searchTerm) ? '' : searchTerm.trim());
+        String q = 'SELECT QuoteId FROM QuoteLineItem '
+                 + demandWhere(siteId != null, isSearch)
+                 + DEMAND_ORDER
+                 + ' LIMIT ' + ASSIGNMENT_SCAN_LIMIT;
+
+        DemandScope sc = new DemandScope();
+        // Rows arrive in display order, so a quote's lines are contiguous and the
+        // first time an id appears is its display position.
+        List<Id> ordered = new List<Id>();
+        Map<Id, Integer> perQuote = new Map<Id, Integer>();
+        for (QuoteLineItem probe : Database.query(q)) {
+            if (!perQuote.containsKey(probe.QuoteId)) {
+                ordered.add(probe.QuoteId);
+                perQuote.put(probe.QuoteId, 0);
+            }
+            perQuote.put(probe.QuoteId, perQuote.get(probe.QuoteId) + 1);
+            sc.totalLines++;
+        }
+        sc.totalQuotes = ordered.size();
+        sc.scanCapped  = (sc.totalLines == ASSIGNMENT_SCAN_LIMIT);
+
+        for (Id qid : ordered) {
+            Integer c = perQuote.get(qid);
+            // Never return a partial quote. The only exception is a first quote
+            // that alone exceeds the budget - taking it beats rendering nothing.
+            if (!sc.pick.isEmpty() && sc.shownLines + c > ASSIGNMENT_DEMAND_LIMIT) break;
+            sc.pick.add(qid);
+            sc.shownLines += c;
+        }
+        return sc;
+    }
+
+    @AuraEnabled
+    public static List<QuoteLineItem> getAssignmentDemand(Id siteId, String stage,
+                                                          String searchTerm) {
+        DemandScope sc = demandScope(siteId, stage, searchTerm);
+        if (sc.pick.isEmpty()) return new List<QuoteLineItem>();
+
+        Boolean isSearch = isSearchTerm(searchTerm);
+        Set<String> demandStatuses = demandStatusesFor(stage, isSearch);
+        String search = likeTerm(String.isBlank(searchTerm) ? '' : searchTerm.trim());
+        Set<Id> picked = new Set<Id>(sc.pick);
+
+        // The original predicate is kept verbatim and merely restricted to the
+        // chosen quotes. That matters for the site-scoped view, whose filter is
+        // partly line-level (assigned space/breaker), so fetching every line of a
+        // quote would surface lines the old query correctly excluded.
+        String q = DEMAND_SELECT
+                 + demandWhere(siteId != null, isSearch)
+                 + ' AND QuoteId IN :picked'
+                 + DEMAND_ORDER
+                 // Backstop only: the budget loop already bounds this. Guards the
+                 // pathological single-quote-over-budget case against heap.
+                 + ' LIMIT ' + (ASSIGNMENT_DEMAND_LIMIT + 500);
         return stripped(Database.query(q));
+    }
+
+    /* True totals for the same filters, so the UI can report what was left out
+     * instead of presenting a truncated slice as the whole answer. Counts come
+     * from the phase-1 scan, which is not subject to the render budget. */
+    @AuraEnabled
+    public static Map<String, Object> getAssignmentDemandMeta(Id siteId, String stage,
+                                                              String searchTerm) {
+        DemandScope sc = demandScope(siteId, stage, searchTerm);
+        return new Map<String, Object>{
+            'totalQuotes' => sc.totalQuotes,
+            'shownQuotes' => sc.pick.size(),
+            'totalLines'  => sc.totalLines,
+            'shownLines'  => sc.shownLines,
+            'truncated'   => sc.truncated(),
+            'scanCapped'  => sc.scanCapped
+        };
     }
 
     /* ─── Read: Available inventory by record type ─────────────────────── */
@@ -1640,6 +1798,19 @@ public with sharing class DeInventoryManagerController {
             return 'Row ' + rowNum + ': ' + raw;
         }
         return 'Row ' + rowNum + ': ' + raw;
+    }
+
+    // CHANGE 2026-08-24 (search): wraps a user's term in LIKE wildcards, escaping
+    // the wildcards it may itself contain. Without this, typing '%' matches every
+    // row and typing '_' matches any character — the term is always bound, so
+    // this is about the search being literal, not about injection.
+    @TestVisible
+    private static String likeTerm(String raw) {
+        String s = (raw == null ? '' : raw.trim())
+            .replace('\\', '\\\\')
+            .replace('%', '\\%')
+            .replace('_', '\\_');
+        return '%' + s + '%';
     }
 
     private static List<SObject> stripped(List<SObject> records) {

@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_MDC_Notification</name>
+        <label>Send MDC Notification to Finance</label>
+        <locationX>176</locationX>
+        <locationY>480</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <connector>
+            <targetReference>Screen_Confirmation</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Screen_Confirmation</targetReference>
+        </faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <stringValue>finance-approvals@digitaledge.com</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>frmSubject</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>frmBody</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>emailSimple</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <choices>
+        <name>ch_BillingAddress</name>
+        <choiceText>Billing Address</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Billing Address</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>ch_DESubsidiary</name>
+        <choiceText>DE Contracting Subsidiary</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>DE Contracting Subsidiary</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>ch_LegalName</name>
+        <choiceText>Legal Entity Name (English)</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Legal Entity Name (English)</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>ch_LocalName</name>
+        <choiceText>Local Entity Name</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Local Entity Name</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>ch_TaxExemption</name>
+        <choiceText>Tax Exemption Status</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Tax Exemption Status</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>ch_TaxID</name>
+        <choiceText>Tax ID / Business Registration</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Tax ID / Business Registration</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>ch_UEN</name>
+        <choiceText>UEN (Singapore)</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>UEN (Singapore)</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>ch_VAT</name>
+        <choiceText>VAT / GST Number</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>VAT / GST Number</stringValue>
+        </value>
+    </choices>
+    <description>F-MDC: Allows authorised users to request a change to locked legal entity fields on an Account after Finance Approval. Captures the field to change, the new value, and the business reason. Creates a Task on the Account with all request details and notifies Finance via email. Does not directly change any field - Finance makes the change after approval.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>frmBody</name>
+        <dataType>String</dataType>
+        <expression>&quot;A Master Data Change has been requested for Account: &quot; &amp; {!var_account.Name} &amp; &quot;\n\nField: &quot; &amp; {!inp_fieldToChange} &amp; &quot;\nRequested New Value: &quot; &amp; {!inp_newValue} &amp; &quot;\nBusiness Reason: &quot; &amp; {!inp_reason} &amp; &quot;\n\nRequested by: &quot; &amp; {!$User.FirstName} &amp; &quot; &quot; &amp; {!$User.LastName} &amp; &quot; (&quot; &amp; {!$User.Email} &amp; &quot;)\n\nPlease review and make the change directly in Salesforce if approved.&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>frmLineBreak</name>
+        <dataType>String</dataType>
+        <expression>BR()</expression>
+    </formulas>
+    <formulas>
+        <name>frmSubject</name>
+        <dataType>String</dataType>
+        <expression>&quot;Master Data Change Request: &quot; &amp; {!var_account.Name} &amp; &quot; - &quot; &amp; {!inp_fieldToChange}</expression>
+    </formulas>
+    <formulas>
+        <name>frmTaskDescription</name>
+        <dataType>String</dataType>
+        <expression>&quot;Account: &quot; &amp; {!var_account.Name} &amp;
+BR() &amp; &quot;Field to Change: &quot; &amp; {!inp_fieldToChange} &amp;
+{!frmLineBreak} &amp; &quot;Requested New Value: &quot; &amp; {!inp_newValue} &amp;
+BR() &amp; &quot;Business Reason: &quot; &amp; {!inp_reason} &amp;
+BR() &amp; BR() &amp; &quot;Requested by: &quot; &amp; {!$User.FirstName} &amp; &quot; &quot; &amp; {!$User.LastName} &amp; &quot; (&quot; &amp; {!$User.Email} &amp; &quot;)&quot;</expression>
+    </formulas>
+    <interviewLabel>Account - Request Master Data Change {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Account - Screen - Request Master Data Change</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_MDC_Task</name>
+        <label>Create MDC Task</label>
+        <locationX>176</locationX>
+        <locationY>360</locationY>
+        <connector>
+            <targetReference>Send_MDC_Notification</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Screen_MDCError</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <elementReference>tt_TaskDescription</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>Normal</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Open</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <elementReference>frmSubject</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhatId</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_Account</name>
+        <label>Get Account</label>
+        <locationX>176</locationX>
+        <locationY>120</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Screen_SelectField</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>Account</object>
+        <outputReference>var_account</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <queriedFields>Legal_Entity_Name__c</queriedFields>
+        <queriedFields>Tax_ID__c</queriedFields>
+        <queriedFields>Entity_Locked__c</queriedFields>
+    </recordLookups>
+    <runInMode>SystemModeWithSharing</runInMode>
+    <screens>
+        <name>Screen_Confirmation</name>
+        <label>Request Submitted</label>
+        <locationX>176</locationX>
+        <locationY>600</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>confText</name>
+            <fieldText>&lt;p&gt;Your Master Data Change request has been sent to Finance. They will review and contact you if further information is needed. Do not edit the field directly - Finance will make the update once approved.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Screen_MDCError</name>
+        <label>Request Error</label>
+        <locationX>650</locationX>
+        <locationY>360</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>display_MDCError</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Your master data change request could not be submitted.&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Please review the message below, fix the issue and try again. If it keeps happening, contact your system administrator. No request has been created.&lt;/p&gt;&lt;p&gt;Error: {!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <nextOrFinishButtonLabel>Close</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Screen_SelectField</name>
+        <label>Request Master Data Change</label>
+        <locationX>176</locationX>
+        <locationY>240</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Create_MDC_Task</targetReference>
+        </connector>
+        <fields>
+            <name>mdcInfo</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Legal entity fields are locked after Finance Approval.&lt;/strong&gt; Submitting this form will notify Finance with your change request. Finance will validate the request and make the update directly. Do not attempt to edit the locked field - submit this form instead.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>inp_fieldToChange</name>
+            <choiceReferences>ch_LegalName</choiceReferences>
+            <choiceReferences>ch_TaxID</choiceReferences>
+            <choiceReferences>ch_TaxExemption</choiceReferences>
+            <choiceReferences>ch_UEN</choiceReferences>
+            <choiceReferences>ch_VAT</choiceReferences>
+            <choiceReferences>ch_LocalName</choiceReferences>
+            <choiceReferences>ch_BillingAddress</choiceReferences>
+            <choiceReferences>ch_DESubsidiary</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Field to Change</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>inp_newValue</name>
+            <dataType>String</dataType>
+            <fieldText>New Value</fieldText>
+            <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>inp_reason</name>
+            <fieldText>Business Reason for Change</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>176</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Account</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <textTemplates>
+        <name>tt_TaskDescription</name>
+        <isViewedAsPlainText>false</isViewedAsPlainText>
+        <text>Account:  {!var_account.Name}
+Field to Change: {!inp_fieldToChange}
+Requested New Value: {!inp_newValue}
+Business Reason: {!inp_reason} 
+
+Requested by: {!$User.FirstName} {!$User.LastName} ({!$User.Email})</text>
+    </textTemplates>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>var_account</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Account</objectType>
+    </variables>
+</Flow>

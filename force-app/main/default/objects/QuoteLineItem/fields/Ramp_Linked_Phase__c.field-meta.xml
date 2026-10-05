@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ramp_Linked_Phase__c</fullName>
+    <description>The ramp phase number this line links to (e.g., Phase 3 is a change to Phase 1 cabinet → value is 1). Null if standalone Add.</description>
+    <externalId>false</externalId>
+    <label>Ramp Linked Phase</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

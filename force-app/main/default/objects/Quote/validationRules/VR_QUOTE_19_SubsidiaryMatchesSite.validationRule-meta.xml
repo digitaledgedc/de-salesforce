@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_19_SubsidiaryMatchesSite</fullName>
+    <active>true</active>
+    <description>VR-QUOTE-19: The Subsidiary (DE Entity) must match the Operation Site&apos;s subsidiary. Prevents the subsidiary/currency going stale when the Operation Site is changed on the quote. Only fires when both the site and its subsidiary are set.</description>
+    <errorConditionFormula>AND(
+  NOT(ISBLANK(Target_Site__c)),
+  NOT(ISBLANK(Target_Site__r.DE_Entity__c)),
+  NOT(ISBLANK(DE_Entity__c)),
+  DE_Entity__c &lt;&gt; Target_Site__r.DE_Entity__c
+)</errorConditionFormula>
+    <errorDisplayField>DE_Entity__c</errorDisplayField>
+    <errorMessage>The Subsidiary must match the Operation Site&apos;s subsidiary. The Operation Site you selected belongs to a different subsidiary than the one on this quote. Update the Subsidiary to the Operation Site&apos;s subsidiary, or change the Operation Site.</errorMessage>
+</ValidationRule>

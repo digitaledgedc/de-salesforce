@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_09_ApprovedLock</fullName>
+    <active>true</active>
+    <description>VR-QUOTE-09: Locks commercial Quote header fields once Approved. Finance, approval, and system fields remain editable. Fires only when a locked field is actually changed — flow/system updates pass through.</description>
+    <errorConditionFormula>AND(
+    NOT(ISNEW()),
+    ISPICKVAL(PRIORVALUE(Status), &apos;Approved&apos;),
+    NOT(ISCHANGED(Status)),
+    OR(
+        ISCHANGED( Contract_Term_Months__c ),
+        ISCHANGED( Target_Site__c ),
+        ISCHANGED( Quote_Type__c ),
+        ISCHANGED( Amendment_Reason__c ),
+        ISCHANGED( DE_Entity__c ),
+        ISCHANGED( Ramp_Schedule__c ),
+        ISCHANGED( Ramp_Phases__c ),
+        ISCHANGED( Is_Ramp_Deal__c ),
+        ISCHANGED( Free_Months__c ),
+        ISCHANGED( Free_Months_Reason__c ),
+        ISCHANGED( Free_Period_Start_Date__c ),
+        ISCHANGED( Free_Period_End_Date__c ),
+        ISCHANGED( FX_Rate_Model__c ),
+        ISCHANGED( FX_Rate_Terms__c ),
+        ISCHANGED( Tax_Treatment__c ),
+        ISCHANGED( Target_Site__c ),
+        ISCHANGED( Feasibility_Status__c ),
+        ISCHANGED( Feasibility_Notes__c ),
+        ISCHANGED( Pricebook2Id )
+    )
+)</errorConditionFormula>
+    <errorMessage>This Quote has been approved. No changes are permitted - use Revise Quote to create a new version.</errorMessage>
+</ValidationRule>

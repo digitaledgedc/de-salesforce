@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Grand_Total__c</fullName>
+    <description>Formula: TotalPrice + Total_Tax__c. The total amount the customer sees as payable. Distinct from standard GrandTotal field. Use Grand_Total__c for all customer-facing display or reports.</description>
+    <formula>TotalPrice + Total_Tax__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Total amount payable including tax. Auto-calculated as Total MRC plus Total Tax. Use this field for customer-facing display and reporting. Read-only.</inlineHelpText>
+    <label>Grand Total</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Check for accounts designated as strategic accounts at the global parent level. Used for executive reporting and strategic account management programs. --></help>
+    <label><!-- Strategic Account --></label>
+    <name>Strategic_Account_Flag__c</name>
+</CustomFieldTranslation>

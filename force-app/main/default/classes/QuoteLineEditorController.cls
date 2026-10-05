@@ -108,6 +108,7 @@ public with sharing class QuoteLineEditorController {
             SELECT Id, SortOrder,
                    Product2.Name, Product2.ProductCode, Product2.Family,
                    Product2.Description, Product2.QuantityUnitOfMeasure,
+                   UoM__c, Product2.Allowed_UoM__c,
                    Quantity, ListPrice, List_Price__c, UnitPrice, Discount, TotalPrice,
                    BillingFrequency, StartDate, EndDate,
                    Ramp_Phase__c, Ramp_Start_Date__c, Ramp_Invoice_Display__c, Ramp_Line__c, Ramp_Identifier__c, Ramp_Parent_Line__c, Ramp_Linked_Phase__c,
@@ -141,6 +142,118 @@ public with sharing class QuoteLineEditorController {
         return lines;
     }
 
+    /**
+     * Move a quote line up or down within its MRC/NRC (billing) group and
+     * persist SortOrder for every line on the quote so PDF/editor stay aligned.
+     */
+    @AuraEnabled
+    public static void reorderQuoteLineItem(Id quoteId, Id lineId, String direction) {
+        if (quoteId == null || lineId == null) {
+            throw new AuraHandledException('Quote and line are required to reorder.');
+        }
+        String dir = direction == null ? '' : direction.trim().toLowerCase();
+        if (dir != 'up' && dir != 'down') {
+            throw new AuraHandledException('Direction must be up or down.');
+        }
+        if (!QuoteLineItem.sObjectType.getDescribe(SObjectDescribeOptions.DEFERRED).isUpdateable()) {
+            throw new AuraHandledException('Insufficient permissions to reorder Quote Line Items.');
+        }
+
+        List<QuoteLineItem> allLines = [
+            SELECT Id, SortOrder, Charge_Type__c, BillingFrequency,
+                   Product2.ProductCode, CreatedDate
+            FROM QuoteLineItem
+            WHERE QuoteId = :quoteId
+            ORDER BY SortOrder ASC NULLS LAST, CreatedDate ASC
+        ];
+        if (allLines.isEmpty()) {
+            return;
+        }
+
+        Map<String, List<QuoteLineItem>> byGroup = new Map<String, List<QuoteLineItem>>();
+        List<String> groupKeys = new List<String>();
+        for (QuoteLineItem li : allLines) {
+            String gKey = billingGroupKey(li);
+            if (!byGroup.containsKey(gKey)) {
+                byGroup.put(gKey, new List<QuoteLineItem>());
+                groupKeys.add(gKey);
+            }
+            byGroup.get(gKey).add(li);
+        }
+
+        String targetGroup;
+        Integer idx = -1;
+        for (String gKey : groupKeys) {
+            List<QuoteLineItem> bucket = byGroup.get(gKey);
+            for (Integer i = 0; i < bucket.size(); i++) {
+                if (bucket[i].Id == lineId) {
+                    targetGroup = gKey;
+                    idx = i;
+                    break;
+                }
+            }
+            if (idx >= 0) break;
+        }
+        if (idx < 0) {
+            throw new AuraHandledException('Quote line not found on this quote.');
+        }
+
+        List<QuoteLineItem> bucket = byGroup.get(targetGroup);
+        Integer swapIdx = dir == 'up' ? idx - 1 : idx + 1;
+        if (swapIdx < 0 || swapIdx >= bucket.size()) {
+            return; // already at edge
+        }
+        QuoteLineItem tmp = bucket[idx];
+        bucket[idx] = bucket[swapIdx];
+        bucket[swapIdx] = tmp;
+
+        // Stable global order: recurring groups first, NRC last (matches editor)
+        List<String> orderedGroups = new List<String>{ 'Monthly', 'Quarterly', 'Annual', 'MRC', 'NRC' };
+        List<QuoteLineItem> flattened = new List<QuoteLineItem>();
+        Set<String> seen = new Set<String>();
+        for (String g : orderedGroups) {
+            if (byGroup.containsKey(g)) {
+                flattened.addAll(byGroup.get(g));
+                seen.add(g);
+            }
+        }
+        for (String gKey : groupKeys) {
+            if (!seen.contains(gKey)) {
+                flattened.addAll(byGroup.get(gKey));
+            }
+        }
+
+        List<QuoteLineItem> toUpdate = new List<QuoteLineItem>();
+        Integer order = 10;
+        for (QuoteLineItem li : flattened) {
+            if (li.SortOrder != order) {
+                toUpdate.add(new QuoteLineItem(Id = li.Id, SortOrder = order));
+            }
+            order += 10;
+        }
+        if (!toUpdate.isEmpty()) {
+            try {
+                new DmlHelper().doUpdate(toUpdate);
+            } catch (DmlException e) {
+                throw new AuraHandledException(e.getDmlMessage(0));
+            }
+        }
+    }
+
+    private static String billingGroupKey(QuoteLineItem line) {
+        String ct = line.Charge_Type__c == null ? '' : line.Charge_Type__c.toUpperCase();
+        if (ct == 'NRC') return 'NRC';
+        if (ct == 'MRC') return 'Monthly';
+        String code = line.Product2 != null && line.Product2.ProductCode != null
+            ? line.Product2.ProductCode.toUpperCase() : '';
+        String freq = line.BillingFrequency == null ? '' : line.BillingFrequency.toLowerCase();
+        if (code.endsWith('.NR') || freq.contains('one') || freq == 'nrc') return 'NRC';
+        if (code.endsWith('.RC') || freq == 'monthly' || freq == 'mrc') return 'Monthly';
+        if (freq.contains('quarter')) return 'Quarterly';
+        if (freq.contains('annual') || freq.contains('year')) return 'Annual';
+        return String.isBlank(ct) ? 'MRC' : ct;
+    }
+
     @AuraEnabled
     public static List<Map<String, Object>> searchProducts(String searchTerm, Id pricebook2Id, String currencyIsoCode, Id accountPricebookId) {
         String term = '%' + String.escapeSingleQuotes(searchTerm) + '%';
@@ -150,7 +263,7 @@ public with sharing class QuoteLineEditorController {
         List<PricebookEntry> allSitePbes = (List<PricebookEntry>) Security.stripInaccessible(
             AccessType.READABLE,
             [SELECT Id, UnitPrice, CurrencyIsoCode, Product2Id,
-                    Product2.Name, Product2.ProductCode, Product2.Family, Product2.QuantityUnitOfMeasure,
+                    Product2.Name, Product2.ProductCode, Product2.Family, Product2.QuantityUnitOfMeasure, Product2.Allowed_UoM__c,
                     Product2.Attribute_Type__c, Product2.Attribute_Values__c,
                     Product2.Product_Attribute__c,
                     Product2.Show_Custom_Attribute_Value__c
@@ -203,7 +316,7 @@ public with sharing class QuoteLineEditorController {
             List<PricebookEntry> allAccountPbes = (List<PricebookEntry>) Security.stripInaccessible(
                 AccessType.READABLE,
                 [SELECT Id, UnitPrice, CurrencyIsoCode, Product2Id,
-                        Product2.Name, Product2.ProductCode, Product2.Family, Product2.QuantityUnitOfMeasure,
+                        Product2.Name, Product2.ProductCode, Product2.Family, Product2.QuantityUnitOfMeasure, Product2.Allowed_UoM__c,
                         Product2.Attribute_Type__c, Product2.Attribute_Values__c,
                         Product2.Product_Attribute__c,
                         Product2.Show_Custom_Attribute_Value__c
@@ -241,6 +354,7 @@ public with sharing class QuoteLineEditorController {
                 'productCode' => pbe.Product2.ProductCode,
                 'family'      => pbe.Product2.Family,
                 'unit'        => pbe.Product2.QuantityUnitOfMeasure,
+                'allowedUom'  => pbe.Product2.Allowed_UoM__c,
                 'unitPrice'   => noCurrency ? 0 : pbe.UnitPrice,
                 'productAttribute'    => pbe.Product2.Product_Attribute__c,
                 'showCustomValue'     => pbe.Product2.Show_Custom_Attribute_Value__c,
@@ -264,6 +378,7 @@ public with sharing class QuoteLineEditorController {
                 'productCode' => apbe.Product2.ProductCode,
                 'family'      => apbe.Product2.Family,
                 'unit'        => apbe.Product2.QuantityUnitOfMeasure,
+                'allowedUom'  => apbe.Product2.Allowed_UoM__c,
                 'unitPrice'   => noCurrency ? 0 : apbe.UnitPrice,
                 'productAttribute'    => apbe.Product2.Product_Attribute__c,
                 'showCustomValue'     => apbe.Product2.Show_Custom_Attribute_Value__c,
@@ -283,10 +398,18 @@ public with sharing class QuoteLineEditorController {
             SELECT Id, Pricebook2Id, Product2Id, UnitPrice, CurrencyIsoCode,
                    Product2.ProductCode, Product2.Charge_Type__c,
                    Product2.Charge_Frequency__c, Product2.Billing_Charge_Type__c,
-                   Product2.Odoo_Product_Id__c, Product2.Merge_IB_Task__c
+                   Product2.Odoo_Product_Id__c, Product2.Merge_IB_Task__c,
+                   Product2.Paired_NRC_Product__c, Product2.Paired_NRC_Product__r.ProductCode,
+                   Product2.QuantityUnitOfMeasure
             FROM PricebookEntry WHERE Id = :pricebookEntryId
             LIMIT 1
         ];
+
+        // SFDC-366: capture the product's default unit NOW. The ensureCurrencyPbe /
+        // ensureQuotePricebookEntry helpers below replace `pbe` with a freshly built
+        // record whose Product2 relationship does not carry QuantityUnitOfMeasure, so
+        // reading it after the swap throws SObjectException: field not queried.
+        String defaultUom = pbe.Product2 != null ? pbe.Product2.QuantityUnitOfMeasure : null;
 
         // Ensure PBE currency matches the quote — auto-create PBE if needed
         // (products visible at $0 because they only have a different-currency PBE)
@@ -320,6 +443,9 @@ public with sharing class QuoteLineEditorController {
                 List_Price__c    = effectivePrice
             );
             qli.Line_Origin__c = 'New';
+            // SFDC-366: seed the line's unit from the product default so the grid has
+            // something to show. Guarded — see uomOrNull.
+            qli.UoM__c = uomOrNull(defaultUom);
             // ── Copy product-level fields to QLI ────────────────────────
             Product2 prod = pbe.Product2;
 
@@ -376,7 +502,8 @@ public with sharing class QuoteLineEditorController {
                 List<PricebookEntry> acPbes = [
                     SELECT Id, Product2Id, UnitPrice,
                            Product2.ProductCode, Product2.Charge_Frequency__c,
-                           Product2.Billing_Charge_Type__c, Product2.Odoo_Product_Id__c
+                           Product2.Billing_Charge_Type__c, Product2.Odoo_Product_Id__c,
+                           Product2.QuantityUnitOfMeasure
                     FROM PricebookEntry
                     WHERE Pricebook2Id = :pbe.Pricebook2Id
                       AND Product2Id IN :acProductIds
@@ -395,6 +522,8 @@ public with sharing class QuoteLineEditorController {
                         Line_Origin__c   = 'New'
                     );
                     Product2 acProd = acPbe.Product2;
+                    // SFDC-366: this is its own product — seed from ITS default, not the parent's
+                    acQli.UoM__c = uomOrNull(acProd.QuantityUnitOfMeasure);
                     if (String.isNotBlank(acProd.Charge_Frequency__c)) {
                         acQli.Charge_Frequency__c = acProd.Charge_Frequency__c;
                     }
@@ -412,23 +541,22 @@ public with sharing class QuoteLineEditorController {
                 }
             }
 
-            // ── Auto-add NRC installation charge (.RC → .NR) ────────────
+            // ── Auto-add NRC installation charge ─────────────────────────
             // Create the paired NRC QLI synchronously so the LWC shows
             // both lines immediately. The async NrcPairingService flow
             // has a duplicate guard and will skip if it already exists.
-            // ── Auto-add NRC installation charge (.RC → .NR) ────────────
-            // Each MRC line gets its own paired NRC — no duplicate check.
-            // The async NrcPairingService flow has its own guard and will skip.
-            String productCode = prod.ProductCode;
-            if (String.isNotBlank(productCode) && productCode.toUpperCase().endsWith('.RC')) {
-                String nrcCode = buildNrcCode(productCode);
-                if (nrcCode != null) {
+            // Pairing is driven solely by Product2.Paired_NRC_Product__c —
+            // no product-code derivation. A product with this field blank
+            // gets no NRC line auto-added.
+            if (prod.Paired_NRC_Product__c != null) {
+                String nrcCode = prod.Paired_NRC_Product__r.ProductCode;
+                if (String.isNotBlank(nrcCode)) {
                     List<PricebookEntry> nrcPbes = (List<PricebookEntry>) Security.stripInaccessible(
                         AccessType.READABLE,
                         [SELECT Id, Product2Id, UnitPrice,
                                 Product2.Charge_Frequency__c,
                                 Product2.Billing_Charge_Type__c,
-                                Product2.Odoo_Product_Id__c
+                                Product2.Odoo_Product_Id__c, Product2.QuantityUnitOfMeasure
                          FROM PricebookEntry
                          WHERE Pricebook2Id = :pbe.Pricebook2Id
                            AND Product2.ProductCode = :nrcCode
@@ -450,6 +578,8 @@ public with sharing class QuoteLineEditorController {
                             Line_Origin__c   = 'New'
                         );
                         Product2 nrcProd = nrcPbe.Product2;
+                        // SFDC-366: the NRC is a different product (.RC -> .NR) — its own default
+                        nrcQli.UoM__c = uomOrNull(nrcProd.QuantityUnitOfMeasure);
                         if (String.isNotBlank(nrcProd.Charge_Frequency__c)) {
                             nrcQli.Charge_Frequency__c = nrcProd.Charge_Frequency__c;
                         }
@@ -529,12 +659,9 @@ public with sharing class QuoteLineEditorController {
 
         // Collect quote IDs and NRC info only for non-skipped MRCs
         Set<Id> quoteIds = new Set<Id>();
-        Set<String> nrcCodes = new Set<String>();
         Set<Id> nrcProductIds = new Set<Id>();
         for (QuoteLineItem m : mrcsToProcess) {
             quoteIds.add(m.QuoteId);
-            String nrcCode = buildNrcCode(m.Product2.ProductCode);
-            if (nrcCode != null) nrcCodes.add(nrcCode);
             Id pairedNrcProdId = m.Product2.Paired_NRC_Product__c;
             if (pairedNrcProdId != null) nrcProductIds.add(pairedNrcProdId);
         }
@@ -546,8 +673,8 @@ public with sharing class QuoteLineEditorController {
                     Product2.ProductCode, Product2Id, QuoteId
             FROM QuoteLineItem
             WHERE QuoteId IN :quoteIds
+            AND Is_Auto_NRC__c = true
             AND (Paired_MRC_Line__c IN :mrcsToProcess  // Only process eligible MRCs
-                    OR Product2.ProductCode IN :nrcCodes
                     OR Product2Id IN :nrcProductIds)]
         ).getRecords();
 
@@ -615,23 +742,41 @@ public with sharing class QuoteLineEditorController {
         return Decimal.valueOf(String.valueOf(val));
     }
 
-    /**
-     * Salesforce platform rejects Quantity = 0 on QuoteLineItem.
-     * Returns true if qty is effectively zero (null or 0).
-     * Callers should skip creating QLIs for zero-qty phases.
-     */
-    private static Boolean isZeroQty(Decimal qty) {
-        return qty == null || qty == 0;
+    /** Ramp phases allow an explicit Quantity of 0 (e.g. a paused phase); only a
+     *  truly-blank input defaults to 0 rather than being left null. Name kept as
+     *  isZeroQty for continuity, though it no longer detects/rejects zero. */
+    private static Decimal isZeroQty(Decimal qty) {
+        return qty != null ? qty : 0;
     }
 
-    /** Converts .RC product code to .NR counterpart. Shared with NrcPairingService. */
-    private static String buildNrcCode(String productCode) {
-        if (String.isBlank(productCode) || !productCode.endsWith('.RC')) return null;
-        String base = productCode.removeEnd('.RC');
-        if (Pattern.matches('.*\\d[A-Z]$', base)) {
-            base = base.left(base.length() - 1);
+    /**
+     * SFDC-366. QuoteLineItem.UoM__c / OrderItem.UoM__c are RESTRICTED picklists bound
+     * to the DE_Unit_Of_Measure global value set, but Product2.QuantityUnitOfMeasure —
+     * where the default comes from — is UNRESTRICTED. If someone adds a twelfth value
+     * there without adding it to the value set, stamping it would throw
+     * INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST and the rep could no longer add that
+     * product to a quote at all.
+     *
+     * Returning null instead is safe and lossless: a blank UoM__c means "inherit
+     * Product2.QuantityUnitOfMeasure", which is exactly the value we could not store.
+     * The describe is cached by the platform, so this costs nothing per row.
+     */
+    private static Set<String> uomValueSet {
+        get {
+            if (uomValueSet == null) {
+                uomValueSet = new Set<String>();
+                for (Schema.PicklistEntry pe :
+                        QuoteLineItem.UoM__c.getDescribe().getPicklistValues()) {
+                    if (pe.isActive()) uomValueSet.add(pe.getValue());
+                }
+            }
+            return uomValueSet;
         }
-        return base + '.NR';
+        set;
+    }
+
+    private static String uomOrNull(String uom) {
+        return (String.isNotBlank(uom) && uomValueSet.contains(uom)) ? uom : null;
     }
 
     /**
@@ -645,7 +790,8 @@ public with sharing class QuoteLineEditorController {
             SELECT Id, Pricebook2Id, Product2Id, UnitPrice, CurrencyIsoCode,
                    Product2.ProductCode, Product2.Charge_Type__c,
                    Product2.Charge_Frequency__c, Product2.Billing_Charge_Type__c,
-                   Product2.Odoo_Product_Id__c, Product2.Merge_IB_Task__c
+                   Product2.Odoo_Product_Id__c, Product2.Merge_IB_Task__c,
+                   Product2.Paired_NRC_Product__c, Product2.Paired_NRC_Product__r.ProductCode
             FROM PricebookEntry
             WHERE Pricebook2Id = :sourcePbe.Pricebook2Id
               AND Product2Id = :sourcePbe.Product2Id
@@ -695,7 +841,8 @@ public with sharing class QuoteLineEditorController {
             SELECT Id, Pricebook2Id, Product2Id, UnitPrice, CurrencyIsoCode,
                    Product2.ProductCode, Product2.Charge_Type__c,
                    Product2.Charge_Frequency__c, Product2.Billing_Charge_Type__c,
-                   Product2.Odoo_Product_Id__c, Product2.Merge_IB_Task__c
+                   Product2.Odoo_Product_Id__c, Product2.Merge_IB_Task__c,
+                   Product2.Paired_NRC_Product__c, Product2.Paired_NRC_Product__r.ProductCode
             FROM PricebookEntry WHERE Id = :newPbe.Id
             LIMIT 1
         ];
@@ -712,7 +859,8 @@ public with sharing class QuoteLineEditorController {
             SELECT Id, Pricebook2Id, Product2Id, UnitPrice, CurrencyIsoCode,
                    Product2.ProductCode, Product2.Charge_Type__c,
                    Product2.Charge_Frequency__c, Product2.Billing_Charge_Type__c,
-                   Product2.Odoo_Product_Id__c, Product2.Merge_IB_Task__c
+                   Product2.Odoo_Product_Id__c, Product2.Merge_IB_Task__c,
+                   Product2.Paired_NRC_Product__c, Product2.Paired_NRC_Product__r.ProductCode
             FROM PricebookEntry
             WHERE Pricebook2Id = :quotePricebookId
               AND Product2Id = :sourcePbe.Product2Id
@@ -761,7 +909,8 @@ public with sharing class QuoteLineEditorController {
             SELECT Id, Pricebook2Id, Product2Id, UnitPrice, CurrencyIsoCode,
                    Product2.ProductCode, Product2.Charge_Type__c,
                    Product2.Charge_Frequency__c, Product2.Billing_Charge_Type__c,
-                   Product2.Odoo_Product_Id__c, Product2.Merge_IB_Task__c
+                   Product2.Odoo_Product_Id__c, Product2.Merge_IB_Task__c,
+                   Product2.Paired_NRC_Product__c, Product2.Paired_NRC_Product__r.ProductCode
             FROM PricebookEntry WHERE Id = :newPbe.Id
             LIMIT 1
         ];
@@ -807,7 +956,7 @@ public with sharing class QuoteLineEditorController {
                    Quantity, UnitPrice,
                    StartDate, EndDate,
                    Description, SortOrder,
-                   Product_Attribute_Value__c, Custom_Attribute_Value__c,
+                   Product_Attribute_Value__c, Custom_Attribute_Value__c, UoM__c,
                    Charge_Type__c, Ramp_Invoice_Display__c, Line_Remarks__c,
                    Product2.ProductCode
             FROM QuoteLineItem
@@ -847,7 +996,7 @@ public with sharing class QuoteLineEditorController {
                 src.UnitPrice = toDecimal(p1.get('unitPrice'));
             } else if (isAttributeRamp) {
                 Decimal p1Qty = toDecimal(p1.get('quantity'));
-                src.Quantity  = isZeroQty(p1Qty) ? 1 : p1Qty;
+                src.Quantity  = isZeroQty(p1Qty);
                 src.UnitPrice = toDecimal(p1.get('unitPrice'));
                 src.Product_Attribute_Value__c = (String) p1.get('attributeValue');
                 if (p1.containsKey('customValue') && p1.get('customValue') != null) {
@@ -855,7 +1004,7 @@ public with sharing class QuoteLineEditorController {
                 }
             } else {
                 Decimal p1Qty = toDecimal(p1.get('quantity'));
-                src.Quantity = isZeroQty(p1Qty) ? 1 : p1Qty;
+                src.Quantity = isZeroQty(p1Qty);
             }
             src.StartDate           = Date.valueOf((String) p1.get('startDate'));
             src.EndDate             = null;
@@ -894,7 +1043,9 @@ public with sharing class QuoteLineEditorController {
                     } else {
                         phaseQty = toDecimal(p.get('quantity'));
                     }
-                    if (isZeroQty(phaseQty)) continue;
+                    // Explicit 0 is a valid phase quantity (e.g. a paused phase);
+                    // only a truly-blank input defaults to 0 instead of being skipped.
+                    phaseQty = isZeroQty(phaseQty);
 
                     Date sDate = Date.valueOf((String) p.get('startDate'));
                     QuoteLineItem newLine = new QuoteLineItem(
@@ -910,6 +1061,7 @@ public with sharing class QuoteLineEditorController {
                         Ramp_Start_Date__c      = sDate,
                         Ramp_Invoice_Display__c = src.Ramp_Invoice_Display__c,
                         Product_Attribute_Value__c = src.Product_Attribute_Value__c,
+                        UoM__c                     = src.UoM__c,
                         Line_Origin__c          = 'Ramp',
                         Ramp_Line__c            = true,
                         Ramp_Parent_Line__c     = src.Id,
@@ -966,9 +1118,10 @@ public with sharing class QuoteLineEditorController {
             SELECT Id, QuoteId, Product2Id, PricebookEntryId,
                    UnitPrice, Description, SortOrder, Quantity,
                    Charge_Type__c, Ramp_Invoice_Display__c,
-                   Is_Auto_NRC__c, Paired_MRC_Line__c
+                   Is_Auto_NRC__c, Paired_MRC_Line__c, UoM__c
             FROM QuoteLineItem
             WHERE Paired_MRC_Line__c IN :allSourceIds
+              AND Is_Auto_NRC__c = true
               AND Line_Origin__c != 'Ramp'
         ]) {
             nrcByMrc.put(nrc.Paired_MRC_Line__c, nrc);
@@ -994,10 +1147,12 @@ public with sharing class QuoteLineEditorController {
                 SELECT Id, QuoteId, Product2Id, Product2.ProductCode, PricebookEntryId,
                        UnitPrice, Description, SortOrder, Quantity,
                        Charge_Type__c, Ramp_Invoice_Display__c,
-                       Is_Auto_NRC__c, Paired_MRC_Line__c
+                       Is_Auto_NRC__c, Paired_MRC_Line__c, UoM__c
                 FROM QuoteLineItem
                 WHERE QuoteId = :anyQuoteId
                   AND Product2.ProductCode IN :nrcCodes
+                  AND Is_Auto_NRC__c = true
+                  AND Paired_MRC_Line__c = null
                   AND Line_Origin__c != 'Ramp'
             ]) {
                 nrcByCode.put(nrc.Product2.ProductCode, nrc);
@@ -1072,6 +1227,9 @@ public with sharing class QuoteLineEditorController {
                         Ramp_Invoice_Display__c = nrcSrc.Ramp_Invoice_Display__c,
                         Paired_MRC_Line__c      = mrcPhase.Id,
                         Is_Auto_NRC__c          = nrcSrc.Is_Auto_NRC__c,
+                        // SFDC-366: the NRC is a DIFFERENT product (.RC -> .NR); it keeps
+                        // its own unit and must never inherit the MRC line's.
+                        UoM__c                  = nrcSrc.UoM__c,
                         Line_Origin__c          = 'Ramp',
                         Ramp_Line__c            = true,
                         Ramp_Parent_Line__c     = nrcSrc.Id
@@ -1180,7 +1338,7 @@ public with sharing class QuoteLineEditorController {
                     Quantity, UnitPrice,
                     StartDate, EndDate,
                     Description, SortOrder,
-                    Product_Attribute_Value__c, Custom_Attribute_Value__c,
+                    Product_Attribute_Value__c, Custom_Attribute_Value__c, UoM__c,
                     Charge_Type__c, Ramp_Invoice_Display__c, Line_Remarks__c,
                     Product2.ProductCode
              FROM QuoteLineItem
@@ -1214,7 +1372,7 @@ public with sharing class QuoteLineEditorController {
             src.UnitPrice = toDecimal(p1.get('unitPrice'));
         } else if (isAttributeRamp) {
             Decimal p1Qty = toDecimal(p1.get('quantity'));
-            src.Quantity  = isZeroQty(p1Qty) ? 1 : p1Qty;
+            src.Quantity  = isZeroQty(p1Qty);
             src.UnitPrice = toDecimal(p1.get('unitPrice'));
             src.Product_Attribute_Value__c = (String) p1.get('attributeValue');
             if (p1.containsKey('customValue') && p1.get('customValue') != null) {
@@ -1222,7 +1380,7 @@ public with sharing class QuoteLineEditorController {
             }
         } else {
             Decimal p1Qty = toDecimal(p1.get('quantity'));
-            src.Quantity = isZeroQty(p1Qty) ? 1 : p1Qty;
+            src.Quantity = isZeroQty(p1Qty);
         }
         src.StartDate           = Date.valueOf((String) p1.get('startDate'));
         src.EndDate             = null;  // Set later in patch
@@ -1261,8 +1419,9 @@ public with sharing class QuoteLineEditorController {
                 } else {
                     phaseQty = toDecimal(p.get('quantity'));
                 }
-                // Skip zero-qty phases — SF platform rejects Quantity=0
-                if (isZeroQty(phaseQty)) continue;
+                // Explicit 0 is a valid phase quantity (e.g. a paused phase);
+                // only a truly-blank input defaults to 0 instead of being skipped.
+                phaseQty = isZeroQty(phaseQty);
 
                 Date sDate = Date.valueOf((String) p.get('startDate'));
                 QuoteLineItem newLine = new QuoteLineItem(
@@ -1278,6 +1437,7 @@ public with sharing class QuoteLineEditorController {
                     Ramp_Start_Date__c      = sDate,
                     Ramp_Invoice_Display__c = src.Ramp_Invoice_Display__c,
                     Product_Attribute_Value__c = src.Product_Attribute_Value__c,
+                    UoM__c                     = src.UoM__c,
                     Line_Origin__c          = 'Ramp',
                     Ramp_Line__c            = true,
                     Ramp_Parent_Line__c     = src.Id,
@@ -1324,9 +1484,10 @@ public with sharing class QuoteLineEditorController {
         List<QuoteLineItem> pairedNrcs = [SELECT Id, QuoteId, Product2Id, PricebookEntryId,
                     UnitPrice, Description, SortOrder,
                     Charge_Type__c, Ramp_Invoice_Display__c,
-                    Is_Auto_NRC__c, Paired_MRC_Line__c
+                    Is_Auto_NRC__c, Paired_MRC_Line__c, UoM__c
              FROM QuoteLineItem
              WHERE Paired_MRC_Line__c = :sourceLineId
+               AND Is_Auto_NRC__c = true
                AND Line_Origin__c != 'Ramp'];
 
         // Fallback: find NRC by product code convention (.RC -> .NR) when not explicitly paired
@@ -1337,11 +1498,13 @@ public with sharing class QuoteLineEditorController {
             pairedNrcs = [SELECT Id, QuoteId, Product2Id, PricebookEntryId,
                         UnitPrice, Description, SortOrder,
                         Charge_Type__c, Ramp_Invoice_Display__c,
-                        Is_Auto_NRC__c, Paired_MRC_Line__c
+                        Is_Auto_NRC__c, Paired_MRC_Line__c, UoM__c
                  FROM QuoteLineItem
                  WHERE QuoteId = :src.QuoteId
                    AND Product2.ProductCode = :nrcCode
                    AND Id != :sourceLineId
+                   AND Is_Auto_NRC__c = true
+                   AND Paired_MRC_Line__c = null
                    AND Line_Origin__c != 'Ramp'
                  LIMIT 1];
             // Set the pairing so future operations find it
@@ -1382,6 +1545,8 @@ public with sharing class QuoteLineEditorController {
                     Ramp_Invoice_Display__c = nrcSrc.Ramp_Invoice_Display__c,
                     Paired_MRC_Line__c      = mrcPhase.Id,
                     Is_Auto_NRC__c          = nrcSrc.Is_Auto_NRC__c,
+                    // SFDC-366: NRC keeps its own product's unit, never the MRC's
+                    UoM__c                  = nrcSrc.UoM__c,
                     Line_Origin__c          = 'Ramp',
                     Ramp_Line__c            = true,
                     Ramp_Parent_Line__c     = nrcSrc.Id
@@ -1481,7 +1646,7 @@ public with sharing class QuoteLineEditorController {
             SELECT Id, Product2Id, Quantity, UnitPrice, StartDate, EndDate,
                    Ramp_Phase__c, Ramp_Start_Date__c, Ramp_Parent_Line__c,
                    Ramp_Identifier__c, Ramp_Linked_Phase__c,
-                   Product_Attribute_Value__c, Custom_Attribute_Value__c,
+                   Product_Attribute_Value__c, Custom_Attribute_Value__c, UoM__c,
                    Ramp_Invoice_Display__c, Charge_Type__c,
                    Line_Remarks__c, Ramp_Phase_Notes__c,
                    Product2.Name, Product2.ProductCode,
@@ -1561,7 +1726,8 @@ public with sharing class QuoteLineEditorController {
             entry.put('attributeType', m.Product2.Attribute_Type__c);
             entry.put('attributeValues', m.Product2.Attribute_Values__c);
             entry.put('showCustomValue', m.Product2.Show_Custom_Attribute_Value__c == true);
-            entry.put('uom', m.Product2.QuantityUnitOfMeasure);
+            // SFDC-366: the line's own unit wins; blank falls back to the product default.
+            entry.put('uom', m.UoM__c != null ? m.UoM__c : m.Product2.QuantityUnitOfMeasure);
             // FB-815: the modal's phase-note box reads Ramp_Phase_Notes__c. Seeding it
             // from Line_Remarks__c meant a user's edited remark was pulled back into the
             // modal and re-stamped across the phase on the next Update Ramp.
@@ -1592,7 +1758,9 @@ public with sharing class QuoteLineEditorController {
 
             // Get ALL ramped lines on this quote (all products, all phases, MRC + NRC)
             List<QuoteLineItem> allRamped = [
-                SELECT Id, Ramp_Phase__c, Product2Id, Quantity, Charge_Type__c, Paired_MRC_Line__c, Ramp_Parent_Line__c
+                SELECT Id, Ramp_Phase__c, Product2Id, Quantity, Charge_Type__c, Paired_MRC_Line__c,
+                       Is_Auto_NRC__c, Product2.Merge_IB_Task__c,
+                       Ramp_Parent_Line__c, Ramp_Linked_Phase__c
                 FROM QuoteLineItem
                 WHERE QuoteId = :src.QuoteId
                   AND Line_Origin__c = 'Ramp'
@@ -1600,11 +1768,35 @@ public with sharing class QuoteLineEditorController {
             ];
             if (allRamped.isEmpty()) return;
 
-            // Sum total qty per product across all phases (to restore original qty on Phase 1)
-            Map<Id, Decimal> totalQtyByProduct = new Map<Id, Decimal>();
+            // Restore qty per RAMP FAMILY (a parent line plus its own clones), not per product.
+            // A quote legitimately holds several lines of the same product — one per data hall —
+            // and a per-product total wrote the combined figure onto every one of them, so each
+            // unramp inflated every line (3 halls of 12k came back as 36k each, and again on the
+            // next round trip).
+            //
+            // Linked phases are skipped: a Change/Price_Change clone reprices units the phase it
+            // supersedes already carries, so counting it would add the same quantity twice.
+            Map<Id, Decimal> restoredQtyByFamily = new Map<Id, Decimal>();
+            Map<Id, Decimal> lastPhaseByFamily = new Map<Id, Decimal>();
             for (QuoteLineItem ql : allRamped) {
-                Decimal running = totalQtyByProduct.containsKey(ql.Product2Id) ? totalQtyByProduct.get(ql.Product2Id) : 0;
-                totalQtyByProduct.put(ql.Product2Id, running + (ql.Quantity != null ? ql.Quantity : 0));
+                if (ql.Ramp_Linked_Phase__c != null) continue;
+                Id familyId = (ql.Ramp_Parent_Line__c != null) ? ql.Ramp_Parent_Line__c : ql.Id;
+                Boolean isNrc = ql.Charge_Type__c != null && ql.Charge_Type__c.equalsIgnoreCase('NRC');
+                Boolean isUserOwnedNrc = isNrc && ql.Is_Auto_NRC__c != true;
+                if (isUserOwnedNrc) continue;
+
+                Boolean isAggregateMrc = !isNrc && ql.Product2.Merge_IB_Task__c == true;
+                Decimal qty = ql.Quantity != null ? ql.Quantity : 0;
+                if (isAggregateMrc) {
+                    Decimal phase = ql.Ramp_Phase__c != null ? ql.Ramp_Phase__c : 0;
+                    if (!lastPhaseByFamily.containsKey(familyId) || phase >= lastPhaseByFamily.get(familyId)) {
+                        lastPhaseByFamily.put(familyId, phase);
+                        restoredQtyByFamily.put(familyId, qty);
+                    }
+                } else {
+                    Decimal running = restoredQtyByFamily.containsKey(familyId) ? restoredQtyByFamily.get(familyId) : 0;
+                    restoredQtyByFamily.put(familyId, running + qty);
+                }
             }
 
             // Separate parent lines (keep+reset) from clones (delete) for both MRC and NRC.
@@ -1620,8 +1812,16 @@ public with sharing class QuoteLineEditorController {
                     ql.Ramp_Start_Date__c  = null;
                     ql.Ramp_Parent_Line__c = null;
                     ql.Ramp_Line__c        = false;
-                    Decimal totalQty = totalQtyByProduct.get(ql.Product2Id);
-                    if (totalQty != null) ql.Quantity = totalQty;
+                    Boolean isNrc = ql.Charge_Type__c != null && ql.Charge_Type__c.equalsIgnoreCase('NRC');
+                    Boolean isUserOwnedNrc = isNrc && ql.Is_Auto_NRC__c != true;
+                    if (isUserOwnedNrc) {
+                        // A manual NRC belongs to the user: keep its entered quantity
+                        // and undo any legacy product-code fallback pairing.
+                        ql.Paired_MRC_Line__c = null;
+                    } else {
+                        Decimal restoredQty = restoredQtyByFamily.get(ql.Id);
+                        if (restoredQty != null && restoredQty > 0) ql.Quantity = restoredQty;
+                    }
                     phase1Resets.add(ql);
                 } else {
                     // Clone — delete
@@ -1671,7 +1871,8 @@ public with sharing class QuoteLineEditorController {
             List<QuoteLineItem> nrcLines = [
                 SELECT Id, Quantity, Product2Id, Ramp_Phase__c
                 FROM QuoteLineItem
-                WHERE QuoteId = :quoteId AND Line_Origin__c = 'Ramp' AND Charge_Type__c = 'NRC'
+                WHERE QuoteId = :quoteId AND Line_Origin__c = 'Ramp'
+                  AND Charge_Type__c = 'NRC' AND Is_Auto_NRC__c = true
             ];
             if (nrcLines.isEmpty()) return;
 
@@ -1722,7 +1923,7 @@ public with sharing class QuoteLineEditorController {
                 SELECT Id, QuoteId, Product2Id, PricebookEntryId,
                        Quantity, UnitPrice, Description, SortOrder,
                        Charge_Type__c, Ramp_Invoice_Display__c,
-                       Product_Attribute_Value__c, Line_Origin__c,
+                       Product_Attribute_Value__c, UoM__c, Line_Origin__c,
                        Product2.ProductCode
                 FROM QuoteLineItem WHERE Id = :phase1Id LIMIT 1
             ];
@@ -1755,7 +1956,7 @@ public with sharing class QuoteLineEditorController {
                 QuoteId                    = p1.QuoteId,
                 PricebookEntryId           = p1.PricebookEntryId,
                 Product2Id                 = p1.Product2Id,
-                Quantity                   = isZeroQty(quantity) ? 1 : quantity,
+                Quantity                   = isZeroQty(quantity),
                 UnitPrice                  = unitPrice,
                 StartDate                  = sDate,
                 Description                = p1.Description,
@@ -1765,6 +1966,7 @@ public with sharing class QuoteLineEditorController {
                 Ramp_Start_Date__c         = sDate,
                 Ramp_Invoice_Display__c    = p1.Ramp_Invoice_Display__c,
                 Product_Attribute_Value__c = String.isNotBlank(attributeValue) ? attributeValue : p1.Product_Attribute_Value__c,
+                UoM__c                     = p1.UoM__c,
                 Line_Origin__c             = 'Ramp',
                 Ramp_Line__c               = true,
                 Ramp_Parent_Line__c        = phase1Id,
@@ -1777,9 +1979,10 @@ public with sharing class QuoteLineEditorController {
                 SELECT Id, QuoteId, Product2Id, PricebookEntryId,
                        UnitPrice, Description, SortOrder,
                        Charge_Type__c, Ramp_Invoice_Display__c,
-                       Is_Auto_NRC__c
+                       Is_Auto_NRC__c, UoM__c
                 FROM QuoteLineItem
                 WHERE Paired_MRC_Line__c = :phase1Id
+                  AND Is_Auto_NRC__c = true
                 LIMIT 1
             ];
             if (nrcP1List.isEmpty() && p1.Product2.ProductCode != null
@@ -1789,10 +1992,12 @@ public with sharing class QuoteLineEditorController {
                     SELECT Id, QuoteId, Product2Id, PricebookEntryId,
                            UnitPrice, Description, SortOrder,
                            Charge_Type__c, Ramp_Invoice_Display__c,
-                           Is_Auto_NRC__c
+                           Is_Auto_NRC__c, UoM__c
                     FROM QuoteLineItem
                     WHERE QuoteId = :p1.QuoteId AND Product2.ProductCode = :nrcCode
-                      AND Ramp_Phase__c = 1
+                      AND Is_Auto_NRC__c = true
+                      AND Paired_MRC_Line__c = null
+                    ORDER BY Ramp_Phase__c ASC NULLS FIRST
                     LIMIT 1
                 ];
             }
@@ -1802,7 +2007,7 @@ public with sharing class QuoteLineEditorController {
                     QuoteId                 = nrcP1.QuoteId,
                     PricebookEntryId        = nrcP1.PricebookEntryId,
                     Product2Id              = nrcP1.Product2Id,
-                    Quantity                = isZeroQty(quantity) ? 1 : quantity,
+                    Quantity                = isZeroQty(quantity),
                     UnitPrice               = nrcP1.UnitPrice,
                     StartDate               = sDate,
                     Description             = nrcP1.Description,
@@ -1813,6 +2018,8 @@ public with sharing class QuoteLineEditorController {
                     Ramp_Invoice_Display__c = nrcP1.Ramp_Invoice_Display__c,
                     Paired_MRC_Line__c      = newLine.Id,
                     Is_Auto_NRC__c          = nrcP1.Is_Auto_NRC__c,
+                    // SFDC-366: NRC keeps its own product's unit, never the MRC's
+                    UoM__c                  = nrcP1.UoM__c,
                     Line_Origin__c          = 'Ramp',
                     Ramp_Line__c            = true,
                     Ramp_Parent_Line__c     = nrcP1.Id

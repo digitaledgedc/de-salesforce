@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MEDDPICC_Score__c</fullName>
+    <description>Sum of MEDDPICC scores. All 8 dimensions score 0-2 from their status picklist (Known but Unconfirmed = 1, Known and Confirmed = 2, else 0). Max 16.</description>
+    <externalId>false</externalId>
+    <formula>CASE(TEXT(MEDDPICC_Pain_Status__c), &quot;2 - Known and Confirmed&quot;, 2, &quot;Known and Confirmed&quot;, 2, &quot;1 - Known but Unconfirmed&quot;, 1, &quot;Known but Unconfirmed&quot;, 1, 0) + CASE(TEXT(MEDDPICC_Decision_Criteria_Status__c), &quot;2 - Known and Confirmed&quot;, 2, &quot;Known and Confirmed&quot;, 2, &quot;1 - Known but Unconfirmed&quot;, 1, &quot;Known but Unconfirmed&quot;, 1, 0) + CASE(TEXT(MEDDPICC_Metrics_Status__c), &quot;2 - Known and Confirmed&quot;, 2, &quot;Known and Confirmed&quot;, 2, &quot;1 - Known but Unconfirmed&quot;, 1, &quot;Known but Unconfirmed&quot;, 1, 0) + CASE(TEXT(MEDDPICC_Economic_Buyer_Status__c), &quot;2 - Known and Confirmed&quot;, 2, &quot;Known and Confirmed&quot;, 2, &quot;1 - Known but Unconfirmed&quot;, 1, &quot;Known but Unconfirmed&quot;, 1, 0) + CASE(TEXT(MEDDPICC_Decision_Process_Status__c), &quot;2 - Known and Confirmed&quot;, 2, &quot;Known and Confirmed&quot;, 2, &quot;1 - Known but Unconfirmed&quot;, 1, &quot;Known but Unconfirmed&quot;, 1, 0) + CASE(TEXT(MEDDPICC_Paper_Process_Status__c), &quot;2 - Known and Confirmed&quot;, 2, &quot;Known and Confirmed&quot;, 2, &quot;1 - Known but Unconfirmed&quot;, 1, &quot;Known but Unconfirmed&quot;, 1, 0) + CASE(TEXT(MEDDPICC_Champion_Status__c), &quot;2 - Known and Confirmed&quot;, 2, &quot;Known and Confirmed&quot;, 2, &quot;1 - Known but Unconfirmed&quot;, 1, &quot;Known but Unconfirmed&quot;, 1, 0) + CASE(TEXT(MEDDPICC_Competition_Status__c), &quot;2 - Known and Confirmed&quot;, 2, &quot;Known and Confirmed&quot;, 2, &quot;1 - Known but Unconfirmed&quot;, 1, &quot;Known but Unconfirmed&quot;, 1, 0)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Auto-calculated. Each of the 8 MEDDPICC dimensions scores 0-2 from its status: Known but Unconfirmed = 1, Known and Confirmed = 2. Maximum score is 16. Read-only.</inlineHelpText>
+    <label>MEDDPICC Score</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Read-only analytics access for a named human user logging in through the UI. Data rows, org configuration, and reports with export. Nothing writable. The API-only equivalent is DE_PSG_Analytics_ReadOnly.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>DE PSG Analytics Read Only User</label>
+    <permissionSets>DE_Analytics_Metadata_ReadOnly</permissionSets>
+    <permissionSets>DE_Analytics_ReadOnly</permissionSets>
+    <permissionSets>DE_Analytics_UI_ReadOnly</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>

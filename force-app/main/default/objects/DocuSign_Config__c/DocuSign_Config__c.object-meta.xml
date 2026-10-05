@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <description>Controls DocuSign enforcement behaviour on the Order Confirmation Gate. When Enforce_DocuSign__c is TRUE, the gate requires DocuSign completion before Order can be confirmed. When FALSE, the manual acceptance path is used (Sales sets Quote.Status = Accepted after uploading signed PDF). Toggle managed by GoKarya admin until DE Legal completes DocuSign sign-off.</description>
+    <enableFeeds>false</enableFeeds>
+    <label>DocuSign Config</label>
+    <visibility>Public</visibility>
+</CustomObject>

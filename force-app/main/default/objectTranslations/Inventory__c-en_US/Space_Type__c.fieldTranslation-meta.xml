@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Space Type --></label>
+    <name>Space_Type__c</name>
+    <picklistValues>
+        <masterLabel>Cabinet</masterLabel>
+        <translation><!-- Cabinet --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Cage</masterLabel>
+        <translation><!-- Cage --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Flex Office</masterLabel>
+        <translation><!-- Flex Office --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Hall</masterLabel>
+        <translation><!-- Hall --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

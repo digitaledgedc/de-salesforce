@@ -10,6 +10,10 @@
     </applicationVisibilities>
     <customPermissions>
         <enabled>true</enabled>
+        <name>Inventory_Admin</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
         <name>Opportunity_Sales_Actions</name>
     </customPermissions>
     <customPermissions>
@@ -264,6 +268,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Account.Old_Sales_Team__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Account.Operation_Country__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -338,7 +347,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Account.Sales_Team__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -2183,6 +2192,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>OrderItem.BAR_Revenue_Bucket__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>OrderItem.Billing_Mode__c</field>
         <readable>true</readable>
@@ -2248,7 +2262,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>OrderItem.MRC_Amount__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -2349,6 +2363,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>OrderItem.UoM__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>OrderItem.Z_Side_Asset__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -2430,6 +2449,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Product2.Aggregate_Ramp_Qty__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Product2.Allowed_UoM__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -2945,6 +2969,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>QuoteLineItem.Tax__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>QuoteLineItem.UoM__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

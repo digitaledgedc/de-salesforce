@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_25_Binding_Mark_Finance_Gate</fullName>
+    <active>true</active>
+    <description>Blocks marking a Quote Binding until account Finance Approval Phase is Approved/Not Required. Fires only on Is_Binding__c change to true (existing binding quotes unaffected). Mark-time counterpart to VR_QUOTE_21.</description>
+    <errorConditionFormula>AND(
+  ISCHANGED(Is_Binding__c),
+  Is_Binding__c = true,
+  NOT(ISBLANK(Finance_Approval_Phase__c)),
+  Finance_Approval_Phase__c &lt;&gt; &quot;Approved&quot;,
+  Finance_Approval_Phase__c &lt;&gt; &quot;Not_Required&quot;
+)</errorConditionFormula>
+    <errorDisplayField>Is_Binding__c</errorDisplayField>
+    <errorMessage>This is a Binding quote and Finance has not approved the customer yet. A quote can only be marked Binding once Finance Approval is Approved (or Not Required). Please complete Finance review first.</errorMessage>
+</ValidationRule>

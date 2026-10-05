@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>GoLive_Target_Date__c</fullName>
+    <description>Prospect&apos;s target service commencement date. Carries to Opportunity.GoLive_Target_Date__c on conversion. Used to pre-populate RDD on the first Quote.</description>
+    <inlineHelpText>Date the prospect wants services to commence. Set based on what the contact has communicated. Carries to the Opportunity and pre-populates the first Quote RDD.</inlineHelpText>
+    <label>Requested Delivery Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Date</type>
+</CustomField>

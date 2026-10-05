@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Order_MRC__c</fullName>
+    <description>FB-798 spec (Ramp MRC and TCV Calculation Spec): sum of OrderItem.Order_MRC__c
+        across this Order&apos;s lines — the incremental MRC this ramp order contributes,
+        not the running/cumulative total. Computed by OrderMrcRollupService at ramp
+        order creation. Used for commissions, bookings, and revenue recognition
+        reporting — distinct from Total_MRC__c, which is this order&apos;s own face-value
+        monthly charge.</description>
+    <inlineHelpText>Incremental MRC this ramp order adds (sum of line-level deltas), not the running total. Auto-calculated - do not edit manually.</inlineHelpText>
+    <label>Total Order MRC (Delta)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

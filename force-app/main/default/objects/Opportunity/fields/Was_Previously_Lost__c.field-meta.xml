@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Was_Previously_Lost__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set to true when a Lost opportunity is resurrected. Used for reporting on resurrected pipeline and win rate analysis.</description>
+    <inlineHelpText>Checked when this opportunity was previously lost and then resurrected. Populated automatically by the Resurrect Opportunity action.</inlineHelpText>
+    <label>Was Previously Lost</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_ACC_10_Sales_Edit_Lock_After_Finance</fullName>
+    <active>true</active>
+    <description>Blocks DE Sales users editing an Account once finance approval starts (DnB/KYC/Legal pending, Approved, Rejected). Draft (blank/Not_Required/Not_Started) stays editable. Only DE Sales profile; Account_Edit_Finance_Bypass perm exempts.</description>
+    <errorConditionFormula>AND(
+  $Profile.Name = &quot;DE Sales&quot;,
+  NOT($Permission.Account_Edit_Finance_Bypass),
+  OR(
+    ISPICKVAL(Finance_Approval_Phase__c, &quot;DnB_Pending&quot;),
+    ISPICKVAL(Finance_Approval_Phase__c, &quot;KYC_Pending&quot;),
+    ISPICKVAL(Finance_Approval_Phase__c, &quot;Legal_Review_Pending&quot;),
+    ISPICKVAL(Finance_Approval_Phase__c, &quot;Approved&quot;),
+    ISPICKVAL(Finance_Approval_Phase__c, &quot;Rejected_DnB&quot;),
+    ISPICKVAL(Finance_Approval_Phase__c, &quot;Rejected_KYC&quot;)
+  ),
+  OR(
+    ISCHANGED(Name),
+    ISCHANGED(Company_Code__c),
+    ISCHANGED(Account_Manager__c),
+    ISCHANGED(Preferred_Language__c),
+    ISCHANGED(Local_Language__c),
+    ISCHANGED(Local_Entity_Name__c),
+    ISCHANGED(Payment_Terms__c),
+    ISCHANGED(Local_Registered_Office_Address__c),
+    ISCHANGED(Operation_Country__c),
+    ISCHANGED(Primary_Contact__c),
+    ISCHANGED(DE_Entity__c),
+    ISCHANGED(Registered_Address__c),
+    ISCHANGED(Tax_ID__c),
+    ISCHANGED(Tax_Exemption_Status__c),
+    ISCHANGED(VAT_Number__c),
+    ISCHANGED(UEN__c),
+    ISCHANGED(Credit_Limit_MRC__c),
+    ISCHANGED(Credit_Limit_NRC__c),
+    ISCHANGED(Credit_Block__c),
+    ISCHANGED(Overdue_90_Days__c),
+    ISCHANGED(Security_Deposit_Required__c),
+    ISCHANGED(Security_Deposit_Invoice_Ref__c),
+    ISCHANGED(Security_Deposit_Amount__c),
+    ISCHANGED(BillingStreet),
+    ISCHANGED(BillingCity),
+    ISCHANGED(BillingState),
+    ISCHANGED(BillingCountry),
+    ISCHANGED(BillingPostalCode),
+      
+    ISCHANGED(Entity_Locked__c),
+    ISCHANGED(Finance_Approval_Phase__c)
+  )
+)</errorConditionFormula>
+    <errorMessage>This account is in (or past) finance approval, so Sales can no longer edit it. Please contact Finance if a change is required.</errorMessage>
+</ValidationRule>

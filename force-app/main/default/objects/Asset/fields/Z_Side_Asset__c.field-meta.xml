@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Z_Side_Asset__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <inlineHelpText>The Z-side service asset for cross-connect topology. Populated by IP-2 Asset Sync from Odoo ns_z_side_service_id.</inlineHelpText>
+    <label>Z-Side Asset</label>
+    <referenceTo>Asset</referenceTo>
+    <relationshipLabel>A-Side Assets</relationshipLabel>
+    <relationshipName>Z_Side_Assets</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

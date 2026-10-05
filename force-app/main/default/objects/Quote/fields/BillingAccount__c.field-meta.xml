@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BillingAccount__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The BAN for this quote. Selected by the sales rep. Carried to the Order by the SOF Handler flow on SOF upload. Filtered to BANs belonging to the Quote&apos;s Account.</description>
+    <inlineHelpText>The BAN that will receive invoices for this deal. Select or create the correct BAN before submitting the quote. Carried to the Order automatically on SOF upload.</inlineHelpText>
+    <label>BAN</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>BillingAccount__c.Account__c</field>
+            <operation>equals</operation>
+            <valueField>$Source.QuoteAccountId</valueField>
+        </filterItems>
+        <filterItems>
+            <field>BillingAccount__c.DE_Entity__c</field>
+            <operation>equals</operation>
+            <valueField>$Source.DE_Entity__c</valueField>
+        </filterItems>
+        <filterItems>
+            <field>BillingAccount__c.CurrencyIsoCode</field>
+            <operation>equals</operation>
+            <valueField>$Source.CurrencyIsoCode</valueField>
+        </filterItems>
+        <filterItems>
+            <field>BillingAccount__c.Invoice_Frequency__c</field>
+            <operation>equals</operation>
+            <valueField>$Source.Invoice_Frequency__c</valueField>
+        </filterItems>
+        <isOptional>true</isOptional>
+    </lookupFilter>
+    <referenceTo>BillingAccount__c</referenceTo>
+    <relationshipLabel>Quotes</relationshipLabel>
+    <relationshipName>Quotes_v2</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Lookup</type>
+</CustomField>

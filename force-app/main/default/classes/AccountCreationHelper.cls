@@ -31,6 +31,9 @@ public with sharing class AccountCreationHelper {
 
         @InvocableVariable(label='Parent Account Id')
         public String parentId;
+
+        @InvocableVariable(label='Registered Address')
+        public String registeredAddress;
     }
 
     public class AccountOutput {
@@ -55,6 +58,7 @@ public with sharing class AccountCreationHelper {
             if (inp.status != null)                 acc.Status__c = inp.status;
             if (inp.kycStatus != null)              acc.KYC_Status__c = inp.kycStatus;
             if (inp.operationCountry != null)       acc.Operation_Country__c = inp.operationCountry;
+            if (inp.registeredAddress != null)      acc.Registered_Address__c = inp.registeredAddress;
             if (inp.ownerId != null)                acc.OwnerId = inp.ownerId;
             if (String.isNotBlank(inp.parentId))    acc.ParentId = Id.valueOf(inp.parentId);
             accountsToInsert.add(acc);

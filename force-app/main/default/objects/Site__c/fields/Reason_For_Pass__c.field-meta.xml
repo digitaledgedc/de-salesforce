@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reason_For_Pass__c</fullName>
+    <label>Reason For Pass</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Power Constraints</fullName>
+                <default>false</default>
+                <label>Power Constraints</label>
+            </value>
+            <value>
+                <fullName>Zoning / Permitting</fullName>
+                <default>false</default>
+                <label>Zoning / Permitting</label>
+            </value>
+            <value>
+                <fullName>Pricing</fullName>
+                <default>false</default>
+                <label>Pricing</label>
+            </value>
+            <value>
+                <fullName>Environmental Risk</fullName>
+                <default>false</default>
+                <label>Environmental Risk</label>
+            </value>
+            <value>
+                <fullName>Market Timing</fullName>
+                <default>false</default>
+                <label>Market Timing</label>
+            </value>
+            <value>
+                <fullName>Connectivity</fullName>
+                <default>false</default>
+                <label>Connectivity</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

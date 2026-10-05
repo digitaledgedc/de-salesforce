@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Deal_MRC__c</fullName>
+    <description>Populated by automation for ramp deal Parent Opportunities. Sum of all child Opportunity MRC__c. Display only.</description>
+    <inlineHelpText>Auto-calculated sum of MRC across all ramp phases for parent ramp deal Opportunities. Read-only - do not edit manually.</inlineHelpText>
+    <label>TCV MRC</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Currency</type>
+</CustomField>

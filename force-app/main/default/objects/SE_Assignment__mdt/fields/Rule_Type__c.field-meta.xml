@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rule_Type__c</fullName>
+    <description>Which tagging rule this row belongs to. Precedence applied by the flow: By_Account (hyperscale accounts) &gt; By_AE (opp owner) &gt; By_Country (Operation_Country__c).</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Rule Type</label>
+    <required>true</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>By_Account</fullName>
+                <default>false</default>
+                <label>By Account</label>
+            </value>
+            <value>
+                <fullName>By_AE</fullName>
+                <default>false</default>
+                <label>By AE</label>
+            </value>
+            <value>
+                <fullName>By_Country</fullName>
+                <default>true</default>
+                <label>By Country</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

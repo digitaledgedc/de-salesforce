@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Service_End_Date__c</fullName>
+    <description>Formula: RDD__c + Contract_Term_Months__c months. Inherited by Contract.Service_End_Date__c on contract creation.</description>
+    <formula>IF(
+  ISBLANK(RDD__c),
+  NULL,
+  DATE(
+    YEAR(RDD__c) + FLOOR((MONTH(RDD__c) + Contract_Term_Months__c - 1) / 12),
+    MOD(MONTH(RDD__c) + Contract_Term_Months__c - 1, 12) + 1,
+    IF(DAY(RDD__c) &gt; 28, 28, DAY(RDD__c))
+  )
+)</formula>
+    <inlineHelpText>Calculated service expiry date: RDD + Contract Term months. Drives the T-90 renewal trigger and is inherited by the linked Contract. Blank when RDD is not set.</inlineHelpText>
+    <label>Service End Date</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

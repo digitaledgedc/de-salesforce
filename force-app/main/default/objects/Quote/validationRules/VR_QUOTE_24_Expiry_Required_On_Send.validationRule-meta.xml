@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_24_Expiry_Required_On_Send</fullName>
+    <active>true</active>
+    <description>VR-QUOTE-24 (FB-950): Blocks Status to Presented when Expiration Date is blank or past. Fires only on that transition, so create/revise are unaffected. Pairs with VR_QUOTE_23 (cap TODAY()+60).</description>
+    <errorConditionFormula>AND(
+    ISCHANGED(Status),
+    ISPICKVAL(Status, &quot;Presented&quot;),
+    OR(
+        ISBLANK(ExpirationDate),
+        ExpirationDate &lt; TODAY()
+    )
+)</errorConditionFormula>
+    <errorDisplayField>ExpirationDate</errorDisplayField>
+    <errorMessage>Set a valid Expiration Date (today or later, up to 60 days from today) before sending this quote to the customer.</errorMessage>
+</ValidationRule>

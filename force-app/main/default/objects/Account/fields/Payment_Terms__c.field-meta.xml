@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Payment_Terms__c</fullName>
+    <description>Agreed billing payment terms for this account. Drives invoice due-date calculation in billing.</description>
+    <inlineHelpText>Agreed payment terms for this account. Set during commercial negotiation and confirmed at KYC approval stage.</inlineHelpText>
+    <label>Payment Terms</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>21 Days</fullName>
+                <default>false</default>
+                <label>21 Days</label>
+            </value>
+            <value>
+                <fullName>30 Days</fullName>
+                <default>true</default>
+                <label>30 Days</label>
+            </value>
+            <value>
+                <fullName>End of Current Month</fullName>
+                <default>false</default>
+                <label>End of Current Month</label>
+            </value>
+            <value>
+                <fullName>45 Days</fullName>
+                <default>false</default>
+                <label>45 Days</label>
+            </value>
+            <value>
+                <fullName>50 Days</fullName>
+                <default>false</default>
+                <label>50 Days</label>
+            </value>
+            <value>
+                <fullName>60 Days</fullName>
+                <default>false</default>
+                <label>60 Days</label>
+            </value>
+            <value>
+                <fullName>End of Following Month</fullName>
+                <default>false</default>
+                <label>End of Following Month</label>
+            </value>
+            <value>
+                <fullName>90 Days</fullName>
+                <default>false</default>
+                <label>90 Days</label>
+            </value>
+            <value>
+                <fullName>120 Days</fullName>
+                <default>false</default>
+                <label>120 Days</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

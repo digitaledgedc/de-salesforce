@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DrawdownOrder</fullName>
+    <inlineHelpText>The order to debit entitlement consumption from the usage entitlement bucket. Valid values include Expiring First, which draws down from the entitlement that expires first; Granted First, which draws down from the oldest granted entitlement, then moves toward the newest; and Granted Last, which draws down from the newest granted entitlement, then moves toward the oldest.</inlineHelpText>
+    <trackHistory>false</trackHistory>
+</CustomField>

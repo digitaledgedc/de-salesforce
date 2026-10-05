@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SBI_Finance_Comments__c</fullName>
+    <inlineHelpText>Finance team&apos;s conditions or clarifications on the approved Special Billing Instruction for this order. Carried from the Quote. Passed to Odoo with the order payload.</inlineHelpText>
+    <label>SBI Finance Comments</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>4</visibleLines>
+</CustomField>

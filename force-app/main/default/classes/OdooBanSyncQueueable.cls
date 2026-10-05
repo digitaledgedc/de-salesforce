@@ -5,9 +5,19 @@
  *
  * Sequencing within execute():
  *   NEW-A (POST /api/v1/create_partner) — only for Accounts without Odoo_Partner_ID__c.
- *            One callout per unique Account. Writes Account.Odoo_Partner_ID__c.
+ *            One callout per unique Account. Writes Account.Odoo_Partner_ID__c, plus
+ *            Odoo_Sync_Status__c/Odoo_Sync_Error__c/Odoo_Sync_Payload__c on every Account that
+ *            goes through this callout (SFDC-361) — 'Acknowledged' on success, 'Failed - Manual
+ *            Review Required' on any failure/collision, payload always captured.
  *   NEW-B (POST /api/v1/create_ban)     — one callout per BAN.
  *            Writes Odoo_BAN_ID__c, Odoo_Partner_ID__c, Odoo_Invoice_Freq_ID__c on BillingAccount__c.
+ *
+ * NEW-A payload also carries Portal_Code__c -> ns_portal_code (SFDC-361 — restored; had been
+ * dropped from this class, only Account-update-time sync via OdooAccountUpdateQueueable had it),
+ * Tax_ID__c -> vat, Credit_Limit_MRC__c -> ns_credit_limit_mrc, Credit_Limit_NRC__c ->
+ * ns_credit_limit_nrc, and Payment_Terms__c -> property_payment_term_id — the last one sent as
+ * the raw picklist label, not an Odoo integer id (no label->id mapping exists yet for Payment
+ * Terms, unlike Invoice_Frequency__mdt for BAN sync).
  *
  * All callouts run before any DML (Apex rule: no DML between callouts).
  * Errors written to DE_Integration_Error__c with IP_Reference__c = 'NEW-A' or 'NEW-B'.
@@ -18,33 +28,55 @@
 public without sharing class OdooBanSyncQueueable implements Queueable, Database.AllowsCallouts {
 
     private List<Id> banIds;
-    private List<Id> chainOrderIds;
-    private String   chainTarget;  // 'IP-1' (default) or 'IP-4'
+    private List<Id> ip1OrderIds;  // chain to SendNewOrdersQueueable after BAN sync
+    private List<Id> ip4OrderIds;  // chain to SendChangeOrdersQueueable after BAN sync
 
     public OdooBanSyncQueueable(List<Id> banIds) {
         this.banIds = banIds;
-        this.chainOrderIds = new List<Id>();
-        this.chainTarget = 'IP-1';
+        this.ip1OrderIds = new List<Id>();
+        this.ip4OrderIds = new List<Id>();
     }
 
-    /** Chaining constructor: after BAN sync, enqueue SendNewOrdersQueueable (IP-1) for these Order IDs. */
+    /** Chaining constructor: after BAN sync, send these Orders via IP-1 (New Service/Renewal). */
     public OdooBanSyncQueueable(List<Id> banIds, List<Id> chainOrderIds) {
         this.banIds = banIds;
-        this.chainOrderIds = chainOrderIds != null ? chainOrderIds : new List<Id>();
-        this.chainTarget = 'IP-1';
+        this.ip1OrderIds = chainOrderIds != null ? chainOrderIds : new List<Id>();
+        this.ip4OrderIds = new List<Id>();
     }
 
     /** Chaining constructor with explicit target: 'IP-1' → SendNewOrdersQueueable,
-     *  'IP-4' → SendChangeOrdersQueueable. */
+     *  'IP-4' → SendChangeOrdersQueueable. Kept for backward compatibility — prefer the
+     *  (banIds, ip1OrderIds, ip4OrderIds) constructor below when both targets are needed. */
     public OdooBanSyncQueueable(List<Id> banIds, List<Id> chainOrderIds, String chainTarget) {
         this.banIds = banIds;
-        this.chainOrderIds = chainOrderIds != null ? chainOrderIds : new List<Id>();
-        this.chainTarget = chainTarget != null ? chainTarget : 'IP-1';
+        List<Id> ids = chainOrderIds != null ? chainOrderIds : new List<Id>();
+        if (chainTarget == 'IP-4') {
+            this.ip1OrderIds = new List<Id>();
+            this.ip4OrderIds = ids;
+        } else {
+            this.ip1OrderIds = ids;
+            this.ip4OrderIds = new List<Id>();
+        }
+    }
+
+    /**
+     * Combined chaining constructor: after BAN sync, send ip1OrderIds via IP-1 (New Service/
+     * Renewal) AND ip4OrderIds via IP-4 (Change Orders) — both from this single job. Lets
+     * OrderTriggerHandler enqueue exactly one job per trigger invocation even when a batch of
+     * activated Orders mixes both types, instead of the previous approach of enqueueing one
+     * OdooBanSyncQueueable per order type (which could total 2 System.enqueueJob() calls in one
+     * trigger execution and fail with "Too many queueable jobs added to the queue" whenever that
+     * trigger fired from inside an already-executing async job).
+     */
+    public OdooBanSyncQueueable(List<Id> banIds, List<Id> ip1OrderIds, List<Id> ip4OrderIds) {
+        this.banIds = banIds;
+        this.ip1OrderIds = ip1OrderIds != null ? ip1OrderIds : new List<Id>();
+        this.ip4OrderIds = ip4OrderIds != null ? ip4OrderIds : new List<Id>();
     }
 
     public void execute(QueueableContext ctx) {
         System.debug('INTEGRATION ▶ OdooBanSyncQueueable — START | BANs: ' + banIds
-            + ' | chainOrderIds: ' + chainOrderIds);
+            + ' | ip1OrderIds: ' + ip1OrderIds + ' | ip4OrderIds: ' + ip4OrderIds);
         OdooIntegrationSettings__c settings = OdooIntegrationSettings__c.getOrgDefaults();
         System.debug('INTEGRATION ▶ OdooBanSyncQueueable — Settings | IP1_Enabled: ' + settings.IP1_Enabled__c
             + ' | Base_URL: ' + settings.Base_URL__c);
@@ -82,7 +114,11 @@ public without sharing class OdooBanSyncQueueable implements Queueable, Database
                    Account__r.Phone,
                    Account__r.Website,
                    Account__r.CurrencyIsoCode,
-                   Account__r.Odoo_Partner_ID__c,BAN_ID_INV_Label__c,BAN_ID_Reference__c,
+                   Account__r.BillingCountry,Account__r.Preferred_Language__c,
+                   Account__r.Portal_Code__c,
+                   Account__r.Tax_ID__c,Account__r.Credit_Limit_MRC__c,Account__r.Credit_Limit_NRC__c,
+                   Account__r.Payment_Terms__c,
+                   Account__r.Odoo_Partner_ID__c,Account__r.DE_Entity__c,Account__r.Company_Code__c,BAN_ID_INV_Label__c,BAN_ID_Reference__c,
                    Odoo_Partner_ID__c,
                    Odoo_BAN_ID__c,CurrencyISOCode,
                    Alias__c,Invoice_Currency__c,Billing_Contact__c, Billing_Contact__r.Name,Billing_Contact__r.Email,
@@ -98,21 +134,46 @@ public without sharing class OdooBanSyncQueueable implements Queueable, Database
         ];
 
         System.debug('INTEGRATION ▶ OdooBanSyncQueueable — BANs needing sync: ' + bans.size());
+
+        // ── Collect for DML after all callouts ───────────────────────────────
+        List<Account>            accountsToUpdate = new List<Account>();
+        List<Contact>            contactsToUpdate = new List<Contact>();
+        List<BillingAccount__c>  bansToUpdate     = new List<BillingAccount__c>();
+        List<DE_Integration_Error__c> errors      = new List<DE_Integration_Error__c>();
+
+        // NEW-C (Quote-role contacts): sync Quote Contact, Ops Contact (Opportunity_Contact__c),
+        // and Order Contact (Order_Contact__c) — sourced from the Quote linked to each Order being
+        // chained to SendNewOrdersQueueable/SendChangeOrdersQueueable. Runs regardless of whether
+        // the BAN itself needs (re)sync, since a repeat order on an already-active BAN can still
+        // reference a contact never synced to Odoo before. oddoIdByContact is seeded here so the
+        // Billing Contact sync below (Step 1) reuses any partner already created for the same
+        // person instead of double-creating it.
+        List<Id> allChainOrderIds = new List<Id>();
+        allChainOrderIds.addAll(ip1OrderIds);
+        allChainOrderIds.addAll(ip4OrderIds);
+        Map<Id, Integer> oddoIdByContact = new Map<Id, Integer>();
+        syncQuoteRoleContacts(allChainOrderIds, settings, oddoIdByContact, contactsToUpdate, errors);
+
         if (bans.isEmpty()) {
             System.debug('INTEGRATION ▶ OdooBanSyncQueueable — No BANs need sync, skipping to chain');
-            chainIfNeeded();
+            // Chain (its own callouts) BEFORE any DML — see sendChainedOrders() doc.
+            ChainResult chained = sendChainedOrders(new Map<Id, BillingAccount__c>(), oddoIdByContact);
+            errors.addAll(chained.errors);
+            if (!errors.isEmpty())          insert errors;
+            if (!contactsToUpdate.isEmpty()) update contactsToUpdate;
+            if (!chained.ordersToUpdate.isEmpty()) update chained.ordersToUpdate;
             return;
         }
 
         // ── Derive company ID + country ID from first order on each BAN ──
+        // (NEW-B's ns_de_company_id stays keyed off the BAN's own first Order/Operation_Site__c
+        // below, unchanged — that's a distinct field from NEW-A's company_id below and wasn't
+        // part of the confirmed SFDC-147 bug.)
         Set<Id> banIdSet = new Map<Id, BillingAccount__c>(bans).keySet();
         Map<Id, Integer> banCompanyMap = new Map<Id, Integer>();
         Map<Id, Integer> banCountryMap = new Map<Id, Integer>();
-        // Also track Account → company/country for NEW-A payload
-        Map<Id, Integer> accountCompanyMap = new Map<Id, Integer>();
-        Map<Id, Integer> accountCountryMap = new Map<Id, Integer>();
         for (Order o : [
-            SELECT BillingAccount__c, BillingAccount__r.Account__c, Operation_Site__c,BillingAccount__r.Billing_Contact__c
+            SELECT BillingAccount__c, Operation_Site__c
             FROM Order
             WHERE BillingAccount__c IN :banIdSet
               AND Operation_Site__c != null
@@ -126,15 +187,48 @@ public without sharing class OdooBanSyncQueueable implements Queueable, Database
                     && siteCountryMap.containsKey(o.Operation_Site__c)) {
                 banCountryMap.put(o.BillingAccount__c, siteCountryMap.get(o.Operation_Site__c));
             }
-            // Derive per-account from the first BAN's order
-            Id acctId = o.BillingAccount__r.Account__c;
-            if (acctId != null && !accountCompanyMap.containsKey(acctId)
-                    && siteCompanyMap.containsKey(o.Operation_Site__c)) {
-                accountCompanyMap.put(acctId, siteCompanyMap.get(o.Operation_Site__c));
+        }
+
+        // ── Account → company/country for NEW-A payload, derived from the Account's own
+        // DE Subsidiary (DE_Entity__c) via Site__c — NOT from any Order's Operation_Site__c
+        // (SFDC-147). Operation_Site__c is a per-order provisioning field that can be null
+        // (no order yet, or an Account whose Orders predate that field), which was silently
+        // producing company_id=false for NEW-A. Site__c.DE_Entity__c is the authoritative
+        // link from a physical site to its billing legal entity and is confirmed consistent
+        // in DE_PROD — every DE_Entity__c maps to exactly one Odoo_Company_ID__c/
+        // Odoo_Country_ID__c across all of its Site__c records, so picking any one match is safe.
+        Set<Id> entityIds = new Set<Id>();
+        for (BillingAccount__c ban : bans) {
+            if (ban.Account__r.DE_Entity__c != null) entityIds.add(ban.Account__r.DE_Entity__c);
+        }
+        Map<Id, Integer> entityCompanyMap = new Map<Id, Integer>();
+        Map<Id, Integer> entityCountryMap = new Map<Id, Integer>();
+        if (!entityIds.isEmpty()) {
+            for (Site__c s : [
+                SELECT DE_Entity__c, Odoo_Company_ID__c, Odoo_Country_ID__c
+                FROM Site__c
+                WHERE DE_Entity__c IN :entityIds AND Odoo_Company_ID__c > 0
+            ]) {
+                if (!entityCompanyMap.containsKey(s.DE_Entity__c)) {
+                    entityCompanyMap.put(s.DE_Entity__c, Integer.valueOf(s.Odoo_Company_ID__c));
+                }
+                if (s.Odoo_Country_ID__c != null && s.Odoo_Country_ID__c > 0
+                        && !entityCountryMap.containsKey(s.DE_Entity__c)) {
+                    entityCountryMap.put(s.DE_Entity__c, Integer.valueOf(s.Odoo_Country_ID__c));
+                }
             }
-            if (acctId != null && !accountCountryMap.containsKey(acctId)
-                    && siteCountryMap.containsKey(o.Operation_Site__c)) {
-                accountCountryMap.put(acctId, siteCountryMap.get(o.Operation_Site__c));
+        }
+        Map<Id, Integer> accountCompanyMap = new Map<Id, Integer>();
+        Map<Id, Integer> accountCountryMap = new Map<Id, Integer>();
+        for (BillingAccount__c ban : bans) {
+            Id acctId = ban.Account__c;
+            Id entityId = ban.Account__r.DE_Entity__c;
+            if (acctId == null || entityId == null) continue;
+            if (!accountCompanyMap.containsKey(acctId) && entityCompanyMap.containsKey(entityId)) {
+                accountCompanyMap.put(acctId, entityCompanyMap.get(entityId));
+            }
+            if (!accountCountryMap.containsKey(acctId) && entityCountryMap.containsKey(entityId)) {
+                accountCountryMap.put(acctId, entityCountryMap.get(entityId));
             }
         }
 
@@ -144,7 +238,6 @@ public without sharing class OdooBanSyncQueueable implements Queueable, Database
         // res.partner ID). Use that directly so NEW-A is only called for genuinely new accounts.
         Map<Id, Integer> partnerIdByAccount = new Map<Id, Integer>();
         Set<Id> accountsNeedingNewA = new Set<Id>();
-        Map<Id, Integer> oddoIdByContact = new Map<Id, Integer>();
 		Set<Id> billingContactNeedingNewB = new Set<Id>();
         for (BillingAccount__c ban : bans) {
             System.debug('INTEGRATION ▶ OdooBanSyncQueueable — Evaluating BAN: ' + ban.Id
@@ -197,12 +290,6 @@ public without sharing class OdooBanSyncQueueable implements Queueable, Database
             }
         }
 
-        // ── Collect for DML after all callouts ───────────────────────────────
-        List<Account>            accountsToUpdate = new List<Account>();
-        List<Contact>            contactsToUpdate = new List<Contact>();
-        List<BillingAccount__c>  bansToUpdate     = new List<BillingAccount__c>();
-        List<DE_Integration_Error__c> errors      = new List<DE_Integration_Error__c>();
-
         // ── Step 3: NEW-A callouts — one per unsynced Account ─────────────────
         System.debug('INTEGRATION ▶ OdooBanSyncQueueable — Accounts needing NEW-A: ' + accountsNeedingNewA);
         System.debug('INTEGRATION ▶ OdooBanSyncQueueable — Accounts with existing partner_id: ' + partnerIdByAccount);
@@ -221,12 +308,18 @@ public without sharing class OdooBanSyncQueueable implements Queueable, Database
 
             System.debug('INTEGRATION ▶ NEW-A — Response | success: ' + resp.isSuccess
                 + ' | rawBody: ' + resp.rawBody + ' | error: ' + resp.errorBody);
+
+            Account acctUpdate = new Account(Id = accountId);
+            acctUpdate.Odoo_Sync_Payload__c = payload; // always capture the request payload
+
             if (resp.isSuccess) {
                 Integer partnerId = parseIntFromResult(resp.rawBody, 'partner_id');
                 System.debug('INTEGRATION ▶ NEW-A — Parsed partner_id: ' + partnerId);
                 if (partnerId != null && partnerId > 0) {
                     partnerIdByAccount.put(accountId, partnerId);
-                    accountsToUpdate.add(new Account(Id = accountId, Odoo_Partner_ID__c = partnerId));
+                    acctUpdate.Odoo_Partner_ID__c = partnerId;
+                    acctUpdate.Odoo_Sync_Status__c = 'Acknowledged';
+                    acctUpdate.Odoo_Sync_Error__c = null;
                 } else {
                     // partner_id = 0: Odoo silently rejected creation — most likely the
                     // ns_portal_code unique constraint was violated by a previous run that
@@ -237,20 +330,25 @@ public without sharing class OdooBanSyncQueueable implements Queueable, Database
                     // NEW-B will proceed with the correct partner_id.
                     String sfId = String.valueOf(accountId);
                     String sfCode = sfId.length() > 8 ? sfId.substring(sfId.length() - 8) : sfId;
-                    errors.add(newError(String.valueOf(accountId), 'NEW-A',
-                        'NEW-A succeeded but returned partner_id=0. '
+                    String collisionMsg = 'NEW-A succeeded but returned partner_id=0. '
                         + 'Search Odoo for res.partner where ns_portal_code = \'' + sfCode + '\', '
                         + 'copy that record\'s ID to Account.Odoo_Partner_ID__c, then re-run. '
-                        + 'Raw response: ' + resp.rawBody));
+                        + 'Raw response: ' + resp.rawBody;
+                    acctUpdate.Odoo_Sync_Status__c = 'Failed - Manual Review Required';
+                    acctUpdate.Odoo_Sync_Error__c = collisionMsg;
+                    errors.add(newError(String.valueOf(accountId), 'NEW-A', collisionMsg));
                 }
             } else {
+                acctUpdate.Odoo_Sync_Status__c = 'Failed - Manual Review Required';
+                acctUpdate.Odoo_Sync_Error__c = resp.errorBody;
                 errors.add(newError(String.valueOf(accountId), 'NEW-A', resp.errorBody, payload));
             }
+            accountsToUpdate.add(acctUpdate);
         }
         
 		 for (Id conId : billingContactNeedingNewB) {
             BillingAccount__c sample = firstBanByContact.get(conId);
-            String payload = buildNewCPayload(conId, sample, settings);
+            String payload = buildNewCPayload(conId, sample.Billing_Contact__r, settings);
             System.debug('INTEGRATION ▶ NEW-C — Calling /api/v1/create_partner for Contact: ' + conId
                 + ' (' + sample.Account__r.Name + ')');
             System.debug('INTEGRATION ▶ NEW-C — Payload: ' + payload);
@@ -367,35 +465,148 @@ public without sharing class OdooBanSyncQueueable implements Queueable, Database
             bansToUpdate.add(banUpdate);
         }
 
-        // ── All callouts done — safe to DML ──────────────────────────────────
+        // ── Chain BEFORE any DML — IP-1/IP-4 make their own callouts too, and Salesforce throws
+        // "You have uncommitted work pending" on ANY callout that follows ANY DML in one
+        // transaction. This ordering (not just passing banOverrides/contactPartnerIdOverrides) is
+        // what actually prevents that error — the override maps alone only fixed stale/uncommitted
+        // data being read; they don't change when the callout happens relative to this class's own
+        // DML. See sendChainedOrders() doc. Fix: 2026-09-28.
+        Map<Id, BillingAccount__c> banOverridesByBanId = new Map<Id, BillingAccount__c>(bansToUpdate);
+        ChainResult chained = sendChainedOrders(banOverridesByBanId, oddoIdByContact);
+        errors.addAll(chained.errors);
+
+        // ── All callouts done (this class's own NEW-A/B/C + any chained IP-1/IP-4 sends) —
+        // only now is it safe to DML, exactly once, for everything. ──────────────────────────
         System.debug('INTEGRATION ▶ OdooBanSyncQueueable — DML summary | errors: ' + errors.size()
             + ' | accountsToUpdate: ' + accountsToUpdate.size()
-            + ' | bansToUpdate: ' + bansToUpdate.size());
+            + ' | bansToUpdate: ' + bansToUpdate.size()
+            + ' | chainedOrdersToUpdate: ' + chained.ordersToUpdate.size());
         if (!errors.isEmpty())        insert errors;
         if (!accountsToUpdate.isEmpty()) update accountsToUpdate;
         if (!contactsToUpdate.isEmpty()) update contactsToUpdate;
         if (!bansToUpdate.isEmpty())  update bansToUpdate;
-
-        chainIfNeeded();
+        if (!chained.ordersToUpdate.isEmpty()) update chained.ordersToUpdate;
     }
 
-    /** Chain to the target Queueable (IP-1 or IP-4) after BAN sync completes. */
-    private void chainIfNeeded() {
-        if (chainOrderIds == null || chainOrderIds.isEmpty()) {
+    /** Return shape for sendChainedOrders() — the Order updates and integration errors the chained
+     *  sends would have written, handed back instead of committed so the caller can fold them into
+     *  its own single end-of-transaction DML. */
+    private class ChainResult {
+        List<Order> ordersToUpdate = new List<Order>();
+        List<DE_Integration_Error__c> errors = new List<DE_Integration_Error__c>();
+    }
+
+    /**
+     * Runs both chained order sends (IP-1/IP-4) after BAN sync's own callouts, and BEFORE any DML
+     * anywhere in this transaction. Calls SendNewOrdersQueueable/SendChangeOrdersQueueable's
+     * deferred entry points (sendOrdersDeferred(...)) DIRECTLY rather than via
+     * System.enqueueJob() — this method already runs inside an executing Queueable
+     * (OdooBanSyncQueueable itself), which Salesforce caps at exactly one additional
+     * System.enqueueJob() call; a plain method call carries no such limit. The only
+     * System.enqueueJob() left in this whole chain is SendNewOrdersQueueable's own IP-3
+     * (LockOdooSpacesQueueable) capacity chain, fired at most once — see SendNewOrdersQueueable.
+     *
+     * Deferred (not committed here) is the key word: sendOrdersDeferred performs its own Odoo
+     * callouts but does NOT do its own DML, returning it instead via SendResult so the caller
+     * (this class's execute()) can commit it together with its own pending DML, once, after every
+     * callout in the whole chain has run. banOverrides/contactPartnerIdOverrides carry the
+     * BAN/Contact Odoo ids this run just computed, still uncommitted at this point.
+     */
+    private ChainResult sendChainedOrders(Map<Id, BillingAccount__c> banOverrides,
+            Map<Id, Integer> contactPartnerIdOverrides) {
+        ChainResult result = new ChainResult();
+        if ((ip1OrderIds == null || ip1OrderIds.isEmpty())
+                && (ip4OrderIds == null || ip4OrderIds.isEmpty())) {
             System.debug('INTEGRATION ▶ OdooBanSyncQueueable — No chain orders, done');
-            return;
+            return result;
         }
         OdooIntegrationSettings__c s = OdooIntegrationSettings__c.getOrgDefaults();
         if (!s.IP1_Enabled__c) {
             System.debug('INTEGRATION ▶ OdooBanSyncQueueable — IP1_Enabled is false, skipping chain');
-            return;
+            return result;
         }
-        if (chainTarget == 'IP-4') {
-            System.debug('INTEGRATION ▶ OdooBanSyncQueueable — CHAINING → SendChangeOrdersQueueable (IP-4) | Orders: ' + chainOrderIds);
-            System.enqueueJob(new SendChangeOrdersQueueable(chainOrderIds));
-        } else {
-            System.debug('INTEGRATION ▶ OdooBanSyncQueueable — CHAINING → SendNewOrdersQueueable (IP-1) | Orders: ' + chainOrderIds);
-            System.enqueueJob(new SendNewOrdersQueueable(chainOrderIds));
+        if (ip1OrderIds != null && !ip1OrderIds.isEmpty()) {
+            System.debug('INTEGRATION ▶ OdooBanSyncQueueable — CHAINING → SendNewOrdersQueueable (IP-1) | Orders: ' + ip1OrderIds);
+            SendNewOrdersQueueable.SendResult r1 =
+                SendNewOrdersQueueable.sendOrdersDeferred(ip1OrderIds, banOverrides, contactPartnerIdOverrides);
+            result.ordersToUpdate.addAll(r1.pendingUpdates);
+            result.errors.addAll(r1.pendingErrors);
+        }
+        if (ip4OrderIds != null && !ip4OrderIds.isEmpty()) {
+            System.debug('INTEGRATION ▶ OdooBanSyncQueueable — CHAINING → SendChangeOrdersQueueable (IP-4) | Orders: ' + ip4OrderIds);
+            SendChangeOrdersQueueable.SendResult r2 =
+                SendChangeOrdersQueueable.sendOrdersDeferred(ip4OrderIds, banOverrides);
+            result.ordersToUpdate.addAll(r2.pendingUpdates);
+            result.errors.addAll(r2.pendingErrors);
+        }
+        return result;
+    }
+
+    /**
+     * NEW-C (Quote-role contacts): syncs the three contact roles carried on the Quote linked to
+     * each Order in orderIds — Quote Contact (Quote.ContactId), Ops Contact
+     * (Quote.Opportunity_Contact__c), and Order Contact (Quote.Order_Contact__c). Any of these
+     * without an existing Odoo_Partner_ID__c gets a res.partner created via
+     * /api/v1/create_partner; results are appended to the caller's oddoIdByContact map and
+     * contactsToUpdate/errors lists (all callouts must finish before any DML in this class, so
+     * this must be called before the caller does any update/insert).
+     */
+    private void syncQuoteRoleContacts(List<Id> orderIds, OdooIntegrationSettings__c settings,
+            Map<Id, Integer> oddoIdByContact, List<Contact> contactsToUpdate,
+            List<DE_Integration_Error__c> errors) {
+        if (orderIds == null || orderIds.isEmpty()) return;
+
+        Map<Id, Contact> contactsById = new Map<Id, Contact>();
+        for (Order o : [
+            SELECT Quote__r.ContactId, Quote__r.Contact.Name, Quote__r.Contact.Email,
+                   Quote__r.Contact.Phone, Quote__r.Contact.Odoo_Partner_ID__c, Quote__r.Contact.CurrencyISOCode,
+                   Quote__r.Ops_Contact__c, Quote__r.Ops_Contact__r.Name,
+                   Quote__r.Ops_Contact__r.Email, Quote__r.Ops_Contact__r.Phone,
+                   Quote__r.Ops_Contact__r.Odoo_Partner_ID__c, Quote__r.Ops_Contact__r.CurrencyISOCode,
+                   Quote__r.Order_Contact__c, Quote__r.Order_Contact__r.Name,
+                   Quote__r.Order_Contact__r.Email, Quote__r.Order_Contact__r.Phone,
+                   Quote__r.Order_Contact__r.Odoo_Partner_ID__c, Quote__r.Order_Contact__r.CurrencyISOCode
+            FROM Order
+            WHERE Id IN :orderIds AND Quote__c != null
+        ]) {
+            if (o.Quote__r.ContactId != null) contactsById.put(o.Quote__r.ContactId, o.Quote__r.Contact);
+            if (o.Quote__r.Ops_Contact__c != null) contactsById.put(o.Quote__r.Ops_Contact__c, o.Quote__r.Ops_Contact__r);
+            if (o.Quote__r.Order_Contact__c != null) contactsById.put(o.Quote__r.Order_Contact__c, o.Quote__r.Order_Contact__r);
+        }
+
+        for (Id conId : contactsById.keySet()) {
+            Contact con = contactsById.get(conId);
+            if (con.Odoo_Partner_ID__c != null && con.Odoo_Partner_ID__c > 0) {
+                oddoIdByContact.put(conId, Integer.valueOf(con.Odoo_Partner_ID__c));
+                continue;
+            }
+
+            String payload = buildNewCPayload(conId, con, settings);
+            System.debug('INTEGRATION ▶ NEW-C (Quote role) — Calling /api/v1/create_partner for Contact: ' + conId);
+            System.debug('INTEGRATION ▶ NEW-C (Quote role) — Payload: ' + payload);
+
+            OdooCalloutService.Response resp =
+                OdooCalloutService.post('/api/v1/create_partner', payload);
+
+            System.debug('INTEGRATION ▶ NEW-C (Quote role) — Response | success: ' + resp.isSuccess
+                + ' | rawBody: ' + resp.rawBody + ' | error: ' + resp.errorBody);
+            if (resp.isSuccess) {
+                Integer partnerId = parseIntFromResult(resp.rawBody, 'partner_id');
+                if (partnerId != null && partnerId > 0) {
+                    oddoIdByContact.put(conId, partnerId);
+                    contactsToUpdate.add(new Contact(Id = conId, Odoo_Partner_ID__c = partnerId));
+                } else {
+                    String sfId = String.valueOf(conId);
+                    String sfCode = sfId.length() > 8 ? sfId.substring(sfId.length() - 8) : sfId;
+                    errors.add(newError(String.valueOf(conId), 'NEW-C',
+                        'NEW-C (Quote role) succeeded but returned partner_id=0. '
+                        + 'Search Odoo for res.partner where ns_portal_code = \'' + sfCode + '\', '
+                        + 'copy that record\'s ID to Contact.Odoo_Partner_ID__c, then re-run. '
+                        + 'Raw response: ' + resp.rawBody));
+                }
+            } else {
+                errors.add(newError(String.valueOf(conId), 'NEW-C', resp.errorBody, payload));
+            }
         }
     }
 
@@ -421,10 +632,23 @@ public without sharing class OdooBanSyncQueueable implements Queueable, Database
         gen.writeStringField('nrs_company_type', 'company');
         gen.writeBooleanField('ns_is_customer', true);
         gen.writeBooleanField('ns_is_end_customer', false);
-        // x_studio_company_code: unique constraint in Odoo, use last 8 chars of SF Account ID
-        String sfId = String.valueOf(accountId);
-        String sfCode = sfId.length() > 8 ? sfId.substring(sfId.length() - 8) : sfId;
-        gen.writeStringField('x_studio_company_code', sfCode);
+        // x_studio_company_code: unique constraint in Odoo, AND Odoo hard-rejects any value
+        // over 8 characters ("Company Code must not have more than 8 characters") — confirmed
+        // live against DE_PARTIAL. Prefer the Account's own Company_Code__c (Text,
+        // unique=true, externalId=true — genuinely enforced unique by SFDC itself) only when
+        // it's populated AND fits that 8-char limit (55 of 2,596 populated values in DE_PROD
+        // are 9-11 chars, e.g. "KRENDCUST1"/"ZenlayerSH" — truncating those would collide,
+        // e.g. "KRENDCUST1"/"KRENDCUST2" both truncate to "KRENDCUS"); fall back to the last
+        // 8 chars of the SF Account ID otherwise.
+        String companyCode;
+        if (String.isNotBlank(sample.Account__r.Company_Code__c)
+                && sample.Account__r.Company_Code__c.length() <= 8) {
+            companyCode = sample.Account__r.Company_Code__c;
+        } else {
+            String sfId = String.valueOf(accountId);
+            companyCode = sfId.length() > 8 ? sfId.substring(sfId.length() - 8) : sfId;
+        }
+        gen.writeStringField('x_studio_company_code', companyCode);
         if (companyId != null && companyId > 0) {
             gen.writeNumberField('company_id', companyId);
         } else {
@@ -435,24 +659,55 @@ public without sharing class OdooBanSyncQueueable implements Queueable, Database
             sample.Account__r.BillingStreet != null ? sample.Account__r.BillingStreet : '');
         gen.writeStringField('city',
             sample.Account__r.BillingCity != null ? sample.Account__r.BillingCity : '');
-        if (countryId != null && countryId > 0) {
-            gen.writeNumberField('country_id', countryId);
-        }
+        gen.writeStringField('country_name',
+            sample.Account__r.BillingCountry != null ? sample.Account__r.BillingCountry : '');
         gen.writeStringField('phone',
             sample.Account__r.Phone != null ? sample.Account__r.Phone : '');
         gen.writeStringField('email', '');
         // Website: send empty string — Azure WAF blocks URLs embedded in POST bodies (SSRF rule).
         // The Odoo team must add a WAF exclusion for /api/v1/* before real website values can be sent.
         gen.writeStringField('website', '');
+        gen.writeStringField('ns_portal_code', sample.Account__r.Portal_Code__c != null ? sample.Account__r.Portal_Code__c : '');
+        gen.writeStringField('vat', sample.Account__r.Tax_ID__c != null ? sample.Account__r.Tax_ID__c : '');
+        if (sample.Account__r.Credit_Limit_MRC__c != null) {
+            gen.writeNumberField('ns_credit_limit_mrc', sample.Account__r.Credit_Limit_MRC__c);
+        }
+        if (sample.Account__r.Credit_Limit_NRC__c != null) {
+            gen.writeNumberField('ns_credit_limit_nrc', sample.Account__r.Credit_Limit_NRC__c);
+        }
+        // property_payment_term_id is typed as an integer in the mapping sheet, but there's no
+        // Payment_Terms__c label -> Odoo id mapping yet (unlike Invoice_Frequency__mdt for BAN
+        // sync) — sending the picklist label itself per explicit direction until that mapping exists.
+        if (sample.Account__r.Payment_Terms__c != null) {
+            gen.writeStringField('property_payment_term_id', sample.Account__r.Payment_Terms__c);
+        }
         // Required per field mapping
         gen.writeNumberField('customer_rank', 1);
         gen.writeStringField('currency_id', currencyCode != null ? currencyCode : 'USD');
+        String odooLang = mapPreferredLanguageToOdooLang(sample.Account__r.Preferred_Language__c);
+        if (odooLang != null) {
+            gen.writeStringField('lang', odooLang);
+        } else {
+            gen.writeBooleanField('lang', false);
+        }
         gen.writeBooleanField('is_from_sf', true);
 
         gen.writeEndObject(); // data
         gen.writeEndObject(); // params
         gen.writeEndObject(); // root
         return gen.getAsString();
+    }
+
+    @TestVisible
+    private static String mapPreferredLanguageToOdooLang(String sfLabel) {
+        if (sfLabel == null || sfLabel == '') return null;
+        Map<String, String> langMap = new Map<String, String>{
+            'English'  => 'en_US',
+            'Chinese'  => 'zh_CN',
+            'Japanese' => 'ja_JP',
+            'Korean'   => 'ko_KR'
+        };
+        return langMap.get(sfLabel);
     }
 
     @TestVisible
@@ -546,8 +801,10 @@ public without sharing class OdooBanSyncQueueable implements Queueable, Database
         return gen.getAsString();
     }
 
+    /** Builds the /api/v1/create_partner payload for a person-type Contact — shared by the
+     *  Billing Contact sync (Step 1/NEW-B) and the Quote-role contact sync (syncQuoteRoleContacts). */
     @TestVisible
-    private String buildNewCPayload(Id accountId, BillingAccount__c sample, OdooIntegrationSettings__c settings) {
+    private String buildNewCPayload(Id contactId, Contact con, OdooIntegrationSettings__c settings) {
         JSONGenerator gen = JSON.createGenerator(false);
         gen.writeStartObject();
         gen.writeFieldName('params');
@@ -557,17 +814,17 @@ public without sharing class OdooBanSyncQueueable implements Queueable, Database
         gen.writeFieldName('data');
         gen.writeStartObject();
 
-        gen.writeStringField('sf_account_id', String.valueOf(sample.Billing_Contact__c));
-        gen.writeStringField('name', sample.Billing_Contact__r.Name != null ? sample.Billing_Contact__r.Name : '');
+        gen.writeStringField('sf_account_id', String.valueOf(contactId));
+        gen.writeStringField('name', con.Name != null ? con.Name : '');
         gen.writeBooleanField('is_company', false);
         gen.writeStringField('company_type', 'person');
         gen.writeBooleanField('parent_id', false);
-        gen.writeStringField('currency_id', sample.Billing_Contact__r.CurrencyISOCode);
+        gen.writeStringField('currency_id', con.CurrencyISOCode);
         gen.writeBooleanField('company_id', false);
         gen.writeNumberField('customer_rank', 1);
         gen.writeBooleanField('is_from_sf', true);
-        gen.writeStringField('phone',sample.Billing_Contact__r.Phone != null ? sample.Billing_Contact__r.Phone : '');
-        gen.writeStringField('email', sample.Billing_Contact__r.email != null ? sample.Billing_Contact__r.email : '');
+        gen.writeStringField('phone', con.Phone != null ? con.Phone : '');
+        gen.writeStringField('email', con.Email != null ? con.Email : '');
         gen.writeEndObject(); // data
         gen.writeEndObject(); // params
         gen.writeEndObject(); // root

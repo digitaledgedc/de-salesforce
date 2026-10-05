@@ -1,0 +1,31 @@
+<div style="margin:0;padding:0;background-color:#f3efec">
+  <center style="width:100%;background-color:#f3efec">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f3efec"><tr>
+      <td align="center" style="padding:26px 12px">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="704" style="width:704px;max-width:704px;background-color:#ffffff"><tr>
+          <td style="font-size:0;line-height:0">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
+
+              <td style="padding:40px 44px 44px 30px">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                  <tr><td style="padding-bottom:30px;font-size:24px;line-height:26px;font-weight:800;letter-spacing:1px;color:#1F2A37"><img src="/servlet/servlet.ImageServer?id=015IW00000CbM2fYAF&oid=00DIW0000021Fwj2AE" alt="Digital Edge" width="170" style="display:block;border:0;outline:none;text-decoration:none;max-width:170px;height:auto" /></td></tr>
+                  <tr><td style="padding-bottom:22px;font-size:28px;line-height:36px;color:#283534;font-weight:400"><span style="color:#F26522">Finance Review</span> Required</td></tr>
+                  <tr><td style="padding-bottom:22px;font-size:15px;line-height:24px;color:#384342">Hi Finance Team,<br><br>{!Special_Instruction__c.Description__c}<br><br>This request has been logged under Special Instruction <strong>{!Special_Instruction__c.Name}</strong> for account <strong>{!Special_Instruction__c.SI_Account_Name__c}</strong> on quote <strong>{!Special_Instruction__c.SI_Quote_Number__c}</strong>. Please open the Special Instruction and <strong>acknowledge</strong> it.</td></tr>
+                  <tr><td align="center" style="padding-top:8px;padding-bottom:24px">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+                      <td align="center" bgcolor="#F26522" style="border-radius:24px;background-color:#F26522">
+                            <a href="{!$Label.DE_Salesforce_Base_URL}/lightning/r/Special_Instruction__c/{!Special_Instruction__c.Id}/view" style="display:inline-block;padding:14px 28px;font-size:15px;line-height:18px;font-weight:700;letter-spacing:0.4px;color:#ffffff;text-decoration:none;background-color:#F26522;border-radius:24px">OPEN SPECIAL INSTRUCTION &#10142;</a>
+                          </td>
+                    </tr></table>
+                  </td></tr>
+                  <tr><td style="padding-top:22px;font-size:15px;line-height:24px;color:#464f4d">This is a notification only. Please action the item on the Special Instruction.</td></tr>
+                  <tr><td style="padding-top:26px;font-size:15px;line-height:24px;color:#384342">Best regards,<br><br><strong>Digital Edge Finance Operations</strong> - <strong>{!Special_Instruction__c.DE_Subsidiary_Name__c}</strong></td></tr>
+                </table>
+              </td>
+            </tr></table>
+          </td>
+        </tr></table>
+      </td>
+    </tr></table>
+  </center>
+</div>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>GoLive_Target_Date__c</fullName>
+    <description>Customer&apos;s required service commencement date. Carries to Quote.RDD__c as default.</description>
+    <inlineHelpText>Customer&apos;s required service commencement date. Carried to the Requested Delivery Date on the first quote. Set based on what the customer has communicated.</inlineHelpText>
+    <label>Requested Delivery Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

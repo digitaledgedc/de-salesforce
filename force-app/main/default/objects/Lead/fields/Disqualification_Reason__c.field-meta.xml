@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Disqualification_Reason__c</fullName>
+    <description>Required when Status = Disqualified. VR-LEAD-01 enforces. Lead exits all active views once set.</description>
+    <inlineHelpText>Required when Status is set to Disqualified. Select the primary reason this lead will not be converted to an opportunity.</inlineHelpText>
+    <label>Disqualification Reason</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Wrong Geography</fullName>
+                <default>false</default>
+                <label>Wrong Geography</label>
+            </value>
+            <value>
+                <fullName>Wrong Fit</fullName>
+                <default>false</default>
+                <label>Wrong Fit</label>
+            </value>
+            <value>
+                <fullName>No Budget</fullName>
+                <default>false</default>
+                <label>No Budget</label>
+            </value>
+            <value>
+                <fullName>Competitor Won</fullName>
+                <default>false</default>
+                <label>Competitor Won</label>
+            </value>
+            <value>
+                <fullName>Unresponsive</fullName>
+                <default>false</default>
+                <label>Unresponsive</label>
+            </value>
+            <value>
+                <fullName>Duplicate Record</fullName>
+                <default>false</default>
+                <label>Duplicate Record</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

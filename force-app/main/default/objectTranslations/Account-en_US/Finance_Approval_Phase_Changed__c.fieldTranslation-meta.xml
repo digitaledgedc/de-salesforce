@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Date when Finance_Approval_Phase__c was last updated. Stamped automatically by the Finance Approval flow each time the phase advances or is rejected. Used by the daily reminder flow to escalate accounts stuck in pending phases for 5+ days. --></help>
+    <label><!-- Finance Approval Phase Changed --></label>
+    <name>Finance_Approval_Phase_Changed__c</name>
+</CustomFieldTranslation>

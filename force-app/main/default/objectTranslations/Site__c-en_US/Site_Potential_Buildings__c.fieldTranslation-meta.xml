@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Site Potential (Number of Buildings) --></label>
+    <name>Site_Potential_Buildings__c</name>
+</CustomFieldTranslation>

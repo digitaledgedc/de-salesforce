@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ETF_Amount__c</fullName>
+    <inlineHelpText>Early Termination Fee amount payable by the customer for terminating before contract end. Calculated per the contract terms. Required on Churn orders where ETF applies.</inlineHelpText>
+    <label>ETF Amount (USD)</label>
+    <precision>12</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

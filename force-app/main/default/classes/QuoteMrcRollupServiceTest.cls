@@ -50,9 +50,15 @@ private class QuoteMrcRollupServiceTest {
         // up by that.
         Quote nonRampQuote = new Quote(Name = 'Non-Ramp Quote', Customer_PO_Reference__c = 'Non-Ramp Quote', OpportunityId = opp.Id, Pricebook2Id = standardPbId);
         Quote rampQuote    = new Quote(Name = 'Ramp Quote',     Customer_PO_Reference__c = 'Ramp Quote',     OpportunityId = opp.Id, Pricebook2Id = standardPbId);
+        // RDD__c must be set, not just Contract_End_Date__c directly: the
+        // Quote - Before Save - Contract End Date flow recomputes
+        // Contract_End_Date__c = ADDMONTHS(RDD__c, Contract_Term_Months__c) - 1
+        // on every save and BLANKS it when RDD__c is empty — a direct
+        // Contract_End_Date__c assignment with no RDD__c gets silently
+        // wiped back to null before this record is even committed.
         Quote tcvQuote     = new Quote(
             Name = 'TCV Quote', Customer_PO_Reference__c = 'TCV Quote', OpportunityId = opp.Id, Pricebook2Id = standardPbId,
-            Contract_Term_Months__c = 36, Contract_End_Date__c = Date.newInstance(2027, 1, 1)
+            Contract_Term_Months__c = 36, RDD__c = Date.newInstance(2024, 1, 2) // -> Contract_End_Date__c = 2027-01-01
         );
         // Quotes for the linked-phase ordering tests. Contract_Term_Months__c is set on
         // the collision quote so TCV is exercised too (calculateTcv routes phase-prefix
@@ -64,15 +70,49 @@ private class QuoteMrcRollupServiceTest {
         );
         Quote singleRepriceQuote = new Quote(Name = 'Single Reprice Quote', Customer_PO_Reference__c = 'Single Reprice Quote', OpportunityId = opp.Id, Pricebook2Id = standardPbId);
         Quote fanOutQuote        = new Quote(Name = 'Fan Out Quote',        Customer_PO_Reference__c = 'Fan Out Quote',        OpportunityId = opp.Id, Pricebook2Id = standardPbId);
+        // Window from the Ramp_Start_Date__c below (2027-04-01) to Contract_End_Date__c
+        // (2027-04-16) is a same-month, 15-of-30-day partial month — exercises the
+        // day-aware fractionalMonthsBetween single-fragment branch.
+        Quote dayAwareTcvQuote = new Quote(
+            Name = 'Day Aware TCV Quote', Customer_PO_Reference__c = 'Day Aware TCV Quote',
+            OpportunityId = opp.Id, Pricebook2Id = standardPbId,
+            Contract_Term_Months__c = 1, RDD__c = Date.newInstance(2027, 3, 17) // -> Contract_End_Date__c = 2027-04-16
+        );
+        // Window from 2027-08-25 to Contract_End_Date__c (2027-09-10) crosses the
+        // Aug(31)/Sep(30) boundary — exercises fractionalMonthsBetween's two-fragment
+        // branch (6 days left in August + 10 days into September).
+        Quote crossMonthTcvQuote = new Quote(
+            Name = 'Cross Month TCV Quote', Customer_PO_Reference__c = 'Cross Month TCV Quote',
+            OpportunityId = opp.Id, Pricebook2Id = standardPbId,
+            Contract_Term_Months__c = 1, RDD__c = Date.newInstance(2027, 8, 11) // -> Contract_End_Date__c = 2027-09-10
+        );
+        // Client-confirmed backward-anchor example: 2026-10-15 to Contract_End_Date__c
+        // 2028-09-30 must equal 23 + 15/31 (15 remaining days of October, a 31-day
+        // month) — exercises the corrected backward-from-toDate anchor directly.
+        Quote backwardAnchorQuote = new Quote(
+            Name = 'Backward Anchor TCV Quote', Customer_PO_Reference__c = 'Backward Anchor TCV Quote',
+            OpportunityId = opp.Id, Pricebook2Id = standardPbId,
+            Contract_Term_Months__c = 1, RDD__c = Date.newInstance(2028, 9, 1) // -> Contract_End_Date__c = 2028-09-30
+        );
+        // Real-world regression (Quote 260206-QT-1): three ramp phases on the SAME
+        // Merge_IB_Task__c aggregate product, qty 100/150/200, all Ramp_Identifier__c
+        // = 'Add' with no linking — must be treated as cumulative (latest phase wins),
+        // not summed as independent adds.
+        Quote aggregateQuote = new Quote(
+            Name = 'Aggregate Product Quote', Customer_PO_Reference__c = 'Aggregate Product Quote',
+            OpportunityId = opp.Id, Pricebook2Id = standardPbId,
+            Contract_Term_Months__c = 48, RDD__c = Date.newInstance(2026, 10, 1) // -> Contract_End_Date__c = 2030-09-30
+        );
 
-        insert new List<Quote>{ nonRampQuote, rampQuote, tcvQuote, samePhaseQuote, singleRepriceQuote, fanOutQuote };
+        insert new List<Quote>{ nonRampQuote, rampQuote, tcvQuote, samePhaseQuote, singleRepriceQuote, fanOutQuote, dayAwareTcvQuote, crossMonthTcvQuote, backwardAnchorQuote, aggregateQuote };
 
-        Product2 cabinet  = new Product2(Name = 'Test Cabinet',  IsActive = true);
-        Product2 usage    = new Product2(Name = 'Test Usage',    IsActive = true);
-        Product2 product1 = new Product2(Name = 'Test Product1', IsActive = true);
-        Product2 product2 = new Product2(Name = 'Test Product2', IsActive = true);
-        Product2 product3 = new Product2(Name = 'Test Product3', IsActive = true);
-        insert new List<Product2>{ cabinet, usage, product1, product2, product3 };
+        Product2 cabinet   = new Product2(Name = 'Test Cabinet',  IsActive = true);
+        Product2 usage     = new Product2(Name = 'Test Usage',    IsActive = true);
+        Product2 product1  = new Product2(Name = 'Test Product1', IsActive = true);
+        Product2 product2  = new Product2(Name = 'Test Product2', IsActive = true);
+        Product2 product3  = new Product2(Name = 'Test Product3', IsActive = true);
+        Product2 aggregate = new Product2(Name = 'Test Aggregate Hall', IsActive = true, Merge_IB_Task__c = true);
+        insert new List<Product2>{ cabinet, usage, product1, product2, product3, aggregate };
 
         // This is a multi-currency org and the Quote's currency is derived by automation
         // from the Opportunity, not by us — a QuoteLineItem is rejected outright if its
@@ -81,7 +121,7 @@ private class QuoteMrcRollupServiceTest {
         String quoteCurrency = [SELECT CurrencyIsoCode FROM Quote WHERE Id = :nonRampQuote.Id].CurrencyIsoCode;
 
         List<PricebookEntry> pbes = new List<PricebookEntry>();
-        for (Product2 p : new List<Product2>{ cabinet, usage, product1, product2, product3 }) {
+        for (Product2 p : new List<Product2>{ cabinet, usage, product1, product2, product3, aggregate }) {
             pbes.add(new PricebookEntry(Pricebook2Id = standardPbId, Product2Id = p.Id, UnitPrice = 0,
                 IsActive = true, CurrencyIsoCode = quoteCurrency));
         }
@@ -162,7 +202,15 @@ private class QuoteMrcRollupServiceTest {
      * Expected per the client:
      *   Opportunity MRC — Ramp1: 5A+1D=800, Ramp2: 3C=600, Ramp3: 5(B-A)=250
      *   Total_MRC_2__c (steady state) = 5B + 3C + 1D = 750 + 600 + 300 = 1650
-     *   TCV = 36*(5A+1D) + 24*(3C) + 12*(5(B-A)) = 36*800 + 24*600 + 12*250 = 46200
+     *
+     * TCV was originally confirmed at 36*800 + 24*600 + 12*250 = 46200 under a
+     * whole-months-only model. The 2026-09-03 day-summation correction sums
+     * each touched calendar month's covered-days/length rather than treating
+     * "day 1 to day 1, N years later" as a clean integer — e.g. Ramp 1's
+     * window (2024-01-01 -> 2027-01-01) touches Jan 2024 through Jan 2027,
+     * and not every one of those 37 months has 31 days, so it comes out to
+     * 1117/31 (~36.032), not a clean 36. New TCV = 1433850/31 ≈ 46253.23.
+     * This is expected under the confirmed model, not a regression.
      */
     @isTest
     static void testTcvMatchesClientWorkedExample() {
@@ -207,7 +255,7 @@ private class QuoteMrcRollupServiceTest {
 
         Quote result = [SELECT Total_MRC_2__c, Total_Contract_Value_2__c FROM Quote WHERE Id = :q.Id];
         System.assertEquals(1650, result.Total_MRC_2__c, 'Steady-state Total_MRC_2__c should be 5B+3C+1D = 1650');
-        System.assertEquals(46200, result.Total_Contract_Value_2__c, 'TCV should match the client-confirmed month-weighted total of 46200');
+        System.assertEquals(46253.23, result.Total_Contract_Value_2__c, 'TCV should match the day-summation total of 1433850/31 (~46253.23)');
     }
 
     /**
@@ -308,5 +356,137 @@ private class QuoteMrcRollupServiceTest {
         Quote result = [SELECT Total_MRC_2__c FROM Quote WHERE Id = :q.Id];
         // Each of phases 1/2/3 ends up at 2 * 120 = 240 — 6 units at 120 = 720 total.
         System.assertEquals(720, result.Total_MRC_2__c, 'Fan-out to distinct phases should reprice all three, not collapse to one');
+    }
+
+    /**
+     * 2026-08-26 client request (day-summation formula corrected 2026-09-03):
+     * TCV must not drop a partial month's leftover days. Window is
+     * 2027-04-01 to Contract_End_Date__c 2027-04-16, entirely within one
+     * calendar month (April, 30 days). Both endpoints are counted, so
+     * covered days = 16 - 1 + 1 = 16 -> 16/30 of a month. TCV = 200 * 16/30
+     * = 3200/30 ≈ 106.67 — a value a whole-months-only calc would have
+     * flattened to 0.
+     */
+    @isTest
+    static void testTcvCreditsPartialMonthWithinOneCalendarMonth() {
+        Quote q = [SELECT Id FROM Quote WHERE Customer_PO_Reference__c = 'Day Aware TCV Quote' LIMIT 1];
+        PricebookEntry pbe = [SELECT Id, Product2Id FROM PricebookEntry WHERE Product2.Name = 'Test Cabinet' LIMIT 1];
+
+        QuoteLineItem line = new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = pbe.Product2Id,
+            Quantity = 1, UnitPrice = 200, Charge_Type__c = 'MRC', Line_Origin__c = 'Ramp',
+            Ramp_Phase__c = 1, Ramp_Identifier__c = 'Add', Ramp_Start_Date__c = Date.newInstance(2027, 4, 1));
+
+        Test.startTest();
+        insert line;
+        Test.stopTest();
+
+        Quote result = [SELECT Total_MRC_2__c, Total_Contract_Value_2__c FROM Quote WHERE Id = :q.Id];
+        System.assertEquals(200, result.Total_MRC_2__c, 'Steady-state MRC is unaffected — only TCV is day-aware');
+        System.assertEquals(106.67, result.Total_Contract_Value_2__c, 'TCV should credit the partial 16/30 month (both endpoints counted), not flatten it to 0 whole months');
+    }
+
+    /**
+     * 2026-08-26 client request (day-summation formula corrected 2026-09-03):
+     * a leftover that crosses a month boundary splits into two fragments,
+     * each weighted by ITS OWN month's length. Window is 2027-08-25 to
+     * Contract_End_Date__c 2027-09-10, both endpoints counted: 7 days of
+     * August (25,26,...,31 = 7, out of 31) + 10 days of September (1..10,
+     * out of 30). delta 930 = 93*10 (93 = LCM-friendly multiple of both
+     * fragments' combined denominator) makes it cancel cleanly:
+     * 930*(7/31 + 10/30) = 930*52/93 = 520.
+     */
+    @isTest
+    static void testTcvSplitsLeftoverAcrossTwoDifferentLengthMonths() {
+        Quote q = [SELECT Id FROM Quote WHERE Customer_PO_Reference__c = 'Cross Month TCV Quote' LIMIT 1];
+        PricebookEntry pbe = [SELECT Id, Product2Id FROM PricebookEntry WHERE Product2.Name = 'Test Cabinet' LIMIT 1];
+
+        QuoteLineItem line = new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = pbe.Product2Id,
+            Quantity = 1, UnitPrice = 930, Charge_Type__c = 'MRC', Line_Origin__c = 'Ramp',
+            Ramp_Phase__c = 1, Ramp_Identifier__c = 'Add', Ramp_Start_Date__c = Date.newInstance(2027, 8, 25));
+
+        Test.startTest();
+        insert line;
+        Test.stopTest();
+
+        Quote result = [SELECT Total_MRC_2__c, Total_Contract_Value_2__c FROM Quote WHERE Id = :q.Id];
+        System.assertEquals(930, result.Total_MRC_2__c, 'Steady-state MRC is unaffected — only TCV is day-aware');
+        System.assertEquals(520, result.Total_Contract_Value_2__c, 'TCV should split the leftover across August and September by each month\'s own length, both endpoints counted');
+    }
+
+    /**
+     * 2026-09-03 correction: client-confirmed day-summation example.
+     * 2026-10-15 to Contract_End_Date__c 2028-09-30: October contributes
+     * Oct 15-31 inclusive = 17 days out of 31 (both endpoints counted), then
+     * 22 full months (Nov 2026 - Aug 2028), then September 2028 is a FULL
+     * month (Sep 30 is the last day of September, so day-count = 30/30 = 1).
+     * Total = 17/31 + 22 + 1 = 23 + 17/31 = 730/31. delta 31 makes it cancel
+     * cleanly: 31 * 730/31 = 730.
+     */
+    @isTest
+    static void testTcvAnchorsLeftoverAgainstStartMonthNotEndMonth() {
+        Quote q = [SELECT Id FROM Quote WHERE Customer_PO_Reference__c = 'Backward Anchor TCV Quote' LIMIT 1];
+        PricebookEntry pbe = [SELECT Id, Product2Id FROM PricebookEntry WHERE Product2.Name = 'Test Cabinet' LIMIT 1];
+
+        QuoteLineItem line = new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = pbe.Product2Id,
+            Quantity = 1, UnitPrice = 31, Charge_Type__c = 'MRC', Line_Origin__c = 'Ramp',
+            Ramp_Phase__c = 1, Ramp_Identifier__c = 'Add', Ramp_Start_Date__c = Date.newInstance(2026, 10, 15));
+
+        Test.startTest();
+        insert line;
+        Test.stopTest();
+
+        Quote result = [SELECT Total_Contract_Value_2__c FROM Quote WHERE Id = :q.Id];
+        System.assertEquals(730, result.Total_Contract_Value_2__c, 'TCV should day-sum every touched month, both endpoints counted');
+    }
+
+    /**
+     * Real-world regression (Quote 260206-QT-1): a Merge_IB_Task__c aggregate
+     * product ramping 100 -> 150 -> 200 units across three 'Add' phases, none
+     * linked to each other, must be treated as cumulative (latest phase's own
+     * amount is the steady state; each phase's delta is the difference from
+     * the phase before it) — the same rule OrderMrcRollupService already
+     * applies via isAggregateByProduct, now mirrored here via
+     * Product2.Merge_IB_Task__c.
+     *
+     *   Phase 1: 100 * 100 = 10,000 (fresh)      -> delta 10,000
+     *   Phase 2: 150 * 100 = 15,000               -> delta  5,000
+     *   Phase 3: 200 * 100 = 20,000 (steady state) -> delta  5,000
+     *
+     * Under the 2026-09-03 day-summation model this comes out to exactly
+     * 48 / 46 / 44 months respectively — Contract_End_Date__c (2030-09-30)
+     * is the LAST day of September, so both the first month (Oct 2026, fully
+     * covered from day 1) and the last month (Sep 2030, fully covered
+     * through its last day) land as clean whole months, with every month in
+     * between also whole. TCV = 10000*48 + 5000*46 + 5000*44 = 930000 —
+     * this matches the client's own original illustrative formula exactly.
+     */
+    @isTest
+    static void testAggregateProductUsesConsecutivePhaseDelta() {
+        Quote q = [SELECT Id FROM Quote WHERE Customer_PO_Reference__c = 'Aggregate Product Quote' LIMIT 1];
+        PricebookEntry pbe = [SELECT Id, Product2Id FROM PricebookEntry WHERE Product2.Name = 'Test Aggregate Hall' LIMIT 1];
+
+        List<QuoteLineItem> lines = new List<QuoteLineItem>{
+            new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = pbe.Product2Id,
+                Quantity = 100, UnitPrice = 100, Charge_Type__c = 'MRC', Line_Origin__c = 'Ramp',
+                Ramp_Phase__c = 1, Ramp_Identifier__c = 'Add', Ramp_Start_Date__c = Date.newInstance(2026, 10, 1)),
+            new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = pbe.Product2Id,
+                Quantity = 150, UnitPrice = 100, Charge_Type__c = 'MRC', Line_Origin__c = 'Ramp',
+                Ramp_Phase__c = 2, Ramp_Identifier__c = 'Add', Ramp_Start_Date__c = Date.newInstance(2026, 12, 1)),
+            new QuoteLineItem(QuoteId = q.Id, PricebookEntryId = pbe.Id, Product2Id = pbe.Product2Id,
+                Quantity = 200, UnitPrice = 100, Charge_Type__c = 'MRC', Line_Origin__c = 'Ramp',
+                Ramp_Phase__c = 3, Ramp_Identifier__c = 'Add', Ramp_Start_Date__c = Date.newInstance(2027, 2, 1))
+        };
+
+        Test.startTest();
+        insert lines;
+        Test.stopTest();
+
+        Quote result = [SELECT Total_MRC_2__c, Total_Contract_Value_2__c FROM Quote WHERE Id = :q.Id];
+        System.assertEquals(20000, result.Total_MRC_2__c, 'Steady-state MRC for an aggregate product is the LAST phase\'s own amount, not the sum of all three');
+
+        // Deltas 10,000 / 5,000 / 5,000, each weighted by its own day-aware
+        // remaining term to Contract_End_Date__c (2030-09-30) — 48 / 46 / 44
+        // exactly (see class doc), so TCV = 10000*48 + 5000*46 + 5000*44 = 930000.
+        System.assertEquals(930000, result.Total_Contract_Value_2__c, 'TCV should use consecutive-phase deltas (10000/5000/5000) weighted by 48/46/44 months, not independent-add deltas (10000/15000/20000)');
     }
 }

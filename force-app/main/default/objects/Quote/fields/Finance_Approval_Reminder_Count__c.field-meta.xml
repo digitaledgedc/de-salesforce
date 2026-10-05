@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Finance_Approval_Reminder_Count__c</fullName>
+    <defaultValue>0</defaultValue>
+    <description>Incremented by F-18 each time a Finance approval reminder is sent. Visible only when Finance_Approval_Status__c = Pending. Used to track escalation.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Number of reminder emails sent to Finance while SBI approval is pending. Incremented automatically - use this to track escalation. Read-only.</inlineHelpText>
+    <label>Finance Approval Reminders Sent</label>
+    <precision>2</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

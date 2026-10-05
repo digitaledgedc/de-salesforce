@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Reason recorded by Finance when rejecting the D&amp;B or KYC check. Set automatically by the Finance Approval flow. Sales teams can view but cannot edit. --></help>
+    <label><!-- Finance Rejection Reason --></label>
+    <name>Finance_Rejection_Reason__c</name>
+</CustomFieldTranslation>

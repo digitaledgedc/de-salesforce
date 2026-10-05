@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Renewal_Type__c</fullName>
+    <description>Classification of the renewal motion. Required when Deal_Type__c = Renewal. Drives renewal campaign logic and at-risk alerting.</description>
+    <inlineHelpText>How is this renewal expected to proceed? Auto = standard auto-renewal, no active sales needed. Negotiated = terms are being renegotiated. At-Risk = customer has indicated churn risk.</inlineHelpText>
+    <label>Renewal Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Auto</fullName>
+                <default>false</default>
+                <label>Auto</label>
+            </value>
+            <value>
+                <fullName>Negotiated</fullName>
+                <default>false</default>
+                <label>Negotiated</label>
+            </value>
+            <value>
+                <fullName>At-Risk</fullName>
+                <default>false</default>
+                <label>At-Risk</label>
+            </value>
+            <value>
+                <fullName>Early Renewal</fullName>
+                <default>false</default>
+                <label>Early Renewal</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

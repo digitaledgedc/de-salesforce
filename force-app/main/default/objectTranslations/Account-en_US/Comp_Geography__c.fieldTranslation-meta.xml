@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Which markets does this competitor serve? --></help>
+    <label><!-- Geography --></label>
+    <name>Comp_Geography__c</name>
+    <picklistValues>
+        <masterLabel>Americas</masterLabel>
+        <translation><!-- Americas --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Australia / NZ</masterLabel>
+        <translation><!-- Australia / NZ --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>EMEA</masterLabel>
+        <translation><!-- EMEA --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Global</masterLabel>
+        <translation><!-- Global --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Greater China</masterLabel>
+        <translation><!-- Greater China --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>India</masterLabel>
+        <translation><!-- India --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Japan</masterLabel>
+        <translation><!-- Japan --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Southeast Asia</masterLabel>
+        <translation><!-- Southeast Asia --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DE_BillingEvent_Compact</fullName>
+    <fields>Name</fields>
+    <fields>BillingEvent_Status__c</fields>
+    <fields>Order__c</fields>
+    <fields>RDD__c</fields>
+    <fields>Billing_Start_Date__c</fields>
+    <label>DE Billing Event Compact Layout</label>
+</CompactLayout>

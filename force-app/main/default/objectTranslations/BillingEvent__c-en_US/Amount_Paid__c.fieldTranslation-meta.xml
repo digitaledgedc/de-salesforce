@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Total amount collected from customer. Set by IP-5 invoice sync. Payment_Status__c derived from this vs Invoice_Amount__c. --></help>
+    <label><!-- Amount Paid --></label>
+    <name>Amount_Paid__c</name>
+</CustomFieldTranslation>

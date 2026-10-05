@@ -8,9 +8,18 @@
  *
  * ─── Total_MRC__c (steady-state snapshot) ──────────────────────────────────
  * Ramp lines are not uniformly additive:
- *   - Charge_Type__c = 'Usage-Based' lines represent a cumulative commitment
- *     level per phase (each phase supersedes the previous one) — only the line
- *     with the highest Ramp_Phase__c counts, per product+attribute.
+ *   - Charge_Type__c = 'Usage-Based' lines, OR lines on a Product2 flagged
+ *     Merge_IB_Task__c = true, represent a cumulative commitment level per
+ *     phase (each phase's quantity IS the running total, not an add-on to
+ *     the previous phase) — only the line with the highest Ramp_Phase__c
+ *     counts, per product+attribute. (2026-09-03 fix: Merge_IB_Task__c
+ *     products — e.g. "Dedicated Data Hall (Hyperscale space)" — were being
+ *     treated as independent additive Adds and summed across phases, which
+ *     both overstated Total_MRC_2__c and fed the wrong per-phase delta into
+ *     TCV. OrderMrcRollupService already treats Merge_IB_Task__c this way at
+ *     the Order/OrderItem level; this brings the Quote-level rollup in line
+ *     with it, reusing the exact same "latest phase wins" logic already
+ *     built for Usage-Based.)
  *   - All other lines are additive ("Ramp_Identifier__c = 'Add'") EXCEPT when
  *     Ramp_Linked_Phase__c is set ('Price_Change'/'Change'), which means this
  *     line replaces — not adds to — the amount contributed by that linked phase.
@@ -19,16 +28,38 @@
  *
  * ─── Total_Contract_Value__c (month-weighted, per client correction) ──────
  * TCV is NOT Total_MRC__c * Contract_Term_Months__c — that treats the final
- * ramped-up rate as if it applied for the whole contract. Per the client's
- * model, each ramp phase contributes only the DELTA it introduces to the
- * running MRC, multiplied by the months remaining from that phase's start to
- * Contract_End_Date__c:
+ * ramped-up rate as if it applied for the whole contract. Each ramp phase
+ * contributes the DELTA it introduces to the running MRC, multiplied by the
+ * months REMAINING from that phase's start through to Contract_End_Date__c:
  *
- *   delta(phase N)     = cumulativeMRC(phase N) - cumulativeMRC(phase N-1)
- *   remainingMonths(N) = months between phase N's Ramp_Start_Date__c and
- *                        Quote.Contract_End_Date__c (phase 0 / non-ramp uses
- *                        Contract_Term_Months__c directly, i.e. the whole term)
- *   TCV                = SUM over phases of delta(phase) * remainingMonths(phase)
+ *   delta(phase N)       = cumulativeMRC(phase N) - cumulativeMRC(phase N-1)
+ *   remainingMonths(N)   = day-aware months from phase N's Ramp_Start_Date__c
+ *                          through Contract_End_Date__c (phase 0 / non-ramp
+ *                          uses Contract_Term_Months__c directly, i.e. the
+ *                          whole term) — see fractionalMonthsBetween
+ *   TCV                  = SUM over phases of delta(phase) * remainingMonths(phase)
+ *
+ * This is mathematically equivalent to summing (standing/cumulative rate
+ * during each phase's own window) * (that window's own duration) — a
+ * telescoping identity that holds regardless of whether a phase's delta is
+ * later superseded (Price_Change/Change) or stays permanently additive
+ * (fresh Add): Σ delta(i)*remaining(i) = Σ_j duration(j)*cumulative(j).
+ * There is deliberately no "window to the NEXT phase" step — an earlier
+ * revision multiplied by the window to the next phase instead of
+ * remaining(i), which understates every phase but the last.
+ *
+ * remainingMonths is DAY-AWARE (2026-09-03 client-confirmed model): it sums,
+ * for every calendar month the [start, Contract_End_Date__c] span touches,
+ * (days of that month covered) / (that month's own length) — applied
+ * uniformly, including ordinary aligned spans (client-confirmed: even an
+ * exact "same day, N months later" span like Sep 3 -> Dec 3 comes out to
+ * ~3.03, not a clean 3.0, since not every touched month has 31 days). See
+ * fractionalMonthsBetween for the exact algorithm and worked examples. This
+ * changed the client's original 3-product/36-month worked example from
+ * 46200 (the prior whole-months-only model) to ~46253.23 — expected under
+ * this model, not a regression: every phase there starts on Jan 1, and
+ * January/February/etc. aren't all 31 days, so day-summing them no longer
+ * lands on a clean whole number the way naive "N months" reasoning did.
  *
  * cumulativeMRC(phase N) is computed by re-running the Total_MRC__c logic
  * above restricted to lines with Ramp_Phase__c <= N — i.e. "what would the
@@ -40,9 +71,10 @@
  *
  * ASSUMPTION (validated against Quote 26000729-QT-1 and the client's 3-product/
  * 36-month worked example, not yet against a broader sample): Charge_Type__c =
- * 'Usage-Based' is the signal for "cumulative, take latest phase only" — every
- * other charge type is additive-with-override. Verify against more ramp quotes
- * before relying on this in production.
+ * 'Usage-Based' OR Product2.Merge_IB_Task__c = true is the signal for
+ * "cumulative, take latest phase only" — every other charge type is
+ * additive-with-override. Verify against more ramp quotes before relying on
+ * this in production.
  */
 public without sharing class QuoteMrcRollupService {
 
@@ -96,6 +128,7 @@ public without sharing class QuoteMrcRollupService {
         }
 
         Map<Id, List<QuoteLineItem>> linesByQuote = new Map<Id, List<QuoteLineItem>>();
+        Set<Id> productIds = new Set<Id>();
         for (QuoteLineItem qli : [
             SELECT QuoteId, Product2Id, Product_Attribute_Value__c, Charge_Type__c,
                    Ramp_Phase__c, Ramp_Linked_Phase__c, Ramp_Start_Date__c, MRC_Amount__c
@@ -106,6 +139,17 @@ public without sharing class QuoteMrcRollupService {
                 linesByQuote.put(qli.QuoteId, new List<QuoteLineItem>());
             }
             linesByQuote.get(qli.QuoteId).add(qli);
+            if (qli.Product2Id != null) productIds.add(qli.Product2Id);
+        }
+
+        // Merge_IB_Task__c mirrors OrderMrcRollupService's isAggregateByProduct —
+        // same signal, same "latest phase wins" treatment, one level up (Quote
+        // instead of Order).
+        Map<Id, Boolean> isAggregateByProduct = new Map<Id, Boolean>();
+        if (!productIds.isEmpty()) {
+            for (Product2 p : [SELECT Id, Merge_IB_Task__c FROM Product2 WHERE Id IN :productIds]) {
+                isAggregateByProduct.put(p.Id, p.Merge_IB_Task__c == true);
+            }
         }
 
         List<Quote> toUpdate = new List<Quote>();
@@ -116,11 +160,11 @@ public without sharing class QuoteMrcRollupService {
             Map<String, List<QuoteLineItem>> families = groupByFamily(lines);
             Decimal totalMrc = 0;
             for (List<QuoteLineItem> familyLines : families.values()) {
-                totalMrc += familyTotal(familyLines);
+                totalMrc += familyTotal(familyLines, isAggregateByProduct);
             }
             totalMrc = totalMrc.setScale(2);
 
-            Decimal tcv = calculateTcv(families, q.Contract_Term_Months__c, q.Contract_End_Date__c).setScale(2);
+            Decimal tcv = calculateTcv(families, q.Contract_Term_Months__c, q.Contract_End_Date__c, isAggregateByProduct).setScale(2);
 
             if (q.Total_MRC_2__c != totalMrc || q.Total_Contract_Value_2__c != tcv) {
                 toUpdate.add(new Quote(Id = q.Id, Total_MRC_2__c = totalMrc, Total_Contract_Value_2__c = tcv));
@@ -145,14 +189,16 @@ public without sharing class QuoteMrcRollupService {
 
     /**
      * Computes one product+attribute family's contribution to Total_MRC__c.
-     * Usage-Based: latest phase only. Everything else: sum of each phase's own
-     * amount, with Ramp_Linked_Phase__c lines replacing (not adding to) the
-     * amount attributed to the phase they reference.
+     * Usage-Based OR Merge_IB_Task__c (aggregate) product: latest phase only.
+     * Everything else: sum of each phase's own amount, with Ramp_Linked_Phase__c
+     * lines replacing (not adding to) the amount attributed to the phase they
+     * reference.
      */
-    private static Decimal familyTotal(List<QuoteLineItem> lines) {
+    private static Decimal familyTotal(List<QuoteLineItem> lines, Map<Id, Boolean> isAggregateByProduct) {
         Boolean isCumulative = false;
         for (QuoteLineItem qli : lines) {
-            if (qli.Charge_Type__c == 'Usage-Based') {
+            Boolean isAggregate = isAggregateByProduct.containsKey(qli.Product2Id) ? isAggregateByProduct.get(qli.Product2Id) : false;
+            if (qli.Charge_Type__c == 'Usage-Based' || isAggregate) {
                 isCumulative = true;
                 break;
             }
@@ -208,12 +254,38 @@ public without sharing class QuoteMrcRollupService {
 
     /**
      * TCV = SUM over ramp phases of (delta introduced at that phase) *
-     * (months remaining from that phase's start to Contract_End_Date__c).
-     * Phase 0 (non-ramp baseline lines) uses the full Contract_Term_Months__c,
-     * so a quote with no ramp phases reduces to the original
-     * Total_MRC__c * Contract_Term_Months__c formula.
+     * (months REMAINING from that phase's Ramp_Start_Date__c through
+     * Contract_End_Date__c). Phase 0 (non-ramp baseline lines) uses the full
+     * Contract_Term_Months__c, so a quote with no ramp phases reduces to the
+     * original Total_MRC__c * Contract_Term_Months__c formula.
+     *
+     * Every phase's delta is weighted by its remaining term to the contract
+     * end, not by the window until the next phase — 2026-08-26 correction:
+     * an earlier revision used "until the next phase" and reproduced only
+     * 19800 of the client-confirmed 46200 for the worked example in
+     * QuoteMrcRollupServiceTest.testTcvMatchesClientWorkedExample, because it
+     * multiplied phase 1's 800 delta by 12 months instead of the full 36
+     * remaining. remaining-to-end is mathematically equivalent to summing
+     * (standing rate during each phase's own window) * (that window's own
+     * duration) — see the class doc's telescoping-identity note — and this
+     * holds for superseded (Price_Change) and permanently-additive (Add)
+     * deltas alike, so there's no separate case for either.
+     *
+     * The last phase's remaining term ends at Contract_End_Date__c, which
+     * (per FB-852) sits one day before a clean N-month mark — so its month
+     * count can come out one month short of what a naive annual-cadence
+     * assumption would suggest (e.g. 11 instead of 12). That's expected, not
+     * a bug: it reflects the actual remaining term, not a rounded approximation.
+     *
+     * phaseMonths is day-aware, not whole-months-only (2026-08-26 client
+     * request): a window's leftover — after the largest whole-month count
+     * that still fits — is credited as a fraction of the calendar month(s)
+     * it actually falls in, not dropped. A leftover that crosses a month
+     * boundary (e.g. Aug 25 to Sep 10) splits into two fragments: the days
+     * remaining in the first month over that month's own length, plus the
+     * days into the second month over ITS length — see fractionalMonthsBetween.
      */
-    private static Decimal calculateTcv(Map<String, List<QuoteLineItem>> families, Decimal contractTermMonths, Date contractEndDate) {
+    private static Decimal calculateTcv(Map<String, List<QuoteLineItem>> families, Decimal contractTermMonths, Date contractEndDate, Map<Id, Boolean> isAggregateByProduct) {
         Set<Decimal> phaseNumbers = new Set<Decimal>{ PHASE_ZERO };
         Map<Decimal, Date> startDateByPhase = new Map<Decimal, Date>();
         for (List<QuoteLineItem> familyLines : families.values()) {
@@ -227,27 +299,12 @@ public without sharing class QuoteMrcRollupService {
         }
 
         List<Decimal> sortedPhases = sortAscending(phaseNumbers);
-
-        // FB-864 alignment: remaining months are OFFSET-based — contract term minus
-        // the whole months this phase starts after phase 1 — NOT months counted to
-        // Contract_End_Date__c. Two reasons: (1) every other remaining-term rule in
-        // the org counts down from the TERM (this method's own PHASE_ZERO / non-ramp
-        // branch already does exactly that, and RampOrderService does it per phase
-        // since FB-864); (2) FB-852 moves Contract_End_Date__c to D-1, which would
-        // silently shave a month off every phase here (36/24/12 -> 35/23/11, ~3% of
-        // TCV) with nothing erroring. Offset-based is immune to that.
-        Date firstPhaseStart = null;
-        for (Decimal p : sortedPhases) {
-            if (p != PHASE_ZERO && startDateByPhase.containsKey(p)) {
-                firstPhaseStart = startDateByPhase.get(p);
-                break;
-            }
-        }
         Integer termMonths = contractTermMonths != null ? contractTermMonths.intValue() : 0;
 
         Decimal previousCumulative = 0;
         Decimal tcv = 0;
-        for (Decimal phase : sortedPhases) {
+        for (Integer i = 0; i < sortedPhases.size(); i++) {
+            Decimal phase = sortedPhases[i];
             Decimal cumulative = 0;
             for (List<QuoteLineItem> familyLines : families.values()) {
                 List<QuoteLineItem> prefixLines = new List<QuoteLineItem>();
@@ -255,30 +312,81 @@ public without sharing class QuoteMrcRollupService {
                     Decimal qliPhase = qli.Ramp_Phase__c != null ? qli.Ramp_Phase__c : PHASE_ZERO;
                     if (qliPhase <= phase) prefixLines.add(qli);
                 }
-                cumulative += familyTotal(prefixLines);
+                cumulative += familyTotal(prefixLines, isAggregateByProduct);
             }
 
             Decimal delta = cumulative - previousCumulative;
             previousCumulative = cumulative;
 
-            Integer remainingMonths;
-            if (phase == PHASE_ZERO || !startDateByPhase.containsKey(phase) || firstPhaseStart == null) {
-                remainingMonths = termMonths;
+            Decimal phaseMonths;
+            if (phase == PHASE_ZERO || !startDateByPhase.containsKey(phase)) {
+                phaseMonths = termMonths;
             } else {
-                Integer elapsed = monthsBetween(firstPhaseStart, startDateByPhase.get(phase));
-                remainingMonths = Math.max(0, Math.min(termMonths, termMonths - elapsed));
+                Date thisPhaseStart = startDateByPhase.get(phase);
+                phaseMonths = contractEndDate != null ? fractionalMonthsBetween(thisPhaseStart, contractEndDate) : Decimal.valueOf(termMonths);
             }
 
-            tcv += delta * remainingMonths;
+            tcv += delta * phaseMonths;
         }
 
         return tcv;
     }
 
-    private static Integer monthsBetween(Date fromDate, Date toDate) {
-        if (fromDate == null || toDate == null) return 0;
-        Integer months = (toDate.year() - fromDate.year()) * 12 + (toDate.month() - fromDate.month());
-        return months > 0 ? months : 0;
+    /**
+     * Day-aware month count between two dates (2026-09-03 client-confirmed
+     * model): sums, for every calendar month the CLOSED interval
+     * [fromDate, toDate] touches, (days of that month covered by the
+     * interval) / (that month's own length). Both endpoints are counted
+     * (inclusive on both ends) — walk month by month from fromDate, and for
+     * each month add (days of the interval that fall in it) / (that month's
+     * length), until toDate's own month is reached.
+     *
+     * This applies uniformly, including ordinary aligned spans: e.g. Sep 3
+     * to Dec 3 comes out to ~3.03, not a clean 3.0, since not every touched
+     * month has 31 days. Confirmed against three hand-verified cases:
+     *   - Jan 1 -> Jan 2 (same month)          = 2/31
+     *   - Feb 1, 2027 -> Mar 1, 2027 (Feb=28d)  = 1 + 1/31 (all of Feb, +1 day of Mar)
+     *   - Oct 15, 2026 -> Sep 30, 2028          = 23 + 17/31 (Oct 15-31 is 17 days)
+     *
+     * This replaced an earlier "whole months + one leftover fragment"
+     * formula (forward-anchored, then backward-anchored) that tried to
+     * express the gap as an integer month count plus a single trailing
+     * fraction. That approach could never correctly handle a phase starting
+     * on day 1 of a month too short to contain the target day (e.g. Feb 1
+     * needing to reach a "day 30" equivalent) without an inconsistent,
+     * non-invertible result. Day-summation has no such edge case: every
+     * month, short or long, is just its own covered-days/length term.
+     *
+     * Changes the client's original 3-product/36-month worked example from
+     * 46200 (old whole-months-only model) to ~46253.23 — see class doc.
+     */
+    private static Decimal fractionalMonthsBetween(Date fromDate, Date toDate) {
+        if (fromDate == null || toDate == null || toDate < fromDate) return 0;
+
+        Decimal total = 0;
+        Integer year = fromDate.year();
+        Integer month = fromDate.month();
+        Integer startDay = fromDate.day();
+
+        while (true) {
+            Integer daysInThisMonth = Date.daysInMonth(year, month);
+            Boolean isLastMonth = (year == toDate.year() && month == toDate.month());
+            Integer endDay = isLastMonth ? toDate.day() : daysInThisMonth;
+
+            Integer daysCounted = endDay - startDay + 1;
+            total += Decimal.valueOf(daysCounted) / daysInThisMonth;
+
+            if (isLastMonth) break;
+
+            month += 1;
+            if (month > 12) {
+                month = 1;
+                year += 1;
+            }
+            startDay = 1;
+        }
+
+        return total;
     }
 
     private static List<Decimal> sortAscending(Set<Decimal> values) {

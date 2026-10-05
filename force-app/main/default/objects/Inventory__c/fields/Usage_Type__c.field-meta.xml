@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Usage_Type__c</fullName>
+    <description>Usage type for Cabinet spaces. Determines the naming convention letter: Shared=S, Private Cage=C, Private Hall=H.</description>
+    <inlineHelpText>Shared (S), Private Cage (C), or Private Hall (H). Affects the auto-generated inventory name.</inlineHelpText>
+    <label>Usage Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Shared</fullName>
+                <default>true</default>
+                <label>Shared</label>
+            </value>
+            <value>
+                <fullName>Private Cage</fullName>
+                <default>false</default>
+                <label>Private Cage</label>
+            </value>
+            <value>
+                <fullName>Private Hall</fullName>
+                <default>false</default>
+                <label>Private Hall</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

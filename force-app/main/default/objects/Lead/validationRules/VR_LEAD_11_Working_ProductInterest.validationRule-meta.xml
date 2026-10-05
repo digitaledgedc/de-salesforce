@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_LEAD_11_Working_ProductInterest</fullName>
+    <active>true</active>
+    <description>Product Interest is required before a Lead can be moved to Working. Allows Disqualified status without this field so reps can close unqualified inbound leads immediately.</description>
+    <errorConditionFormula>AND(
+  ISPICKVAL(Status, &apos;Working&apos;),
+  ISBLANK(Product_Interest__c)
+)</errorConditionFormula>
+    <errorDisplayField>Product_Interest__c</errorDisplayField>
+    <errorMessage>Product Interest is required to move this Lead to Working status.</errorMessage>
+</ValidationRule>

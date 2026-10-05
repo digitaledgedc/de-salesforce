@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Contract</entityName>
+    <fieldName>Status</fieldName>
+    <masterLabel>Default</masterLabel>
+    <pathAssistantSteps>
+        <fieldNames>EndDate</fieldNames>
+        <info>&lt;p&gt;&lt;b&gt;Activated - contract is live.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Contract term is running&lt;/li&gt;&lt;li&gt;Schedule renewal review 90 days before end date&lt;/li&gt;&lt;li&gt;Any amendments require a Change Order Opportunity&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Activated</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <fieldNames>StartDate</fieldNames>
+        <fieldNames>ContractTerm</fieldNames>
+        <info>&lt;p&gt;&lt;b&gt;Draft - contract being prepared.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Verify Account, start date, and contract term&lt;/li&gt;&lt;li&gt;Link to the winning Order via Order__c&lt;/li&gt;&lt;li&gt;Confirm billing currency matches BAN currency&lt;/li&gt;&lt;li&gt;Click Activate Contract when all details are confirmed&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Draft</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>__MASTER__</recordTypeName>
+</PathAssistant>

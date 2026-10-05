@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Booking_Bucket__c</fullName>
+    <description>Auto-set based on Type and MRC direction. Bookings, Price Increase, Contracted Price Increase count toward quota.</description>
+    <inlineHelpText>Revenue category for this deal. Auto-set based on deal type and MRC direction. Bookings, Price Increase, and Contracted Price Increase count toward quota.</inlineHelpText>
+    <label>Booking Bucket</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Booking</fullName>
+                <default>true</default>
+                <label>Booking</label>
+            </value>
+            <value>
+                <fullName>Price Increase</fullName>
+                <default>false</default>
+                <label>Price Increase</label>
+            </value>
+            <value>
+                <fullName>Price Decrease</fullName>
+                <default>false</default>
+                <label>Price Decrease</label>
+            </value>
+            <value>
+                <fullName>Contracted API</fullName>
+                <default>false</default>
+                <label>Contracted API</label>
+            </value>
+            <value>
+                <fullName>Churn</fullName>
+                <default>false</default>
+                <label>Churn</label>
+            </value>
+            <value>
+                <fullName>Comp Only</fullName>
+                <default>false</default>
+                <label>Comp Only</label>
+            </value>
+            <value>
+                <fullName>Open Term</fullName>
+                <default>false</default>
+                <label>Open Term</label>
+            </value>
+            <value>
+                <fullName>Exclude</fullName>
+                <default>false</default>
+                <label>Exclude</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

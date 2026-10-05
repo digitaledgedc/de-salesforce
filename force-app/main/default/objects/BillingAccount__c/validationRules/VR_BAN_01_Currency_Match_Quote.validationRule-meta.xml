@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_BAN_01_Currency_Match_Quote</fullName>
+    <active>true</active>
+    <description>VR-BAN-01: Ensures the BAN CurrencyIsoCode matches the source Quote CurrencyIsoCode, unconditionally. Invoice currency / Different Invoice Currency is a separate edge case and has no bearing on BAN validity.</description>
+    <errorConditionFormula>AND(
+    NOT(ISBLANK(Source_Quote__c)),
+    TEXT(CurrencyIsoCode) &lt;&gt; TEXT(Source_Quote__r.CurrencyIsoCode)
+)</errorConditionFormula>
+    <errorMessage>BAN currency must match the source Quote currency.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Billing_Address_Display__c</fullName>
+    <description>Street, city and country joined into one line for display. Exists because BillingAccount__c has no compound address field, and the Flow data table on the Quote &quot;Link BAN&quot; screen needs a single column. Blank components are skipped so no stray commas appear.</description>
+    <externalId>false</externalId>
+    <formula>IF(ISBLANK(BillingStreet__c), &quot;&quot;, BillingStreet__c)
+&amp; IF(AND(NOT(ISBLANK(BillingStreet__c)), OR(NOT(ISBLANK(BillingCity__c)), NOT(ISBLANK(BillingCountry__c)))), &quot;, &quot;, &quot;&quot;)
+&amp; IF(ISBLANK(BillingCity__c), &quot;&quot;, BillingCity__c)
+&amp; IF(AND(NOT(ISBLANK(BillingCity__c)), NOT(ISBLANK(BillingCountry__c))), &quot;, &quot;, &quot;&quot;)
+&amp; IF(ISBLANK(BillingCountry__c), &quot;&quot;, BillingCountry__c)</formula>
+    <label>Billing Address</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

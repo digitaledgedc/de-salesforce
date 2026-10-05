@@ -63,4 +63,53 @@ public with sharing class OpportunitySelector {
             WITH SECURITY_ENFORCED
         ];
     }
+
+    /**
+     * Returns the parent-Opportunity fields RampOppService needs to build a
+     * ramp child Opportunity. Ramp children are inserted directly at 5-Won,
+     * so this selects every field the active stage-gate validation rules
+     * check on insert (VR_OPP_21_Site_Required_At_Quote needs Target_Site__c,
+     * VR_OPP_20_CurrencyMatchesSubsidiary needs Operation_Country__c /
+     * CurrencyIsoCode, DE_Opp_Referral_Partner_Req needs Sales_Motion__c /
+     * Referral_Partner__c) plus the identifying fields the child copies as-is.
+     * StageName is included so the caller can tell whether the deal
+     * Opportunity itself is already 5-Won before updating it again. CloseDate
+     * is read explicitly by RampOppService (every phase shares the deal's own
+     * close date); Account_Type__c isn't read explicitly but must be selected
+     * so clone() carries it onto each phase — omitting it left every phase
+     * child's Opportunity Account Type blank (2026-09-22 fix).
+     *
+     * @param oppIds  Set of parent Opportunity Ids.
+     * @return        List of Opportunity records; empty list if oppIds is null/empty.
+     */
+    public static List<Opportunity> getForRampClone(Set<Id> oppIds) {
+        if (oppIds == null || oppIds.isEmpty()) {
+            return new List<Opportunity>();
+        }
+        return [
+            SELECT Id,
+                   Name,
+                   Opportunity_Number__c,
+                   StageName,
+                   CloseDate,
+                   AccountId,
+                   OwnerId,
+                   CurrencyIsoCode,
+                   Operation_Country__c,
+                   Target_Site__c,
+                   Target_Floor__c,
+                   Target_Data_Hall__c,
+                   Contract_Term_Months__c,
+                   Sales_Motion__c,
+                   Referral_Partner__c,
+                   Customer_Type__c,
+                   Account_Type__c,
+                   GoLive_Target_Date__c,
+                   Deal_Type__c,
+                   Order_Type__c
+            FROM Opportunity
+            WHERE Id IN :oppIds
+            WITH SECURITY_ENFORCED
+        ];
+    }
 }

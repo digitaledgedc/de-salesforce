@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DR_Approved_Date__c</fullName>
+    <description>Date DR_Status__c was set to Approved. Set by F-11 when Rev Ops approves.</description>
+    <inlineHelpText>Date the Deal Review was approved by Rev Ops. Auto-set when DR Status changes to Approved. Do not edit manually.</inlineHelpText>
+    <label>Deal Review Approved Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Date</type>
+</CustomField>

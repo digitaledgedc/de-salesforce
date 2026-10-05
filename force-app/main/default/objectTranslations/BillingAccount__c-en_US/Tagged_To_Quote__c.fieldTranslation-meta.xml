@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Set automatically when a quote uses this BAN. Once set, the BAN&apos;s currency is locked. --></help>
+    <label><!-- Tagged To Quote --></label>
+    <name>Tagged_To_Quote__c</name>
+</CustomFieldTranslation>

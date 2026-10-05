@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Country --></label>
+    <name>Country__c</name>
+    <picklistValues>
+        <masterLabel>BD</masterLabel>
+        <translation><!-- BD --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>CN - China</masterLabel>
+        <translation><!-- CN - China --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>HK - Hong Kong</masterLabel>
+        <translation><!-- HK - Hong Kong --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>ID - Indonesia</masterLabel>
+        <translation><!-- ID - Indonesia --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>IN - India</masterLabel>
+        <translation><!-- IN - India --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>JP - Japan</masterLabel>
+        <translation><!-- JP - Japan --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>KR - South Korea</masterLabel>
+        <translation><!-- KR - South Korea --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>MY - Malaysia</masterLabel>
+        <translation><!-- MY - Malaysia --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PH - Philippines</masterLabel>
+        <translation><!-- PH - Philippines --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SG - Singapore</masterLabel>
+        <translation><!-- SG - Singapore --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>TH - Thailand</masterLabel>
+        <translation><!-- TH - Thailand --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

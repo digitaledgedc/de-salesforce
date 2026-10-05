@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Finance_Country_Manager__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Auto-copied from Target_Site__c.Finance_Country_Manager__c. Used as approver for Credit Limit and SBI approval processes.</description>
+    <label>Finance Country Manager</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>Quotes_Finance_Country_Manager</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

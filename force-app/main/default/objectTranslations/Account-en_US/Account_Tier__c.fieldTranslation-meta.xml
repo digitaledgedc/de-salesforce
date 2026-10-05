@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Account type. Platform = hyperscaler accounts managed by the Platform team. Country = retail/local accounts managed by country teams. --></help>
+    <label><!-- Account Type --></label>
+    <name>Account_Tier__c</name>
+    <picklistValues>
+        <masterLabel>Country</masterLabel>
+        <translation><!-- Country --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Internal</masterLabel>
+        <translation><!-- Internal --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Platform</masterLabel>
+        <translation><!-- Platform --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

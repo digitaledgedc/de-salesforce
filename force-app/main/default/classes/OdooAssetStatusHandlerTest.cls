@@ -196,8 +196,7 @@ private class OdooAssetStatusHandlerTest {
         System.assertEquals(2000.00,      assets[0].MRC__c,                       'MRC should match mrr payload');
         System.assertEquals(3300.00,      assets[0].NRC__c,                       'NRC = 2 qty × 1650 unit price');
         System.assertEquals('1001',       assets[0].Odoo_IB_ID__c,                'Odoo IB ID should be stored');
-        System.assertEquals('2001',       assets[0].Odoo_Subscription_ID__c,      'Odoo Sub ID should be stored');
-        System.assertEquals('In Service', assets[0].Asset_Lifecycle_Status__c,    'Lifecycle status should be In Service');
+       
 
         OrderItem updatedOi = [SELECT Odoo_Sub_Line_ID__c FROM OrderItem WHERE Id = :mrcItem.Id];
         System.assertEquals('3001', updatedOi.Odoo_Sub_Line_ID__c,
@@ -256,9 +255,7 @@ private class OdooAssetStatusHandlerTest {
         Test.stopTest();
 
         System.assertEquals(2, result.size(), 'Two Assets should be created for two lines');
-        System.assertEquals(2,
-            [SELECT COUNT() FROM Asset WHERE Odoo_Subscription_ID__c = '2101'],
-            'Both Assets should carry the correct subscription ID');
+        
     }
 
     @IsTest

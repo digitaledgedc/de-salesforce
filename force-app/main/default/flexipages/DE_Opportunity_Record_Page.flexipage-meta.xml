@@ -269,6 +269,16 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.Sales_Team__c</fieldItem>
+                <identifier>RecordSales_Team_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.AccountId</fieldItem>
                 <identifier>fld_t1_Account</identifier>
             </fieldInstance>
@@ -381,7 +391,7 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>required</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Forecast_Status__c</fieldItem>
                 <identifier>RecordForecast_Status_cField</identifier>
@@ -465,6 +475,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Next_Step__c</fieldItem>
                 <identifier>RecordNext_Step__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Parent_Opportunity__c</fieldItem>
+                <identifier>RecordParent_Opportunity_cField2</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-t1-col2-fields</name>
@@ -575,6 +595,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Total_Deal_MRC__c</fieldItem>
                 <identifier>fld_t3_TotalMRC</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.TCV_MRC_USD__c</fieldItem>
+                <identifier>RecordTCV_MRC_USD_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -711,8 +741,18 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Contract_Term_Months__c</fieldItem>
-                <identifier>RecordContract_Term_Months_cField</identifier>
+                <fieldItem>Record.Contract_End_Date__c</fieldItem>
+                <identifier>RecordContract_End_Date_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Remaining_Month__c</fieldItem>
+                <identifier>RecordRemaining_Month_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -784,6 +824,98 @@
     </flexiPageRegions>
     <flexiPageRegions>
         <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Ops_Contact__c</fieldItem>
+                <identifier>RecordOps_Contact_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Order_Contact__c</fieldItem>
+                <identifier>RecordOrder_Contact_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Quote_Contact__c</fieldItem>
+                <identifier>RecordQuote_Contact_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-90115f0e-3397-4e3e-8283-7eacc106ffb7</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Ops_Contact_Email__c</fieldItem>
+                <identifier>RecordOps_Contact_Email_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Order_Contact_Email__c</fieldItem>
+                <identifier>RecordOrder_Contact_Email_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Quote_Contact_Email__c</fieldItem>
+                <identifier>RecordQuote_Contact_Email_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-b88cb0b3-1d0f-4d65-ac62-1d51f26aad92</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-90115f0e-3397-4e3e-8283-7eacc106ffb7</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-b88cb0b3-1d0f-4d65-ac62-1d51f26aad92</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column2</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-22eadd69-4cd9-414a-849e-272d49d5d997</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
                     <name>message</name>
@@ -809,6 +941,24 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>sect_t3</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-22eadd69-4cd9-414a-849e-272d49d5d997</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Contacts</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-t3-content</name>

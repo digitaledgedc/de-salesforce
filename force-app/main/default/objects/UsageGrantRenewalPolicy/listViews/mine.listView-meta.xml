@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>mine</fullName>
+    <columns>Name</columns>
+    <columns>Code</columns>
+    <columns>Status</columns>
+    <columns>IsRenewalAllowed</columns>
+    <columns>RenewalFrequencyUnit</columns>
+    <columns>RenewalFrequency</columns>
+    <filterScope>Mine</filterScope>
+    <label>My Usage Grant Refresh Policies</label>
+</ListView>

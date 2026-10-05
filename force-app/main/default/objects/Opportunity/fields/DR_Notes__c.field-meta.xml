@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DR_Notes__c</fullName>
+    <description>Review notes including conditions, exceptions, or rejection reasons.</description>
+    <inlineHelpText>Notes from the Deal Review process including conditions, exceptions granted, or reasons for rejection. Completed by Rev Ops during review.</inlineHelpText>
+    <label>Deal Review Decision</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

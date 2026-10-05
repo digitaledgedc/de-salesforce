@@ -62,7 +62,14 @@ public with sharing class InventoryTriggerHandler {
                     || inv.Hall__c        != old.Hall__c
                     || inv.CabE_Count__c  != old.CabE_Count__c
                     || inv.Breaker_Panel__c != old.Breaker_Panel__c
-                    || inv.Notes__c       != old.Notes__c) {
+                    || inv.Notes__c       != old.Notes__c
+                    // SFDEV-18 (2026-09-23): these are now written into the
+                    // Odoo payload by UpdateOdooInventoryQueueable, so a
+                    // change to just one of them (with nothing else tracked
+                    // above also changing) must still trigger a sync.
+                    || inv.Unit_Reference__c != old.Unit_Reference__c
+                    || inv.TH_Sensor_ID__c != old.TH_Sensor_ID__c
+                    || inv.TH_Sensor_Group_ID__c != old.TH_Sensor_Group_ID__c) {
                     odooUpdateIds.add(inv.Id);
                 }
             }

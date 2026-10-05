@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_NRC__c</fullName>
+    <inlineHelpText>Sum of all one-time charges across order lines flagged as NRC. Auto-calculated from line items. Used for billing and finance reporting. Read-only.</inlineHelpText>
+    <label>Total NRC (Order)</label>
+    <summarizedField>OrderItem.MRC_Amount__c</summarizedField>
+    <summaryFilterItems>
+        <field>OrderItem.Charge_Type__c</field>
+        <operation>equals</operation>
+        <value>NRC</value>
+    </summaryFilterItems>
+    <summaryForeignKey>OrderItem.OrderId</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

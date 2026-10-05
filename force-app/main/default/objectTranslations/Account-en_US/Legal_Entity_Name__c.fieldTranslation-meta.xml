@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Full legal name in English as it appears on contracts, invoices, and official correspondence. Must match the signed Master Service Agreement exactly. Different from the trading name in the Account Name field. --></help>
+    <label><!-- Legal Entity Name (English) --></label>
+    <name>Legal_Entity_Name__c</name>
+</CustomFieldTranslation>

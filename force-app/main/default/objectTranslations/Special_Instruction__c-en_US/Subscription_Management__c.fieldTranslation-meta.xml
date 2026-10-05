@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Subscription Management --></label>
+    <name>Subscription_Management__c</name>
+    <picklistValues>
+        <masterLabel>Change Order</masterLabel>
+        <translation><!-- Change Order --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Creation</masterLabel>
+        <translation><!-- Creation --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Renewal</masterLabel>
+        <translation><!-- Renewal --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Termination</masterLabel>
+        <translation><!-- Termination --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

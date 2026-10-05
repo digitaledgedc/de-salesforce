@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Opens a product catalog to add one or more products directly to the Quote from the highlights panel. Multi-select from the Quote&apos;s active pricebook, set quantity, and create all QuoteLineItems in one action.</description>
+    <flowDefinition>Discover_Products</flowDefinition>
+    <label>Add Product</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>

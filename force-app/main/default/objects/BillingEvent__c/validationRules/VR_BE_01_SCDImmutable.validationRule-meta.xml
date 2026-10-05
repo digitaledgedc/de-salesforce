@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_BE_01_SCDImmutable</fullName>
+    <active>true</active>
+    <description>SCD is immutable once set. Requires SCD_Override_Approved__c to be TRUE to allow changes.</description>
+    <errorConditionFormula>AND(NOT(ISNEW()), ISCHANGED(SCD__c), NOT(ISBLANK(PRIORVALUE(SCD__c))), NOT(SCD_Override_Approved__c))</errorConditionFormula>
+    <errorDisplayField>SCD__c</errorDisplayField>
+    <errorMessage>SCD (Service Commencement Date) is immutable once set. To correct a provisioning date, contact Finance for an override approval.</errorMessage>
+</ValidationRule>

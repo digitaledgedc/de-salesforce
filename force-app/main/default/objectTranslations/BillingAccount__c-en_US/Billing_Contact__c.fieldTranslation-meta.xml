@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- The primary customer contact for billing queries and invoice disputes on this BAN. This person receives invoice delivery notifications if no Invoice Delivery Email is set. --></help>
+    <label><!-- Billing Contact --></label>
+    <name>Billing_Contact__c</name>
+    <relationshipLabel><!-- BANs --></relationshipLabel>
+</CustomFieldTranslation>

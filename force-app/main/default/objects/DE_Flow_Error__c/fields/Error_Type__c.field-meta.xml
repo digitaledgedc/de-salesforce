@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Error_Type__c</fullName>
+    <label>Error Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>IP-1 Callout Failure</fullName>
+                <default>false</default>
+                <label>IP-1 Callout Failure</label>
+            </value>
+            <value>
+                <fullName>IP-3 Callout Failure</fullName>
+                <default>false</default>
+                <label>IP-3 Callout Failure</label>
+            </value>
+            <value>
+                <fullName>IP-4 Callout Failure</fullName>
+                <default>false</default>
+                <label>IP-4 Callout Failure</label>
+            </value>
+            <value>
+                <fullName>IP-5 Webhook Error</fullName>
+                <default>false</default>
+                <label>IP-5 Webhook Error</label>
+            </value>
+            <value>
+                <fullName>IP-7 Sync Error</fullName>
+                <default>false</default>
+                <label>IP-7 Sync Error</label>
+            </value>
+            <value>
+                <fullName>Concurrency Block</fullName>
+                <default>false</default>
+                <label>Concurrency Block</label>
+            </value>
+            <value>
+                <fullName>BillingEvent Retry Failure</fullName>
+                <default>false</default>
+                <label>BillingEvent Retry Failure</label>
+            </value>
+            <value>
+                <fullName>SOF Processing Error</fullName>
+                <default>false</default>
+                <label>SOF Processing Error</label>
+            </value>
+            <value>
+                <fullName>Asset Sync Error</fullName>
+                <default>false</default>
+                <label>Asset Sync Error</label>
+            </value>
+            <value>
+                <fullName>Flow Error</fullName>
+                <default>false</default>
+                <label>Flow Error</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

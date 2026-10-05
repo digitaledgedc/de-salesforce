@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_03_SBI_Pending_On_Accept</fullName>
+    <active>true</active>
+    <description>VR-QUOTE-03: Quote cannot be Accepted if there are pending Special Instructions awaiting Finance acknowledgment.</description>
+    <errorConditionFormula>AND(ISPICKVAL(Status, &apos;Accepted&apos;), NOT(ISPICKVAL(PRIORVALUE(Status), &apos;Rejected&apos;)), Pending_Instructions_Count__c &gt; 0)</errorConditionFormula>
+    <errorDisplayField>Status</errorDisplayField>
+    <errorMessage>This Quote has pending Special Instructions that must be acknowledged by Finance before it can be Accepted.</errorMessage>
+</ValidationRule>

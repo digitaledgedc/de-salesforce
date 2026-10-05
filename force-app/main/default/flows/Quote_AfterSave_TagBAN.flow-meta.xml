@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>When a Quote references a BAN, stamp that BAN&apos;s Tagged_To_Quote__c = TRUE (once). Drives VR_BAN_Currency_Locked so a tagged BAN&apos;s currency can&apos;t be changed. Idempotent: the update filters on Tagged_To_Quote__c = false, so an already-tagged BAN is skipped (no DML). One-way flag; never reset since a BAN can serve multiple quotes.</description>
+    <environments>Default</environments>
+    <interviewLabel>Quote After Save Tag BAN {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Quote - After Save - Tag BAN</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Tag_BAN_As_Used</name>
+        <label>Tag BAN as used by a Quote</label>
+        <locationX>176</locationX>
+        <locationY>276</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.BillingAccount__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Tagged_To_Quote__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Tagged_To_Quote__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <object>BillingAccount__c</object>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Tag_BAN_As_Used</targetReference>
+        </connector>
+        <filterFormula>NOT(ISBLANK({!$Record.BillingAccount__c}))</filterFormula>
+        <object>Quote</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

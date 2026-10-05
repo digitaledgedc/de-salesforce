@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Last day of the fiscal quarter this quota applies to (e.g. 2026-03-31 for Q1 FY26). --></help>
+    <label><!-- Period End Date --></label>
+    <name>Period_End_Date__c</name>
+</CustomFieldTranslation>

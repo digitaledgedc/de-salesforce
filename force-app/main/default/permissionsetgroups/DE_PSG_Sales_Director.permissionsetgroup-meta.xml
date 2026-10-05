@@ -3,7 +3,6 @@
     <description>Assign to Sales Director/Country Manager Roles. Full Lead-to-Order pipeline access including supplement permissions and Sales User base access, excluding Opportunity and Quote creation access</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>DE Sales Director</label>
-    <mutingPermissionSets>Create_Access_Muted</mutingPermissionSets>
     <permissionSets>DE_Apex_Access</permissionSets>
     <permissionSets>DE_Flow_Access</permissionSets>
     <permissionSets>DE_Lead_Conversion</permissionSets>
@@ -11,6 +10,7 @@
     <permissionSets>DE_Sales_Rep</permissionSets>
     <permissionSets>DE_Sales_Rep_Supplement</permissionSets>
     <permissionSets>Opportunity_Sales_Actions</permissionSets>
+    <permissionSets>PS_Owner_Change_Restrictions</permissionSets>
     <permissionSets>Sales_User</permissionSets>
     <permissionSets>Terms_Condition</permissionSets>
     <status>Updated</status>

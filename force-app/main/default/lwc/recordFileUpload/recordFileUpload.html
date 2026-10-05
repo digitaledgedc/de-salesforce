@@ -14,29 +14,20 @@
                     <h2 class="su-topbar-title">{cardTitle}</h2>
                 </div>
             </div>
-            <div class="su-topbar-actions">
-                <button class="su-btn-primary" type="button" onclick={triggerFilePicker}>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <polyline points="16 16 12 12 8 16"></polyline>
-                        <line x1="12" y1="12" x2="12" y2="21"></line>
-                        <path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"></path>
-                    </svg>
-                    Upload File
-                </button>
-            </div>
         </div>
 
-        <!-- Hidden file input — triggered by the Upload File button -->
-        <input type="file" multiple
-               class="hidden-input" data-id="fileInput"
-               onchange={handleFileInputChange} />
-
-        <!-- ══ DRAG & DROP ZONE ══ -->
-        <div class={dropZoneClass}
-             ondragover={handleDragOver}
-             ondragleave={handleDragLeave}
-             ondrop={handleDrop}
-             onclick={triggerFilePicker}>
+        <!-- ══ UPLOAD ZONE ══ -->
+        <!-- SFDC-303: lightning-file-upload posts straight to the platform file
+             endpoint (2 GB) instead of base64-ing through Apex, which was capped
+             by the 6 MB synchronous heap. Document_Type__c is still chosen in the
+             staging modal, but AFTER the bytes have landed. The component's own
+             ceiling is 2 GB and has no max-size attribute, so the accepted size
+             is capped server-side instead (SiteFileUploadController 3a) and the
+             caption reads that value rather than hardcoding it. The box below is
+             --plain: a soft panel with no border of its own, because the
+             component owns its click and drop targets inside a shadow root we
+             cannot reach or restyle, and its box is the only real target. -->
+        <div class="su-dropzone su-dropzone--plain">
             <div class="dz-inner">
                 <div class="dz-icon-ring">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -45,12 +36,17 @@
                         <path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"></path>
                     </svg>
                 </div>
-                <p class="dz-headline">
-                    <template if:true={isDragging}>Drop to upload</template>
-                    <template if:false={isDragging}>Drag &amp; drop files here</template>
-                </p>
-                <p class="dz-caption">Any file type accepted &mdash; or click to browse</p>
-                <button class="dz-browse-btn" type="button" aria-label="Browse files">Browse Files</button>
+                <p class="dz-headline">Attach documents</p>
+                <p class="dz-caption">{maxSizeCaption}</p>
+            </div>
+            <div class="dz-uploader">
+                <lightning-file-upload
+                    label=""
+                    name="recordFileUploader"
+                    record-id={recordId}
+                    multiple
+                    onuploadfinished={handleUploadFinished}>
+                </lightning-file-upload>
             </div>
         </div>
 
@@ -293,7 +289,7 @@
                                  switch between files without losing visibility of the list -->
                             <template if:true={hasMultipleFiles}>
                                 <div>
-                                    <p class="su-right-section-label">All Staged ({stagedFiles.length}) — click to switch</p>
+                                    <p class="su-right-section-label">All Staged ({stagedFiles.length}) - click to switch</p>
                                     <div class="su-staged-list">
                                         <template for:each={stagedFiles} for:item="sf" for:index="idx">
                                             <div key={sf.clientId} class={sf.rowClass} data-idx={idx} onclick={switchActiveFile}>

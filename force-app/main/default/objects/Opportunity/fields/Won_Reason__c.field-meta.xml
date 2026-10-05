@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Won_Reason__c</fullName>
+    <description>Primary reason this deal was won. Required on Close Won for win/loss parity with Loss_Reason__c. Captured via post-win debrief screen.</description>
+    <inlineHelpText>Why did we win this deal? Be specific - this data feeds win/loss analysis and battle card updates.</inlineHelpText>
+    <label>Won Reason</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Price</fullName>
+                <default>false</default>
+                <label>Price</label>
+            </value>
+            <value>
+                <fullName>Technical Fit</fullName>
+                <default>false</default>
+                <label>Technical Fit</label>
+            </value>
+            <value>
+                <fullName>Relationship</fullName>
+                <default>false</default>
+                <label>Relationship</label>
+            </value>
+            <value>
+                <fullName>Location / Site</fullName>
+                <default>false</default>
+                <label>Location / Site</label>
+            </value>
+            <value>
+                <fullName>Speed &amp; Delivery</fullName>
+                <default>false</default>
+                <label>Speed &amp; Delivery</label>
+            </value>
+            <value>
+                <fullName>Strategic Account Program</fullName>
+                <default>false</default>
+                <label>Strategic Account Program</label>
+            </value>
+            <value>
+                <fullName>Existing Customer Expansion</fullName>
+                <default>false</default>
+                <label>Existing Customer Expansion</label>
+            </value>
+            <value>
+                <fullName>Partner / Referral</fullName>
+                <default>false</default>
+                <label>Partner / Referral</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

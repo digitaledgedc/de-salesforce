@@ -40,7 +40,7 @@ public with sharing class DeProductManagerController {
                     Show_Custom_Attribute_Value__c, Capacity_Assignment__c,
                     Additional_Charge_Of__c, Additional_Charge_Of__r.Name,
                     Additional_Charge_Of__r.ProductCode,
-                    QuantityUnitOfMeasure, Tied_Product_RC__c,
+                    QuantityUnitOfMeasure, Allowed_UoM__c, Tied_Product_RC__c,
                     Available_Operation_Site__c, Available_Countries__c,
                     Odoo_Product_ID__c
              FROM Product2
@@ -87,6 +87,10 @@ public with sharing class DeProductManagerController {
             row.showCustomValue     = p.Show_Custom_Attribute_Value__c == true;
             row.capacityAssignment  = safeString(p, 'Capacity_Assignment__c');
             row.uom                 = p.QuantityUnitOfMeasure;
+            // SFDC-366. NOTE: this SOQL is wrapped in stripInaccessible(READABLE), so
+            // without FLS on Allowed_UoM__c the field is dropped silently and every
+            // product shows no extra units, with no error anywhere.
+            row.allowedUom          = safeString(p, 'Allowed_UoM__c');
             row.availableSites      = safeString(p, 'Available_Operation_Site__c');
             row.availableCountries  = safeString(p, 'Available_Countries__c');
             row.odooProductId       = p.Odoo_Product_ID__c;
@@ -739,7 +743,7 @@ public with sharing class DeProductManagerController {
     }
 
     @AuraEnabled
-    public static String createProduct(String name, String productCode, String family, String description, Boolean isActive, String chargeType, String productAttribute, String attributeValues, Boolean showCustomAttrVal, String availableCountries, String availableSites) {
+    public static String createProduct(String name, String productCode, String family, String description, Boolean isActive, String chargeType, String productAttribute, String attributeValues, Boolean showCustomAttrVal, String availableCountries, String availableSites, String allowedUom) {
         if (String.isBlank(name)) throw new AuraHandledException('Product name is required.');
         if (!Product2.SObjectType.getDescribe().isCreateable()) {  throw new AuraHandledException('Insufficient permissions to create a Product.');
         }
@@ -769,6 +773,11 @@ public with sharing class DeProductManagerController {
         if (String.isNotBlank(availableSites)) {
             p.Available_Operation_Site__c = availableSites;
         }
+        // SFDC-366: the New/Edit Product catalog modal offers Allowed UoM too, so the
+        // value must survive creation from that screen as well as from updateProduct.
+        if (String.isNotBlank(allowedUom)) {
+            p.Allowed_UoM__c = allowedUom;
+        }
         insert p;
         return p.Id;
     }
@@ -786,6 +795,7 @@ public with sharing class DeProductManagerController {
         for (ProductPriceInput p : products) {
             if (!String.isBlank(p.productId)) productIds.add(p.productId);
         }
+        if (productIds.isEmpty()) return;
 
         // Determine currency from input (all products share the same pricebook currency)
         String targetCurrency = null;
@@ -793,18 +803,34 @@ public with sharing class DeProductManagerController {
             if (String.isNotBlank(p.currencyIsoCode)) { targetCurrency = p.currencyIsoCode; break; }
         }
 
+        // ── Auto-detect NRC pairs for MRC products (.RC → .NR) ──
+        // Resolved BEFORE the existence checks below, so the twins are covered by the
+        // same "does an entry already exist?" queries as the products the user picked.
+        Set<String> nrcCodes = new Set<String>();
+        for (Product2 mrc : [SELECT ProductCode FROM Product2 WHERE Id IN :productIds AND ProductCode LIKE '%.RC']) {
+            nrcCodes.add(mrc.ProductCode.removeEndIgnoreCase('.RC') + '.NR');
+        }
+        Set<Id> nrcIds = new Set<Id>();
+        if (!nrcCodes.isEmpty()) {
+            for (Product2 nrc : [SELECT Id FROM Product2 WHERE ProductCode IN :nrcCodes AND IsActive = true]) {
+                if (!productIds.contains(nrc.Id)) nrcIds.add(nrc.Id);
+            }
+        }
+        Set<Id> allProductIds = new Set<Id>(productIds);
+        allProductIds.addAll(nrcIds);
+
         // Ensure standard pricebook entries exist for every product (in the target currency)
         Pricebook2 stdPb = [SELECT Id FROM Pricebook2 WHERE IsStandard = true LIMIT 1];
-        Map<Id, Boolean> hasStdEntry = new Map<Id, Boolean>();
+        Set<Id> hasStdEntry = new Set<Id>();
         List<PricebookEntry> stdCheck = targetCurrency != null
-            ? [SELECT Product2Id FROM PricebookEntry WHERE Pricebook2Id = :stdPb.Id AND Product2Id IN :productIds AND CurrencyIsoCode = :targetCurrency]
-            : [SELECT Product2Id FROM PricebookEntry WHERE Pricebook2Id = :stdPb.Id AND Product2Id IN :productIds];
+            ? [SELECT Product2Id FROM PricebookEntry WHERE Pricebook2Id = :stdPb.Id AND Product2Id IN :allProductIds AND CurrencyIsoCode = :targetCurrency]
+            : [SELECT Product2Id FROM PricebookEntry WHERE Pricebook2Id = :stdPb.Id AND Product2Id IN :allProductIds];
         for (PricebookEntry pbe : stdCheck) {
-            hasStdEntry.put(pbe.Product2Id, true);
+            hasStdEntry.add(pbe.Product2Id);
         }
         List<PricebookEntry> stdToInsert = new List<PricebookEntry>();
-        for (Id pid : productIds) {
-            if (!hasStdEntry.containsKey(pid)) {
+        for (Id pid : allProductIds) {
+            if (!hasStdEntry.contains(pid)) {
                 PricebookEntry stdPbe = new PricebookEntry(Pricebook2Id = stdPb.Id, Product2Id = pid, UnitPrice = 0, IsActive = true);
                 if (targetCurrency != null) stdPbe.CurrencyIsoCode = targetCurrency;
                 stdToInsert.add(stdPbe);
@@ -813,38 +839,33 @@ public with sharing class DeProductManagerController {
         if (!stdToInsert.isEmpty()) insert stdToInsert;
 
         // Ensure entries in the target pricebook
-        Map<Id, Boolean> hasTargetEntry = new Map<Id, Boolean>();
-        for (PricebookEntry pbe : [SELECT Product2Id FROM PricebookEntry WHERE Pricebook2Id = :pricebookId AND Product2Id IN :productIds]) {
-            hasTargetEntry.put(pbe.Product2Id, true);
+        Set<Id> hasTargetEntry = new Set<Id>();
+        List<PricebookEntry> targetCheck = targetCurrency != null
+            ? [SELECT Product2Id FROM PricebookEntry WHERE Pricebook2Id = :pricebookId AND Product2Id IN :allProductIds AND CurrencyIsoCode = :targetCurrency]
+            : [SELECT Product2Id FROM PricebookEntry WHERE Pricebook2Id = :pricebookId AND Product2Id IN :allProductIds];
+        for (PricebookEntry pbe : targetCheck) {
+            hasTargetEntry.add(pbe.Product2Id);
         }
         List<PricebookEntry> targetToInsert = new List<PricebookEntry>();
+        Set<Id> staged = new Set<Id>();
         for (ProductPriceInput p : products) {
-            if (!String.isBlank(p.productId) && !hasTargetEntry.containsKey((Id) p.productId)) {
-                PricebookEntry tPbe = new PricebookEntry(
-                    Pricebook2Id = pricebookId, Product2Id   = p.productId,
-                    UnitPrice    = (p.unitPrice != null && p.unitPrice >= 0) ? p.unitPrice : 0, IsActive     = true
-                );
-                if (targetCurrency != null) tPbe.CurrencyIsoCode = targetCurrency; targetToInsert.add(tPbe);
-            }
+            if (String.isBlank(p.productId)) continue;
+            Id pid = (Id) p.productId;
+            if (hasTargetEntry.contains(pid) || staged.contains(pid)) continue;
+            PricebookEntry tPbe = new PricebookEntry(
+                Pricebook2Id = pricebookId, Product2Id   = pid,
+                UnitPrice    = (p.unitPrice != null && p.unitPrice >= 0) ? p.unitPrice : 0, IsActive     = true
+            );
+            if (targetCurrency != null) tPbe.CurrencyIsoCode = targetCurrency;
+            targetToInsert.add(tPbe);
+            staged.add(pid);
         }
-        // ── Auto-detect NRC pairs for MRC products (.RC → .NR) ──
-        Set<String> nrcCodes = new Set<String>();
-        Set<Id> addedProductIds = new Set<Id>();
-        for (ProductPriceInput p : products) { if (!String.isBlank(p.productId)) addedProductIds.add(p.productId);
-        }
-        for (Product2 mrc : [SELECT ProductCode FROM Product2 WHERE Id IN :addedProductIds AND ProductCode LIKE '%.RC']) {
-            String nrcCode = mrc.ProductCode.removeEndIgnoreCase('.RC') + '.NR'; nrcCodes.add(nrcCode);
-        }
-        if (!nrcCodes.isEmpty()) {
-            for (Product2 nrc : [SELECT Id FROM Product2 WHERE ProductCode IN :nrcCodes AND IsActive = true]) {
-                if (!hasStdEntry.containsKey(nrc.Id)) {
-                    stdToInsert.clear(); // reuse list
-                    stdToInsert.add(new PricebookEntry(Pricebook2Id = stdPb.Id, Product2Id = nrc.Id, UnitPrice = 0, IsActive = true));
-                    insert stdToInsert;
-                }
-                if (!hasTargetEntry.containsKey(nrc.Id)) {  targetToInsert.add(new PricebookEntry(Pricebook2Id = pricebookId, Product2Id = nrc.Id, UnitPrice = 0, IsActive = true));
-                }
-            }
+        for (Id nid : nrcIds) {
+            if (hasTargetEntry.contains(nid) || staged.contains(nid)) continue;
+            PricebookEntry nPbe = new PricebookEntry(Pricebook2Id = pricebookId, Product2Id = nid, UnitPrice = 0, IsActive = true);
+            if (targetCurrency != null) nPbe.CurrencyIsoCode = targetCurrency;
+            targetToInsert.add(nPbe);
+            staged.add(nid);
         }
 
         if (!targetToInsert.isEmpty()) { if (!PricebookEntry.SObjectType.getDescribe().isCreateable()) { throw new AuraHandledException('Insufficient permissions to create pricebook entries.');
@@ -938,7 +959,7 @@ public with sharing class DeProductManagerController {
     public static void updateProduct(String productId, String name, String description,
                                       String attributeType, String attributeValues,
                                       Boolean showCustomValue, String capacityAssignment,
-                                      String uom) {
+                                      String uom, String allowedUom) {
         if (!Product2.SObjectType.getDescribe().isUpdateable()) {  throw new AuraHandledException('Insufficient permissions to update products.');
         }
         Product2 p = new Product2(Id = productId);
@@ -949,6 +970,7 @@ public with sharing class DeProductManagerController {
         p.Show_Custom_Attribute_Value__c = showCustomValue == true;
         p.Capacity_Assignment__c = capacityAssignment;
         p.QuantityUnitOfMeasure = uom;
+        p.Allowed_UoM__c = allowedUom;   // SFDC-366
         update p;
     }
 
@@ -959,7 +981,7 @@ public with sharing class DeProductManagerController {
                                              String family, String chargeType,
                                              String productAttribute, String attributeValues,
                                              Boolean showCustomAttrVal, String availableCountries,
-                                             String availableSites) {
+                                             String availableSites, String allowedUom) {
         if (String.isBlank(productId)) throw new AuraHandledException('Product ID is required.');
         if (String.isBlank(name)) throw new AuraHandledException('Product name is required.');
         if (!Product2.SObjectType.getDescribe().isUpdateable()) {  throw new AuraHandledException('Insufficient permissions to update products.');
@@ -980,6 +1002,10 @@ public with sharing class DeProductManagerController {
         p.Show_Custom_Attribute_Value__c = showCustomAttrVal != null && showCustomAttrVal;
         p.Available_Countries__c = String.isBlank(availableCountries) ? null : availableCountries;
         p.Available_Operation_Site__c = String.isBlank(availableSites) ? null : availableSites;
+        // SFDC-366. The catalog modal loads the current value from ProductRow.allowedUom,
+        // so an untouched dual-listbox round-trips it unchanged; clearing it there clears
+        // the field, matching how every other field in this method behaves.
+        p.Allowed_UoM__c = String.isBlank(allowedUom) ? null : allowedUom;
         update p;
     }
 
@@ -1268,6 +1294,7 @@ public with sharing class DeProductManagerController {
         @AuraEnabled public String  additionalChargeOfName;
         @AuraEnabled public String  additionalChargeOfCode;
         @AuraEnabled public String  uom;
+        @AuraEnabled public String  allowedUom;   // SFDC-366, ';'-delimited multi-select
         @AuraEnabled public String  availableSites;
         @AuraEnabled public String  availableCountries;
         @AuraEnabled public Decimal odooProductId;

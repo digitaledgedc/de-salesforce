@@ -1587,8 +1587,8 @@
         <template lwc:if={showNewPricebookModal}>
             <section role="dialog" tabindex="-1" aria-modal="true"
                      aria-labelledby="dpm-pb-modal-heading"
-                     class="slds-modal slds-fade-in-open dpm-modal-wide">
-                <div class="slds-modal__container">
+                     class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container dpm-modal-wide">
                     <header class="slds-modal__header">
                         <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
                                 title="Close" onclick={handleModalClose}>
@@ -1900,6 +1900,20 @@
                                 </lightning-dual-listbox>
                                 <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">Leave both empty for Global availability</p>
                             </div>
+                            <!-- SFDC-366: same control as the detail-panel Edit Product modal.
+                                 Shares the allowedUomOptions getter; the product's own
+                                 Unit of Measure is always offered and is not listed here. -->
+                            <div class="slds-m-top_small">
+                                <lightning-dual-listbox
+                                    label="Allowed UoM"
+                                    source-label="Available"
+                                    selected-label="Allowed on quote lines"
+                                    options={allowedUomOptions}
+                                    value={newProductAllowedUom}
+                                    onchange={handleNewProductAllowedUom}
+                                    field-level-help="Extra units a rep can choose for this product on a quote line. The product's own Unit of Measure is always available.">
+                                </lightning-dual-listbox>
+                            </div>
                             <div class="slds-m-top_small">
                                 <lightning-textarea
                                     label="Description"
@@ -1999,6 +2013,19 @@
                                 onchange={handleEditProductUom}
                                 placeholder="e.g. kVA, Mbps, sqm...">
                             </lightning-input>
+                        </div>
+                        <!-- SFDC-366: extra units a rep may pick on a quote line.
+                             The default above is always offered and need not be listed here. -->
+                        <div class="slds-m-top_small">
+                            <lightning-dual-listbox
+                                label="Allowed UoM"
+                                source-label="Available"
+                                selected-label="Allowed on quote lines"
+                                options={allowedUomOptions}
+                                value={editProductAllowedUom}
+                                onchange={handleEditProductAllowedUom}
+                                field-level-help="Extra units a rep can choose for this product on a quote line. The Unit of Measure above is always available.">
+                            </lightning-dual-listbox>
                         </div>
                         <template lwc:if={editProductError}>
                             <p class="slds-text-color_error slds-text-body_small slds-m-top_small">{editProductError}</p>

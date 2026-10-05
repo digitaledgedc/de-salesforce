@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Inventory__c</entityName>
+    <fieldName>Status__c</fieldName>
+    <masterLabel>Default</masterLabel>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Assigned&lt;/b&gt; - unit is assigned to a Quote or Opportunity.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Soft hold for the linked deal&lt;/li&gt;&lt;li&gt;If the deal falls through, return unit to Available&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Assigned</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Available&lt;/b&gt; - unit is unallocated and ready for sale.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Confirm space type, capacity, and power specs are populated&lt;/li&gt;&lt;li&gt;Unit is visible in feasibility checks for new Opportunities&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Available</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Decommissioned - unit returned to pool or retired.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Customer contract has ended&lt;/li&gt;&lt;li&gt;Verify unit is physically cleared before setting Available&lt;/li&gt;&lt;li&gt;Update Breaker Panel and Space ID records&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Decommissioned</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Installed&lt;/b&gt; - physical installation complete, customer is live.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Customer has physical access&lt;/li&gt;&lt;li&gt;Monitor contract end date for renewal&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Installed</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Pending Available&lt;/b&gt; - unit is transitioning back to the available pool.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Previous customer contract has ended or unit was released&lt;/li&gt;&lt;li&gt;Ops to verify unit is physically cleared before marking Available&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Pending Available</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;ROFR&lt;/b&gt; - Right of First Refusal active.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Existing customer has contractual right to this unit&lt;/li&gt;&lt;li&gt;Cannot be sold to another party without offering to ROFR holder first&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>ROFR</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Reserved&lt;/b&gt; - Order confirmed, awaiting provisioning.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Unit is hard-allocated to the Order&lt;/li&gt;&lt;li&gt;Ops to complete physical provisioning&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Reserved</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Sold&lt;/b&gt; - unit is contractually committed.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Linked to an Order Item&lt;/li&gt;&lt;li&gt;Service Commencement Date set&lt;/li&gt;&lt;li&gt;Customer billing begins on SCD&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Sold</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Stranded&lt;/b&gt; - unit cannot be sold in current state.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Physical or infrastructure issue prevents allocation&lt;/li&gt;&lt;li&gt;Ops to investigate and resolve before returning to Available&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Stranded</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>__MASTER__</recordTypeName>
+</PathAssistant>

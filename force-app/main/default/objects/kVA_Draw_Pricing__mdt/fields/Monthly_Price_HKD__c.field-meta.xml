@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Monthly_Price_HKD__c</fullName>
+    <description>Monthly recurring price for this kVA tier in HKD. Applied to QuoteLineItem.UnitPrice when Quote currency is HKD. 0.00 = no override (leaves pricebook price).</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Monthly Price (HKD)</label>
+    <precision>12</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -12,7 +12,9 @@
     <tabs>standard-ProductClassification</tabs>
     <tabs>standard-ProductSellingModel</tabs>
     <tabs>standard-ProductConfigurationFlow</tabs>
+    <tabs>standard-ProductConfigFlowParameter</tabs>
     <tabs>standard-SvcProcessLayoutSection</tabs>
+    <tabs>standard-ProdtCfgFlowParmPcklstOpt</tabs>
     <tabs>standard-AttributeDefinition</tabs>
     <tabs>standard-AttributeCategory</tabs>
     <tabs>standard-AttributePicklist</tabs>
@@ -33,6 +35,9 @@
             <tab>standard-AttributePicklist</tab>
         </mappings>
         <mappings>
+            <tab>standard-ProdtCfgFlowParmPcklstOpt</tab>
+        </mappings>
+        <mappings>
             <tab>standard-Product2</tab>
         </mappings>
         <mappings>
@@ -43,6 +48,9 @@
         </mappings>
         <mappings>
             <tab>standard-ProductClassification</tab>
+        </mappings>
+        <mappings>
+            <tab>standard-ProductConfigFlowParameter</tab>
         </mappings>
         <mappings>
             <tab>standard-ProductConfigurationFlow</tab>

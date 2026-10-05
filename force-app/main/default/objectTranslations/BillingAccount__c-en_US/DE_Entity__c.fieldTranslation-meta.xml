@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- The DE subsidiary for this BAN. Determines the default currency and finance routing. --></help>
+    <label><!-- DE Subsidiary --></label>
+    <name>DE_Entity__c</name>
+    <relationshipLabel><!-- BANs (DE Subsidiary) --></relationshipLabel>
+</CustomFieldTranslation>

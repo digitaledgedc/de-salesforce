@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Link an existing Billing Account (BAN) to this Quote, or create a new one. Lists the Active BANs matching this Quote&apos;s Account, subsidiary, currency and invoice frequency; falls through to the BAN creation screen when none fit.</description>
+    <flowDefinition>Quote_Screen_CreateBAN</flowDefinition>
+    <label>Assign BAN</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>

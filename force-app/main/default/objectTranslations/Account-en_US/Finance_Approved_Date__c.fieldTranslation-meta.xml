@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Date Finance approval was granted. Auto-set by the Finance Approval flow. Do not edit manually. --></help>
+    <label><!-- Finance Approved Date --></label>
+    <name>Finance_Approved_Date__c</name>
+</CustomFieldTranslation>

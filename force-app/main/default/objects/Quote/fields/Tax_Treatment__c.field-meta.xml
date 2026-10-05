@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tax_Treatment__c</fullName>
+    <description>Tax treatment for this Quote. Auto-set from DE_Contracting_Entity__c. Determines which Odoo tax rules apply. Included in IP-1 payload.</description>
+    <inlineHelpText>Tax regime that applies to this quote, auto-set from the DE Contracting Entity. Determines how Odoo applies tax to invoices. Read-only - contact Finance if incorrect.</inlineHelpText>
+    <label>Tax Treatment</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Standard VAT</fullName>
+                <default>false</default>
+                <label>Standard VAT</label>
+            </value>
+            <value>
+                <fullName>Reverse Charge</fullName>
+                <default>false</default>
+                <label>Reverse Charge</label>
+            </value>
+            <value>
+                <fullName>Exempt</fullName>
+                <default>false</default>
+                <label>Exempt</label>
+            </value>
+            <value>
+                <fullName>Withholding Tax</fullName>
+                <default>false</default>
+                <label>Withholding Tax</label>
+            </value>
+            <value>
+                <fullName>Zero Rated</fullName>
+                <default>false</default>
+                <label>Zero Rated</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

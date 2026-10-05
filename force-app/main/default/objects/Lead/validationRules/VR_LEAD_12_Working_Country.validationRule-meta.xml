@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_LEAD_12_Working_Country</fullName>
+    <active>false</active>
+    <description>Country is required before a Lead can be moved to Working status.</description>
+    <errorConditionFormula>AND(
+  ISPICKVAL(Status, &apos;Working&apos;),
+  ISPICKVAL(CountryCode, &apos;&apos;)
+)</errorConditionFormula>
+    <errorDisplayField>CountryCode</errorDisplayField>
+    <errorMessage>Country is required to move this Lead to Working status.</errorMessage>
+</ValidationRule>

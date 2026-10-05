@@ -154,6 +154,24 @@
                 <identifier>RecordCurrencyIsoCodeField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Registered_Address__c</fieldItem>
+                <identifier>RecordRegistered_Address__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Input_Date__c</fieldItem>
+                <identifier>RecordInput_Date__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Marketing_Channel__c</fieldItem>
+                <identifier>RecordMarketing_Channel__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-leadinfo-col1-fields</name>
         <type>Facet</type>
     </flexiPageRegions>

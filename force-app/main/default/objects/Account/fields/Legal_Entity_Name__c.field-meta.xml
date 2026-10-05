@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Legal_Entity_Name__c</fullName>
+    <description>Legal entity name in English. Used on contracts, Quote PDFs, and invoices. Locked after Finance Approval - use Request Master Data Change to amend.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Full legal name in English as it appears on contracts, invoices, and official correspondence. Must match the signed Master Service Agreement exactly. Different from the trading name in the Account Name field.</inlineHelpText>
+    <label>Legal Entity Name (English)</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

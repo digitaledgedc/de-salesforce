@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DE_ERR_Compact</fullName>
+    <fields>Name</fields>
+    <fields>Error_Type__c</fields>
+    <fields>Flow_Name__c</fields>
+    <fields>Resolved__c</fields>
+    <label>DE Error Compact</label>
+</CompactLayout>

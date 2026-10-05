@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OTM_Role__c</fullName>
+    <description>Overlay Team Member role - placeholder values pending Elvira sign-off (G-2)</description>
+    <label>OTM Role</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Placeholder A</fullName>
+                <default>false</default>
+                <label>Placeholder A</label>
+            </value>
+            <value>
+                <fullName>Placeholder B</fullName>
+                <default>false</default>
+                <label>Placeholder B</label>
+            </value>
+            <value>
+                <fullName>Placeholder C</fullName>
+                <default>false</default>
+                <label>Placeholder C</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

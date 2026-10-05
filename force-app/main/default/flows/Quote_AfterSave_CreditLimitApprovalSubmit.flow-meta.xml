@@ -1,0 +1,846 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <customErrors>
+        <name>Failed_to_create_SI</name>
+        <label>Failed to create SI</label>
+        <locationX>842</locationX>
+        <locationY>1187</locationY>
+        <customErrorMessages>
+            <errorMessage>Failed to Create Credit Limit Approval. Reach out to your Admin to resolve.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <customErrors>
+        <name>Failed_to_Create_SII</name>
+        <label>Failed to Create SI</label>
+        <locationX>314</locationX>
+        <locationY>1079</locationY>
+        <customErrorMessages>
+            <errorMessage>Failed to Create Credit Limit Approval. Reach out to your Admin to resolve.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <decisions>
+        <name>Check_Credit_Exceeded</name>
+        <label>Credit Limit Exceeded?</label>
+        <locationX>1205</locationX>
+        <locationY>323</locationY>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>outcome_Exceeded</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Credit_Limit_Exceeded__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Credit_Finance_Approved__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Existing_Pending_SI</targetReference>
+            </connector>
+            <label>Exceeded and Not Approved</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_MRC_NRC</name>
+        <label>Check MRC &amp; NRC</label>
+        <locationX>446</locationX>
+        <locationY>863</locationY>
+        <defaultConnector>
+            <targetReference>MRC_Credit_limit</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>MRC_NRC</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Opportunity.Account.Total_Active_Quoted_MRC__c</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <elementReference>$Record.Opportunity.Account.Credit_Limit_MRC__c</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Opportunity.Account.Total_Active_Quoted_NRC__c</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <elementReference>$Record.Opportunity.Account.Credit_Limit_NRC__c</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_4_of_Create_Credit_Limit_Special_Instruction</targetReference>
+            </connector>
+            <label>MRC&amp;NRC</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_No_Existing_SI</name>
+        <label>No Existing Pending SI?</label>
+        <locationX>864</locationX>
+        <locationY>539</locationY>
+        <defaultConnectorLabel>Already Exists</defaultConnectorLabel>
+        <rules>
+            <name>outcome_No_Existing</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Existing_Pending_SI</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Finance_Queue</targetReference>
+            </connector>
+            <label>No Existing SI</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>MRC_Credit_limit</name>
+        <label>MRC Credit limit</label>
+        <locationX>842</locationX>
+        <locationY>971</locationY>
+        <defaultConnector>
+            <targetReference>NRC_Credit_Limit</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>MRC</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Opportunity.Account.Total_Active_Quoted_MRC__c</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <elementReference>$Record.Opportunity.Account.Credit_Limit_MRC__c</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_1_of_Create_Credit_Limit_Special_Instruction</targetReference>
+            </connector>
+            <label>MRC</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>NRC_Credit_Limit</name>
+        <label>NRC Credit Limit</label>
+        <locationX>842</locationX>
+        <locationY>1511</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>NRC</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Opportunity.Account.Total_Active_Quoted_NRC__c</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <elementReference>$Record.Opportunity.Account.Credit_Limit_NRC__c</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_2_of_Create_Credit_Limit_Special_Instruction</targetReference>
+            </connector>
+            <label>NRC</label>
+        </rules>
+    </decisions>
+    <description>When a Quote moves to Approved and Credit_Limit_Exceeded__c is TRUE, creates a Special Instruction owned by the country-specific Finance queue. Finance reviews and acknowledges via the Finance Dashboard.
+
+#SFDC-392: Enhanced the flow so that the MRC, NRC, and Overdue Credit limit scenarios now populate the SI description based on the specific condition that triggered the SI, instead of using a common description as before.
+
+Additionally, if multiple scenarios are true at the same time, a separate SI will be created for each scenario with its respective description.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>frmCountry</name>
+        <dataType>String</dataType>
+        <expression>TEXT({!$Record.DE_Entity__r.Operation_Country__c})</expression>
+    </formulas>
+    <formulas>
+        <name>frmDecimal</name>
+        <dataType>String</dataType>
+        <expression>RIGHT(
+  TEXT(100 + ROUND(MOD({!$Record.Opportunity.Account.Total_Active_Quoted_MRC__c}, 1) * 100, 0)),
+  2
+)</expression>
+    </formulas>
+    <formulas>
+        <name>frmDecimalLimit</name>
+        <dataType>String</dataType>
+        <expression>RIGHT(
+  TEXT(100 + ROUND(MOD({!$Record.Opportunity.Account.Credit_Limit_MRC__c}, 1) * 100, 0)),
+  2
+)</expression>
+    </formulas>
+    <formulas>
+        <name>frmDecimalLimitNRC</name>
+        <dataType>String</dataType>
+        <expression>RIGHT(
+  TEXT(100 + ROUND(MOD({!$Record.Opportunity.Account.Credit_Limit_NRC__c}, 1) * 100, 0)),
+  2
+)</expression>
+    </formulas>
+    <formulas>
+        <name>frmDecimalNRC</name>
+        <dataType>String</dataType>
+        <expression>RIGHT(
+  TEXT(100 + ROUND(MOD({!$Record.Opportunity.Account.Total_Active_Quoted_NRC__c}, 1) * 100, 0)),
+  2
+)</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtLimit</name>
+        <dataType>String</dataType>
+        <expression>IF({!frmWholeLimit} &gt;= 1000000,
+  TEXT(FLOOR({!frmWholeLimit} / 1000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmWholeLimit} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmWholeLimit}), 1000)), 3),
+IF({!frmWholeLimit} &gt;= 1000,
+  TEXT(FLOOR({!frmWholeLimit} / 1000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmWholeLimit}), 1000)), 3),
+  TEXT(FLOOR({!frmWholeLimit}))
+)) &amp; &quot;.&quot; &amp; {!frmDecimalLimit}</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtLimitNRC</name>
+        <dataType>String</dataType>
+        <expression>IF({!frmWholeLimitNRC} &gt;= 1000000,
+  TEXT(FLOOR({!frmWholeLimitNRC} / 1000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmWholeLimitNRC} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmWholeLimitNRC}), 1000)), 3),
+IF({!frmWholeLimitNRC} &gt;= 1000,
+  TEXT(FLOOR({!frmWholeLimitNRC} / 1000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmWholeLimitNRC}), 1000)), 3),
+  TEXT(FLOOR({!frmWholeLimitNRC}))
+)) &amp; &quot;.&quot; &amp; {!frmDecimalLimitNRC}</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtLimitSuffix</name>
+        <dataType>String</dataType>
+        <expression>IF(OR(TEXT({!$Record.CurrencyIsoCode}) = &quot;USD&quot;, ISBLANK({!Get_Quote_Currency_Rate.ConversionRate})), &quot;&quot;,
+  &quot; (approx. &quot; &amp; TEXT({!$Record.CurrencyIsoCode}) &amp; &quot; &quot; &amp; {!frmFmtLimitTotal} &amp; &quot;)&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtLimitSuffixNRC</name>
+        <dataType>String</dataType>
+        <expression>IF(OR(TEXT({!$Record.CurrencyIsoCode}) = &quot;USD&quot;, ISBLANK({!Get_Quote_Currency_Rate.ConversionRate})), &quot;&quot;,
+  &quot; (approx. &quot; &amp; TEXT({!$Record.CurrencyIsoCode}) &amp; &quot; &quot; &amp; {!frmFmtLimitTotalNRC} &amp; &quot;)&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtLimitTotal</name>
+        <dataType>String</dataType>
+        <expression>IF({!frmTotalLimit} &gt;= 1000000000,
+  TEXT(FLOOR({!frmTotalLimit} / 1000000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLimit} / 1000000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLimit} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLimit}), 1000)), 3),
+IF({!frmTotalLimit} &gt;= 1000000,
+  TEXT(FLOOR({!frmTotalLimit} / 1000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLimit} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLimit}), 1000)), 3),
+IF({!frmTotalLimit} &gt;= 1000,
+  TEXT(FLOOR({!frmTotalLimit} / 1000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLimit}), 1000)), 3),
+  TEXT(FLOOR({!frmTotalLimit}))
+)))</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtLimitTotalNRC</name>
+        <dataType>String</dataType>
+        <expression>IF({!frmTotalLimitNRC} &gt;= 1000000000,
+  TEXT(FLOOR({!frmTotalLimitNRC} / 1000000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLimitNRC} / 1000000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLimitNRC} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLimitNRC}), 1000)), 3),
+IF({!frmTotalLimitNRC} &gt;= 1000000,
+  TEXT(FLOOR({!frmTotalLimitNRC} / 1000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLimitNRC} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLimitNRC}), 1000)), 3),
+IF({!frmTotalLimitNRC} &gt;= 1000,
+  TEXT(FLOOR({!frmTotalLimitNRC} / 1000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLimitNRC}), 1000)), 3),
+  TEXT(FLOOR({!frmTotalLimitNRC}))
+)))</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtOver</name>
+        <dataType>String</dataType>
+        <expression>IF({!frmOverAmt} &gt;= 1000000,
+  TEXT(FLOOR({!frmOverAmt} / 1000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmOverAmt} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmOverAmt}), 1000)), 3) &amp; &quot;.&quot; &amp; {!frmOverDecimal},
+IF({!frmOverAmt} &gt;= 1000,
+  TEXT(FLOOR({!frmOverAmt} / 1000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmOverAmt}), 1000)), 3) &amp; &quot;.&quot; &amp; {!frmOverDecimal},
+  TEXT(FLOOR({!frmOverAmt})) &amp; &quot;.&quot; &amp; {!frmOverDecimal}
+))</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtOverLocal</name>
+        <dataType>String</dataType>
+        <expression>IF({!frmOverAmtLocal} &gt;= 1000000,
+  TEXT(FLOOR({!frmOverAmtLocal} / 1000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmOverAmtLocal} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmOverAmtLocal}), 1000)), 3),
+IF({!frmOverAmtLocal} &gt;= 1000,
+  TEXT(FLOOR({!frmOverAmtLocal} / 1000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmOverAmtLocal}), 1000)), 3),
+  TEXT(FLOOR({!frmOverAmtLocal}))
+))</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtOverLocalNRC</name>
+        <dataType>String</dataType>
+        <expression>IF({!frmOverAmtLocalNRC} &gt;= 1000000,
+  TEXT(FLOOR({!frmOverAmtLocalNRC} / 1000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmOverAmtLocalNRC} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmOverAmtLocalNRC}), 1000)), 3),
+IF({!frmOverAmtLocalNRC} &gt;= 1000,
+  TEXT(FLOOR({!frmOverAmtLocalNRC} / 1000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmOverAmtLocalNRC}), 1000)), 3),
+  TEXT(FLOOR({!frmOverAmtLocalNRC}))
+))</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtOverNRC</name>
+        <dataType>String</dataType>
+        <expression>IF({!frmOverAmtNRC} &gt;= 1000000,
+  TEXT(FLOOR({!frmOverAmtNRC} / 1000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmOverAmtNRC} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmOverAmtNRC}), 1000)), 3) &amp; &quot;.&quot; &amp; {!frmOverDecimalNRC},
+IF({!frmOverAmtNRC} &gt;= 1000,
+  TEXT(FLOOR({!frmOverAmtNRC} / 1000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmOverAmtNRC}), 1000)), 3) &amp; &quot;.&quot; &amp; {!frmOverDecimalNRC},
+  TEXT(FLOOR({!frmOverAmtNRC})) &amp; &quot;.&quot; &amp; {!frmOverDecimalNRC}
+))</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtTotal</name>
+        <dataType>String</dataType>
+        <expression>IF({!frmWhole} &gt;= 1000000,
+  TEXT(FLOOR({!frmWhole} / 1000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmWhole} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD({!frmWhole}, 1000)), 3),
+IF({!frmWhole} &gt;= 1000,
+  TEXT(FLOOR({!frmWhole} / 1000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD({!frmWhole}, 1000)), 3),
+  TEXT({!frmWhole})
+)) &amp; &quot;.&quot; &amp; {!frmDecimal}</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtTotalLocal</name>
+        <dataType>String</dataType>
+        <expression>IF({!frmTotalLocal} &gt;= 1000000000,
+  TEXT(FLOOR({!frmTotalLocal} / 1000000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLocal} / 1000000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLocal} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLocal}), 1000)), 3),
+IF({!frmTotalLocal} &gt;= 1000000,
+  TEXT(FLOOR({!frmTotalLocal} / 1000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLocal} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLocal}), 1000)), 3),
+IF({!frmTotalLocal} &gt;= 1000,
+  TEXT(FLOOR({!frmTotalLocal} / 1000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLocal}), 1000)), 3),
+  TEXT(FLOOR({!frmTotalLocal}))
+)))</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtTotalLocalNRC</name>
+        <dataType>String</dataType>
+        <expression>IF({!frmTotalLocalNRC} &gt;= 1000000000,
+  TEXT(FLOOR({!frmTotalLocalNRC} / 1000000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLocalNRC} / 1000000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLocalNRC} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLocalNRC}), 1000)), 3),
+IF({!frmTotalLocalNRC} &gt;= 1000000,
+  TEXT(FLOOR({!frmTotalLocalNRC} / 1000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLocalNRC} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLocalNRC}), 1000)), 3),
+IF({!frmTotalLocalNRC} &gt;= 1000,
+  TEXT(FLOOR({!frmTotalLocalNRC} / 1000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmTotalLocalNRC}), 1000)), 3),
+  TEXT(FLOOR({!frmTotalLocalNRC}))
+)))</expression>
+    </formulas>
+    <formulas>
+        <name>frmFmtTotalNRC</name>
+        <dataType>String</dataType>
+        <expression>IF({!frmWholeNRC} &gt;= 1000000,
+  TEXT(FLOOR({!frmWholeNRC} / 1000000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD(FLOOR({!frmWholeNRC} / 1000), 1000)), 3) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD({!frmWholeNRC}, 1000)), 3),
+IF({!frmWholeNRC} &gt;= 1000,
+  TEXT(FLOOR({!frmWholeNRC} / 1000)) &amp; &quot;,&quot; &amp;
+  RIGHT(TEXT(1000 + MOD({!frmWholeNRC}, 1000)), 3),
+  TEXT({!frmWholeNRC})
+)) &amp; &quot;.&quot; &amp; {!frmDecimalNRC}</expression>
+    </formulas>
+    <formulas>
+        <name>frmLocalSuffix</name>
+        <dataType>String</dataType>
+        <expression>IF(OR(TEXT({!$Record.CurrencyIsoCode}) = &quot;USD&quot;, ISBLANK({!Get_Quote_Currency_Rate.ConversionRate})), &quot;&quot;,
+  &quot; (approx. &quot; &amp; TEXT({!$Record.CurrencyIsoCode}) &amp; &quot; &quot; &amp; {!frmFmtTotalLocal} &amp; &quot;)&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>frmLocalSuffixNRC</name>
+        <dataType>String</dataType>
+        <expression>IF(OR(TEXT({!$Record.CurrencyIsoCode}) = &quot;USD&quot;, ISBLANK({!Get_Quote_Currency_Rate.ConversionRate})), &quot;&quot;,
+  &quot; (approx. &quot; &amp; TEXT({!$Record.CurrencyIsoCode}) &amp; &quot; &quot; &amp; {!frmFmtTotalLocalNRC} &amp; &quot;)&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>frmOverAmt</name>
+        <dataType>Number</dataType>
+        <expression>{!$Record.Opportunity.Account.Total_Active_Quoted_MRC__c} - {!$Record.Opportunity.Account.Credit_Limit_MRC__c}</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>frmOverAmtLocal</name>
+        <dataType>Number</dataType>
+        <expression>{!frmOverAmt} * {!Get_Quote_Currency_Rate.ConversionRate}</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>frmOverAmtLocalNRC</name>
+        <dataType>Number</dataType>
+        <expression>{!frmOverAmtNRC} * {!Get_Quote_Currency_Rate.ConversionRate}</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>frmOverAmtNRC</name>
+        <dataType>Number</dataType>
+        <expression>{!$Record.Opportunity.Account.Total_Active_Quoted_NRC__c} - {!$Record.Opportunity.Account.Credit_Limit_NRC__c}</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>frmOverDecimal</name>
+        <dataType>String</dataType>
+        <expression>RIGHT(&quot;00&quot; &amp; TEXT(MOD(ROUND(ABS({!frmOverAmt}) * 100, 0), 100)), 2)</expression>
+    </formulas>
+    <formulas>
+        <name>frmOverDecimalNRC</name>
+        <dataType>String</dataType>
+        <expression>RIGHT(&quot;00&quot; &amp; TEXT(MOD(ROUND(ABS({!frmOverAmtNRC}) * 100, 0), 100)), 2)</expression>
+    </formulas>
+    <formulas>
+        <name>frmOverSuffix</name>
+        <dataType>String</dataType>
+        <expression>IF(TEXT({!$Record.CurrencyIsoCode}) &lt;&gt; &quot;USD&quot;,
+  &quot; (approx. &quot; &amp; TEXT({!$Record.CurrencyIsoCode}) &amp; &quot; &quot; &amp; {!frmFmtOverLocal} &amp; &quot;)&quot;,
+  &quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>frmOverSuffixNRC</name>
+        <dataType>String</dataType>
+        <expression>IF(TEXT({!$Record.CurrencyIsoCode}) &lt;&gt; &quot;USD&quot;,
+  &quot; (approx. &quot; &amp; TEXT({!$Record.CurrencyIsoCode}) &amp; &quot; &quot; &amp; {!frmFmtOverLocalNRC} &amp; &quot;)&quot;,
+  &quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>frmQueueDevName</name>
+        <dataType>String</dataType>
+        <expression>CASE({!frmCountry},
+&quot;Japan&quot;, &quot;DE_JP_Country_Finance&quot;,
+&quot;Korea&quot;, &quot;DE_KR_Country_Finance&quot;,
+&quot;Indonesia&quot;, &quot;DE_ID_Country_Finance&quot;,
+&quot;Philippines&quot;, &quot;DE_PH_Country_Finance&quot;,
+&quot;China&quot;, &quot;DE_CN_Country_Finance&quot;,
+&quot;India&quot;, &quot;DE_IN_Country_Finance&quot;,
+&quot;Thailand&quot;, &quot;DE_TH_Country_Finance&quot;,
+&quot;Malaysia&quot;, &quot;DE_MY_Country_Finance&quot;,
+&quot;Singapore&quot;, &quot;DE_SG_Country_Finance&quot;,
+&quot;Hong Kong&quot;, &quot;DE_HK_Country_Finance&quot;,
+&quot;&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>frmSIOwner</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!Get_Finance_Queue.Id}), {!$User.Id}, {!Get_Finance_Queue.Id})</expression>
+    </formulas>
+    <formulas>
+        <name>frmTotalLimit</name>
+        <dataType>Number</dataType>
+        <expression>{!$Record.QuoteAccount.Credit_Limit_MRC__c}* {!Get_Quote_Currency_Rate.ConversionRate}</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>frmTotalLimitNRC</name>
+        <dataType>Number</dataType>
+        <expression>{!$Record.Opportunity.Account.Credit_Limit_NRC__c}* {!Get_Quote_Currency_Rate.ConversionRate}</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>frmTotalLocal</name>
+        <dataType>Number</dataType>
+        <expression>{!$Record.Opportunity.Account.Total_Active_Quoted_MRC__c} * {!Get_Quote_Currency_Rate.ConversionRate}</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>frmTotalLocalNRC</name>
+        <dataType>Number</dataType>
+        <expression>{!$Record.Opportunity.Account.Total_Active_Quoted_NRC__c} * {!Get_Quote_Currency_Rate.ConversionRate}</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>frmWhole</name>
+        <dataType>Number</dataType>
+        <expression>FLOOR({!$Record.Opportunity.Account.Total_Active_Quoted_MRC__c})</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>frmWholeLimit</name>
+        <dataType>Number</dataType>
+        <expression>FLOOR({!$Record.Opportunity.Account.Credit_Limit_MRC__c})</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>frmWholeLimitNRC</name>
+        <dataType>Number</dataType>
+        <expression>FLOOR({!$Record.Opportunity.Account.Credit_Limit_NRC__c})</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>frmWholeNRC</name>
+        <dataType>Number</dataType>
+        <expression>FLOOR({!$Record.Opportunity.Account.Total_Active_Quoted_NRC__c})</expression>
+        <scale>0</scale>
+    </formulas>
+    <interviewLabel>Quote Credit Limit SI {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Quote - After Save - Credit Limit Approval Submit</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Copy_1_of_Create_Credit_Limit_Special_Instruction</name>
+        <label>Create Credit Limit Special Instruction</label>
+        <locationX>578</locationX>
+        <locationY>1079</locationY>
+        <connector>
+            <targetReference>NRC_Credit_Limit</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Failed_to_create_SI</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Account__c</field>
+            <value>
+                <elementReference>$Record.AccountId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Country__c</field>
+            <value>
+                <elementReference>frmCountry</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Description__c</field>
+            <value>
+                <elementReference>descriptionTemplate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>frmSIOwner</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Quote__c</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Pending</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Type__c</field>
+            <value>
+                <stringValue>Credit Limit</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Special_Instruction__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Copy_2_of_Create_Credit_Limit_Special_Instruction</name>
+        <label>Create Credit Limit Special Instruction</label>
+        <locationX>578</locationX>
+        <locationY>1619</locationY>
+        <faultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Failed_to_create_SI</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Account__c</field>
+            <value>
+                <elementReference>$Record.AccountId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Country__c</field>
+            <value>
+                <elementReference>frmCountry</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Description__c</field>
+            <value>
+                <elementReference>descriptionTemplateNRC</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>frmSIOwner</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Quote__c</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Pending</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Type__c</field>
+            <value>
+                <stringValue>Credit Limit</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Special_Instruction__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Copy_4_of_Create_Credit_Limit_Special_Instruction</name>
+        <label>Create Credit Limit Special Instruction</label>
+        <locationX>50</locationX>
+        <locationY>971</locationY>
+        <faultConnector>
+            <targetReference>Failed_to_Create_SII</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Account__c</field>
+            <value>
+                <elementReference>$Record.AccountId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Country__c</field>
+            <value>
+                <elementReference>frmCountry</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Description__c</field>
+            <value>
+                <elementReference>descriptionMRCNRC</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>frmSIOwner</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Quote__c</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Pending</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Type__c</field>
+            <value>
+                <stringValue>Credit Limit</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Special_Instruction__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_Existing_Pending_SI</name>
+        <label>Get Existing Pending Credit Limit SI</label>
+        <locationX>864</locationX>
+        <locationY>431</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_No_Existing_SI</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Quote__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Credit Limit</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Pending</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Special_Instruction__c</object>
+        <queriedFields>Id</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Finance_Queue</name>
+        <label>Get Finance Queue for Country</label>
+        <locationX>446</locationX>
+        <locationY>647</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Quote_Currency_Rate</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>frmQueueDevName</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Type</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Queue</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Group</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Quote_Currency_Rate</name>
+        <label>Get Quote Currency Rate</label>
+        <locationX>446</locationX>
+        <locationY>755</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_MRC_NRC</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>IsoCode</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.CurrencyIsoCode</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>CurrencyType</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>IsoCode</queriedFields>
+        <queriedFields>ConversionRate</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>1079</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Check_Credit_Exceeded</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Status</field>
+            <operator>IsChanged</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Approved</stringValue>
+            </value>
+        </filters>
+        <object>Quote</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <textTemplates>
+        <name>descriptionMRCNRC</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Credit limit exceeded on quote {!$Record.Quote_Number__c} for account {!$Record.Opportunity.Account.Name}.
+
+Total active quoted MRC across all open quotes on this account: USD {!frmFmtTotal}{!frmLocalSuffix}.
+Approved credit limit: USD {!frmFmtLimit} {!frmFmtLimitSuffix}.
+Over the limit by: USD {!frmFmtOver}{!frmOverSuffix}.
+
+
+Total active quoted NRC across all open quotes on this account: USD {!frmFmtTotalNRC}{!frmLocalSuffixNRC}.
+Approved credit limit: USD {!frmFmtLimitNRC} {!frmFmtLimitSuffixNRC}.
+Over the limit by: USD {!frmFmtOverNRC}{!frmOverSuffixNRC}.</text>
+    </textTemplates>
+    <textTemplates>
+        <name>descriptionTemplate</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Credit limit exceeded on quote {!$Record.Quote_Number__c} for account {!$Record.Opportunity.Account.Name}.
+Total active quoted MRC across all open quotes on this account: USD {!frmFmtTotal}{!frmLocalSuffix}.
+Approved credit limit: USD {!frmFmtLimit} {!frmFmtLimitSuffix}.
+Over the limit by: USD {!frmFmtOver}{!frmOverSuffix}.</text>
+    </textTemplates>
+    <textTemplates>
+        <name>descriptionTemplateNRC</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Credit limit exceeded on quote {!$Record.Quote_Number__c} for account {!$Record.Opportunity.Account.Name}.
+Total active quoted NRC across all open quotes on this account: USD {!frmFmtTotalNRC}{!frmLocalSuffixNRC}.
+Approved credit limit: USD {!frmFmtLimitNRC} {!frmFmtLimitSuffixNRC}.
+Over the limit by: USD {!frmFmtOverNRC}{!frmOverSuffixNRC}.</text>
+    </textTemplates>
+    <textTemplates>
+        <name>descriptionTemplateOverdue</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Credit limit exceeded on quote {!$Record.Quote_Number__c} for account {!$Record.Opportunity.Account.Name}.
+Amount of receivables overdue is greater than 90 days.
+Overdue Amount: {!$Record.Opportunity.Account.Overdue_90_Days__c}</text>
+    </textTemplates>
+</Flow>

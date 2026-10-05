@@ -342,6 +342,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Account.Old_Sales_Team__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Account.Operation_Country__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -601,6 +606,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>OrderItem.UoM__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Pricebook_Request_Line__c.Attribute_Value__c</field>
         <readable>true</readable>
@@ -683,6 +693,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Product2.Aggregate_Ramp_Qty__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Product2.Allowed_UoM__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -816,7 +831,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Product2.UnitOfMeasureId</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -983,6 +998,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>QuoteLineItem.Reserved__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>QuoteLineItem.UoM__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

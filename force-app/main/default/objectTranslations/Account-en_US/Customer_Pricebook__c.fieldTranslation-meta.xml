@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Named account pricebook assigned by Rev Ops. When set, this pricebook is applied automatically to new quotes for this account instead of the standard pricebook. --></help>
+    <label><!-- Customer Pricebook --></label>
+    <name>Customer_Pricebook__c</name>
+    <relationshipLabel><!-- Named Account Customers --></relationshipLabel>
+</CustomFieldTranslation>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Finance_Rejection_Reason__c</fullName>
+    <description>Captured by F-05 when Finance selects Reject at D&amp;B or KYC phase. Stored on Account for audit trail and Sales visibility.</description>
+    <inlineHelpText>Reason recorded by Finance when rejecting the D&amp;B or KYC check. Set automatically by the Finance Approval flow. Sales teams can view but cannot edit.</inlineHelpText>
+    <label>Finance Rejection Reason</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>TextArea</type>
+</CustomField>

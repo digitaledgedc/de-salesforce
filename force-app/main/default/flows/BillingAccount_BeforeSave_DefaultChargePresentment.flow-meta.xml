@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Set_Standard</name>
+        <label>Set Standard</label>
+        <locationX>176</locationX>
+        <locationY>398</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Charge_Period_Presentment__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Standard</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Set_Summary</name>
+        <label>Set Summary</label>
+        <locationX>440</locationX>
+        <locationY>398</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Charge_Period_Presentment__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Summary</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Is_Non_Monthly</name>
+        <label>Is Non-Monthly?</label>
+        <locationX>308</locationX>
+        <locationY>290</locationY>
+        <defaultConnector>
+            <targetReference>Set_Standard</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Monthly / Other</defaultConnectorLabel>
+        <rules>
+            <name>Non_Monthly</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Invoice_Frequency__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Quarterly</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Invoice_Frequency__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Half Yearly</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Invoice_Frequency__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Yearly</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Summary</targetReference>
+            </connector>
+            <label>Non-Monthly</label>
+        </rules>
+    </decisions>
+    <description>FB-064: default Charge Period Presentment when blank so it is never saved empty. Non-monthly invoice frequency (Quarterly/Half Yearly/Yearly) defaults to Summary; Monthly/other defaults to Standard. Only fires when the field is blank, so a user-selected value is never overwritten.</description>
+    <environments>Default</environments>
+    <interviewLabel>BillingAccount Before Save Default Charge Presentment {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>BillingAccount Before Save Default Charge Presentment</label>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Is_Non_Monthly</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Charge_Period_Presentment__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <object>BillingAccount__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

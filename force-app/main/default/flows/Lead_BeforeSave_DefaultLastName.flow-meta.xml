@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Move_First_Name_To_Last_Name</name>
+        <label>Move First Name to Last Name</label>
+        <locationX>176</locationX>
+        <locationY>158</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.LastName</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.FirstName</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.FirstName</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <description>Prevents REQUIRED_FIELD_MISSING [LastName] on inbound integration Leads.
+
+Salesforce requires Lead.LastName (nillable=false, standard field - it cannot be made optional). Upstream sources - notably the 11x/Alice AI SDR integration - send a single name in FirstName and leave LastName empty, so the insert is rejected by the platform and the lead is lost. Observed across Indonesian, Dutch and Japanese name formats, so this is deliberately NOT scoped to one country.
+
+For a person with one name, Salesforce&apos;s own model puts that name in LastName with FirstName blank. This flow applies that model: on create, when LastName is empty and FirstName has a value, the name is moved to LastName and FirstName is cleared (leaving both populated would render the Name as &quot;Santoso Santoso&quot;).
+
+Runs before the platform&apos;s required-field validation (order of execution: before-save flows run ahead of the system validation step), so the record saves instead of erroring.
+
+Deliberately does NOT invent a placeholder. If BOTH FirstName and LastName are empty the record still fails, by design - a nameless lead should surface as an error rather than be silently created as &quot;.&quot; or &quot;Unknown&quot;. Five such placeholder records already exist in production and this flow is intended to stop that habit spreading.
+
+No duplicate-rule impact: DE_Lead_Duplicate_Rule matches on Email (exact) only and does not reference name fields.</description>
+    <environments>Default</environments>
+    <interviewLabel>Lead Default Last Name {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead - Before Save - Default Last Name</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Move_First_Name_To_Last_Name</targetReference>
+        </connector>
+        <filterFormula>AND(
+  ISBLANK({!$Record.LastName}),
+  NOT(ISBLANK({!$Record.FirstName}))
+)</filterFormula>
+        <object>Lead</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

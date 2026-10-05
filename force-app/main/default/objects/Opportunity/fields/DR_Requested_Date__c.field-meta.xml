@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DR_Requested_Date__c</fullName>
+    <description>Date DR_Status__c was set to &quot;DR Required&quot;. Set by F-11.</description>
+    <inlineHelpText>Date a Deal Review was triggered for this opportunity. Set automatically when DR Status changes to DR Required. Do not edit.</inlineHelpText>
+    <label>Deal Review Requested Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

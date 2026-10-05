@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Shows whether this BAN has been successfully synced to Odoo. Sync Failed means the integration encountered an error - check the integration log and contact the Odoo admin. --></help>
+    <label><!-- Odoo Sync Status --></label>
+    <name>Odoo_Sync_Status__c</name>
+    <picklistValues>
+        <masterLabel>Not Synced</masterLabel>
+        <translation><!-- Not Synced --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Sync Failed</masterLabel>
+        <translation><!-- Sync Failed --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Synced</masterLabel>
+        <translation><!-- Synced --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

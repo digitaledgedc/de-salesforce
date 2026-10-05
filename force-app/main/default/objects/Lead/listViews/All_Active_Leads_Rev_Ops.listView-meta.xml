@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Active_Leads_Rev_Ops</fullName>
+    <columns>LEAD.COMPANY</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>Target_Country__c</columns>
+    <columns>Customer_Type__c</columns>
+    <columns>Assigned_Sales_Team__c</columns>
+    <columns>Duplicate_Flag__c</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <filterScope>Queue</filterScope>
+    <filters>
+        <field>LEAD.CONVERTED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notEqual</operation>
+        <value>Disqualified</value>
+    </filters>
+    <label>All Active Leads (Rev Ops)</label>
+    <queue>DE_Lead_Revenue_Ops</queue>
+    <sharedTo>
+        <role>Revenue_Operations</role>
+    </sharedTo>
+</ListView>

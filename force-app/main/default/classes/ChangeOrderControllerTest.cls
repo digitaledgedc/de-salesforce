@@ -41,12 +41,13 @@ private class ChangeOrderControllerTest {
         insert pbe;
 
         Order ord = new Order(
-            AccountId         = acc.Id,
-            OpportunityId     = opp.Id,
-            Pricebook2Id      = pbId,
-            EffectiveDate     = Date.today(),
-            Status            = 'Draft',
-            BillingAccount__c = origBan.Id
+            AccountId               = acc.Id,
+            OpportunityId           = opp.Id,
+            Pricebook2Id            = pbId,
+            EffectiveDate           = Date.today(),
+            Status                  = 'Draft',
+            BillingAccount__c       = origBan.Id,
+            Contract_Term_Months__c = 12
         );
         insert ord;
 
@@ -67,6 +68,7 @@ private class ChangeOrderControllerTest {
             Product2Id         = prod.Id,
             Quantity           = 2,
             Status             = 'Installed',
+            Source_Order__c     = ord.Id,
             Source_OrderItem__c = oi.Id
         );
         insert asset;
@@ -112,7 +114,7 @@ private class ChangeOrderControllerTest {
         Test.startTest();
         Id quoteId = ChangeOrderController.createChangeOrder(
             ord.Id, 'Change/Upsell', 'Quantity_Change',
-            String.valueOf(Date.today().addDays(14)), 'PO-123', linesJson, null
+            String.valueOf(Date.today().addDays(14)), 'PO-123', linesJson, null, null
         );
         Test.stopTest();
 
@@ -151,15 +153,28 @@ private class ChangeOrderControllerTest {
             }
         });
 
+        Date churnRdd = Date.today().addDays(30);
+
         Test.startTest();
         Id quoteId = ChangeOrderController.createChangeOrder(
-            ord.Id, 'Churn', 'End_of_Term', null, null, linesJson, null
+            ord.Id, 'Churn', 'End_of_Term', String.valueOf(churnRdd), null, linesJson, null, null
         );
         Test.stopTest();
 
-        Quote q = [SELECT Quote_Type__c, Amendment_Reason__c FROM Quote WHERE Id = :quoteId];
+        Quote q = [
+            SELECT Quote_Type__c, Amendment_Reason__c, RDD__c,
+                   Contract_Term_Months__c, Contract_End_Date__c, Total_Contract_Value_2__c
+            FROM Quote WHERE Id = :quoteId
+        ];
         System.assertEquals('Termination', q.Quote_Type__c);
         System.assertEquals('Termination', q.Amendment_Reason__c);
+        System.assertEquals(churnRdd, q.RDD__c, 'Churn quote should carry the wizard RDD');
+        System.assertEquals(0, q.Contract_Term_Months__c,
+            'Churn quote must not copy the original order contract term');
+        System.assertEquals(churnRdd.addDays(-1), q.Contract_End_Date__c,
+            'Churn end date is derived by Quote_BeforeSave_ContractEndDate (RDD + 0mo − 1 day)');
+        System.assertEquals(0, q.Total_Contract_Value_2__c,
+            'Churn TCV should be zero when contract term is zero');
     }
 
     @IsTest
@@ -184,7 +199,7 @@ private class ChangeOrderControllerTest {
 
         Test.startTest();
         Id quoteId = ChangeOrderController.createChangeOrder(
-            ord.Id, 'Change/Upsell', 'Price_Change', null, null, linesJson, null
+            ord.Id, 'Change/Upsell', 'Price_Change', null, null, linesJson, null, null
         );
         Test.stopTest();
 
@@ -226,7 +241,7 @@ private class ChangeOrderControllerTest {
 
         Test.startTest();
         Id quoteId = ChangeOrderController.createChangeOrder(
-            ord.Id, 'BAN Change', 'BAN_Transfer', null, null, linesJson, newBan.Id
+            ord.Id, 'BAN Change', 'BAN_Transfer', null, null, linesJson, newBan.Id, null
         );
         Test.stopTest();
 
@@ -298,15 +313,17 @@ private class ChangeOrderControllerTest {
 
         Test.startTest();
         Id quoteId = ChangeOrderController.createChangeOrder(
-            ord.Id, 'Renewal', 'Customer_Request', null, null, linesJson, null
+            ord.Id, 'Renewal', 'Customer_Request', null, null, linesJson, null, 24
         );
         Test.stopTest();
 
         // Note: Quote.Name assertion intentionally omitted — the deployed
         // "Quote Name Auto" flow rewrites Name post-insert, independent of
         // the RN-/XCO-/CO- prefix ChangeOrderController assigns.
-        Quote q = [SELECT Quote_Type__c, Amendment_Reason__c, OpportunityId FROM Quote WHERE Id = :quoteId];
+        Quote q = [SELECT Quote_Type__c, Amendment_Reason__c, OpportunityId, Contract_Term_Months__c FROM Quote WHERE Id = :quoteId];
         System.assertEquals('Renewal', q.Quote_Type__c);
+        System.assertEquals(24, q.Contract_Term_Months__c,
+            'User-entered renewal term should override the original order\'s term, not copy it');
         System.assertEquals('Downgrade', q.Amendment_Reason__c, 'Customer_Request on a non-Churn CO maps to Downgrade');
 
         List<QuoteLineItem> qlis = [SELECT Id FROM QuoteLineItem WHERE QuoteId = :quoteId];
@@ -342,7 +359,7 @@ private class ChangeOrderControllerTest {
 
         Test.startTest();
         Id quoteId = ChangeOrderController.createChangeOrder(
-            ord.Id, 'Partial Churn', 'Capacity_Reduction', null, null, linesJson, null
+            ord.Id, 'Partial Churn', 'Capacity_Reduction', null, null, linesJson, null, null
         );
         Test.stopTest();
 
@@ -396,7 +413,7 @@ private class ChangeOrderControllerTest {
         Boolean threw = false;
         try {
             ChangeOrderController.createChangeOrder(
-                ord.Id, 'BAN Change', 'Merger_Acquisition', null, null, linesJson, mismatchedBan.Id
+                ord.Id, 'BAN Change', 'Merger_Acquisition', null, null, linesJson, mismatchedBan.Id, null
             );
         } catch (AuraHandledException e) {
             threw = true;
@@ -439,7 +456,7 @@ private class ChangeOrderControllerTest {
         Boolean threw = false;
         try {
             ChangeOrderController.createChangeOrder(
-                ord.Id, 'Suspension', 'Product_Change', null, null, linesJson, null
+                ord.Id, 'Suspension', 'Product_Change', null, null, linesJson, null, null
             );
         } catch (AuraHandledException e) {
             threw = true;
@@ -481,7 +498,7 @@ private class ChangeOrderControllerTest {
         Boolean threw = false;
         try {
             ChangeOrderController.createChangeOrder(
-                ord.Id, 'Resumption', 'Upsell_New_Add', null, null, linesJson, null
+                ord.Id, 'Resumption', 'Upsell_New_Add', null, null, linesJson, null, null
             );
         } catch (AuraHandledException e) {
             threw = true;
@@ -509,7 +526,7 @@ private class ChangeOrderControllerTest {
         Test.startTest();
         // Null reason → Amendment_Reason__c left blank
         Id quoteId = ChangeOrderController.createChangeOrder(
-            ord.Id, 'Change/Upsell', null, null, null, linesJson, null
+            ord.Id, 'Change/Upsell', null, null, null, linesJson, null, null
         );
         Test.stopTest();
 
@@ -527,7 +544,7 @@ private class ChangeOrderControllerTest {
         Test.startTest();
         // Unrecognized reason → falls through to 'Other'
         Id quoteId = ChangeOrderController.createChangeOrder(
-            ord.Id, 'Change/Upsell', 'Some_Unmapped_Reason', null, null, linesJson, null
+            ord.Id, 'Change/Upsell', 'Some_Unmapped_Reason', null, null, linesJson, null, null
         );
         Test.stopTest();
 
@@ -545,7 +562,7 @@ private class ChangeOrderControllerTest {
         Test.startTest();
         // Site_Transfer → 'Transfer'
         Id quoteId = ChangeOrderController.createChangeOrder(
-            ord.Id, 'Change/Upsell', 'Site_Transfer', null, null, linesJson, null
+            ord.Id, 'Change/Upsell', 'Site_Transfer', null, null, linesJson, null, null
         );
         Test.stopTest();
 
@@ -608,6 +625,7 @@ private class ChangeOrderControllerTest {
             Product2Id          = prod.Id,
             Quantity            = 1,
             Status              = 'Installed',
+            Source_Order__c     = ord.Id,
             Source_OrderItem__c = oi2.Id,
             A_Side_Asset__c     = aSide.Id,
             Z_Side_Asset__c     = zSide.Id
@@ -625,6 +643,70 @@ private class ChangeOrderControllerTest {
         System.assertNotEquals(null, found, 'Should find the row for the asset with A/Z side links');
         System.assertEquals('A-Side Cross Connect', found.aSideAsset, 'A-side asset name should be resolved');
         System.assertEquals('Z-Side Cross Connect', found.zSideAsset, 'Z-side asset name should be resolved');
+    }
+
+    // ── getActiveOrderItems: Asset whose original OrderItem lives on an older
+    // order must still surface, keyed off Asset.Source_Order__c (regression test
+    // for the bug where Cross Connect / AC Single Phase silently vanished from the
+    // CO modal on NEXJP-OR-003806 because eligibility was derived from OrderItem.OrderId
+    // instead of the Asset's own Source_Order__c) ────────────────────────────────
+
+    @IsTest
+    static void testGetActiveOrderItems_includesAssetWhoseSourceOrderItemIsOnOlderOrder() {
+        Order ord = [SELECT Id, AccountId, OpportunityId, Pricebook2Id, BillingAccount__c FROM Order LIMIT 1];
+        Product2 prod = [SELECT Id FROM Product2 WHERE ProductCode = 'CAB.SH.RC' LIMIT 1];
+        PricebookEntry pbe = [SELECT Id FROM PricebookEntry WHERE Product2Id = :prod.Id AND Pricebook2Id = :ord.Pricebook2Id LIMIT 1];
+
+        // An OLDER order that originally carried this service's OrderItem.
+        Order oldOrd = new Order(
+            AccountId         = ord.AccountId,
+            OpportunityId     = ord.OpportunityId,
+            Pricebook2Id      = ord.Pricebook2Id,
+            EffectiveDate     = Date.today().addYears(-1),
+            Status            = 'Draft',
+            BillingAccount__c = ord.BillingAccount__c
+        );
+        insert oldOrd;
+
+        OrderItem oldOi = new OrderItem(
+            OrderId          = oldOrd.Id,
+            PricebookEntryId = pbe.Id,
+            Product2Id       = prod.Id,
+            Quantity         = 1,
+            UnitPrice        = 5000,
+            Charge_Type__c   = 'MRC',
+            Is_Active__c     = true
+        );
+        insert oldOi;
+
+        // The Asset itself correctly belongs to the CURRENT order (ord), but its
+        // Source_OrderItem__c still points at the OrderItem on the OLDER order —
+        // exactly the data shape that vanished under the old OrderItem.OrderId-first
+        // query logic.
+        Asset staleLinkAsset = new Asset(
+            Name                = 'Cross Connect Stale Link',
+            AccountId           = ord.AccountId,
+            Product2Id          = prod.Id,
+            Quantity            = 1,
+            Status              = 'Installed',
+            Source_Order__c     = ord.Id,
+            Source_OrderItem__c = oldOi.Id
+        );
+        insert staleLinkAsset;
+
+        Test.startTest();
+        List<ChangeOrderController.OrderLineRow> rows = ChangeOrderController.getActiveOrderItems(ord.Id);
+        Test.stopTest();
+
+        ChangeOrderController.OrderLineRow found = null;
+        for (ChangeOrderController.OrderLineRow r : rows) {
+            if (r.assetId == staleLinkAsset.Id) { found = r; break; }
+        }
+        System.assertNotEquals(null, found,
+            'Asset with Source_Order__c on the current order must appear even though ' +
+            'its Source_OrderItem__c points to an OrderItem on a different, older order');
+        System.assertEquals(oldOi.Id, found.itemId, 'itemId should still resolve from the (older-order) Source_OrderItem__c');
+        System.assertEquals(pbe.Id, found.pricebookEntryId, 'pricebookEntryId should still resolve null-safely via Source_OrderItem__r');
     }
 
     // ── getPendingActions: a real unprocessed child order ─────────────────────────

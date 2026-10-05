@@ -2,11 +2,6 @@
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>Atomic object PS: Read+Create+Edit (no delete) on Lead + edit FLS on all permissionable fields (read-only fields stay readable only).</description>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Lead.Address</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>Lead.Assigned_Sales_Team__c</field>
         <readable>true</readable>

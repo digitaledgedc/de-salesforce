@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Credit_Block_Reason__c</fullName>
+    <label>Credit Block Reason</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Overdue_90_Days</fullName>
+                <default>false</default>
+                <label>Overdue 90 Days</label>
+            </value>
+            <value>
+                <fullName>MRC_Limit_Exceeded</fullName>
+                <default>false</default>
+                <label>MRC Limit Exceeded</label>
+            </value>
+            <value>
+                <fullName>NRC_Limit_Exceeded</fullName>
+                <default>false</default>
+                <label>NRC Limit Exceeded</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

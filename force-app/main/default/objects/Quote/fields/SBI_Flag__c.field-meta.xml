@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SBI_Flag__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Special Billing Instruction flag. Auto-set TRUE by F-14 when any SBI condition exists: FX billing, non-standard payment terms, split billing (Target_BAN__c set), Free Months &gt; 0. Finance SBI approval is Step 7 of approval chain when TRUE.</description>
+    <inlineHelpText>Checked automatically when any non-standard billing condition is present: FX billing, free months, split invoicing, or non-standard payment terms. Triggers Finance SBI approval step.</inlineHelpText>
+    <label>Special Billing Instruction</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

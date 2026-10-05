@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_Quote_Count__c</fullName>
+    <defaultValue>0</defaultValue>
+    <description>Number of active (non-Void, non-Rejected) Quotes on this Account. Maintained by Quote_AfterSave_CreditRollup flow. Used by VR_QUOTE_06 to skip credit limit check on first quote.</description>
+    <externalId>false</externalId>
+    <label>Active Quote Count</label>
+    <precision>5</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

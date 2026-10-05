@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- CPEv2 Portal Admin (PAA) --></label>
+    <name>Portal_Admin_Contact__c</name>
+    <relationshipLabel><!-- Accounts (CPEv2 Portal Admin (PAA)) --></relationshipLabel>
+</CustomFieldTranslation>

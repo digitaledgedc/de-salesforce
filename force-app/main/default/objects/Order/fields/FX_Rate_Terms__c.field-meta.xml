@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FX_Rate_Terms__c</fullName>
+    <inlineHelpText>Required when FX Rate Model is Contract Specific Reference. Documents the agreed exchange rate source and terms. Passed to Odoo for Finance reference during bill runs.</inlineHelpText>
+    <label>FX Rate Terms</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>4</visibleLines>
+</CustomField>

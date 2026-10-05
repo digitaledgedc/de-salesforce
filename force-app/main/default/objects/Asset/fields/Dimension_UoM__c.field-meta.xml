@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Dimension_UoM__c</fullName>
+    <inlineHelpText>The unit that quantifies this asset: kW for power, Cabinets for colocation space, Circuits or Gbps for connectivity, RU for rack units. Paired with Dimension Quantity.</inlineHelpText>
+    <label>Dimension Unit of Measure</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>kW</fullName>
+                <default>false</default>
+                <label>kW</label>
+            </value>
+            <value>
+                <fullName>Cabinets</fullName>
+                <default>false</default>
+                <label>Cabinets</label>
+            </value>
+            <value>
+                <fullName>Circuits</fullName>
+                <default>false</default>
+                <label>Circuits</label>
+            </value>
+            <value>
+                <fullName>Gbps</fullName>
+                <default>false</default>
+                <label>Gbps</label>
+            </value>
+            <value>
+                <fullName>RU</fullName>
+                <default>false</default>
+                <label>RU</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- The salesperson whose quota this record defines. One record per salesperson per period. --></help>
+    <label><!-- Salesperson --></label>
+    <name>Salesperson__c</name>
+    <relationshipLabel><!-- Quotas --></relationshipLabel>
+</CustomFieldTranslation>

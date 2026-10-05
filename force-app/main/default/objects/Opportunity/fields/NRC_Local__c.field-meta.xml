@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NRC_Local__c</fullName>
+    <description>Non-Recurring Charge in the customer&apos;s local currency. Multiply by FX Rate (to USD) to get NRC (USD).</description>
+    <label>NRC (Local Currency) (Not Used)</label>
+    <precision>14</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_Sales_Team</name>
+        <label>Assign Sales Team</label>
+        <locationX>50</locationX>
+        <locationY>503</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Sales_Team__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Owner_User.Sales_Team__c</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Check_Null</name>
+        <label>Check Null</label>
+        <locationX>182</locationX>
+        <locationY>395</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Not_Null</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Owner_User</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Sales_Team</targetReference>
+            </connector>
+            <label>Not Null</label>
+        </rules>
+    </decisions>
+    <description>DW-6: Auto-populates Sales_Team__c from Operation_Country__c. Most country values map 1:1; Global and Bangladesh map to Platform.
+
+SFDEV-46: Updated flow to remove sales team assignment as per Ooperation country and added things so it sets as per Account owner.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>formula_DerivedSalesTeam</name>
+        <dataType>String</dataType>
+        <expression>IF(TEXT({!$Record.Operation_Country__c}) = &quot;Indonesia&quot;, &quot;Indonesia&quot;,
+IF(TEXT({!$Record.Operation_Country__c}) = &quot;Malaysia&quot;, &quot;Malaysia&quot;,
+IF(TEXT({!$Record.Operation_Country__c}) = &quot;India&quot;, &quot;India&quot;,
+IF(TEXT({!$Record.Operation_Country__c}) = &quot;Japan&quot;, &quot;Japan&quot;,
+IF(TEXT({!$Record.Operation_Country__c}) = &quot;China&quot;, &quot;China&quot;,
+IF(TEXT({!$Record.Operation_Country__c}) = &quot;South Korea&quot;, &quot;South Korea&quot;,
+IF(TEXT({!$Record.Operation_Country__c}) = &quot;Philippines&quot;, &quot;Philippines&quot;,
+&quot;Platform&quot;)))))))</expression>
+    </formulas>
+    <interviewLabel>Account Sales Team {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Account - Before Save - Sales Team</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Owner_User</name>
+        <label>Get Owner User</label>
+        <locationX>182</locationX>
+        <locationY>287</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Null</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Owner.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>IsActive</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Sales_Team__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Owner_User</targetReference>
+        </connector>
+        <filterFormula>OR(
+
+       ISNEW(),
+       ISCHANGED({!$Record.OwnerId})
+)</filterFormula>
+        <object>Account</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

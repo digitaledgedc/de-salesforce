@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <choices>
+        <name>dt_CreditApplication</name>
+        <choiceText>Credit Application</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Credit Application</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>dt_CustomerContract</name>
+        <choiceText>Customer Contract</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Customer Contract</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>dt_DnBReport</name>
+        <choiceText>D&amp;B Report</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>D&amp;B Report</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>dt_IDDocument</name>
+        <choiceText>ID / Company Registration</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>ID / Company Registration</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>dt_KYCDocument</name>
+        <choiceText>KYC Document</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>KYC Document</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>dt_Other</name>
+        <choiceText>Other</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Other</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>dt_PurchaseOrder</name>
+        <choiceText>Purchase Order</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Purchase Order</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>dt_Quote</name>
+        <choiceText>Quote</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Quote</stringValue>
+        </value>
+    </choices>
+    <description>F-UploadDocument: Reusable screen flow for uploading documents to any Salesforce record. Accepts a recordId and optional context (object type) as inputs. Presents a document type picker and a file upload component.</description>
+    <interviewLabel>Upload Document {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Upload Document</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <runInMode>SystemModeWithSharing</runInMode>
+    <screens>
+        <name>Screen_Success</name>
+        <label>Upload Complete</label>
+        <locationX>176</locationX>
+        <locationY>240</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>display_Success</name>
+            <fieldText>&lt;p&gt;Document uploaded successfully and attached to this record.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Screen_Upload</name>
+        <label>Upload Document</label>
+        <locationX>176</locationX>
+        <locationY>120</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Screen_Success</targetReference>
+        </connector>
+        <fields>
+            <name>display_Instructions</name>
+            <fieldText>&lt;p&gt;Select a document type and upload the file. The document will be attached to this record.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>input_DocType</name>
+            <choiceReferences>dt_CustomerContract</choiceReferences>
+            <choiceReferences>dt_KYCDocument</choiceReferences>
+            <choiceReferences>dt_DnBReport</choiceReferences>
+            <choiceReferences>dt_PurchaseOrder</choiceReferences>
+            <choiceReferences>dt_Quote</choiceReferences>
+            <choiceReferences>dt_CreditApplication</choiceReferences>
+            <choiceReferences>dt_IDDocument</choiceReferences>
+            <choiceReferences>dt_Other</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Document Type</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>input_FileUpload</name>
+            <extensionName>forceContent:fileUpload</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>Upload File</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>recordId</name>
+                <value>
+                    <elementReference>recordId</elementReference>
+                </value>
+            </inputParameters>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <nextOrFinishButtonLabel>Upload</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>176</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Screen_Upload</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>var_objectApiName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

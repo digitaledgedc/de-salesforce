@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Paper_Process_Steps__c</fullName>
+    <description>Multi-select checklist of legal/procurement/contractual steps required to close. Stored semi-colon separated.</description>
+    <label>Paper Process - Steps</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Procurement Review</fullName>
+                <default>false</default>
+                <label>Procurement Review</label>
+            </value>
+            <value>
+                <fullName>Legal / MSA Negotiation</fullName>
+                <default>false</default>
+                <label>Legal / MSA Negotiation</label>
+            </value>
+            <value>
+                <fullName>Security Review</fullName>
+                <default>false</default>
+                <label>Security Review</label>
+            </value>
+            <value>
+                <fullName>Vendor Onboarding</fullName>
+                <default>false</default>
+                <label>Vendor Onboarding</label>
+            </value>
+            <value>
+                <fullName>PO Creation</fullName>
+                <default>false</default>
+                <label>PO Creation</label>
+            </value>
+            <value>
+                <fullName>DocuSign Routing</fullName>
+                <default>false</default>
+                <label>DocuSign Routing</label>
+            </value>
+            <value>
+                <fullName>Finance Approval</fullName>
+                <default>false</default>
+                <label>Finance Approval</label>
+            </value>
+            <value>
+                <fullName>IT Approval</fullName>
+                <default>false</default>
+                <label>IT Approval</label>
+            </value>
+            <value>
+                <fullName>Fiscal Year Cutoff Check</fullName>
+                <default>false</default>
+                <label>Fiscal Year Cutoff Check</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

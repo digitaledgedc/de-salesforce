@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_13_Binding_Requires_Review</fullName>
+    <active>true</active>
+    <description>VR-QUOTE-13: Is_Binding__c cannot be set to TRUE unless the Quote has been reviewed (Status = Approved or Presented). Prevents sales users from marking a quote as legally binding before it passes internal review.</description>
+    <errorConditionFormula>AND(
+    ISCHANGED(Is_Binding__c),
+    Is_Binding__c = true,
+    NOT(ISPICKVAL(Status, &quot;Approved&quot;)),
+    NOT(ISPICKVAL(Status, &quot;Presented&quot;))
+)</errorConditionFormula>
+    <errorDisplayField>Is_Binding__c</errorDisplayField>
+    <errorMessage>This quote must be reviewed and approved before it can be marked as Binding. Please submit for review first.</errorMessage>
+</ValidationRule>

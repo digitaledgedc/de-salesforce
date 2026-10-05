@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DE_Lead_Korea_Lead</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>LEAD.COMPANY</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <columns>LEAD.COUNTRY_CODE</columns>
+    <filterScope>Queue</filterScope>
+    <filters>
+        <field>LEAD.RATING</field>
+        <operation>equals</operation>
+        <value>Warm,Hot</value>
+    </filters>
+    <label>DE Lead - Korea</label>
+    <queue>DE_Lead_Korea</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Inventory Status --></label>
+    <name>Status__c</name>
+    <picklistValues>
+        <masterLabel>Assigned</masterLabel>
+        <translation><!-- Assigned --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Available</masterLabel>
+        <translation><!-- Available --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Decommissioned</masterLabel>
+        <translation><!-- Decommissioned --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Installed</masterLabel>
+        <translation><!-- Installed --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending Available</masterLabel>
+        <translation><!-- Pending Available --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>ROFR</masterLabel>
+        <translation><!-- ROFR --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Reserved</masterLabel>
+        <translation><!-- Reserved --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Sold</masterLabel>
+        <translation><!-- Sold --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Stranded</masterLabel>
+        <translation><!-- Stranded --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

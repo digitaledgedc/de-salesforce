@@ -13,44 +13,110 @@ public without sharing class SendNewOrdersQueueable implements Queueable, Databa
         this.orderIds = orderIds;
     }
 
+    /** Collected across every batch of runSync — never DML'd inside processOrders itself, so a
+     *  caller that made its own callouts earlier in this transaction (OdooBanSyncQueueable) can
+     *  keep deferring DML until every callout in the whole chain, including this one, is done. */
+    public class SendResult {
+        public List<Id> successOrderIds = new List<Id>();
+        public List<Order> pendingUpdates = new List<Order>();
+        public List<DE_Integration_Error__c> pendingErrors = new List<DE_Integration_Error__c>();
+    }
+
     public void execute(QueueableContext ctx) {
-        System.debug('🔵 IP-1 EXECUTE: Starting execution with ' + orderIds.size() + ' orders');
-        System.debug('🔵 IP-1 EXECUTE: Order IDs: ' + orderIds);
-        
-        // Process in smaller batches if too many orders
-        if (orderIds.size() > BATCH_SIZE) {
-            System.debug('⚠️ IP-1 BATCHING: ' + orderIds.size() + ' orders exceeds batch size of ' + BATCH_SIZE);
-            List<Id> currentBatch = new List<Id>();
-            List<Id> remainingBatch = new List<Id>();
-            
-            for (Integer i = 0; i < orderIds.size(); i++) {
-                if (i < BATCH_SIZE) {
-                    currentBatch.add(orderIds[i]);
-                } else {
-                    remainingBatch.add(orderIds[i]);
-                }
-            }
-            
-            System.debug('📦 IP-1 BATCH: Processing ' + currentBatch.size() + ' orders in current batch');
-            System.debug('📦 IP-1 BATCH: ' + remainingBatch.size() + ' orders remaining for next batch');
-            
-            // Process current batch
-            processOrders(currentBatch);
-            
-            // Queue next batch
-            if (!remainingBatch.isEmpty()) {
-                System.debug('🔄 IP-1 QUEUE: Enqueuing next batch with ' + remainingBatch.size() + ' orders');
-                System.enqueueJob(new SendNewOrdersQueueable(remainingBatch));
+        SendResult result = runSync(orderIds, null, null);
+        commitAndChainCapacity(result);
+    }
+
+    /**
+     * Direct, non-enqueued entry point: sends all New Service/Renewal Orders in orderIds,
+     * chunking into batches of BATCH_SIZE in-process instead of re-enqueueing itself for each
+     * chunk. Callable from another already-executing Queueable (e.g.
+     * OdooBanSyncQueueable) without risking "Too many queueable jobs added to the queue" —
+     * Salesforce caps an executing job to at most one additional System.enqueueJob() call, and
+     * looping in-process needs none. Commits its own DML immediately (standalone use — nothing
+     * else in this transaction is holding pending DML).
+     */
+    public static void sendOrders(List<Id> orderIds) {
+        SendNewOrdersQueueable q = new SendNewOrdersQueueable(orderIds);
+        SendResult result = q.runSync(orderIds, null, null);
+        q.commitAndChainCapacity(result);
+    }
+
+    /**
+     * Deferred variant for a caller (OdooBanSyncQueueable) that already ran its own Odoo callouts
+     * earlier in THIS SAME transaction and has NOT yet committed the resulting DML. Since this
+     * method itself calls out to Odoo, and Salesforce throws "You have uncommitted work pending"
+     * on any callout that follows DML in one transaction, this method deliberately does NOT
+     * perform any DML — it returns everything it would have written (SendResult.pendingUpdates /
+     * pendingErrors) so the caller can merge it with its own pending DML and commit everything
+     * together, once, only after every callout in the whole chain (its own + this one) has run.
+     * IP-3 capacity chaining (System.enqueueJob) is safe to fire here regardless — that's an
+     * enqueue, not a callout, and doesn't require anything to be committed first.
+     *
+     * banOverrides (keyed by BillingAccount__c Id, carrying the freshly-synced
+     * Odoo_Partner_ID__c/Odoo_BAN_ID__c/Odoo_Invoice_Freq_ID__c — still uncommitted at this point)
+     * and contactPartnerIdOverrides (keyed by Contact Id, the Quote-role contacts' Odoo partner
+     * ids) are applied on top of the normal fresh query below. An Order whose BAN/contact isn't in
+     * these maps (already synced in an earlier, already-committed run) falls back to the queried
+     * value, completely unchanged from today's behavior.
+     */
+    public static SendResult sendOrdersDeferred(List<Id> orderIds, Map<Id, BillingAccount__c> banOverrides,
+            Map<Id, Integer> contactPartnerIdOverrides) {
+        SendNewOrdersQueueable q = new SendNewOrdersQueueable(orderIds);
+        SendResult result = q.runSync(orderIds, banOverrides, contactPartnerIdOverrides);
+        q.chainCapacityOnly(result);
+        return result;
+    }
+
+    private SendResult runSync(List<Id> idsToProcess, Map<Id, BillingAccount__c> banOverrides,
+            Map<Id, Integer> contactPartnerIdOverrides) {
+        System.debug('🔵 IP-1 EXECUTE: Starting execution with ' + idsToProcess.size() + ' orders');
+        System.debug('🔵 IP-1 EXECUTE: Order IDs: ' + idsToProcess);
+
+        SendResult result = new SendResult();
+        Integer total = idsToProcess.size();
+        for (Integer start = 0; start < total; start += BATCH_SIZE) {
+            Integer chunkEnd = Math.min(start + BATCH_SIZE, total);
+            List<Id> chunk = new List<Id>();
+            for (Integer i = start; i < chunkEnd; i++) chunk.add(idsToProcess[i]);
+            System.debug('📦 IP-1 BATCH: Processing ' + chunk.size() + ' orders (offset ' + start + ')');
+            processOrders(chunk, banOverrides, contactPartnerIdOverrides, result);
+        }
+        System.debug('✅ IP-1 COMPLETE: All batches processed');
+        return result;
+    }
+
+    /** Commits pendingUpdates/pendingErrors immediately, then chains IP-3 — the standalone path. */
+    private void commitAndChainCapacity(SendResult result) {
+        if (!result.pendingErrors.isEmpty()) {
+            System.debug('💾 IP-1 DML: Inserting ' + result.pendingErrors.size() + ' error records');
+            insert result.pendingErrors;
+        }
+        if (!result.pendingUpdates.isEmpty()) {
+            System.debug('💾 IP-1 DML: Updating ' + result.pendingUpdates.size() + ' orders');
+            update result.pendingUpdates;
+        }
+        chainCapacityOnly(result);
+    }
+
+    /** IP-3 capacity chaining once for ALL successful orders across every batch — never per-chunk,
+     *  so this enqueues at most one additional job regardless of how many chunks were processed.
+     *  Safe to call before pendingUpdates/pendingErrors are committed — enqueueJob isn't a callout. */
+    private void chainCapacityOnly(SendResult result) {
+        if (!result.successOrderIds.isEmpty()) {
+            System.debug('🔗 IP-1 CHAINING: Checking ' + result.successOrderIds.size() + ' successful orders for capacity assignments');
+            List<Id> spaceLockIds = getOrdersWithCapacity(result.successOrderIds);
+            if (!spaceLockIds.isEmpty()) {
+                System.debug('🔒 IP-1 CHAINING: Found ' + spaceLockIds.size() + ' orders with capacity, enqueuing LockOdooSpacesQueueable');
+                System.enqueueJob(new LockOdooSpacesQueueable(spaceLockIds));
             } else {
-                System.debug('✅ IP-1 COMPLETE: All batches processed');
+                System.debug('ℹ️ IP-1 CHAINING: No capacity assignments found, skipping IP-3');
             }
-        } else {
-            System.debug('📦 IP-1 DIRECT: Processing all ' + orderIds.size() + ' orders in single batch');
-            processOrders(orderIds);
         }
     }
-    
-    private void processOrders(List<Id> batchOrderIds) {
+
+    private void processOrders(List<Id> batchOrderIds, Map<Id, BillingAccount__c> banOverrides,
+            Map<Id, Integer> contactPartnerIdOverrides, SendResult result) {
         System.debug('🔵 IP-1 PROCESS ORDERS: Starting batch processing for ' + batchOrderIds.size() + ' orders');
         
         OdooIntegrationSettings__c settings = OdooIntegrationSettings__c.getOrgDefaults();
@@ -84,6 +150,10 @@ public without sharing class SendNewOrdersQueueable implements Queueable, Databa
                    BillingAccount__r.Invoice_Presentment__c,
                    BillingAccount__r.Charge_Period_Presentment__c,
                    BillingAccount__r.Additional_Invoice_Email__c,
+                   Quote__c, Quote__r.ContactId, Quote__r.Contact.Odoo_Partner_ID__c,Quote__r.Contact.Migration_Source_Id__c,
+                   Quote__r.Ops_Contact__c, Quote__r.Ops_Contact__r.Odoo_Partner_ID__c,Quote__r.Ops_Contact__r.Migration_Source_Id__c,
+                   Quote__r.Order_Contact__c, Quote__r.Order_Contact__r.Odoo_Partner_ID__c,Quote__r.Order_Contact__r.Migration_Source_Id__c,
+                   Quote__r.Notes_To_Capacity_Approver__c,
                    (SELECT Id, Product2.Name, Product2.Merge_IB_Task__c,
                            Odoo_Product_ID__c, Odoo_Attribute_Value_ID__c,Product_Attribute_Value__c,
                            Description, Quantity, UnitPrice, Billing_Mode__c,
@@ -102,6 +172,33 @@ public without sharing class SendNewOrdersQueueable implements Queueable, Databa
             WHERE Id IN :batchOrderIds
         ];
         System.debug('📋 IP-1 ORDERS: Retrieved ' + orders.size() + ' orders');
+
+        // Apply just-computed-this-transaction BAN/Contact Odoo ids on top of the fresh query
+        // above (see sendOrders(orderIds, banOverrides, contactPartnerIdOverrides) doc) — a
+        // BAN/contact absent from these maps was already synced in an earlier, committed run, so
+        // it keeps whatever the query already returned. Field names/payload logic below are
+        // untouched; only the source of these specific values changes.
+        if (banOverrides != null || contactPartnerIdOverrides != null) {
+            for (Order o : orders) {
+                if (banOverrides != null && o.BillingAccount__c != null && banOverrides.containsKey(o.BillingAccount__c)) {
+                    BillingAccount__c ov = banOverrides.get(o.BillingAccount__c);
+                    if (ov.Odoo_Partner_ID__c != null) o.BillingAccount__r.Odoo_Partner_ID__c = ov.Odoo_Partner_ID__c;
+                    if (ov.Odoo_BAN_ID__c != null) o.BillingAccount__r.Odoo_BAN_ID__c = ov.Odoo_BAN_ID__c;
+                    if (ov.Odoo_Invoice_Freq_ID__c != null) o.BillingAccount__r.Odoo_Invoice_Freq_ID__c = ov.Odoo_Invoice_Freq_ID__c;
+                }
+                if (contactPartnerIdOverrides != null && o.Quote__c != null) {
+                    if (o.Quote__r.ContactId != null && contactPartnerIdOverrides.containsKey(o.Quote__r.ContactId)) {
+                        o.Quote__r.Contact.Odoo_Partner_ID__c = contactPartnerIdOverrides.get(o.Quote__r.ContactId);
+                    }
+                    if (o.Quote__r.Ops_Contact__c != null && contactPartnerIdOverrides.containsKey(o.Quote__r.Ops_Contact__c)) {
+                        o.Quote__r.Ops_Contact__r.Odoo_Partner_ID__c = contactPartnerIdOverrides.get(o.Quote__r.Ops_Contact__c);
+                    }
+                    if (o.Quote__r.Order_Contact__c != null && contactPartnerIdOverrides.containsKey(o.Quote__r.Order_Contact__c)) {
+                        o.Quote__r.Order_Contact__r.Odoo_Partner_ID__c = contactPartnerIdOverrides.get(o.Quote__r.Order_Contact__c);
+                    }
+                }
+            }
+        }
 
         // ─── NEW: Query to trace back to the original order for aggregate products ───
         // For aggregate products (Merge_IB_Task__c = TRUE), we need the sf_originitem_id
@@ -261,29 +358,16 @@ public without sharing class SendNewOrdersQueueable implements Queueable, Databa
         }
         
         System.debug('📊 IP-1 CALLOUT SUMMARY: ' + calloutSuccess + ' succeeded, ' + calloutFailure + ' failed');
-        
-        // DML operations
-        if (!errorsToInsert.isEmpty()) {
-            System.debug('💾 IP-1 DML: Inserting ' + errorsToInsert.size() + ' error records');
-            insert errorsToInsert;
-        }
-        
-        if (!toUpdate.isEmpty()) {
-            System.debug('💾 IP-1 DML: Updating ' + toUpdate.size() + ' orders');
-            update toUpdate;
-        }
-        
-        // Chain IP-3 for Orders with capacity assignments
-        if (!successOrderIds.isEmpty()) {
-            System.debug('🔗 IP-1 CHAINING: Checking ' + successOrderIds.size() + ' successful orders for capacity assignments');
-            List<Id> spaceLockIds = getOrdersWithCapacity(successOrderIds);
-            if (!spaceLockIds.isEmpty()) {
-                System.debug('🔒 IP-1 CHAINING: Found ' + spaceLockIds.size() + ' orders with capacity, enqueuing LockOdooSpacesQueueable');  System.enqueueJob(new LockOdooSpacesQueueable(spaceLockIds));
-            } else {
-                System.debug('ℹ️ IP-1 CHAINING: No capacity assignments found, skipping IP-3');
-            }
-        }
-        
+
+        // No DML here — collect into the shared result instead. The caller decides when it's
+        // safe to commit (immediately for standalone use, or deferred until every callout in a
+        // larger chain has finished — see SendResult / sendOrdersDeferred doc).
+        result.pendingErrors.addAll(errorsToInsert);
+        result.pendingUpdates.addAll(toUpdate);
+        result.successOrderIds.addAll(successOrderIds);
+
+        // IP-3 capacity chaining now happens once in runSync() after every chunk completes,
+        // not per-chunk here — see runSync() for why.
         System.debug('✅ IP-1 PROCESS ORDERS COMPLETE: Batch finished');
     }
     
@@ -397,6 +481,7 @@ public without sharing class SendNewOrdersQueueable implements Queueable, Databa
         gen.writeNumberField('company_id', Integer.valueOf(site.Odoo_Company_ID__c));
         gen.writeStringField('date_order', formatDateTime(o.EffectiveDate));
         gen.writeNumberField('partner_id', Integer.valueOf(o.BillingAccount__r.Odoo_Partner_ID__c));
+        gen.writeNumberField('ns_end_customer_name', Integer.valueOf(o.BillingAccount__r.Odoo_Partner_ID__c));
         gen.writeStringField('picking_policy', 'direct');
         
         String clientOrderRef = (o.Customer_PO_Reference__c != null && o.Customer_PO_Reference__c != '')
@@ -406,8 +491,41 @@ public without sharing class SendNewOrdersQueueable implements Queueable, Databa
         gen.writeNumberField('x_studio_operation_country', Integer.valueOf(site.Odoo_Country_ID__c));
         gen.writeNumberField('x_studio_operation_metro', Integer.valueOf(site.Odoo_Metro_ID__c));
         gen.writeNumberField('x_studio_operation_site', Integer.valueOf(site.Odoo_Site_ID__c));
-        gen.writeStringField('x_studio_service_request_date',
-            o.RDD__c != null ? formatDate(o.RDD__c) : formatDate(o.EffectiveDate));
+        gen.writeStringField('x_studio_service_request_date',formatDate(o.RDD__c));
+
+        // Quote-role contacts (Quote Contact, Ops Contact, Order Contact) — sent as the contact's
+        // Odoo res.partner ID, synced beforehand by OdooBanSyncQueueable.syncQuoteRoleContacts.
+        // false when the role is blank on the Quote or its contact hasn't been synced yet.
+        if (o.Quote__c != null && o.Quote__r.ContactId != null
+                && (o.Quote__r.Contact.Odoo_Partner_ID__c != null || o.Quote__r.Contact.Migration_Source_Id__c != null)) {
+            gen.writeNumberField('x_studio_quote_contact_1', Integer.valueOf(
+                o.Quote__r.Contact.Migration_Source_Id__c != null
+                    ? o.Quote__r.Contact.Migration_Source_Id__c
+                    : String.valueOf(o.Quote__r.Contact.Odoo_Partner_ID__c)));
+        } else {
+            gen.writeBooleanField('x_studio_quote_contact_1', false);
+        }
+        if (o.Quote__c != null && o.Quote__r.Ops_Contact__c != null
+                && (o.Quote__r.Ops_Contact__r.Odoo_Partner_ID__c != null || o.Quote__r.Ops_Contact__r.Migration_Source_Id__c != null)) {
+            gen.writeNumberField('x_studio_ops_contact_1', Integer.valueOf(
+                o.Quote__r.Ops_Contact__r.Migration_Source_Id__c != null
+                    ? o.Quote__r.Ops_Contact__r.Migration_Source_Id__c
+                    : String.valueOf(o.Quote__r.Ops_Contact__r.Odoo_Partner_ID__c)));
+        } else {
+            gen.writeBooleanField('x_studio_ops_contact_1', false);
+        }
+        if (o.Quote__c != null && o.Quote__r.Order_Contact__c != null
+                && (o.Quote__r.Order_Contact__r.Odoo_Partner_ID__c != null || o.Quote__r.Order_Contact__r.Migration_Source_Id__c != null)) {
+            gen.writeNumberField('x_studio_billing_contact_1', Integer.valueOf(
+                o.Quote__r.Order_Contact__r.Migration_Source_Id__c != null
+                    ? o.Quote__r.Order_Contact__r.Migration_Source_Id__c
+                    : String.valueOf(o.Quote__r.Order_Contact__r.Odoo_Partner_ID__c)));
+        } else {
+            gen.writeBooleanField('x_studio_billing_contact_1', false);
+        }
+        gen.writeStringField('note_to_capacity_approver',
+            (o.Quote__c != null && o.Quote__r.Notes_To_Capacity_Approver__c != null) ? o.Quote__r.Notes_To_Capacity_Approver__c : '');
+
         gen.writeNumberField('x_contract_term', o.Contract_Term_Months__c != null ? Integer.valueOf(o.Contract_Term_Months__c) : 12);
         gen.writeNumberField('ns_invoice_frequency_id', Integer.valueOf(o.BillingAccount__r.Odoo_Invoice_Freq_ID__c));
         gen.writeNumberField('ns_ban_id', Integer.valueOf(o.BillingAccount__r.Odoo_BAN_ID__c));

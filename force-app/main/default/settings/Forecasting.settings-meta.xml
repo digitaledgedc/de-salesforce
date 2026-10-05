@@ -340,6 +340,10 @@
             <label>Competitor Won</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgSS</field>
             <label>Contract Term (Months)</label>
         </opportunityListFieldsLabelMappings>
@@ -636,8 +640,24 @@
             <label>Oppt kVA</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTZ</field>
             <label>Ops Cost Review Status</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -716,6 +736,14 @@
             <label>PUE (Metered Power)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTm</field>
             <label>Quote MRC</label>
         </opportunityListFieldsLabelMappings>
@@ -738,6 +766,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTr</field>
             <label>Referral Partner</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTs</field>
@@ -790,6 +822,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -858,6 +894,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUJ</field>
             <label>TCV MRC</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -963,6 +1003,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -1037,7 +1078,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -1057,12 +1102,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -1076,6 +1124,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -1093,6 +1142,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -1358,6 +1408,10 @@
             <label>Competitor Won</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgSS</field>
             <label>Contract Term (Months)</label>
         </opportunityListFieldsLabelMappings>
@@ -1654,8 +1708,24 @@
             <label>Oppt kVA</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTZ</field>
             <label>Ops Cost Review Status</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -1734,6 +1804,14 @@
             <label>PUE (Metered Power)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTm</field>
             <label>Quote MRC</label>
         </opportunityListFieldsLabelMappings>
@@ -1756,6 +1834,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTr</field>
             <label>Referral Partner</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTs</field>
@@ -1808,6 +1890,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -1876,6 +1962,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUJ</field>
             <label>TCV MRC</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -1981,6 +2071,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -2055,7 +2146,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -2075,12 +2170,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -2094,6 +2192,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -2111,6 +2210,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -2380,6 +2480,10 @@
             <label>Competitor Won</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgSS</field>
             <label>Contract Term (Months)</label>
         </opportunityListFieldsLabelMappings>
@@ -2676,8 +2780,24 @@
             <label>Oppt kVA</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTZ</field>
             <label>Ops Cost Review Status</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -2756,6 +2876,14 @@
             <label>PUE (Metered Power)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTm</field>
             <label>Quote MRC</label>
         </opportunityListFieldsLabelMappings>
@@ -2778,6 +2906,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTr</field>
             <label>Referral Partner</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTs</field>
@@ -2830,6 +2962,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -2898,6 +3034,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUJ</field>
             <label>TCV MRC</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -3004,6 +3144,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -3078,7 +3219,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -3098,12 +3243,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -3117,6 +3265,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -3134,6 +3283,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -3399,6 +3549,10 @@
             <label>Competitor Won</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgSS</field>
             <label>Contract Term (Months)</label>
         </opportunityListFieldsLabelMappings>
@@ -3695,8 +3849,24 @@
             <label>Oppt kVA</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTZ</field>
             <label>Ops Cost Review Status</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -3775,6 +3945,14 @@
             <label>PUE (Metered Power)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTm</field>
             <label>Quote MRC</label>
         </opportunityListFieldsLabelMappings>
@@ -3797,6 +3975,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTr</field>
             <label>Referral Partner</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTs</field>
@@ -3849,6 +4031,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -3917,6 +4103,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUJ</field>
             <label>TCV MRC</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -4022,6 +4212,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -4096,7 +4287,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -4116,12 +4311,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -4135,6 +4333,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -4152,6 +4351,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -4421,6 +4621,10 @@
             <label>Competitor Won</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgSS</field>
             <label>Contract Term (Months)</label>
         </opportunityListFieldsLabelMappings>
@@ -4717,8 +4921,24 @@
             <label>Oppt kVA</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTZ</field>
             <label>Ops Cost Review Status</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -4797,6 +5017,14 @@
             <label>PUE (Metered Power)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTm</field>
             <label>Quote MRC</label>
         </opportunityListFieldsLabelMappings>
@@ -4819,6 +5047,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTr</field>
             <label>Referral Partner</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTs</field>
@@ -4871,6 +5103,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -4939,6 +5175,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUJ</field>
             <label>TCV MRC</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -5045,6 +5285,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -5119,7 +5360,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -5139,12 +5384,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -5158,6 +5406,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -5175,6 +5424,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -5440,6 +5690,10 @@
             <label>Competitor Won</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgSS</field>
             <label>Contract Term (Months)</label>
         </opportunityListFieldsLabelMappings>
@@ -5736,8 +5990,24 @@
             <label>Oppt kVA</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTZ</field>
             <label>Ops Cost Review Status</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -5816,6 +6086,14 @@
             <label>PUE (Metered Power)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTm</field>
             <label>Quote MRC</label>
         </opportunityListFieldsLabelMappings>
@@ -5838,6 +6116,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTr</field>
             <label>Referral Partner</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTs</field>
@@ -5890,6 +6172,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -5958,6 +6244,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUJ</field>
             <label>TCV MRC</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -6063,6 +6353,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -6137,7 +6428,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -6157,12 +6452,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -6176,6 +6474,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -6193,6 +6492,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -6462,6 +6762,10 @@
             <label>Competitor Won</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgSS</field>
             <label>Contract Term (Months)</label>
         </opportunityListFieldsLabelMappings>
@@ -6758,8 +7062,24 @@
             <label>Oppt kVA</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTZ</field>
             <label>Ops Cost Review Status</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -6838,6 +7158,14 @@
             <label>PUE (Metered Power)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTm</field>
             <label>Quote MRC</label>
         </opportunityListFieldsLabelMappings>
@@ -6860,6 +7188,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTr</field>
             <label>Referral Partner</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTs</field>
@@ -6912,6 +7244,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -6980,6 +7316,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUJ</field>
             <label>TCV MRC</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -7086,6 +7426,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -7160,7 +7501,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -7180,12 +7525,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -7199,6 +7547,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -7216,6 +7565,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -7481,6 +7831,10 @@
             <label>Competitor Won</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgSS</field>
             <label>Contract Term (Months)</label>
         </opportunityListFieldsLabelMappings>
@@ -7777,8 +8131,24 @@
             <label>Oppt kVA</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTZ</field>
             <label>Ops Cost Review Status</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -7857,6 +8227,14 @@
             <label>PUE (Metered Power)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTm</field>
             <label>Quote MRC</label>
         </opportunityListFieldsLabelMappings>
@@ -7879,6 +8257,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTr</field>
             <label>Referral Partner</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTs</field>
@@ -7931,6 +8313,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -7999,6 +8385,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUJ</field>
             <label>TCV MRC</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -8104,6 +8494,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -8178,7 +8569,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -8198,12 +8593,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -8217,6 +8615,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -8234,6 +8633,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -8503,6 +8903,10 @@
             <label>Competitor Won</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgSS</field>
             <label>Contract Term (Months)</label>
         </opportunityListFieldsLabelMappings>
@@ -8799,8 +9203,24 @@
             <label>Oppt kVA</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTZ</field>
             <label>Ops Cost Review Status</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -8879,6 +9299,14 @@
             <label>PUE (Metered Power)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTm</field>
             <label>Quote MRC</label>
         </opportunityListFieldsLabelMappings>
@@ -8901,6 +9329,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTr</field>
             <label>Referral Partner</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTs</field>
@@ -8953,6 +9385,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -9021,6 +9457,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUJ</field>
             <label>TCV MRC</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -9127,6 +9567,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -9201,7 +9642,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -9221,12 +9666,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -9240,6 +9688,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -9257,6 +9706,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -9522,6 +9972,10 @@
             <label>Competitor Won</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgSS</field>
             <label>Contract Term (Months)</label>
         </opportunityListFieldsLabelMappings>
@@ -9818,8 +10272,24 @@
             <label>Oppt kVA</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTZ</field>
             <label>Ops Cost Review Status</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -9898,6 +10368,14 @@
             <label>PUE (Metered Power)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTm</field>
             <label>Quote MRC</label>
         </opportunityListFieldsLabelMappings>
@@ -9920,6 +10398,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTr</field>
             <label>Referral Partner</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTs</field>
@@ -9972,6 +10454,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -10040,6 +10526,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUJ</field>
             <label>TCV MRC</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -10145,6 +10635,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -10219,7 +10710,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -10239,12 +10734,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -10258,6 +10756,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -10275,6 +10774,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -10544,6 +11044,10 @@
             <label>Competitor Won</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgSS</field>
             <label>Contract Term (Months)</label>
         </opportunityListFieldsLabelMappings>
@@ -10840,8 +11344,24 @@
             <label>Oppt kVA</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTZ</field>
             <label>Ops Cost Review Status</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -10920,6 +11440,14 @@
             <label>PUE (Metered Power)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTm</field>
             <label>Quote MRC</label>
         </opportunityListFieldsLabelMappings>
@@ -10942,6 +11470,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTr</field>
             <label>Referral Partner</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTs</field>
@@ -10994,6 +11526,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -11062,6 +11598,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUJ</field>
             <label>TCV MRC</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -11168,6 +11708,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -11242,7 +11783,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -11262,12 +11807,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -11281,6 +11829,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -11298,6 +11847,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>
@@ -11563,6 +12113,10 @@
             <label>Competitor Won</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnpl</field>
+            <label>Contract End Date</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgSS</field>
             <label>Contract Term (Months)</label>
         </opportunityListFieldsLabelMappings>
@@ -11859,8 +12413,24 @@
             <label>Oppt kVA</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya7</field>
+            <label>Ops Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaC</field>
+            <label>Ops Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTZ</field>
             <label>Ops Cost Review Status</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya8</field>
+            <label>Order Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaD</field>
+            <label>Order Contact Email</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTa</field>
@@ -11939,6 +12509,14 @@
             <label>PUE (Metered Power)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NIW000004Sya9</field>
+            <label>Quote Contact</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004SyaE</field>
+            <label>Quote Contact Email</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTm</field>
             <label>Quote MRC</label>
         </opportunityListFieldsLabelMappings>
@@ -11961,6 +12539,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTr</field>
             <label>Referral Partner</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dnJY</field>
+            <label>Remaining Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTs</field>
@@ -12013,6 +12595,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUA</field>
             <label>Salesperson 3 (SP3)</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004sbuj</field>
+            <label>Sales Team</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgTx</field>
@@ -12081,6 +12667,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUJ</field>
             <label>TCV MRC</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NIW000004dng5</field>
+            <label>TCV MRC (USD)</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NIW000003zgUD</field>
@@ -12186,6 +12776,7 @@
             <field>00NIW000003zgT5</field>
             <field>00NIW000003zgSP</field>
             <field>00NIW000003zgSQ</field>
+            <field>00NIW000004dnpl</field>
             <field>00NIW000003zgSS</field>
             <field>00NIW000003zgUG</field>
             <field>00NIW000003zgSf</field>
@@ -12260,7 +12851,11 @@
             <field>00NIW000003zgTX</field>
             <field>00NIW000003zgSF</field>
             <field>00NIW000003zgSG</field>
+            <field>00NIW000004Sya7</field>
+            <field>00NIW000004SyaC</field>
             <field>00NIW000003zgTZ</field>
+            <field>00NIW000004Sya8</field>
+            <field>00NIW000004SyaD</field>
             <field>00NIW000003zgTa</field>
             <field>00NIW000003zgTb</field>
             <field>00NIW000003zgTc</field>
@@ -12280,12 +12875,15 @@
             <field>00NIW000003zgdx</field>
             <field>00NIW000003zgTk</field>
             <field>00NIW000003zgTe</field>
+            <field>00NIW000004Sya9</field>
+            <field>00NIW000004SyaE</field>
             <field>00NIW000003zgTm</field>
             <field>00NIW000003zgTn</field>
             <field>00NIW000003zgSz</field>
             <field>00NIW000003zgTp</field>
             <field>00NIW000003zgTq</field>
             <field>00NIW000003zgTr</field>
+            <field>00NIW000004dnJY</field>
             <field>00NIW000003zgTs</field>
             <field>00NIW000003zgSt</field>
             <field>00NIW000003zgTt</field>
@@ -12299,6 +12897,7 @@
             <field>00NIW000003zgU9</field>
             <field>00NIW000003zgU6</field>
             <field>00NIW000003zgUA</field>
+            <field>00NIW000004sbuj</field>
             <field>00NIW000003zgTx</field>
             <field>00NIW000003zgUB</field>
             <field>00NIW000003zgdy</field>
@@ -12316,6 +12915,7 @@
             <field>00NIW000003zgUE</field>
             <field>00NIW000003zgUF</field>
             <field>00NIW000003zgUJ</field>
+            <field>00NIW000004dng5</field>
             <field>00NIW000003zgUD</field>
             <field>00NIW000003zgdz</field>
             <field>00NIW000003zgUK</field>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Attribute_Value__c</fullName>
+    <description>Product attribute variant for this pricing line (e.g. 2kVA, 6kVA). When populated, this line represents account-specific pricing for this product+attribute combination. Null means base product pricing without variant differentiation.</description>
+    <externalId>false</externalId>
+    <label>Attribute Value</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

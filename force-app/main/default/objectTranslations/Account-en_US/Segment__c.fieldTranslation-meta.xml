@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Customer Segment --></label>
+    <name>Segment__c</name>
+    <picklistValues>
+        <masterLabel>Enterprise</masterLabel>
+        <translation><!-- Enterprise --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Government</masterLabel>
+        <translation><!-- Government --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Hyperscaler</masterLabel>
+        <translation><!-- Hyperscaler --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Mid-Market</masterLabel>
+        <translation><!-- Mid-Market --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SMB</masterLabel>
+        <translation><!-- SMB --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Telco &amp; Carrier</masterLabel>
+        <translation><!-- Telco &amp; Carrier --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

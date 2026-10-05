@@ -23,9 +23,19 @@
  */
 public with sharing class OrderTriggerHandler {
 
+    // Set by inbound Odoo handlers (e.g. OdooCrossConnectHandler/IP-6) immediately before
+    // activating an Order that ALREADY originated in Odoo (Odoo_Order_ID__c is already
+    // populated). Without this, activating such an Order would run the same IP-1 "new order"
+    // routing used for SF-originated orders and send it right back to Odoo as if it were new —
+    // a callout boomerang. Always false by default; set true only for the duration of that one
+    // guarded DML, then reset to false so no other order activation in the org is affected.
+    @TestVisible
+    public static Boolean skipIntegrationRouting = false;
+
     // Fires when Orders are inserted already-Activated (e.g. from SOFHandler quote acceptance).
     // Runs the same IP-1/IP-4/Inventory routing as handleAfterUpdate.
     public static void handleAfterInsert(List<Order> newList) {
+        if (skipIntegrationRouting) return;
         List<Id> activatedIds = new List<Id>();
         for (Order o : newList) {
             if (o.Status == 'Activated') activatedIds.add(o.Id);
@@ -37,6 +47,7 @@ public with sharing class OrderTriggerHandler {
 
     public static void handleAfterUpdate(
             List<Order> newList, Map<Id,Order> oldMap) {
+        if (skipIntegrationRouting) return;
 
         List<Id> activatedIds = new List<Id>();
         for (Order o : newList) {
@@ -83,6 +94,16 @@ public with sharing class OrderTriggerHandler {
             + ' | NewService count: ' + newServiceIds.size()
             + ' | ChangeOrder count: ' + changeOrderIds.size());
 
+        // Both groups below feed into a SINGLE System.enqueueJob() call at the end of this method
+        // (see "Combined routing" below) instead of one enqueue per order type. Two independent
+        // enqueueJob() calls in one invocation of this method is exactly what used to throw
+        // "Too many queueable jobs added to the queue: 2" whenever this trigger fired from inside
+        // an already-executing async job (e.g. RampOrderService.splitRampOrder, an @InvocableMethod
+        // that can activate several child Orders — mixing New Service and Change/Renewal types —
+        // from a Flow's asynchronous path) — Salesforce caps an executing async job to at most one
+        // additional enqueueJob() call, and this method could ask for two.
+        Set<Id> unsyncedBanIds = new Set<Id>();
+
         if (!newServiceIds.isEmpty() && s.IP1_Enabled__c) {
             List<Order> newServiceOrders = [
                 SELECT Id, BillingAccount__c,
@@ -91,7 +112,6 @@ public with sharing class OrderTriggerHandler {
                        BillingAccount__r.Odoo_Invoice_Freq_ID__c
                 FROM Order WHERE Id IN :newServiceIds
             ];
-            Set<Id> unsyncedBanIds = new Set<Id>();
             for (Order o : newServiceOrders) {
                 System.debug('INTEGRATION ▶ BAN check — Order: ' + o.Id
                     + ' | Partner_ID: ' + o.BillingAccount__r.Odoo_Partner_ID__c
@@ -119,13 +139,6 @@ public with sharing class OrderTriggerHandler {
                     unsyncedBanIds.add(oi.Target_BAN__c );
                 }
             }
-            if (!unsyncedBanIds.isEmpty()) {
-                System.debug('INTEGRATION ▶ ROUTING → OdooBanSyncQueueable (NEW-A + NEW-B first) | BANs: ' + unsyncedBanIds + ' | then chain IP-1 for Orders: ' + newServiceIds);
-                System.enqueueJob(new OdooBanSyncQueueable(new List<Id>(unsyncedBanIds), newServiceIds));
-            } else {
-                System.debug('INTEGRATION ▶ ROUTING → SendNewOrdersQueueable (IP-1 direct) | Orders: ' + newServiceIds);
-                System.enqueueJob(new SendNewOrdersQueueable(newServiceIds));
-            }
         }
 
         if (!changeOrderIds.isEmpty() && s.IP1_Enabled__c) {
@@ -136,13 +149,12 @@ public with sharing class OrderTriggerHandler {
                        BillingAccount__r.Odoo_Invoice_Freq_ID__c
                 FROM Order WHERE Id IN :changeOrderIds
             ];
-            Set<Id> unsyncedCOBanIds = new Set<Id>();
             for (Order o : changeOrders) {
                 if (o.BillingAccount__c != null
                         && (o.BillingAccount__r.Odoo_Partner_ID__c == null
                             || o.BillingAccount__r.Odoo_BAN_ID__c == null
                             || o.BillingAccount__r.Odoo_Invoice_Freq_ID__c == null)) {
-                    unsyncedCOBanIds.add(o.BillingAccount__c);
+                    unsyncedBanIds.add(o.BillingAccount__c);
                 }
             }
             // Also collect line-level BAN overrides (OrderItem.BAN_ID__c) that aren't synced yet
@@ -157,16 +169,20 @@ public with sharing class OrderTriggerHandler {
                 if (oi.BAN_ID__r.Odoo_Partner_ID__c == null
                         || oi.BAN_ID__r.Odoo_BAN_ID__c == null
                         || oi.BAN_ID__r.Odoo_Invoice_Freq_ID__c == null) {
-                    unsyncedCOBanIds.add(oi.Target_BAN__c );
+                    unsyncedBanIds.add(oi.Target_BAN__c );
                 }
             }
-            if (!unsyncedCOBanIds.isEmpty()) {
-                System.debug('INTEGRATION ▶ ROUTING → OdooBanSyncQueueable (NEW-A + NEW-B first) | BANs: ' + unsyncedCOBanIds + ' | then chain IP-4 for Orders: ' + changeOrderIds);
-                System.enqueueJob(new OdooBanSyncQueueable(new List<Id>(unsyncedCOBanIds), changeOrderIds, 'IP-4'));
-            } else {
-                System.debug('INTEGRATION ▶ ROUTING → SendChangeOrdersQueueable (IP-4 direct) | Orders: ' + changeOrderIds);
-                System.enqueueJob(new SendChangeOrdersQueueable(changeOrderIds));
-            }
+        }
+
+        // Combined routing — exactly one System.enqueueJob() for both order types together.
+        // OdooBanSyncQueueable already no-ops the BAN-sync portion cleanly when banIds is empty
+        // (see its bans.isEmpty() branch), so routing through it unconditionally — instead of
+        // branching between "enqueue OdooBanSyncQueueable" and "enqueue SendXxxOrdersQueueable
+        // directly" per order type — is what keeps this to a single enqueue call in every case.
+        if ((!newServiceIds.isEmpty() || !changeOrderIds.isEmpty()) && s.IP1_Enabled__c) {
+            System.debug('INTEGRATION ▶ ROUTING → OdooBanSyncQueueable | BANs needing sync: ' + unsyncedBanIds
+                + ' | IP-1 Orders: ' + newServiceIds + ' | IP-4 Orders: ' + changeOrderIds);
+            System.enqueueJob(new OdooBanSyncQueueable(new List<Id>(unsyncedBanIds), newServiceIds, changeOrderIds));
         }
 
         // Inventory lifecycle: Assigned/Quoted/Reserved → Sold on order activation

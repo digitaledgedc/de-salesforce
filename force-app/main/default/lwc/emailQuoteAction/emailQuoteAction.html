@@ -1,0 +1,448 @@
+<template>
+    <div class="eqa-wrap">
+
+        <!-- ── Branded header ───────────────────────────────────────────── -->
+        <div class="eqa-header">
+            <div class="eqa-brand">
+                <img src={logoUrl} class="eqa-logo-img" alt="Digital Edge DC"/>
+            </div>
+            <h2 class="eqa-title">Email Quote</h2>
+        </div>
+
+        <!-- ── Two-pane body ────────────────────────────────────────────── -->
+        <div class="eqa-body">
+
+            <!-- ── LEFT: PDF preview ─────────────────────────────────────── -->
+            <template lwc:if={pdfUrl}>
+                <div class="eqa-preview-pane">
+                    <div class="eqa-pane-header">
+                        <p class="eqa-pane-label">Preview</p>
+                        <a href={pdfUrl} target="_blank" class="eqa-download-btn" title="Download PDF">
+                            <lightning-icon
+                                icon-name="utility:download"
+                                size="xx-small"
+                                alternative-text="Download PDF">
+                            </lightning-icon>
+                        </a>
+                    </div>
+
+                    <template lwc:if={showPreviewPlaceholder}>
+                        <div class="eqa-preview-placeholder">
+                            <lightning-icon icon-name="utility:info" size="small" alternative-text="info"></lightning-icon>
+                            <p>Select Terms &amp; Conditions to preview the PDF.</p>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <iframe
+                            src={iframeUrl}
+                            class="eqa-preview-frame"
+                            title="Quote PDF Preview">
+                        </iframe>
+                    </template>
+                </div>
+            </template>
+
+            <!-- ── RIGHT: Email form ─────────────────────────────────────── -->
+            <div class="eqa-form-pane">
+
+                <!-- Error banner -->
+                <template lwc:if={hasError}>
+                    <div class="eqa-error" role="alert">
+                        <lightning-icon icon-name="utility:error" size="xx-small" variant="error"></lightning-icon>
+                        <span>{errorMessage}</span>
+                    </div>
+                </template>
+
+                <!-- Sending state -->
+                <template lwc:if={isSending}>
+                    <div class="eqa-state-wrap">
+                        <lightning-spinner alternative-text="Sending…" size="small"></lightning-spinner>
+                        <p class="eqa-state-label">Sending quote…</p>
+                    </div>
+                </template>
+
+                <!-- Loading state -->
+                <template lwc:elseif={isLoading}>
+                    <div class="eqa-state-wrap">
+                        <lightning-spinner alternative-text="Loading…" size="small"></lightning-spinner>
+                    </div>
+                </template>
+
+                <!-- ── Form ──────────────────────────────────────────────── -->
+                <template lwc:if={showForm}>
+
+                    <!-- Read-only info strip:
+                         Company (DE_Entity__c Account Name),
+                         Quote Type, Subscription Management -->
+                    <div class="eqa-info-strip">
+                        <div class="eqa-info-item">
+                            <span class="eqa-info-label">Company (Entity)</span>
+                            <span class="eqa-info-value">{company}</span>
+                        </div>
+                        <div class="eqa-info-item">
+                            <span class="eqa-info-label">Quote Type</span>
+                            <span class="eqa-info-value">{quoteType}</span>
+                        </div>
+                        <div class="eqa-info-item">
+                            <span class="eqa-info-label">Subscription Management</span>
+                            <span class="eqa-info-value">{subscriptionMgmt}</span>
+                        </div>
+                    </div>
+
+                    <lightning-combobox
+                        name="pdfLanguage"
+                        label="PDF Language"
+                        value={languageCode}
+                        options={languageOptions}
+                        disabled={bindingSaving}
+                        class="eqa-field"
+                        onchange={handleLanguageChange}>
+                    </lightning-combobox>
+
+                    <!-- Email fields -->
+                    <lightning-input
+                        type="email"
+                        label="To"
+                        value={toEmail}
+                        required
+                        placeholder="email1@example.com"
+                        field-level-help="Enter a single email address. To send to additional recipients, use the CC field below."
+                        message-when-type-mismatch="Enter one valid email address (e.g. name@example.com). Multiple addresses aren't supported here — use CC instead."
+                        class="eqa-field"
+                        onchange={handleToChange}>
+                    </lightning-input>
+
+                    <lightning-input
+                        type="text"
+                        label="CC"
+                        value={ccEmail}
+                        placeholder="email2@example.com, email3@example.com"
+                        field-level-help="Separate multiple email addresses with a comma"
+                        class="eqa-field"
+                        onchange={handleCcChange}>
+                    </lightning-input>
+
+                    <lightning-input
+                        label="Subject"
+                        value={subject}
+                        class="eqa-field"
+                        onchange={handleSubjectChange}>
+                    </lightning-input>
+
+                    <lightning-textarea
+                        label="Message"
+                        value={body}
+                        class="eqa-field"
+                        max-length="131000"
+                        onchange={handleBodyChange}>
+                    </lightning-textarea>
+
+                    <!-- ── Special Notes ──────────────────────────────────── -->
+                    <div class="eqa-special-notes-section">
+                        <div class="eqa-section-header">
+                            <lightning-icon
+                                icon-name="utility:note"
+                                size="xx-small"
+                                class="eqa-section-icon">
+                            </lightning-icon>
+                            <span class="eqa-section-title">Special Notes</span>
+                        </div>
+
+                        <lightning-textarea
+                            label="Special Notes"
+                            value={specialNotes}
+                            class="eqa-field"
+                            max-length="5000"
+                            placeholder="Add any special notes to appear on the PDF…"
+                            onchange={handleSpecialNotesChange}
+                            onblur={handleSpecialNotesBlur}>
+                        </lightning-textarea>
+
+                        <template lwc:if={specialNotesSaving}>
+                            <span class="eqa-saving-label">Saving notes…</span>
+                        </template>
+                        <template lwc:if={specialNotesSaveStatus}>
+                            <div class={specialNotesSaveStatusClass}>
+                                <lightning-icon
+                                    icon-name={specialNotesSaveIcon}
+                                    size="xx-small"
+                                    alternative-text="status">
+                                </lightning-icon>
+                                <span>{specialNotesSaveStatus}</span>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- ── Binding Quote toggle ───────────────────────────── -->
+                    <div class="eqa-binding-section">
+                        <lightning-input
+                            type="checkbox"
+                            label="Binding Quote"
+                            checked={isBinding}
+                            onchange={handleBindingChange}
+                            disabled={bindingSaving}>
+                        </lightning-input>
+                        <template lwc:if={bindingSaving}>
+                            <span class="eqa-saving-label">Updating preview…</span>
+                        </template>
+                    </div>
+
+                    <!-- ── Terms & Conditions (binding quotes only) ───────── -->
+                    <!-- Picklist is filtered by:
+                         Stage = Approved
+                         Subscription_Management__c = derived from Quote_Type__c
+                         Company__c LIKE DE_Entity__r.Name -->
+                    <template lwc:if={isBinding}>
+                        <div class="eqa-terms-section">
+                            <div class="eqa-section-header">
+                                <lightning-icon
+                                    icon-name="utility:file"
+                                    size="xx-small"
+                                    class="eqa-section-icon">
+                                </lightning-icon>
+                                <span class="eqa-section-title">Select Terms &amp; Conditions</span>
+                            </div>
+
+                            <template lwc:if={isLoadingTerms}>
+                                <div class="eqa-terms-loading">
+                                    <lightning-spinner alternative-text="Loading T&amp;C options…" size="x-small"></lightning-spinner>
+                                    <span class="eqa-terms-loading-label">Loading options…</span>
+                                </div>
+                            </template>
+
+                            <template lwc:else>
+                                <div class="eqa-terms-combo-wrap">
+                                    <lightning-combobox
+                                        label="Terms Template"
+                                        placeholder="— Select a T&amp;C template —"
+                                        value={selectedTermsLabel}
+                                        options={termsOptions}
+                                        required={isBinding}
+                                        class="eqa-field"
+                                        onchange={handleTermsChange}>
+                                    </lightning-combobox>
+                                </div>
+
+                                <template lwc:if={termsSaveStatus}>
+                                    <div class={termsSaveStatusClass}>
+                                        <lightning-icon
+                                            icon-name={termsSaveIcon}
+                                            size="xx-small"
+                                            alternative-text="status">
+                                        </lightning-icon>
+                                        <span>{termsSaveStatus}</span>
+                                    </div>
+                                </template>
+
+                                <template lwc:if={selectedTermsPreview}>
+                                    <div class="eqa-terms-preview">
+                                        <p class="eqa-terms-preview-label">Preview (first 200 chars):</p>
+                                        <p class="eqa-terms-preview-text">{selectedTermsPreview}</p>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- Attachment notice -->
+                    <div class="eqa-attach">
+                        <lightning-icon icon-name="doctype:pdf" size="xx-small" class="eqa-attach-icon"></lightning-icon>
+                        <span class="eqa-attach-text">Quote PDF will be attached automatically</span>
+                    </div>
+
+                </template>
+                <!-- /showForm -->
+
+            </div>
+            <!-- /eqa-form-pane -->
+
+        </div>
+        <!-- /eqa-body -->
+
+        <!-- ── Footer ───────────────────────────────────────────────────── -->
+        <!-- FB-739 START — tell the user why Send is disabled when the quote has no products -->
+        <template lwc:if={showNoProductsWarning}>
+            <div class="eqa-warn" role="alert">
+                <lightning-icon icon-name="utility:warning" size="xx-small" variant="warning"></lightning-icon>
+                <span>No products have been added to this quote. Add at least one product before sending.</span>
+            </div>
+        </template>
+        <!-- FB-739 END -->
+        <div class="eqa-footer">
+            <lightning-button
+                label="Cancel"
+                onclick={handleCancel}>
+            </lightning-button>
+            <lightning-button
+                label="Send Quote"
+                variant="brand"
+                onclick={handleSend}
+                disabled={isSendDisabled}>
+            </lightning-button>
+        </div>
+
+    </div>
+    <!-- /eqa-wrap -->
+
+    <!-- ── New T&C Creation Modal ───────────────────────────────────────── -->
+    <template lwc:if={showNtcModal}>
+        <div class="ntc-backdrop" onclick={handleNtcBackdropClick}></div>
+
+        <div class="ntc-modal" role="dialog" aria-modal="true">
+
+            <!-- Header -->
+            <div class="ntc-header">
+                <div class="ntc-header-left">
+                    <lightning-icon
+                        icon-name="utility:file"
+                        size="small"
+                        class="ntc-header-icon">
+                    </lightning-icon>
+                    <div>
+                        <h2 class="ntc-title">New Terms &amp; Conditions</h2>
+                        <p class="ntc-subtitle">
+                            Saved as <span class="ntc-badge">New</span> — requires approval before use
+                        </p>
+                    </div>
+                </div>
+                <button class="ntc-close-btn" onclick={closeNtcModal} title="Close">✕</button>
+            </div>
+
+            <!-- Body -->
+            <div class="ntc-body">
+
+                <!-- Name -->
+                <lightning-input
+                    type="text"
+                    label="Name"
+                    required
+                    value={ntcName}
+                    placeholder="Enter T&amp;C template name"
+                    class="ntc-field"
+                    onchange={handleNtcNameChange}>
+                </lightning-input>
+
+                <!-- Subscription Management -->
+                <lightning-combobox
+                    label="Subscription Management"
+                    required
+                    value={ntcSubscription}
+                    options={ntcSubscriptionOptions}
+                    class="ntc-field"
+                    onchange={handleNtcSubscriptionChange}>
+                </lightning-combobox>
+
+                <!-- Customer -->
+                <div class="ntc-lookup-field">
+                    <span class="ntc-lookup-label">Customer</span>
+                    <template lwc:if={hasNtcCustomers}>
+                        <div class="ntc-pill-row">
+                            <template for:each={ntcSelectedCustomers} for:item="acc">
+                                <span key={acc.id} class="ntc-pill">
+                                    {acc.name}
+                                    <button class="ntc-pill-remove"
+                                        data-id={acc.id} data-field="customer"
+                                        onclick={removeNtcPill}>✕</button>
+                                </span>
+                            </template>
+                        </div>
+                    </template>
+                    <div class="ntc-lookup-wrap">
+                        <input type="text" class="ntc-lookup-input"
+                            placeholder="Search accounts..."
+                            value={ntcCustomerSearch}
+                            onchange={handleNtcCustomerSearch}
+                            onfocus={handleNtcCustomerFocus}
+                            onblur={handleNtcCustomerBlur} />
+                        <template lwc:if={showNtcCustomerDrop}>
+                            <div class="ntc-dropdown">
+                                <template lwc:if={ntcCustomerResults.length}>
+                                    <template for:each={ntcCustomerResults} for:item="acc">
+                                        <div key={acc.id} class="ntc-drop-item"
+                                            data-id={acc.id} data-name={acc.name} data-field="customer"
+                                            onmousedown={selectNtcAccount}>{acc.name}</div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="ntc-drop-empty">No matching accounts found</div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Company -->
+                <div class="ntc-lookup-field">
+                    <span class="ntc-lookup-label">Company</span>
+                    <template lwc:if={hasNtcCompanies}>
+                        <div class="ntc-pill-row">
+                            <template for:each={ntcSelectedCompanies} for:item="acc">
+                                <span key={acc.id} class="ntc-pill">
+                                    {acc.name}
+                                    <button class="ntc-pill-remove"
+                                        data-id={acc.id} data-field="company"
+                                        onclick={removeNtcPill}>✕</button>
+                                </span>
+                            </template>
+                        </div>
+                    </template>
+                    <div class="ntc-lookup-wrap">
+                        <input type="text" class="ntc-lookup-input"
+                            placeholder="Search company entities..."
+                            value={ntcCompanySearch}
+                            onchange={handleNtcCompanySearch}
+                            onfocus={handleNtcCompanyFocus}
+                            onblur={handleNtcCompanyBlur} />
+                        <template lwc:if={showNtcCompanyDrop}>
+                            <div class="ntc-dropdown">
+                                <template lwc:if={ntcCompanyResults.length}>
+                                    <template for:each={ntcCompanyResults} for:item="acc">
+                                        <div key={acc.id} class="ntc-drop-item"
+                                            data-id={acc.id} data-name={acc.name} data-field="company"
+                                            onmousedown={selectNtcAccount}>{acc.name}</div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="ntc-drop-empty">No matching accounts found</div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Terms Text -->
+                <lightning-textarea
+                    label="Terms Text"
+                    value={ntcTermsText}
+                    placeholder="Enter terms and conditions HTML content..."
+                    max-length="131072"
+                    class="ntc-field"
+                    onchange={handleNtcTermsTextChange}>
+                </lightning-textarea>
+
+                <!-- Error -->
+                <template lwc:if={ntcError}>
+                    <div class="ntc-error">{ntcError}</div>
+                </template>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="ntc-footer">
+                <lightning-button
+                    label="Cancel"
+                    onclick={closeNtcModal}
+                    disabled={ntcSaving}>
+                </lightning-button>
+                <lightning-button
+                    label="Submit for Approval"
+                    variant="brand"
+                    onclick={submitNtc}
+                    disabled={ntcSaving}>
+                </lightning-button>
+            </div>
+
+        </div>
+    </template>
+
+</template>

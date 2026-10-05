@@ -79,6 +79,21 @@
                         </template>
                     </div>
                 </div>
+                <template if:true={showScopeFilter}>
+                    <div class="dcr-filter-section dcr-scope-filter">
+                        <lightning-combobox label="Floor"
+                            variant="label-inline"
+                            value={filterFloorId} options={filterFloorOptions}
+                            onchange={handleFilterFloorChange}>
+                        </lightning-combobox>
+                        <lightning-combobox label="Data Hall"
+                            variant="label-inline"
+                            value={filterHallId} options={filterHallOptions}
+                            disabled={noFilterHallOptions}
+                            onchange={handleFilterHallChange}>
+                        </lightning-combobox>
+                    </div>
+                </template>
                 <template if:true={showStatusFilter}>
                     <div class="dcr-filter-section">
                         <span class="dcr-filter-label">Status</span>
@@ -93,6 +108,11 @@
                     </div>
                 </template>
             </div>
+
+            <!-- ROW CAP NOTICE: the Apex query returned fewer rows than exist -->
+            <template if:true={isTruncated}>
+                <div class="dcr-truncation-notice">{truncationNotice}</div>
+            </template>
 
             <!-- ACTION BAR: Assign (Available tab only) -->
             <template if:true={showAssignBar}>

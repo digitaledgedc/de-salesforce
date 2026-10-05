@@ -1877,7 +1877,7 @@ private class DeInventoryManagerControllerTest {
         QuoteLineItem qli = mkQuoteLineItem(site.Id, 'Presented');
 
         Test.startTest();
-        List<QuoteLineItem> demand = DeInventoryManagerController.getAssignmentDemand(site.Id, null);
+        List<QuoteLineItem> demand = DeInventoryManagerController.getAssignmentDemand(site.Id, null, null);
         Test.stopTest();
 
         Assert.isTrue(containsQli(demand, qli.Id),
@@ -1890,7 +1890,7 @@ private class DeInventoryManagerControllerTest {
         QuoteLineItem qli = mkQuoteLineItem(site.Id, 'In Review');
 
         Test.startTest();
-        List<QuoteLineItem> demand = DeInventoryManagerController.getAssignmentDemand(null, 'All');
+        List<QuoteLineItem> demand = DeInventoryManagerController.getAssignmentDemand(null, 'All', null);
         Test.stopTest();
 
         Assert.isTrue(containsQli(demand, qli.Id),
@@ -1905,7 +1905,7 @@ private class DeInventoryManagerControllerTest {
         QuoteLineItem draftQli = mkQuoteLineItem(site.Id, 'Draft');
 
         Test.startTest();
-        List<QuoteLineItem> demand = DeInventoryManagerController.getAssignmentDemand(site.Id, 'All');
+        List<QuoteLineItem> demand = DeInventoryManagerController.getAssignmentDemand(site.Id, 'All', null);
         Test.stopTest();
 
         Assert.isFalse(containsQli(demand, draftQli.Id),
@@ -1919,7 +1919,7 @@ private class DeInventoryManagerControllerTest {
         QuoteLineItem pendingQli  = mkSiblingQuoteLineItem(acceptedQli, site.Id, 'Approved');
 
         Test.startTest();
-        List<QuoteLineItem> demand = DeInventoryManagerController.getAssignmentDemand(site.Id, '');
+        List<QuoteLineItem> demand = DeInventoryManagerController.getAssignmentDemand(site.Id, '', null);
         Test.stopTest();
 
         Assert.isFalse(containsQli(demand, acceptedQli.Id),
@@ -1935,7 +1935,7 @@ private class DeInventoryManagerControllerTest {
 
         Test.startTest();
         List<QuoteLineItem> demand =
-            DeInventoryManagerController.getAssignmentDemand(site.Id, 'Accepted');
+            DeInventoryManagerController.getAssignmentDemand(site.Id, 'Accepted', null);
         Test.stopTest();
 
         Assert.isTrue(containsQli(demand, acceptedQli.Id),
@@ -1952,7 +1952,7 @@ private class DeInventoryManagerControllerTest {
 
         Test.startTest();
         List<QuoteLineItem> demand =
-            DeInventoryManagerController.getAssignmentDemand(site.Id, 'Presented');
+            DeInventoryManagerController.getAssignmentDemand(site.Id, 'Presented', null);
         Test.stopTest();
 
         Assert.isTrue(containsQli(demand, presented.Id), 'Presented row must be returned');
@@ -1973,7 +1973,7 @@ private class DeInventoryManagerControllerTest {
 
         Test.startTest();
         List<QuoteLineItem> demand =
-            DeInventoryManagerController.getAssignmentDemand(site.Id, 'Banana');
+            DeInventoryManagerController.getAssignmentDemand(site.Id, 'Banana', null);
         Test.stopTest();
 
         Assert.isTrue(containsQli(demand, pendingQli.Id),

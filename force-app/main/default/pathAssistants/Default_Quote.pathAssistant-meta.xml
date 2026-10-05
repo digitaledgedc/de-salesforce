@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Quote</entityName>
+    <fieldName>Status</fieldName>
+    <masterLabel>Default_Quote</masterLabel>
+    <pathAssistantSteps>
+        <fieldNames>Signed_SOF_Uploaded__c</fieldNames>
+        <fieldNames>Signed_SOF_Date__c</fieldNames>
+        <info>&lt;p&gt;&lt;b&gt;Accepted - SOF signed and Order created.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Upload signed SOF via Accept Quote action&lt;/li&gt;&lt;li&gt;System auto-creates Draft Order from this Quote&lt;/li&gt;&lt;li&gt;Opportunity MRC, NRC, and Amount are updated automatically&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Accepted</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Approved - ready to present to customer.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Quote has passed internal review&lt;/li&gt;&lt;li&gt;Send to customer via email or portal&lt;/li&gt;&lt;li&gt;Log the send date and customer contact&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Approved</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Draft - build the commercial proposal.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Add products via Add Product action&lt;/li&gt;&lt;li&gt;Set expiry date and target site&lt;/li&gt;&lt;li&gt;Verify MRC, NRC, and contract term with the opportunity owner&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Draft</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;In Review - pending internal approval.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Revenue Ops reviewing commercial terms&lt;/li&gt;&lt;li&gt;VP Sales sign-off required if Deal Review triggered&lt;/li&gt;&lt;li&gt;Do not send to customer until Approved&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>In Review</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <fieldNames>Customer_PO_Reference__c</fieldNames>
+        <info>&lt;p&gt;&lt;b&gt;Presented - quote delivered to customer.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Follow up within 48 hours&lt;/li&gt;&lt;li&gt;Log any customer questions or objections&lt;/li&gt;&lt;li&gt;Negotiate and revise via Revise Quote if needed&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Presented</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Rejected - quote declined by customer or internal.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Log the rejection reason in the Opportunity notes&lt;/li&gt;&lt;li&gt;Revise and resubmit or close the Opportunity as Lost&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Rejected</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>__MASTER__</recordTypeName>
+</PathAssistant>

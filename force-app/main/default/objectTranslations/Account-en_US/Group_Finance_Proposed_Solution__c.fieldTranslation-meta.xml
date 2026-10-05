@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Required when Group Finance Review is triggered. Group Finance documents the proposed resolution or risk acceptance decision here. --></help>
+    <label><!-- Group Finance Resolution --></label>
+    <name>Group_Finance_Proposed_Solution__c</name>
+</CustomFieldTranslation>

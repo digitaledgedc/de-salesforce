@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DE_Entity__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The primary DE subsidiary for this customer Account. Lookup to Account with RecordType = DE_Entity. Auto-populated from the first Quote that triggers Finance Approval.</description>
+    <inlineHelpText>The primary DE subsidiary for this customer. Set automatically from the first Quote.</inlineHelpText>
+    <label>Primary DE Subsidiary</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Customer Accounts</relationshipLabel>
+    <relationshipName>Customer_Accounts</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

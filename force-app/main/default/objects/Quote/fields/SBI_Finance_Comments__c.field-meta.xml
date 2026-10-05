@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SBI_Finance_Comments__c</fullName>
+    <description>Country Finance conditions, clarifications, or billing instructions. Required when SBI_Flag__c = TRUE and Finance has conditions. Passed in IP-1 payload alongside SBI_Notes__c.</description>
+    <inlineHelpText>Finance team&apos;s conditions or clarifications on the approved Special Billing Instruction. Filled in by Country Finance during SBI review. Passed to Odoo with the order.</inlineHelpText>
+    <label>SBI Finance Comments</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

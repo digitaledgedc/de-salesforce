@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_OPP_19_Loss_Reason_Required</fullName>
+    <active>true</active>
+    <description>Requires Loss Reason when Opp is Lost (Stage 9-Lost or Forecast Status = Lost), including at creation. Closes the insert/Forecast-Status gap left by Opp_Gate_9_Lost.</description>
+    <errorConditionFormula>AND(
+ ISBLANK(TEXT(Loss_Reason__c)),
+ OR(ISPICKVAL(StageName, &quot;9-Lost&quot;), ISPICKVAL(Forecast_Status__c, &quot;Lost&quot;)),
+ OR(ISNEW(), ISCHANGED(StageName), ISCHANGED(Forecast_Status__c))
+)</errorConditionFormula>
+    <errorDisplayField>Loss_Reason__c</errorDisplayField>
+    <errorMessage>A Loss Reason is required when the opportunity is Lost (Stage 9-Lost or Forecast Status = Lost).</errorMessage>
+</ValidationRule>

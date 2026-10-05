@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FX_Rate_Terms__c</fullName>
+    <description>Required when FX_Rate_Model__c = Contract_Specific_Reference.</description>
+    <inlineHelpText>Required when FX Rate Model is Contract Specific Reference. Document the agreed rate source, fixing date, and frequency as stated in the SOF.</inlineHelpText>
+    <label>FX Rate Terms</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

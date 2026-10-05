@@ -1,0 +1,683 @@
+<apex:page standardController="Opportunity" renderAs="pdf" showHeader="false" sidebar="false"
+           applyBodyTag="false" applyHtmlTag="false">
+<html>
+<head>
+<style type="text/css">
+    @page {
+        size: A4 portrait;
+        margin: 14mm 14mm 16mm 14mm;
+    }
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 9pt;
+        color: #0d1024;
+        line-height: 1.38;
+        margin: 0; padding: 0;
+    }
+
+    /* ─── Brand Header ─── */
+    .brand-header {
+        border-bottom: 2px solid #1a2554;
+        padding-bottom: 8px;
+        margin-bottom: 0;
+    }
+    .logo-text {
+        font-size: 15pt;
+        font-weight: 700;
+        color: #f47b20;
+        letter-spacing: -0.5px;
+    }
+    .logo-dc {
+        font-size: 7pt;
+        vertical-align: 6px;
+        margin-left: 1px;
+        font-weight: 700;
+        color: #f47b20;
+    }
+    .doc-meta {
+        text-align: right;
+        font-size: 7.5pt;
+        color: #6b7290;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+    .doc-type {
+        font-size: 8.5pt;
+        color: #1a2554;
+        font-weight: 700;
+        letter-spacing: 2pt;
+    }
+    .status-pill {
+        display: inline-block;
+        margin-top: 3px;
+        padding: 2px 8px;
+        background: #fff1e3;
+        color: #e36810;
+        border-radius: 10px;
+        font-size: 7.5pt;
+        font-weight: 700;
+    }
+
+    /* ─── Accent stripe ─── */
+    .accent-stripe { height: 3px; margin-bottom: 0; overflow: hidden; }
+    .accent-stripe table { width: 100%; border-collapse: collapse; }
+    .accent-stripe td { height: 3px; padding: 0; }
+    .s-orange { background: #f47b20; }
+    .s-navy  { background: #1a2554; }
+    .s-blue  { background: #5da9e9; }
+
+    /* ─── Title Block ─── */
+    .title-block { padding: 10px 0 8px; }
+    .title-label {
+        font-size: 7.5pt;
+        text-transform: uppercase;
+        letter-spacing: 2pt;
+        color: #f47b20;
+        font-weight: 700;
+        margin-bottom: 3px;
+    }
+    .title-block h1 {
+        margin: 0;
+        font-size: 20pt;
+        font-weight: 700;
+        color: #1a2554;
+        letter-spacing: -0.5px;
+    }
+    .id-line {
+        font-family: 'Courier New', monospace;
+        font-size: 8.5pt;
+        color: #6b7290;
+        margin-top: 3px;
+        letter-spacing: 0.3px;
+    }
+    .id-sep { color: #f47b20; font-weight: 700; margin: 0 4px; }
+    .submit-info {
+        text-align: right;
+        font-size: 8.5pt;
+        color: #6b7290;
+        vertical-align: bottom;
+        padding-bottom: 3px;
+    }
+    .submit-info strong { color: #0d1024; font-weight: 600; }
+    .title-pill {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 7.5pt;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        margin-left: 3px;
+    }
+    .pill-outline { border: 1px solid #e4e7f0; color: #2f3550; }
+    .pill-solid { background: #1a2554; color: white; }
+
+    /* ─── KPI Strip ─── */
+    .kpi-strip {
+        background: #1a2554;
+        color: #ffffff;
+        padding: 10px 12px;
+        margin: 2px 0 10px;
+    }
+    .kpi-strip table { width: 100%; border-collapse: collapse; }
+    .kpi-strip td { vertical-align: top; padding: 0 12px; border-left: 2px solid #f47b20; color: #ffffff; }
+    .kpi-strip td.kpi-muted { border-left-color: #556090; }
+    .kpi-strip td.kpi-good { border-left-color: #4ade80; }
+    .kpi-lbl {
+        font-size: 7pt;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: #9099b8;
+        font-weight: 700;
+    }
+    .kpi-val {
+        font-size: 16pt;
+        font-weight: 700;
+        color: #ffffff;
+        margin-top: 2px;
+        letter-spacing: -0.5px;
+    }
+    .kpi-cur {
+        font-size: 7.5pt;
+        color: #9099b8;
+        font-weight: 600;
+        margin-right: 2px;
+    }
+    .kpi-val-muted { font-size: 10pt; font-weight: 600; color: #6b7898; }
+    .kpi-note { font-size: 7.5pt; color: #9099b8; margin-top: 2px; }
+    .kpi-note-warn { color: #f47b20; font-weight: 600; }
+    .kpi-note-good { color: #7fd99b; font-weight: 600; }
+
+    /* ─── Section ─── */
+    .section { margin-bottom: 10px; page-break-inside: avoid; }
+    .section-head { margin-bottom: 4px; padding-bottom: 3px; }
+    .section-marker {
+        display: inline-block;
+        width: 16px; height: 16px;
+        border-radius: 50%;
+        background: #f47b20;
+        color: white;
+        text-align: center;
+        font-weight: 700;
+        font-size: 9pt;
+        line-height: 16px;
+        margin-right: 5px;
+        vertical-align: middle;
+    }
+    .section-title {
+        font-size: 10pt;
+        font-weight: 700;
+        color: #1a2554;
+        letter-spacing: -0.3px;
+        vertical-align: middle;
+    }
+    .section-hint {
+        font-size: 7.5pt;
+        color: #6b7290;
+        font-style: italic;
+        text-align: right;
+    }
+
+    /* ─── Basic Info Grid ─── */
+    .basic-grid { width: 100%; border-collapse: collapse; }
+    .basic-grid td {
+        padding: 5px 8px;
+        border: 1px solid #eef0f6;
+        vertical-align: top;
+        width: 25%;
+    }
+    .bk {
+        font-size: 6.5pt;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #6b7290;
+        font-weight: 600;
+        margin-bottom: 1px;
+    }
+    .bv { font-size: 9.5pt; color: #0d1024; font-weight: 600; line-height: 1.2; }
+    .bv-muted { color: #6b7290; font-style: italic; font-weight: 400; }
+    .basic-chip {
+        display: inline-block;
+        padding: 1px 5px;
+        border-radius: 3px;
+        font-size: 7.5pt;
+        font-weight: 700;
+        background: #e3f4e8;
+        color: #16a34a;
+    }
+
+    /* ─── Tech / Commercial Split ─── */
+    .split-table { width: 100%; border-collapse: collapse; }
+    .col-head {
+        background: #1a2554;
+        color: white;
+        padding: 4px 10px;
+        font-size: 7.5pt;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        font-weight: 700;
+    }
+    .col-summary {
+        font-family: 'Courier New', monospace;
+        font-size: 7.5pt;
+        color: #9099b8;
+        font-weight: 400;
+        text-align: right;
+    }
+    .term-table { width: 100%; border-collapse: collapse; }
+    .term-table td {
+        padding: 4px 10px;
+        border-bottom: 1px solid #eef0f6;
+        font-size: 8.5pt;
+    }
+    .tk { color: #2f3550; font-weight: 500; }
+    .tv {
+        font-family: 'Courier New', monospace;
+        font-weight: 600;
+        color: #0d1024;
+        text-align: right;
+        font-size: 8.5pt;
+    }
+    .tv-muted {
+        color: #6b7290;
+        font-family: Arial, sans-serif;
+        font-style: italic;
+        font-weight: 400;
+    }
+    .term-featured {
+        background: #fff1e3;
+        border-top: 2px solid #f47b20;
+    }
+    .term-featured .tk {
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 7.5pt;
+        color: #e36810;
+    }
+    .term-featured .tv {
+        font-size: 11pt;
+        font-weight: 700;
+        color: #1a2554;
+    }
+
+    /* ─── Justification Cards ─── */
+    .just-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+    .just-card {
+        padding: 6px 8px;
+        background: #f7f9fc;
+        border-top: 2px solid #1a2554;
+    }
+    .jlbl {
+        font-size: 6.5pt;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #1a2554;
+        font-weight: 700;
+        margin-bottom: 3px;
+    }
+    .jbody {
+        font-size: 8pt;
+        color: #6b7290;
+        line-height: 1.4;
+        font-style: italic;
+    }
+    .just-dash {
+        color: #f47b20;
+        font-weight: 700;
+        font-style: normal;
+        margin-right: 2px;
+    }
+
+    /* ─── NRC Block ─── */
+    .nrc-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+    .nrc-dark {
+        padding: 8px 12px;
+        background: #1a2554;
+        color: #ffffff;
+    }
+    .nlbl {
+        font-size: 6.5pt;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: #9099b8;
+        font-weight: 700;
+    }
+    .namt {
+        font-size: 16pt;
+        font-weight: 700;
+        color: #ffffff;
+        margin-top: 2px;
+        letter-spacing: -0.5px;
+    }
+    .ncurr {
+        font-size: 7.5pt;
+        color: #9099b8;
+        font-weight: 600;
+        margin-right: 2px;
+    }
+    .napproved {
+        display: inline-block;
+        margin-top: 4px;
+        padding: 2px 6px;
+        background: #3d4a78;
+        color: #ffb56b;
+        border-radius: 10px;
+        font-size: 7pt;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    .nrc-side {
+        padding: 6px 8px;
+        background: #f7f9fc;
+        border-top: 2px solid #f47b20;
+    }
+    .nrc-side .jlbl {
+        color: #e36810;
+    }
+
+    /* ─── Considerations ─── */
+    .cons-table { width: 100%; border-collapse: collapse; }
+    .cons-card {
+        padding: 8px 10px;
+        background: white;
+        border: 1px solid #e4e7f0;
+        border-top: 3px solid #1a2554;
+    }
+    .cons-required {
+        border-top-color: #f47b20;
+        background: #fef7ef;
+    }
+    .clbl {
+        font-size: 7.5pt;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #1a2554;
+        font-weight: 700;
+        margin-bottom: 3px;
+    }
+    .cons-required .clbl { color: #e36810; }
+    .req-tag {
+        display: inline-block;
+        background: #f47b20;
+        color: white;
+        padding: 1px 5px;
+        border-radius: 3px;
+        font-size: 6.5pt;
+        margin-left: 3px;
+        vertical-align: 1px;
+    }
+    .cbody {
+        font-size: 8.5pt;
+        color: #6b7290;
+        line-height: 1.4;
+        font-style: italic;
+    }
+
+    /* ─── Footer ─── */
+    .doc-foot {
+        margin-top: 10px;
+        padding-top: 6px;
+        border-top: 1px solid #e4e7f0;
+    }
+    .doc-foot table { width: 100%; }
+    .foot-conf {
+        text-transform: uppercase;
+        font-weight: 700;
+        color: #1a2554;
+        letter-spacing: 1.5pt;
+        font-size: 7.5pt;
+    }
+    .foot-gen {
+        font-size: 7.5pt;
+        color: #6b7290;
+        text-align: center;
+        font-style: italic;
+    }
+    .foot-pg {
+        text-align: right;
+        font-family: 'Courier New', monospace;
+        font-weight: 600;
+        color: #1a2554;
+        font-size: 7.5pt;
+    }
+</style>
+</head>
+<body>
+
+<!-- BRAND HEADER -->
+<div class="brand-header">
+    <table cellpadding="0" cellspacing="0" style="width:100%;"><tr>
+        <td><span class="logo-text">Digital Edge</span><span class="logo-dc">DC</span></td>
+        <td class="doc-meta">
+            <div class="doc-type">Deal Review Memo</div>
+            <div>Confidential &middot; Internal Review</div>
+            <span class="status-pill">{!Opportunity.DR_Status__c}</span>
+        </td>
+    </tr></table>
+</div>
+
+<!-- ACCENT STRIPE -->
+<div class="accent-stripe">
+    <table cellpadding="0" cellspacing="0"><tr>
+        <td class="s-orange" style="width:50%;"></td>
+        <td class="s-navy" style="width:30%;"></td>
+        <td class="s-blue" style="width:20%;"></td>
+    </tr></table>
+</div>
+
+<!-- TITLE BLOCK -->
+<div class="title-block">
+    <table cellpadding="0" cellspacing="0" style="width:100%;"><tr>
+        <td>
+            <div class="title-label">Customer &middot; Site &middot; Document</div>
+            <h1>{!Opportunity.Account.Name}</h1>
+            <div class="id-line">
+                {!Opportunity.Target_Site__r.Name}<span class="id-sep">&middot;</span>{!Opportunity.Name}<span class="id-sep">&middot;</span>{!Opportunity.Product_Interest__c}<span class="id-sep">&middot;</span>{!Opportunity.Operation_Country__c}
+            </div>
+        </td>
+        <td class="submit-info">
+            <span class="title-pill pill-outline">
+                <apex:outputText value="{0,number,##0} months" rendered="{!NOT(ISNULL(Opportunity.Contract_Term_Months__c))}">
+                    <apex:param value="{!Opportunity.Contract_Term_Months__c}" />
+                </apex:outputText>
+            </span>
+            <span class="title-pill pill-solid">
+                <apex:outputText value="RFS {0,date,dd MMM yyyy}" rendered="{!NOT(ISNULL(Opportunity.GoLive_Target_Date__c))}">
+                    <apex:param value="{!Opportunity.GoLive_Target_Date__c}" />
+                </apex:outputText>
+            </span>
+            <br/>Submitted by <strong>{!Opportunity.Owner.Name}</strong>
+            <br/><apex:outputText value="{0,date,dd MMM yyyy}"><apex:param value="{!NOW()}" /></apex:outputText>
+        </td>
+    </tr></table>
+</div>
+
+<!-- KPI STRIP (navy bar like the popup) -->
+<div class="kpi-strip">
+    <table cellpadding="0" cellspacing="0"><tr>
+        <td style="width:34%;">
+            <div class="kpi-lbl">Headline MRC</div>
+            <div class="kpi-val">
+                <span class="kpi-cur">{!Opportunity.CurrencyIsoCode}</span>
+                <apex:outputText value="{0,number,###,##0.00}" rendered="{!NOT(ISNULL(Opportunity.Quote_MRC__c))}">
+                    <apex:param value="{!Opportunity.Quote_MRC__c}" />
+                </apex:outputText>
+                <apex:outputText rendered="{!ISNULL(Opportunity.Quote_MRC__c)}">&mdash;</apex:outputText>
+            </div>
+            <div class="kpi-note">
+                <apex:outputText rendered="{!ISNULL(Opportunity.Quote_MRC__c)}"><span class="kpi-note-warn">Not yet set</span></apex:outputText>
+                <apex:outputText rendered="{!NOT(ISNULL(Opportunity.Quote_MRC__c))}">Per kW/month</apex:outputText>
+            </div>
+        </td>
+        <td class="kpi-muted" style="width:33%;">
+            <div class="kpi-lbl">Monthly Recurring</div>
+            <div class="kpi-val">
+                <apex:outputText rendered="{!NOT(ISNULL(Opportunity.Total_Deal_MRC__c))}">
+                    <span class="kpi-cur">{!Opportunity.CurrencyIsoCode}</span>
+                    <apex:outputText value="{0,number,###,##0.00}"><apex:param value="{!Opportunity.Total_Deal_MRC__c}" /></apex:outputText>
+                </apex:outputText>
+                <apex:outputText rendered="{!ISNULL(Opportunity.Total_Deal_MRC__c)}"><span class="kpi-val-muted">&mdash; &mdash; &mdash;</span></apex:outputText>
+            </div>
+            <div class="kpi-note">
+                <apex:outputText rendered="{!ISNULL(Opportunity.Total_Deal_MRC__c)}">Awaiting MRC entry</apex:outputText>
+                <apex:outputText rendered="{!NOT(ISNULL(Opportunity.Total_Deal_MRC__c))}">Per month</apex:outputText>
+            </div>
+        </td>
+        <td style="width:33%;">
+            <div class="kpi-lbl">One-time NRC</div>
+            <div class="kpi-val">
+                <span class="kpi-cur">{!Opportunity.CurrencyIsoCode}</span>
+                <apex:outputText value="{0,number,###,##0.00}" rendered="{!NOT(ISNULL(Opportunity.NRC__c))}">
+                    <apex:param value="{!Opportunity.NRC__c}" />
+                </apex:outputText>
+                <apex:outputText rendered="{!ISNULL(Opportunity.NRC__c)}">&mdash;</apex:outputText>
+            </div>
+            <div class="kpi-note">
+                <apex:outputText rendered="{!NOT(ISNULL(Opportunity.NRC_Budget_Approved__c))}"><span class="kpi-note-good">Budget approved</span></apex:outputText>
+                <apex:outputText rendered="{!ISNULL(Opportunity.NRC_Budget_Approved__c)}">No budget set</apex:outputText>
+            </div>
+        </td>
+    </tr></table>
+</div>
+
+<!-- A. BASIC INFORMATION -->
+<div class="section">
+    <div class="section-head"><table cellpadding="0" cellspacing="0" style="width:100%;"><tr>
+        <td><span class="section-marker">A</span><span class="section-title">Basic Information</span></td>
+        <td class="section-hint">From the opportunity record</td>
+    </tr></table></div>
+    <table class="basic-grid" cellpadding="0" cellspacing="0">
+        <tr>
+            <td><div class="bk">Customer</div><div class="bv">{!Opportunity.Account.Name}</div></td>
+            <td><div class="bk">Country</div><div class="bv">{!Opportunity.Operation_Country__c}</div></td>
+            <td><div class="bk">Customer Type</div><div class="bv">{!Opportunity.Customer_Type__c}</div></td>
+            <td><div class="bk">Site</div><div class="bv">{!Opportunity.Target_Site__r.Name}</div></td>
+        </tr>
+        <tr>
+            <td><div class="bk">Contracting Entity</div><div class="bv">
+                <apex:outputText rendered="{!NOT(ISNULL(Opportunity.DE_Entity__c))}">{!Opportunity.DE_Entity__r.Name}</apex:outputText>
+                <apex:outputText rendered="{!ISNULL(Opportunity.DE_Entity__c)}"><span class="bv-muted">Not selected</span></apex:outputText>
+            </div></td>
+            <td><div class="bk">Account Executive</div><div class="bv">{!Opportunity.Owner.Name}</div></td>
+            <td><div class="bk">Existing Customer</div><div class="bv">
+                <apex:outputText rendered="{!Opportunity.Account.Status__c == 'Active'}"><span class="basic-chip">Yes</span></apex:outputText>
+                <apex:outputText rendered="{!Opportunity.Account.Status__c != 'Active'}">No</apex:outputText>
+            </div></td>
+            <td><div class="bk">Credit Check</div><div class="bv">
+                <apex:outputText value="{!IF(Opportunity.Account.KYC_Status__c != null, Opportunity.Account.KYC_Status__c, 'Not Completed')}" />
+            </div></td>
+        </tr>
+    </table>
+</div>
+
+<!-- B. CONTRACT TERMS -->
+<div class="section">
+    <div class="section-head"><table cellpadding="0" cellspacing="0" style="width:100%;"><tr>
+        <td><span class="section-marker">B</span><span class="section-title">Contract Terms Summary</span></td>
+        <td class="section-hint">Technical envelope &middot; commercial structure</td>
+    </tr></table></div>
+    <table class="split-table" cellpadding="0" cellspacing="0"><tr>
+        <td style="width:50%; vertical-align:top; padding-right:4px;">
+            <!-- Tech header -->
+            <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+                <tr><td class="col-head">Technical</td>
+                    <td class="col-head col-summary">
+                        <apex:outputText rendered="{!NOT(ISNULL(Opportunity.Power_kW__c))}">{!ROUND(Opportunity.Power_kW__c,0)} kW</apex:outputText>
+                        <apex:outputText rendered="{!NOT(ISNULL(Opportunity.Cabinets_Required__c))}"> &middot; {!ROUND(Opportunity.Cabinets_Required__c,0)} cabs</apex:outputText>
+                    </td>
+                </tr>
+            </table>
+            <!-- Tech rows -->
+            <table class="term-table" cellpadding="0" cellspacing="0">
+                <tr><td class="tk" style="width:50%;">Power</td><td class="tv"><apex:outputText value="{0,number,###,##0.##} kW" rendered="{!NOT(ISNULL(Opportunity.Power_kW__c))}"><apex:param value="{!Opportunity.Power_kW__c}" /></apex:outputText><apex:outputText rendered="{!ISNULL(Opportunity.Power_kW__c)}"><span class="tv-muted">Not set</span></apex:outputText></td></tr>
+                <tr><td class="tk">Cabinet density</td><td class="tv"><apex:outputText value="{0,number,###,##0.##} W/sqm" rendered="{!NOT(ISNULL(Opportunity.Power_Density__c))}"><apex:param value="{!Opportunity.Power_Density__c}" /></apex:outputText><apex:outputText rendered="{!ISNULL(Opportunity.Power_Density__c)}"><span class="tv-muted">Not set</span></apex:outputText></td></tr>
+                <tr><td class="tk">Application</td><td class="tv">{!Opportunity.Product_Interest__c}</td></tr>
+                <tr><td class="tk">Data hall / Floor</td><td class="tv">
+                    <apex:outputText rendered="{!OR(NOT(ISBLANK(Opportunity.Target_Data_Hall__c)), NOT(ISBLANK(Opportunity.Target_Floor__c)))}">{!Opportunity.Target_Data_Hall__r.Name} {!Opportunity.Target_Floor__r.Name}</apex:outputText>
+                    <apex:outputText rendered="{!AND(ISBLANK(Opportunity.Target_Data_Hall__c), ISBLANK(Opportunity.Target_Floor__c))}"><span class="tv-muted">Not assigned</span></apex:outputText>
+                </td></tr>
+                <tr><td class="tk">No. of cabinets</td><td class="tv"><apex:outputText value="{0,number,###,##0}" rendered="{!NOT(ISNULL(Opportunity.Cabinets_Required__c))}"><apex:param value="{!Opportunity.Cabinets_Required__c}" /></apex:outputText><apex:outputText rendered="{!ISNULL(Opportunity.Cabinets_Required__c)}"><span class="tv-muted">Not set</span></apex:outputText></td></tr>
+                <tr><td class="tk">Power draw cap</td><td class="tv"><apex:outputText value="{0,number,###,##0.##} kW" rendered="{!NOT(ISNULL(Opportunity.Capacity_kW__c))}"><apex:param value="{!Opportunity.Capacity_kW__c}" /></apex:outputText><apex:outputText rendered="{!ISNULL(Opportunity.Capacity_kW__c)}"><span class="tv-muted">Not set</span></apex:outputText></td></tr>
+                <tr><td class="tk">PUE (metered)</td><td class="tv"><apex:outputText value="{0,number,#0.00}" rendered="{!NOT(ISNULL(Opportunity.PUE__c))}"><apex:param value="{!Opportunity.PUE__c}" /></apex:outputText><apex:outputText rendered="{!ISNULL(Opportunity.PUE__c)}"><span class="tv-muted">Not set</span></apex:outputText></td></tr>
+                <tr><td class="tk">RFS date</td><td class="tv"><apex:outputText value="{0,date,dd MMM yyyy}" rendered="{!NOT(ISNULL(Opportunity.GoLive_Target_Date__c))}"><apex:param value="{!Opportunity.GoLive_Target_Date__c}" /></apex:outputText><apex:outputText rendered="{!ISNULL(Opportunity.GoLive_Target_Date__c)}"><span class="tv-muted">Not set</span></apex:outputText></td></tr>
+            </table>
+        </td>
+        <td style="width:50%; vertical-align:top; padding-left:4px;">
+            <!-- Comm header -->
+            <table cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+                <tr><td class="col-head">Commercial</td>
+                    <td class="col-head col-summary">{!Opportunity.CurrencyIsoCode} &middot; <apex:outputText value="{0,number,##0} mo" rendered="{!NOT(ISNULL(Opportunity.Contract_Term_Months__c))}"><apex:param value="{!Opportunity.Contract_Term_Months__c}" /></apex:outputText></td>
+                </tr>
+            </table>
+            <!-- Comm rows -->
+            <table class="term-table" cellpadding="0" cellspacing="0">
+                <tr><td class="tk" style="width:50%;">Headline price</td><td class="tv"><apex:outputText value="{!Opportunity.CurrencyIsoCode} {0,number,###,##0.00}" rendered="{!NOT(ISNULL(Opportunity.Quote_MRC__c))}"><apex:param value="{!Opportunity.Quote_MRC__c}" /></apex:outputText><apex:outputText rendered="{!ISNULL(Opportunity.Quote_MRC__c)}"><span class="tv-muted">Not set</span></apex:outputText></td></tr>
+                <tr><td class="tk">API %</td><td class="tv"><apex:outputText value="{!Opportunity.API__c}" rendered="{!NOT(ISBLANK(Opportunity.API__c))}" /><apex:outputText rendered="{!ISBLANK(Opportunity.API__c)}"><span class="tv-muted">Not set</span></apex:outputText></td></tr>
+                <tr><td class="tk">Metered power</td><td class="tv">{!IF(Opportunity.Metered_Power_Charges__c != null, Opportunity.Metered_Power_Charges__c, 'Not set')}</td></tr>
+                <tr><td class="tk">Rent-free tenure</td><td class="tv"><apex:outputText value="{0,number,##0} months" rendered="{!NOT(ISNULL(Opportunity.Free_Months__c))}"><apex:param value="{!Opportunity.Free_Months__c}" /></apex:outputText><apex:outputText rendered="{!ISNULL(Opportunity.Free_Months__c)}"><span class="tv-muted">None</span></apex:outputText></td></tr>
+                <tr><td class="tk">Contract tenure</td><td class="tv"><apex:outputText value="{0,number,##0} months" rendered="{!NOT(ISNULL(Opportunity.Contract_Term_Months__c))}"><apex:param value="{!Opportunity.Contract_Term_Months__c}" /></apex:outputText></td></tr>
+                <tr><td class="tk">Renewal terms</td><td class="tv">{!IF(Opportunity.Renewal_Type__c != null, Opportunity.Renewal_Type__c, 'Not specified')}</td></tr>
+                <tr><td class="tk">Reservation / ROFR</td><td class="tv"><apex:outputText value="{0,number,###,##0.##} kW" rendered="{!NOT(ISNULL(Opportunity.Reservation_ROFR_kW__c))}"><apex:param value="{!Opportunity.Reservation_ROFR_kW__c}" /></apex:outputText><apex:outputText rendered="{!ISNULL(Opportunity.Reservation_ROFR_kW__c)}"><span class="tv-muted">None</span></apex:outputText></td></tr>
+                <tr><td class="tk">Ramp</td><td class="tv"><apex:outputText rendered="{!Opportunity.Is_Ramp_Deal__c}">Yes - {!Opportunity.Ramp_Phases__c} phases</apex:outputText><apex:outputText rendered="{!NOT(Opportunity.Is_Ramp_Deal__c)}">No</apex:outputText></td></tr>
+                <tr class="term-featured"><td class="tk">Total MRC</td><td class="tv">{!Opportunity.CurrencyIsoCode} <apex:outputText value="{0,number,###,##0.00}" rendered="{!NOT(ISNULL(Opportunity.Total_Deal_MRC__c))}"><apex:param value="{!Opportunity.Total_Deal_MRC__c}" /></apex:outputText><apex:outputText rendered="{!ISNULL(Opportunity.Total_Deal_MRC__c)}">&mdash;</apex:outputText></td></tr>
+            </table>
+        </td>
+    </tr></table>
+</div>
+
+<!-- C. MRC PRICING JUSTIFICATION -->
+<div class="section">
+    <div class="section-head"><table cellpadding="0" cellspacing="0" style="width:100%;"><tr>
+        <td><span class="section-marker">C</span><span class="section-title">MRC Pricing Justification</span></td>
+    </tr></table></div>
+    <table class="just-table" cellpadding="0" cellspacing="0"><tr>
+        <td style="width:34%; vertical-align:top; padding:0 4px 0 0;"><div class="just-card">
+            <div class="jlbl">Market Benchmark</div>
+            <div class="jbody"><span class="just-dash">&mdash;</span> {!IF(Opportunity.DR_Market_Benchmark__c != null, Opportunity.DR_Market_Benchmark__c, 'Not provided')}</div>
+        </div></td>
+        <td style="width:33%; vertical-align:top; padding:0 2px;"><div class="just-card">
+            <div class="jlbl">Strategic Justification</div>
+            <div class="jbody"><span class="just-dash">&mdash;</span> {!IF(Opportunity.DR_Pricing_Justification__c != null, Opportunity.DR_Pricing_Justification__c, 'Not provided')}</div>
+        </div></td>
+        <td style="width:33%; vertical-align:top; padding:0 0 0 4px;"><div class="just-card">
+            <div class="jlbl">NRC Justification</div>
+            <div class="jbody"><span class="just-dash">&mdash;</span> {!IF(Opportunity.DR_NRC_Justification__c != null, Opportunity.DR_NRC_Justification__c, 'Not provided')}</div>
+        </div></td>
+    </tr></table>
+</div>
+
+<!-- D. NRC REQUIREMENTS -->
+<div class="section">
+    <div class="section-head"><table cellpadding="0" cellspacing="0" style="width:100%;"><tr>
+        <td><span class="section-marker">D</span><span class="section-title">NRC Requirements</span></td>
+        <td class="section-hint">One-time costs</td>
+    </tr></table></div>
+    <table class="nrc-table" cellpadding="0" cellspacing="0"><tr>
+        <td style="width:34%; vertical-align:top; padding:0 4px 0 0;">
+            <div class="nrc-dark">
+                <div class="nlbl">Total NRC</div>
+                <div class="namt">
+                    <span class="ncurr">{!Opportunity.CurrencyIsoCode}</span>
+                    <apex:outputText value="{0,number,###,##0.00}" rendered="{!NOT(ISNULL(Opportunity.NRC__c))}">
+                        <apex:param value="{!Opportunity.NRC__c}" />
+                    </apex:outputText>
+                    <apex:outputText rendered="{!ISNULL(Opportunity.NRC__c)}">&mdash;</apex:outputText>
+                </div>
+                <apex:outputPanel rendered="{!NOT(ISNULL(Opportunity.NRC_Budget_Approved__c))}">
+                    <span class="napproved">Budget Approved</span>
+                </apex:outputPanel>
+            </div>
+        </td>
+        <td style="width:33%; vertical-align:top; padding:0 2px;"><div class="nrc-side">
+            <div class="jlbl">Implied Scope of Works</div>
+            <div class="jbody"><span class="just-dash">&mdash;</span> {!IF(Opportunity.DR_NRC_Scope__c != null, Opportunity.DR_NRC_Scope__c, 'Not provided')}</div>
+        </div></td>
+        <td style="width:33%; vertical-align:top; padding:0 0 0 4px;"><div class="nrc-side">
+            <div class="jlbl">NRC Justification</div>
+            <div class="jbody"><span class="just-dash">&mdash;</span> {!IF(Opportunity.DR_NRC_Justification__c != null, Opportunity.DR_NRC_Justification__c, 'Not provided')}</div>
+        </div></td>
+    </tr></table>
+</div>
+
+<!-- E. OTHER CONSIDERATIONS -->
+<div class="section">
+    <div class="section-head"><table cellpadding="0" cellspacing="0" style="width:100%;"><tr>
+        <td><span class="section-marker">E</span><span class="section-title">Other Key Deal Considerations</span></td>
+    </tr></table></div>
+    <table class="cons-table" cellpadding="0" cellspacing="0"><tr>
+        <td style="width:50%; vertical-align:top; padding:0 4px 0 0;"><div class="cons-card cons-required">
+            <div class="clbl">Deal Review Summary <span class="req-tag">REQUIRED</span></div>
+            <div class="cbody"><span class="just-dash">&mdash;</span> {!IF(Opportunity.DR_Notes__c != null, Opportunity.DR_Notes__c, 'Not provided')}</div>
+        </div></td>
+        <td style="width:50%; vertical-align:top; padding:0 0 0 4px;"><div class="cons-card">
+            <div class="clbl">Other Considerations</div>
+            <div class="cbody"><span class="just-dash">&mdash;</span> {!IF(Opportunity.DR_Other_Considerations__c != null, Opportunity.DR_Other_Considerations__c, 'Not provided')}</div>
+        </div></td>
+    </tr></table>
+</div>
+
+<!-- BOTTOM ACCENT STRIPE -->
+<div class="accent-stripe" style="margin-top:8px;">
+    <table cellpadding="0" cellspacing="0"><tr>
+        <td class="s-orange" style="width:50%;"></td>
+        <td class="s-navy" style="width:30%;"></td>
+        <td class="s-blue" style="width:20%;"></td>
+    </tr></table>
+</div>
+
+<!-- FOOTER BAR -->
+<div class="doc-foot">
+    <table cellpadding="0" cellspacing="0"><tr>
+        <td class="foot-conf">Digital Edge &middot; Confidential</td>
+        <td class="foot-gen">
+            Generated <apex:outputText value="{0,date,dd MMM yyyy}"><apex:param value="{!NOW()}" /></apex:outputText>
+            &nbsp;&middot;&nbsp;by {!$User.FirstName} {!$User.LastName}
+        </td>
+        <td class="foot-pg">Page 1</td>
+    </tr></table>
+</div>
+
+</body>
+</html>
+</apex:page>

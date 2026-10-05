@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_ACC_09_Credit_Block_Warning</fullName>
+    <active>true</active>
+    <description>VR-ACC-09: Prevents creating Quotes on Accounts with a credit block. System Administrators and Revenue Ops users are exempt.</description>
+    <errorConditionFormula>AND(
+  Credit_Block__c,
+  NOT($Profile.Name = &quot;System Administrator&quot;),
+  NOT($Profile.Name = &quot;Revenue Ops&quot;)
+)</errorConditionFormula>
+    <errorDisplayField>Credit_Block__c</errorDisplayField>
+    <errorMessage>This account has a credit block. Contact Finance to resolve before creating Quotes.</errorMessage>
+</ValidationRule>

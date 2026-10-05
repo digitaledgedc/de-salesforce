@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_20_StatusTransitionGuard</fullName>
+    <active>true</active>
+    <description>VR-QUOTE-20: Quote status-transition guard. (1) In Review only from Draft; (2) Rejected is terminal (only Void allowed). Blocks manual backward transitions via Edit; re-quote via Revise. Merges old VR_QUOTE_20 + 21.</description>
+    <errorConditionFormula>OR(
+    AND(
+        ISCHANGED(Status),
+        ISPICKVAL(Status, &apos;In Review&apos;),
+        NOT(ISPICKVAL(PRIORVALUE(Status), &apos;Draft&apos;))
+    ),
+    AND(
+        ISCHANGED(Status),
+        ISPICKVAL(PRIORVALUE(Status), &apos;Rejected&apos;),
+        NOT(ISPICKVAL(Status, &apos;Void&apos;))
+    )
+)</errorConditionFormula>
+    <errorDisplayField>Status</errorDisplayField>
+    <errorMessage>Invalid Quote status change. &quot;In Review&quot; can only be set from &quot;Draft&quot; (via Submit for Review), and a Rejected quote can only be Voided. To re-quote, use Revise Quote to create a new version.</errorMessage>
+</ValidationRule>

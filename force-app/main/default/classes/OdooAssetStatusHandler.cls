@@ -239,9 +239,7 @@ global with sharing class OdooAssetStatusHandler {
         }
 
         // subscription ID: accepted at root (backward compat) or per-line (Odoo native)
-        String subIdStr = p.odoo_sub_id != null
-            ? String.valueOf(p.odoo_sub_id)
-            : (!p.lines.isEmpty() && p.lines[0].subscription_id != null
+        String subIdStr = (!p.lines.isEmpty() && p.lines[0].subscription_id != null
                 ? String.valueOf(p.lines[0].subscription_id) : null);
 
         List<Asset>     toInsert       = new List<Asset>();

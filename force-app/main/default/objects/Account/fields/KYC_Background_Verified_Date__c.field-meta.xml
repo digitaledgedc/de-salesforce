@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>KYC_Background_Verified_Date__c</fullName>
+    <description>Timestamp when finance confirmed completion of the background verification (public records, media, Google search) during KYC review. Set automatically by the Finance Approval flow.</description>
+    <inlineHelpText>Date and time when the background verification was confirmed by finance.</inlineHelpText>
+    <label>KYC Background Verified</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>DateTime</type>
+</CustomField>

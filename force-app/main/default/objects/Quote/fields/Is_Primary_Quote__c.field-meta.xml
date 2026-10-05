@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Primary_Quote__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Q-6: Marks this as the primary quote for the opportunity. Only one quote per opportunity can be primary. Required before accepting a quote (SOF gate). Auto-clears on other quotes when a new primary is selected.</description>
+    <inlineHelpText>Check to designate this as the primary quote for this deal. Only one quote per opportunity can be the primary. This is required before the SOF can be accepted.</inlineHelpText>
+    <label>Primary Quote</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

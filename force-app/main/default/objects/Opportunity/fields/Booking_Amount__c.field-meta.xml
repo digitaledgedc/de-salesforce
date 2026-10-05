@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Booking_Amount__c</fullName>
+    <description>Defaults to MRC__c. Manual override supported. Requires Booking_Override_Reason__c when overridden.</description>
+    <inlineHelpText>MRC value counted toward sales bookings quota. Defaults to MRC; override requires a reason. For change orders, this is the net incremental MRC value.</inlineHelpText>
+    <label>Booking Amount</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

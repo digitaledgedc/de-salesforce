@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RemoteSiteSetting xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Digital Edge Odoo staging environment. Used by OdooCalloutService for IP-1 through IP-4 integrations.</description>
+    <disableProtocolSecurity>false</disableProtocolSecurity>
+    <isActive>false</isActive>
+    <url>https://dev-staging.digitaledgedc.dev</url>
+</RemoteSiteSetting>

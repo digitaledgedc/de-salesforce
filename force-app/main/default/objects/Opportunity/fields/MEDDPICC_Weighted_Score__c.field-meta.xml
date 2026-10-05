@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MEDDPICC_Weighted_Score__c</fullName>
+    <description>Phase 1 placeholder; equals raw score until weights are configured.</description>
+    <externalId>false</externalId>
+    <formula>MEDDPICC_Score__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Reserved for future weighted scoring model. Currently equals the raw MEDDPICC Score. Read-only.</inlineHelpText>
+    <label>MEDDPICC Weighted Score</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

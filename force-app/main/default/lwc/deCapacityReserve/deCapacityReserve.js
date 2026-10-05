@@ -70,6 +70,15 @@ export default class DeCapacityReserve extends NavigationMixin(LightningElement)
     @track error           = null;
     @track displayLimit    = PAGE_SIZE;
 
+    // ── Server-side scope filters (SFDC-472) ──
+    // The line-level Apex query caps its row count. Narrowing by Floor / Data Hall
+    // moves the filter server-side, so floors that sort last are still reachable.
+    @track filterFloorId   = '';
+    @track filterHallId    = '';
+    @track filterHalls     = [];
+    @track availableTotal  = 0;
+    @track availableLimit  = 0;
+
     // ── Selection ──
     @track _selectedAssignIds  = new Set();
     @track _selectedReleaseIds = new Set();
@@ -148,6 +157,10 @@ export default class DeCapacityReserve extends NavigationMixin(LightningElement)
                     this._siteCode  = result.siteCode;
                     if (newSiteId !== this._siteId) {
                         this._siteId = newSiteId;
+                        this.floors  = [];
+                    }
+                    if (this.floors.length === 0) {
+                        this._loadFloors();
                     }
                     this._loadInventory();
                 } else {
@@ -173,10 +186,15 @@ export default class DeCapacityReserve extends NavigationMixin(LightningElement)
                 // QLI context — line-level inventory
                 const result = await getLineInventory({
                     quoteLineItemId: this.recordId,
-                    quoteId: this._quoteId
+                    quoteId: this._quoteId,
+                    inventoryType: null,
+                    floorId: this.filterFloorId || null,
+                    hallId:  this.filterHallId  || null
                 });
                 const assigned  = result.assigned  || [];
                 const available = result.available  || [];
+                this.availableTotal = result.availableTotal || available.length;
+                this.availableLimit = result.availableLimit || 0;
                 // Tag assigned items so partitioning works
                 assigned.forEach(r => { r._assignedToLine = true; });
                 this.allInventory = [...assigned, ...available];
@@ -220,6 +238,13 @@ export default class DeCapacityReserve extends NavigationMixin(LightningElement)
         try {
             this.halls = await getHallsByFloor({ floorId: this.createFloorId });
         } catch (_e) { /* silent */ }
+    }
+
+    async _loadFilterHalls() {
+        if (!this.filterFloorId) { this.filterHalls = []; return; }
+        try {
+            this.filterHalls = await getHallsByFloor({ floorId: this.filterFloorId });
+        } catch (_e) { this.filterHalls = []; }
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -446,6 +471,23 @@ export default class DeCapacityReserve extends NavigationMixin(LightningElement)
     get spaceTypeCreateOptions() { return SPACE_TYPE_CREATE_OPTIONS; }
     get capacityTypeOptions()    { return CAPACITY_TYPE_OPTIONS; }
     get floorOptions()           { return this.floors.map(f => ({ label: f.Name, value: f.Id })); }
+    get filterFloorOptions() {
+        return [{ label: 'All floors', value: '' }]
+            .concat(this.floors.map(f => ({ label: f.Name, value: f.Id })));
+    }
+    get filterHallOptions() {
+        return [{ label: 'All data halls', value: '' }]
+            .concat(this.filterHalls.map(h => ({ label: h.Name, value: h.Id })));
+    }
+    get noFilterHallOptions()    { return !this.filterFloorId || this.filterHalls.length === 0; }
+    get showScopeFilter()        { return !!this._isOnQLI; }
+    get isTruncated() {
+        return this.availableLimit > 0 && this.availableTotal > this.availableLimit;
+    }
+    get truncationNotice() {
+        return `Showing the first ${this.availableLimit} of ${this.availableTotal} available records. `
+             + 'Pick a Floor or Data Hall to see the rest.';
+    }
     get hallOptions()            { return this.halls.map(h => ({ label: h.Name, value: h.Id })); }
     get isSpaceRT()              { return this.createRT === 'Inventory_Space'; }
     get isBreakerRT()            { return this.createRT === 'Inventory_Breaker'; }
@@ -540,6 +582,18 @@ export default class DeCapacityReserve extends NavigationMixin(LightningElement)
     }
 
     handleRefresh() {
+        this._loadInventory();
+    }
+
+    async handleFilterFloorChange(event) {
+        this.filterFloorId = event.detail.value || '';
+        this.filterHallId  = '';
+        await this._loadFilterHalls();
+        this._loadInventory();
+    }
+
+    handleFilterHallChange(event) {
+        this.filterHallId = event.detail.value || '';
         this._loadInventory();
     }
 

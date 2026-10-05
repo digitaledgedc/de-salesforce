@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_ACC_05_LocalName_Locked</fullName>
+    <active>true</active>
+    <description>VR-ACC-05: Prevents local entity name change after Finance Approval.</description>
+    <errorConditionFormula>AND(NOT(ISNEW()), ISCHANGED(Local_Entity_Name__c), Entity_Locked__c)</errorConditionFormula>
+    <errorDisplayField>Local_Entity_Name__c</errorDisplayField>
+    <errorMessage>Local entity name cannot be changed after Finance Approval.</errorMessage>
+</ValidationRule>

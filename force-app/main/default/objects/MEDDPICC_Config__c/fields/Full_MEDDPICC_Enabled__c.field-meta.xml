@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Full_MEDDPICC_Enabled__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>When TRUE, all 8 MEDDPICC components are enforced at stage gates. When FALSE (default Phase 1), Light MEDDPICC is active — only Identify Pain and Decision Criteria are required. Flip to TRUE in Phase 2 once sales team adoption is confirmed by Revenue Ops.</description>
+    <label>Full MEDDPICC Enabled</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -182,6 +182,16 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>OrderItem.UoM__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Product2.Allowed_UoM__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Product2.Merge_IB_Task__c</field>
         <readable>true</readable>
@@ -209,6 +219,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Quote.Security_Deposit_Required__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>QuoteLineItem.UoM__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

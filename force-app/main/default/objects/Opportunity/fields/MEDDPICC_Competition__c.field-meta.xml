@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MEDDPICC_Competition__c</fullName>
+    <description>Competitors and their positioning.</description>
+    <inlineHelpText>MEDDPICC: Who else is the customer evaluating and how are they positioned? Describe competitors in consideration and DE&apos;s competitive differentiation.</inlineHelpText>
+    <label>Competition (C)</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

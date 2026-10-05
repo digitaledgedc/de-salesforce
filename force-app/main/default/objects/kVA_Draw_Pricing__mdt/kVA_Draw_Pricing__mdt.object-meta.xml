@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Pricing table for Cabinet product Draw Capacity (kVA) tiers. Each record maps a kVA tier to its monthly price in SGD and HKD. Used by QuoteLineItemAttributeHandler to adjust QuoteLineItem.UnitPrice when a kVA attribute is selected. Populate with real pricing data from DE APAC rate card before go-live.</description>
+    <label>kVA Draw Pricing</label>
+    <pluralLabel>kVA Draw Pricing</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

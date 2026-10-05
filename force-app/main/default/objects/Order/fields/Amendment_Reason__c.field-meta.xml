@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Amendment_Reason__c</fullName>
+    <inlineHelpText>The specific reason this service is being amended. Required for Change and Upsell order types. Passed to Odoo with the order to document the change in the billing system.</inlineHelpText>
+    <label>Amendment Reason</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>BAN_Change</fullName>
+                <default>false</default>
+                <label>BAN Change</label>
+            </value>
+            <value>
+                <fullName>Price_Change</fullName>
+                <default>false</default>
+                <label>Price Change</label>
+            </value>
+            <value>
+                <fullName>Quantity_Change</fullName>
+                <default>false</default>
+                <label>Quantity Change</label>
+            </value>
+            <value>
+                <fullName>Product_Change</fullName>
+                <default>false</default>
+                <label>Product Change</label>
+            </value>
+            <value>
+                <fullName>Site_Transfer</fullName>
+                <default>false</default>
+                <label>Site Transfer</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

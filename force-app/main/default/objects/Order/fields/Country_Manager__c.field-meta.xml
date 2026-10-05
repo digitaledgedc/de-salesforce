@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Country_Manager__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <inlineHelpText>The Country Manager who must approve this order before confirmation. Set by the submitting sales rep when submitting for approval. Routes the approval request to this user.</inlineHelpText>
+    <label>Country Manager</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>Country_Manager_Orders</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

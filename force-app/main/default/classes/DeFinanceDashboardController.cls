@@ -286,8 +286,9 @@ public with sharing class DeFinanceDashboardController {
     }
 
     private static final Set<String> DE_COUNTRIES = new Set<String>{
-        'Singapore','Japan','Korea','South Korea','Indonesia','Philippines','China','India','Thailand','Malaysia','Hong Kong'
+        'Japan','Korea','Indonesia','Philippines','China','India','Thailand','Malaysia'
     };
+    //'Singapore','South Korea','Hong Kong'
 
     private static String normalizeCountry(String val) {
         if (String.isBlank(val)) return '';

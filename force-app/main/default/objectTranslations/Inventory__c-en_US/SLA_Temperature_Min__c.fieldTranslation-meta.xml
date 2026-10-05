@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- SLA Temperature Min --></label>
+    <name>SLA_Temperature_Min__c</name>
+    <picklistValues>
+        <masterLabel>15°C</masterLabel>
+        <translation><!-- 15°C --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>16°C</masterLabel>
+        <translation><!-- 16°C --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>17°C</masterLabel>
+        <translation><!-- 17°C --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>18°C</masterLabel>
+        <translation><!-- 18°C --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>19°C</masterLabel>
+        <translation><!-- 19°C --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>20°C</masterLabel>
+        <translation><!-- 20°C --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>21°C</masterLabel>
+        <translation><!-- 21°C --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>22°C</masterLabel>
+        <translation><!-- 22°C --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>23°C</masterLabel>
+        <translation><!-- 23°C --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>24°C</masterLabel>
+        <translation><!-- 24°C --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>25°C</masterLabel>
+        <translation><!-- 25°C --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

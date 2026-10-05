@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Customer_PO_Reference__c</fullName>
+    <description>Customer Purchase Order reference number. Included on Quote PDF and passed in IP-1 order line as client_order_ref.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The customer&apos;s internal Purchase Order number for this deal. Printed on the Quote PDF and passed to Odoo for invoice reference. Required if the customer&apos;s procurement process mandates a PO number.</inlineHelpText>
+    <label>Customer PO Reference</label>
+    <length>100</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SBI_Notes__c</fullName>
+    <description>Required when SBI_Flag__c = TRUE. Documents the special billing instruction: what it is, which lines it applies to, start/end date, invoicing presentment requirements. Passed in IP-1 SBI payload.</description>
+    <inlineHelpText>Required when Special Billing Instruction is flagged. Describe what the SBI is, which quote lines it applies to, the effective dates, and any invoicing presentment requirements.</inlineHelpText>
+    <label>SBI Description</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

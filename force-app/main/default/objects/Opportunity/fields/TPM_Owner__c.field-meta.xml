@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TPM_Owner__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Required when Solution_Engagement_Required__c = TRUE.</description>
+    <inlineHelpText>The Technical Project Manager assigned to this deal. Required when Solution Engagement Required is checked. Responsible for producing and approving the Solution Design Document.</inlineHelpText>
+    <label>TPM Owner</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>TPM_Opportunities</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

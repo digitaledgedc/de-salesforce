@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_12_Binding_Requires_RDD</fullName>
+    <active>true</active>
+    <description>DEACTIVATED 2026-06-22 (Cyril; notify Alosh). RDD now enforced in Quote_Screen_SubmitForReview flow. VR only fired on direct Draft-&gt;In Review change, which submit never does. Kept for re-enable.</description>
+    <errorConditionFormula>AND(
+    ISCHANGED(Status),
+    ISPICKVAL(PRIORVALUE(Status), &apos;Draft&apos;),
+    ISPICKVAL(Status, &apos;In Review&apos;),
+    ISBLANK(RDD__c)
+)</errorConditionFormula>
+    <errorDisplayField>RDD__c</errorDisplayField>
+    <errorMessage>Requested Delivery Date is required before submitting this quote for review. Please set the RDD, then submit.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DocuSign_Manual_Override__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set TRUE when this quote was accepted via the manual fallback path (Custom Setting DocuSign_Enforcement__c = FALSE). Indicates signed PDF was uploaded manually by Sales.</description>
+    <label>DocuSign Manual Override</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

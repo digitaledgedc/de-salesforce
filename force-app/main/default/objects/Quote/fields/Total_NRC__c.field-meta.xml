@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_NRC__c</fullName>
+    <description>Roll-up sum of NRC_Amount__c across all Quote Lines. NRC_Amount__c formula returns $0 for non-NRC lines, so this sums only one-time charges. Used in NRC credit limit check.</description>
+    <inlineHelpText>Sum of all one-time charges across quote lines. Auto-calculated from line items (UnitPrice x Quantity for NRC lines). Used for NRC credit limit validation. Read-only.</inlineHelpText>
+    <label>Total NRC (Quote)</label>
+    <summarizedField>QuoteLineItem.NRC_Amount__c</summarizedField>
+    <summaryForeignKey>QuoteLineItem.QuoteId</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

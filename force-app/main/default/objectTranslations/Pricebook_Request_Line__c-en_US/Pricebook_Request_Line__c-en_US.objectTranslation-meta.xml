@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Pricebook Request Line</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Pricebook Request Lines</value>
+    </caseValues>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Requested Unit Price ({!Unit_Price__c}) is below the floor price ({!Min_Price__c}). Price must be at or above the minimum. Contact Product team for exceptions. --></errorMessage>
+        <name>VR_PRL_01_BelowFloorPrice</name>
+    </validationRules>
+</CustomObjectTranslation>

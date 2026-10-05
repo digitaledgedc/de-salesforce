@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Finance_Approval_Phase__c</fullName>
+    <description>Single finance approval tracking field. Values: Not_Required / Not_Started / DnB_Pending / KYC_Pending / Approved / Rejected_DnB / Rejected_KYC. Set by F-05 and related flows.</description>
+    <inlineHelpText>Current step in the Finance approval workflow. Set automatically by the Finance Approval flow. Read-only for Sales.</inlineHelpText>
+    <label>Finance Approval Phase</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Not_Required</fullName>
+                <default>true</default>
+                <label>Not Required</label>
+            </value>
+            <value>
+                <fullName>Not_Started</fullName>
+                <default>false</default>
+                <label>Not Started</label>
+            </value>
+            <value>
+                <fullName>DnB_Pending</fullName>
+                <default>false</default>
+                <label>D&amp;B Pending</label>
+            </value>
+            <value>
+                <fullName>KYC_Pending</fullName>
+                <default>false</default>
+                <label>KYC Pending</label>
+            </value>
+            <value>
+                <fullName>Approved</fullName>
+                <default>false</default>
+                <label>Approved</label>
+            </value>
+            <value>
+                <fullName>Rejected_DnB</fullName>
+                <default>false</default>
+                <label>Rejected - D&amp;B</label>
+            </value>
+            <value>
+                <fullName>Rejected_KYC</fullName>
+                <default>false</default>
+                <label>Rejected - KYC</label>
+            </value>
+            <value>
+                <fullName>Legal_Review_Pending</fullName>
+                <default>false</default>
+                <label>Legal Review Pending</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

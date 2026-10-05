@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QLI_04_No_Edit_Qty_Attr_On_CO</fullName>
+    <active>true</active>
+    <description>VR-QLI-04: On CO lines tied to an existing Asset (Change_Type__c CHANGE/CHANGE_PRICE/DELETE), blocks editing Quantity or Product_Attribute_Value__c post-creation, to keep the CO line 1:1 with its Odoo IB. NEW lines are unaffected.</description>
+    <errorConditionFormula>AND(
+  NOT(ISNEW()),
+  NOT(ISBLANK(Asset__c)),
+  OR(
+    ISPICKVAL(Change_Type__c, &apos;CHANGE&apos;),
+    ISPICKVAL(Change_Type__c, &apos;CHANGE_PRICE&apos;),
+    ISPICKVAL(Change_Type__c, &apos;DELETE&apos;)
+  ),
+  OR(
+    ISCHANGED(Quantity),
+    ISCHANGED(Product_Attribute_Value__c)
+  )
+)</errorConditionFormula>
+    <errorMessage>Quantity and Attribute can&apos;t be edited here — this line came from a Change Order and is tied to an existing Odoo service. Changing it directly would desync the order from that service. Create a new Change Order to adjust quantity or attribute instead.</errorMessage>
+</ValidationRule>

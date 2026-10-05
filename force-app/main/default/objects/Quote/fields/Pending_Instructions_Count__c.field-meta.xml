@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pending_Instructions_Count__c</fullName>
+    <defaultValue>0</defaultValue>
+    <description>Count of Special Instruction records with Status = Pending for this Quote. Maintained by SpecialInstruction_AfterSave_UpdateQuoteCount flow. Used by VR to gate Quote acceptance.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Number of pending special instructions awaiting Finance acknowledgment.</inlineHelpText>
+    <label>Pending Instructions</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DE_Asset_Compact</fullName>
+    <fields>Name</fields>
+    <fields>Asset_Lifecycle_Status__c</fields>
+    <fields>MRC__c</fields>
+    <fields>NRC__c</fields>
+    <fields>Operation_Site__c</fields>
+    <fields>Contract_End__c</fields>
+    <label>DE Asset Compact</label>
+</CompactLayout>

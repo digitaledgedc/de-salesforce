@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Target_Site__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Lookup to the canonical Site__c record for this opportunity. Drives pricebook and currency on child quotes. Replaces the Operation_Site__c picklist.</description>
+    <inlineHelpText>Link to the Digital Edge site record for this deal. Drives pricebook and billing currency on child quotes. Use this instead of the Operation Site picklist.</inlineHelpText>
+    <label>Operation Site</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>Site__c.Country_Name__c</field>
+            <operation>equals</operation>
+            <valueField>$Source.Operation_Country__c</valueField>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Site__c</referenceTo>
+    <relationshipLabel>Opportunities</relationshipLabel>
+    <relationshipName>Opportunities</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

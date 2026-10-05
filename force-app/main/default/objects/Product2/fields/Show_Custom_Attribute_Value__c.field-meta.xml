@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Show_Custom_Attribute_Value__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>When true, the quote line editor shows a free-form numeric input for custom attribute values (e.g. PUE consumption, kW draw). The entered value is stored on QuoteLineItem.Custom_Attribute_Value__c.</description>
+    <label>Show Custom Attribute Value</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

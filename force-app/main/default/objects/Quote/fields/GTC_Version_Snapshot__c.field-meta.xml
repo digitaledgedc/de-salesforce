@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>GTC_Version_Snapshot__c</fullName>
+    <description>Snapshotted from the Account&apos;s active GTC/MCA Contract.Agreement_Version__c when the Quote is Accepted. Preserved permanently as the exact T&amp;C version governing this deal. VR blocks direct edits post-population.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Immutable snapshot of the GTC/MCA version string at the time this Quote was Accepted (SOF signed). Auto-populated by flow when Quote status moves to Accepted. Cannot be edited after population.</inlineHelpText>
+    <label>T&amp;C Version at Signing</label>
+    <length>100</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

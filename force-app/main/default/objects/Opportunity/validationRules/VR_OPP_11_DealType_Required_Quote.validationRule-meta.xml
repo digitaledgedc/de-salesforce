@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_OPP_11_DealType_Required_Quote</fullName>
+    <active>false</active>
+    <description>VR-OPP-11: Deal Type must be set before entering the Quote stage. Required for Booking Bucket derivation and quota attribution.</description>
+    <errorConditionFormula>AND(
+  OR(
+    ISPICKVAL(StageName, &apos;3-Quote&apos;),
+    ISPICKVAL(StageName, &apos;4-Negotiate&apos;),
+    ISPICKVAL(StageName, &apos;5-Won&apos;)
+  ),
+  NOT(ISCHANGED(StageName)),
+  ISPICKVAL(Deal_Type__c, &apos;&apos;)
+)</errorConditionFormula>
+    <errorDisplayField>Deal_Type__c</errorDisplayField>
+    <errorMessage>Deal Type is required from Quote stage onwards. Select the deal classification before advancing.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Referral_Partner__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Required when LeadSource = Referral. Links to the partner Account record that made the referral. Account.Type must be Reseller or Referral Partner. Carries to Opportunity.Referral_Partner__c on conversion.</description>
+    <inlineHelpText>Required when Lead Source is Referral. Link to the reseller or referral partner account that introduced this prospect.</inlineHelpText>
+    <label>Referral Partner</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Leads (Referral Partner)</relationshipLabel>
+    <relationshipName>Referral_Partner_Leads</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Lookup</type>
+</CustomField>

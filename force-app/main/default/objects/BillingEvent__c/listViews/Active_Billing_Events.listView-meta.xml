@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_Billing_Events</fullName>
+    <columns>NAME</columns>
+    <columns>Account__c</columns>
+    <columns>BAN__c</columns>
+    <columns>Order__c</columns>
+    <columns>BillingEvent_Status__c</columns>
+    <columns>Amount__c</columns>
+    <columns>Billing_Period_Start__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>BillingEvent_Status__c</field>
+        <operation>equals</operation>
+        <value>Active</value>
+    </filters>
+    <label>Active Billing Events</label>
+</ListView>

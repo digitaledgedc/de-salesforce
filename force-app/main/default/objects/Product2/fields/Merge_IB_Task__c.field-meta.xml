@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Merge_IB_Task__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>When true, the integration merges IB (Installation Base) tasks for this product instead of creating separate tasks. Sourced from Odoo product configuration.</description>
+    <label>Merge IB Task</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

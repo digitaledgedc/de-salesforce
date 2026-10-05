@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RenewalFrequency</fullName>
+    <inlineHelpText>The frequency at which resource grants are renewed. This applies only with a Renewal Frequency Unit.</inlineHelpText>
+    <trackHistory>false</trackHistory>
+</CustomField>

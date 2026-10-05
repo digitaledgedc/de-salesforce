@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>CAB001.RC 8kVA SEL2 USD</label>
+    <protected>false</protected>
+    <values>
+        <field>Attribute_Value__c</field>
+        <value xsi:type="xsd:string">8kVA</value>
+    </values>
+    <values>
+        <field>Currency_Code__c</field>
+        <value xsi:type="xsd:string">USD</value>
+    </values>
+    <values>
+        <field>Odoo_Combo_ID__c</field>
+        <value xsi:type="xsd:double">968.0</value>
+    </values>
+    <values>
+        <field>Price__c</field>
+        <value xsi:type="xsd:double">3020.0</value>
+    </values>
+    <values>
+        <field>Product_Code__c</field>
+        <value xsi:type="xsd:string">CAB001.RC</value>
+    </values>
+    <values>
+        <field>Site_Code__c</field>
+        <value xsi:type="xsd:string">SEL2</value>
+    </values>
+</CustomMetadata>

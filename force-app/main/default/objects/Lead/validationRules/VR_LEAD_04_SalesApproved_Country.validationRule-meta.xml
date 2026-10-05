@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_LEAD_04_SalesApproved_Country</fullName>
+    <active>true</active>
+    <description>Operation Country must be selected before marking a Lead as Sales Approved.</description>
+    <errorConditionFormula>AND(
+  ISPICKVAL(Status, &quot;Sales Approved&quot;),
+  ISBLANK(Target_Country__c)
+)</errorConditionFormula>
+    <errorDisplayField>Target_Country__c</errorDisplayField>
+    <errorMessage>Operation Country must be selected before marking this Lead as Sales Approved.</errorMessage>
+</ValidationRule>

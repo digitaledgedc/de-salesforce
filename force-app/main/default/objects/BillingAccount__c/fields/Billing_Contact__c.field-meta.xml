@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Billing_Contact__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <inlineHelpText>The primary customer contact for billing queries and invoice disputes on this BAN. This person receives invoice delivery notifications if no Invoice Delivery Email is set.</inlineHelpText>
+    <label>Billing Contact</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>Contact.Contact_Status__c</field>
+            <operation>notEqual</operation>
+            <value>Inactive</value>
+        </filterItems>
+        <filterItems>
+            <field>Contact.Contact_Status__c</field>
+            <operation>notEqual</operation>
+            <value>Departed</value>
+        </filterItems>
+        <infoMessage>Only Active contacts are shown. Inactive and Departed contacts are excluded.</infoMessage>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Contact</referenceTo>
+    <relationshipName>BillingAccounts</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tagged_To_Quote__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>System-set: TRUE once this BAN has been referenced (tagged) by any Quote. Once TRUE the BAN currency is locked (VR_BAN_Currency_Locked). One-way — never reset, because a BAN can serve multiple quotes.</description>
+    <inlineHelpText>Set automatically when a quote uses this BAN. Once set, the BAN&apos;s currency is locked.</inlineHelpText>
+    <label>Tagged To Quote</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

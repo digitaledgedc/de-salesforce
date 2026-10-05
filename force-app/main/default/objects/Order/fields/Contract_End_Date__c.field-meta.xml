@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contract_End_Date__c</fullName>
+    <description>FB-946: Contract end date carried from the Quote (Quote.Contract_End_Date__c) at order creation. Editable on the Order - not recalculated here.</description>
+    <inlineHelpText>End date of the contract term. Inherited from the Quote when the order is created. Can be edited manually.</inlineHelpText>
+    <label>Contract End Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Target_Site__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Lookup to the canonical Site__c record for this quote. Drives pricebook assignment and currency. Replaces the Operation_Site__c picklist.</description>
+    <inlineHelpText>Link to the Digital Edge site record for this quote. Drives pricebook and billing currency.</inlineHelpText>
+    <label>Operation Site</label>
+    <referenceTo>Site__c</referenceTo>
+    <relationshipLabel>Quotes</relationshipLabel>
+    <relationshipName>Quotes</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

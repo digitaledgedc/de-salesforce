@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Pricebook Request</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Pricebook Requests</value>
+    </caseValues>
+    <layouts>
+        <layout>Pricebook Request Layout</layout>
+        <sections>
+            <label><!-- Approval Notes --></label>
+            <section>Approval Notes</section>
+        </sections>
+        <sections>
+            <label><!-- Products --></label>
+            <section>Products</section>
+        </sections>
+        <sections>
+            <label><!-- Request Details --></label>
+            <section>Request Details</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

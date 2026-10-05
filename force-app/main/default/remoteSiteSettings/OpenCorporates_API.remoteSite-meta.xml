@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RemoteSiteSetting xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>OpenCorporates - global company registry. Free, no key required for basic search. Covers HK, SG, JP, IN, ID, PH, KR and 130+ other jurisdictions.</description>
+    <disableProtocolSecurity>false</disableProtocolSecurity>
+    <isActive>true</isActive>
+    <url>https://api.opencorporates.com</url>
+</RemoteSiteSetting>

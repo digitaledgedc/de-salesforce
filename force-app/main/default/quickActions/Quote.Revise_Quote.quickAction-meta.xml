@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Void the current quote and create a revised version. Preserves line items and increments the version number.</description>
+    <flowDefinition>Quote_Screen_ReviseQuote</flowDefinition>
+    <label>Revise Quote</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>

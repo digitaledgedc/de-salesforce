@@ -8,13 +8,11 @@ function formatCurrency(val, cc) {
     if (!fmt) {
         try {
             fmt = new Intl.NumberFormat('en-US', {
-                style: 'currency', currency: code,
-                minimumFractionDigits: 2, maximumFractionDigits: 2
+                style: 'currency', currency: code
             });
         } catch (_e) {
             fmt = new Intl.NumberFormat('en-US', {
-                style: 'currency', currency: 'USD',
-                minimumFractionDigits: 2, maximumFractionDigits: 2
+                style: 'currency', currency: 'USD'
             });
         }
         _fmtCache.set(code, fmt);
@@ -41,6 +39,7 @@ export default class QuoteLineDatatable extends LightningElement {
     @api keyField = 'Id';
     @api hideDraftBar = false;
     @api readOnly = false;
+    @api allowReorder = false;
 
     _data = [];
     _columns = [];
@@ -132,7 +131,8 @@ export default class QuoteLineDatatable extends LightningElement {
 
     get rows() {
         const sorted = this._getSortedData();
-        return sorted.map(row => {
+        const lastIdx = sorted.length - 1;
+        return sorted.map((row, idx) => {
             const rowId = row[this.keyField];
             const isSelected = this._selectedIds.has(rowId);
             const rowDrafts = this._draftMap.get(rowId) || {};
@@ -160,7 +160,7 @@ export default class QuoteLineDatatable extends LightningElement {
                 // Append draft sequence to key for select-based columns so the
                 // browser <select> element is destroyed/recreated on clearDrafts,
                 // ensuring the displayed value reverts to the original.
-                const selectKey = col.editOptions || col.type === 'attributePicklist'
+                const selectKey = col.editOptions || col.editOptionsField || col.type === 'attributePicklist'
                     ? `${rowId}-${fn || col.type}-${this._draftSeq}`
                     : `${rowId}-${fn || col.type}`;
                 return {
@@ -215,11 +215,19 @@ export default class QuoteLineDatatable extends LightningElement {
                     // Editable input type — date picker for dates, text for rest
                     inputType: col.type === 'date-local' ? 'date' : 'text',
                     inputStep: undefined,
-                    // Picklist edit options
-                    hasEditOptions: !!col.editOptions,
-                    editOptions: col.editOptions
-                        ? col.editOptions.map(o => ({ ...o, selected: o.value === rawVal }))
-                        : [],
+                    // Picklist edit options. col.editOptions is a fixed list shared by every
+                    // row; col.editOptionsField (SFDC-366) names a ROW field holding this
+                    // row's own list, so the choices can differ per product. An empty array
+                    // means "not editable" — that is how the UoM column switches itself off
+                    // for ramp lines and non-Draft quotes without a second disabled flag.
+                    hasEditOptions: !!col.editOptions
+                        || (!!col.editOptionsField
+                            && Array.isArray(row[col.editOptionsField])
+                            && row[col.editOptionsField].length > 0),
+                    editOptions: (col.editOptions
+                            || (col.editOptionsField ? row[col.editOptionsField] : null)
+                            || []
+                        ).map(o => ({ ...o, selected: o.value === rawVal })),
                 };
             });
 
@@ -233,6 +241,8 @@ export default class QuoteLineDatatable extends LightningElement {
                 viewTitle,
                 isWarning: viewIcon === 'warning',
                 isEye: viewIcon === 'eye',
+                disableMoveUp: this.readOnly || idx === 0,
+                disableMoveDown: this.readOnly || idx === lastIdx || lastIdx < 0,
                 _raw: row,
                 cells
             };
@@ -269,7 +279,9 @@ export default class QuoteLineDatatable extends LightningElement {
     // ─── Sorting ─────────────────────────────────────────────────────────
 
     _getSortedData() {
-        if (!this._sortField) return [...this._data];
+        // When sequence controls are on, keep parent SortOrder — don't let column
+        // header sort fight the up/down buttons.
+        if (this.allowReorder || !this._sortField) return [...this._data];
         const dir = this._sortDir === 'asc' ? 1 : -1;
         const field = this._sortField;
         return [...this._data].sort((a, b) => {
@@ -340,6 +352,22 @@ export default class QuoteLineDatatable extends LightningElement {
         }));
     }
 
+    handleReorderClick(event) {
+        event.stopPropagation();
+        if (this.readOnly || !this.allowReorder) return;
+        const btn = event.currentTarget;
+        if (btn.disabled) return;
+        const rowId = btn.dataset.id;
+        const dir = btn.dataset.dir;
+        const row = this._data.find(r => r[this.keyField] === rowId);
+        if (!row || (dir !== 'up' && dir !== 'down')) return;
+        // Clear client-side column sort so visual order matches SortOrder after refresh
+        this._sortField = null;
+        this.dispatchEvent(new CustomEvent('rowaction', {
+            detail: { action: { name: dir === 'up' ? 'moveUp' : 'moveDown' }, row }
+        }));
+    }
+
     // ─── Inline editing ──────────────────────────────────────────────────
 
     handleCellClick(event) {
@@ -353,7 +381,7 @@ export default class QuoteLineDatatable extends LightningElement {
         // reps can correct/clear per-line remarks (incl. phase-note text that leaked in).
         const row = this._data?.find(r => r.Id === rowId);
         if (row?._readOnly && col.fieldName !== 'Line_Remarks__c') return;
-        if (col.editOptions) return; // Inline select already visible
+        if (col.editOptions || col.editOptionsField) return; // Inline select already visible
         this._editingCell = { rowId, fieldName: field };
         // Focus the input after render
         // eslint-disable-next-line @lwc/lwc/no-async-operation
@@ -406,12 +434,16 @@ export default class QuoteLineDatatable extends LightningElement {
         existing[field] = parsedVal;
         this._draftMap.set(rowId, existing);
         this._draftMap = new Map(this._draftMap);
-        this._fireDraftChange();
+        this._fireDraftChange({ rowId, field, oldValue: origVal, newValue: parsedVal });
     }
 
-    _fireDraftChange() {
+    // SFDC-366: `change` describes the single edit that produced this event, so a
+    // listener can react to one specific field (the UoM warning toast). It is null
+    // for draft removals and Cancel, which is why every other caller passes nothing.
+    // `hasDrafts` is unchanged, so existing listeners are unaffected.
+    _fireDraftChange(change) {
         this.dispatchEvent(new CustomEvent('draftchange', {
-            detail: { hasDrafts: this.hasDrafts },
+            detail: { hasDrafts: this.hasDrafts, change: change || null },
             bubbles: true, composed: true
         }));
     }

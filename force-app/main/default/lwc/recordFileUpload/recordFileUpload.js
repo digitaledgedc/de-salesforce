@@ -9,12 +9,14 @@ import { LightningElement, api, wire, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getSiteDocumentTypes       from '@salesforce/apex/SiteFileUploadController.getSiteDocumentTypes';
 import getSiteDocuments           from '@salesforce/apex/SiteFileUploadController.getSiteDocuments';
-import uploadFilesToSite          from '@salesforce/apex/SiteFileUploadController.uploadFilesToSite';
+import setDocumentTypes           from '@salesforce/apex/SiteFileUploadController.setDocumentTypes';
 import deleteDocument             from '@salesforce/apex/SiteFileUploadController.deleteDocument';
+import deleteDocuments            from '@salesforce/apex/SiteFileUploadController.deleteDocuments';
 import createDocumentTypeMetadata from '@salesforce/apex/SiteFileUploadController.createDocumentTypeMetadata';
 import canManageDocuments         from '@salesforce/apex/SiteFileUploadController.canManageDocuments';
+import enforceSizeLimit          from '@salesforce/apex/SiteFileUploadController.enforceSizeLimit';
+import getMaxFileBytes           from '@salesforce/apex/SiteFileUploadController.getMaxFileBytes';
 
-const MAX_SIZE = 5 * 1024 * 1024;
 let _uid = 0;
 const uid = () => `f-${++_uid}`;
 
@@ -47,10 +49,17 @@ export default class RecordFileUpload extends LightningElement {
     showInlineAddForm        = false;
     isSaving                 = false;
     isSavingDocType          = false;
-    isDragging               = false;
     newDocTypeName           = '';
     _metaLoaded              = false;
     _pendingFiles            = [];
+    // Ids of docs already on the platform but not yet typed. Cancelling the
+    // modal deletes these, otherwise they linger with a blank Document_Type__c.
+    _untypedDocIds           = [];
+
+    // Size ceiling comes from Apex so there is exactly one place to change it.
+    // Until the wire lands, uploads are still allowed — the server prunes
+    // anything oversized regardless, so the caption is cosmetic.
+    maxFileBytes             = null;
 
     // ── Documents list state ──────────────────────────────────
     @track existingDocuments = [];
@@ -77,6 +86,11 @@ export default class RecordFileUpload extends LightningElement {
     // Apex filters Doc_Type_Visibility__mdt by the running user's profile
     // and by Object_API_Name__c matching objectApiName (when set).
     // ══════════════════════════════════════════════════════════
+    @wire(getMaxFileBytes)
+    wiredMaxFileBytes({ data }) {
+        if (data) this.maxFileBytes = data;
+    }
+
     @wire(canManageDocuments)
     wiredPermission({ data }) {
         if (data !== undefined) this.userCanManage = data === true;
@@ -126,9 +140,22 @@ export default class RecordFileUpload extends LightningElement {
     // ══════════════════════════════════════════════════════════
     get activeFile()       { return this.stagedFiles[this.activeTabIdx] || null; }
     get noDocTypes()       { return this.docTypeListItems.length === 0; }
+    // _formatSize always prints one decimal, which reads oddly for a round cap
+    // ("25.0 MB"), so the ceiling gets its own label.
+    get maxSizeLabel() {
+        if (!this.maxFileBytes) return '';
+        const mb = this.maxFileBytes / 1048576;
+        return (Number.isInteger(mb) ? mb : mb.toFixed(1)) + ' MB';
+    }
+
+    get maxSizeCaption() {
+        return this.maxFileBytes
+            ? `Any file type accepted - up to ${this.maxSizeLabel} per file`
+            : 'Any file type accepted';
+    }
+
     get hasDocuments()     { return this.existingDocuments.length > 0; }
     get hasMultipleFiles() { return this.stagedFiles.length > 1; }
-    get dropZoneClass()    { return 'su-dropzone' + (this.isDragging ? ' su-dropzone--active' : ''); }
 
     get docTypeListItems() {
         const selected = this.activeFile?.docType || '';
@@ -151,47 +178,72 @@ export default class RecordFileUpload extends LightningElement {
     }
 
     // ══════════════════════════════════════════════════════════
-    // FILE PICKER / DRAG-DROP
+    // UPLOAD (handled by lightning-file-upload, then type the files)
     // ══════════════════════════════════════════════════════════
-    triggerFilePicker() {
-        this.template.querySelector('[data-id="fileInput"]').click();
-    }
-    handleDragOver(e)  { e.preventDefault(); this.isDragging = true; }
-    handleDragLeave()  { this.isDragging = false; }
-    handleDrop(e) {
-        e.preventDefault();
-        this.isDragging = false;
-        this.processFiles([...e.dataTransfer.files]);
-    }
-    handleFileInputChange(e) {
-        this.processFiles([...e.target.files]);
-        e.target.value = '';
-    }
+    // lightning-file-upload owns both the click target and the drop target inside
+    // its own shadow root. This org runs base components in native shadow, so
+    // shadowRoot is null and neither can be driven from here — the component has
+    // to be the visible control. Nothing below reaches across the boundary.
+    // The size cap is applied here, not before the upload: lightning-file-upload
+    // has no max-size attribute and has already committed the bytes by the time
+    // this fires. Apex measures what landed, deletes anything oversized, and
+    // returns it so those files never reach the staging modal. The upload cost is
+    // unavoidable with this component — the file travels, then gets removed.
+    async handleUploadFinished(event) {
+        const files = event?.detail?.files || [];
+        if (!files.length) return;
 
-    processFiles(files) {
-        const valid = [];
-        for (const f of files) {
-            if (f.size > MAX_SIZE) {
-                this._toast('File too large', `${f.name} exceeds 5 MB.`, 'warning');
-                continue;
+        let accepted = files;
+        try {
+            const rejected = await enforceSizeLimit({
+                contentDocumentIds: files.map(f => f.documentId)
+            });
+            if (rejected?.length) {
+                const bounced = new Set(rejected.map(r => r.contentDocumentId));
+                accepted = files.filter(f => !bounced.has(f.documentId));
+                const limit = this.maxSizeLabel || 'the configured maximum';
+                rejected.forEach(r => this._toast(
+                    'File too large',
+                    `${r.fileName} is ${this._formatSize(r.fileSizeBytes)} - the limit is ${limit}. It was not attached.`,
+                    'warning'
+                ));
             }
-            valid.push(f);
+        } catch (err) {
+            // Could not verify size. The files are already stored, so let them
+            // through to typing rather than stranding them untyped and invisible.
+            this._toast(
+                'Size check failed',
+                err?.body?.message || 'Could not verify file size.',
+                'warning'
+            );
         }
-        if (!valid.length) return;
-        if (!this._metaLoaded) {
-            this._pendingFiles = [...this._pendingFiles, ...valid];
+        if (!accepted.length) {
+            await this.loadDocuments();
             return;
         }
-        this._stageFiles(valid);
+
+        this._untypedDocIds = [
+            ...this._untypedDocIds,
+            ...accepted.map(f => f.documentId)
+        ];
+
+        const staged = accepted.map(f => ({
+            documentId : f.documentId,
+            clientId   : uid(),
+            fileName   : f.name,
+            docType    : ''
+        }));
+
+        // Document types are wired async. If they have not landed yet, hold the
+        // files until wiredMeta fires so the picker is never shown empty.
+        if (!this._metaLoaded) {
+            this._pendingFiles = [...this._pendingFiles, ...staged];
+            return;
+        }
+        this._stageFiles(staged);
     }
 
-    _stageFiles(files) {
-        const staged = files.map(f => ({
-            raw      : f,
-            clientId : uid(),
-            fileName : f.name,
-            docType  : ''
-        }));
+    _stageFiles(staged) {
         this.stagedFiles     = [...(this._stagedFiles || []), ...staged];
         this.activeTabIdx    = Math.max(0, this.stagedFiles.length - staged.length);
         this.showUploadModal = true;
@@ -200,12 +252,30 @@ export default class RecordFileUpload extends LightningElement {
     // ══════════════════════════════════════════════════════════
     // UPLOAD MODAL
     // ══════════════════════════════════════════════════════════
-    closeUploadModal() {
+    // Cancel discards files that are ALREADY stored (lightning-file-upload wrote
+    // them before this modal opened), so the untyped ContentDocuments are removed
+    // rather than left behind with a blank Document_Type__c.
+    async closeUploadModal() {
+        const toRemove = [...this._untypedDocIds];
         this.showUploadModal   = false;
         this.stagedFiles       = [];
         this.showInlineAddForm = false;
+        this._untypedDocIds    = [];
+        if (!toRemove.length) return;
+        try {
+            await deleteDocuments({ contentDocumentIds: toRemove });
+        } catch (err) {
+            this._toast(
+                'Cleanup Failed',
+                'Upload was cancelled but the file(s) could not be removed. Delete them from the list below.',
+                'warning'
+            );
+        }
+        await this.loadDocuments();
     }
-    handleUploadBackdrop() { this.closeUploadModal(); }
+    // Deliberately does NOT close: a stray backdrop click would now delete files
+    // that are already stored. Cancel and the X are the only exits.
+    handleUploadBackdrop() { /* no-op while untyped files are pending */ }
     stopProp(e)            { e.stopPropagation(); }
 
     handleDocTypeSelect(e) {
@@ -282,18 +352,18 @@ export default class RecordFileUpload extends LightningElement {
         }
         this.isSaving = true;
         try {
-            const fileItems = await Promise.all(
-                this.stagedFiles.map(async f => ({
-                    fileName    : f.fileName,
-                    base64Data  : await this._toBase64(f.raw),
-                    contentType : f.raw.type || 'application/octet-stream',
-                    docType     : f.docType
+            // Files are already stored and linked to the record by
+            // lightning-file-upload. This only stamps Document_Type__c.
+            await setDocumentTypes({
+                assignments: this.stagedFiles.map(f => ({
+                    contentDocumentId : f.documentId,
+                    docType           : f.docType
                 }))
-            );
-            await uploadFilesToSite({ siteId: this.recordId, files: fileItems });
+            });
             this.stagedFiles       = [];
             this.showUploadModal   = false;
             this.showInlineAddForm = false;
+            this._untypedDocIds    = [];
             this._toast('Uploaded', 'File(s) attached successfully.', 'success');
             this.dispatchEvent(new CustomEvent('savedfiles'));
             await this.loadDocuments();
@@ -336,17 +406,8 @@ export default class RecordFileUpload extends LightningElement {
     // ══════════════════════════════════════════════════════════
     // UTILITIES
     // ══════════════════════════════════════════════════════════
-    _toBase64(file) {
-        return new Promise((res, rej) => {
-            const r = new FileReader();
-            r.onload  = () => res(r.result.split(',')[1]);
-            r.onerror = () => rej(new Error('File read failed'));
-            r.readAsDataURL(file);
-        });
-    }
-
     _formatSize(bytes) {
-        if (!bytes) return '—';
+        if (!bytes) return '-';
         if (bytes < 1024)       return bytes + ' B';
         if (bytes < 1048576)    return (bytes / 1024).toFixed(1) + ' KB';
         return (bytes / 1048576).toFixed(1) + ' MB';

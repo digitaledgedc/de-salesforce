@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Maps Odoo site codes to Odoo integer IDs (company, country, metro, site). Used by IP-1 to populate sale.order header fields. All integer ID fields are TBC - confirm from Odoo staging before UAT.</description>
+    <label>Operating Site</label>
+    <pluralLabel>Operating Sites</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

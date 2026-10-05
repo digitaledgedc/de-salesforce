@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Competitor__c</fullName>
+    <description>Required when Loss_Reason__c = Competitor Decision.</description>
+    <inlineHelpText>Required when Loss Reason is Competitor Decision. Select the competitor that won this deal to track competitive displacement trends.</inlineHelpText>
+    <label>Competitor Won</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Equinix</fullName>
+                <default>false</default>
+                <label>Equinix</label>
+            </value>
+            <value>
+                <fullName>NTT</fullName>
+                <default>false</default>
+                <label>NTT</label>
+            </value>
+            <value>
+                <fullName>Singtel</fullName>
+                <default>false</default>
+                <label>Singtel</label>
+            </value>
+            <value>
+                <fullName>STT</fullName>
+                <default>false</default>
+                <label>STT</label>
+            </value>
+            <value>
+                <fullName>AirTrunk</fullName>
+                <default>false</default>
+                <label>AirTrunk</label>
+            </value>
+            <value>
+                <fullName>AWS</fullName>
+                <default>false</default>
+                <label>AWS</label>
+            </value>
+            <value>
+                <fullName>GCP</fullName>
+                <default>false</default>
+                <label>GCP</label>
+            </value>
+            <value>
+                <fullName>Azure</fullName>
+                <default>false</default>
+                <label>Azure</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

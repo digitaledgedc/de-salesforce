@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Attribute_Type_Display__c</fullName>
+    <description>Display hint showing the Sales Rep what type of attribute value to enter (e.g. Draw Cap in kVA). Will be converted to Formula(Product2.Attribute_Type__c) when Module 11 Product fields are deployed.</description>
+    <externalId>false</externalId>
+    <label>Attribute Type</label>
+    <length>100</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

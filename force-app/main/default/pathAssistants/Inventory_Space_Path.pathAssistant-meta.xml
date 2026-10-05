@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Inventory__c</entityName>
+    <fieldName>Status__c</fieldName>
+    <masterLabel>Inventory Space Path</masterLabel>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Assigned&lt;/b&gt; - space is assigned to a Quote or Opportunity.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Soft hold for the linked deal&lt;/li&gt;&lt;li&gt;If the deal falls through, return to Available&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Assigned</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Available&lt;/b&gt; - space is unallocated and ready for sale.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Confirm space type (Cabinet/Cage/Data Hall), capacity, and power specs&lt;/li&gt;&lt;li&gt;Unit is visible in feasibility checks for new Opportunities&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Available</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Installed&lt;/b&gt; - customer is live in this space.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Customer has physical access&lt;/li&gt;&lt;li&gt;Monitor contract end date for renewal planning&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Installed</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Pending Available&lt;/b&gt; - space is transitioning back to the available pool.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Previous customer contract ended or space was released&lt;/li&gt;&lt;li&gt;Ops to verify space is physically cleared before marking Available&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Pending Available</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;ROFR&lt;/b&gt; - Right of First Refusal active.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Existing customer has contractual right to this space&lt;/li&gt;&lt;li&gt;Cannot sell without offering to ROFR holder first&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>ROFR</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Reserved&lt;/b&gt; - Order confirmed, awaiting provisioning.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Space is hard-allocated to the Order&lt;/li&gt;&lt;li&gt;Ops to begin physical provisioning&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Reserved</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Sold&lt;/b&gt; - space is contractually committed.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Linked to an Order Item&lt;/li&gt;&lt;li&gt;Service Commencement Date set&lt;/li&gt;&lt;li&gt;Customer billing begins on SCD&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Sold</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;Stranded&lt;/b&gt; - space cannot be sold in current state.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Physical or infrastructure issue prevents allocation&lt;/li&gt;&lt;li&gt;Ops to investigate and resolve before returning to Available&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Stranded</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>Inventory_Space</recordTypeName>
+</PathAssistant>

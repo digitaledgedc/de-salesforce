@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Order_MRC__c</fullName>
+    <description>FB-798 spec (Ramp MRC and TCV Calculation Spec): the incremental MRC this
+        specific ramp order/line adds, NOT the running total. Computed by
+        OrderMrcRollupService as (Quantity * UnitPrice) minus the same value from the
+        linked prior phase&apos;s OrderItem (via Ramp_Linked_Phase__c), or minus the
+        immediately preceding phase&apos;s amount for aggregate products
+        (Product2.Merge_IB_Task__c = true), regardless of linking. Zero if unchanged
+        from the prior phase. Full (Quantity * UnitPrice) if this is the first phase
+        for this product (no prior phase to net against). Used for commissions,
+        bookings, and revenue recognition reporting — distinct from MRC_Amount__c,
+        which is the line&apos;s own face-value monthly charge.</description>
+    <inlineHelpText>Incremental MRC this ramp order adds (delta from the prior phase), not the running total. Auto-calculated - do not edit manually.</inlineHelpText>
+    <label>Order MRC (Delta)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

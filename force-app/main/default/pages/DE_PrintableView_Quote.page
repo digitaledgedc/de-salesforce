@@ -1,0 +1,24 @@
+<apex:page standardController="Quote" showHeader="false" sidebar="false" applyBodyTag="false" applyHtmlTag="true">
+<html>
+<head>
+    <style type="text/css">
+        body { font-family: Arial, Helvetica, sans-serif; padding: 20px; color: #333; }
+        .print-header { border-bottom: 2px solid #0176d3; padding-bottom: 10px; margin-bottom: 20px; }
+        .print-header h1 { font-size: 18px; margin: 0; }
+        .print-header p { font-size: 12px; color: #666; margin: 4px 0 0; }
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="no-print" style="margin-bottom:15px;">
+        <button onclick="window.print()" style="padding:8px 16px;background:#0176d3;color:#fff;border:none;border-radius:4px;cursor:pointer;">Print</button>
+        <button onclick="window.close()" style="padding:8px 16px;background:#706e6b;color:#fff;border:none;border-radius:4px;cursor:pointer;margin-left:8px;">Close</button>
+    </div>
+    <div class="print-header">
+        <h1>{!Quote.Name}</h1>
+        <p>Quote Record &mdash; Printed {!NOW()}</p>
+    </div>
+    <apex:detail relatedList="false" inlineEdit="false" />
+</body>
+</html>
+</apex:page>

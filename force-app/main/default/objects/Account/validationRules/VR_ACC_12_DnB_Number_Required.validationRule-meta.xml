@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_ACC_12_DnB_Number_Required</fullName>
+    <active>true</active>
+    <description>VR-ACC-12: D&amp;B Number must be entered when Finance Approval Phase is D&amp;B Pending. Finance cannot run the credit check without this identifier.</description>
+    <errorConditionFormula>AND(
+  ISPICKVAL(Finance_Approval_Phase__c, &apos;DnB_Pending&apos;),
+  ISBLANK(D_B_Number__c)
+)</errorConditionFormula>
+    <errorDisplayField>D_B_Number__c</errorDisplayField>
+    <errorMessage>D&amp;B Number is required to proceed with D&amp;B Review. Enter the company&apos;s Dun &amp; Bradstreet number before saving.</errorMessage>
+</ValidationRule>

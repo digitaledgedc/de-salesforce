@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Capacity_Cabinets__c</fullName>
+    <description>Required for non-Platform leads where Product_Interest__c includes Space. Number of cabinets needed. VR-LEAD-03 enforces. Carries to Opportunity.Cabinets_Required__c on conversion.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Number of colocation cabinets the prospect needs. Required when Product Interest includes Space. Carries to the Opportunity on conversion.</inlineHelpText>
+    <label>Capacity (Cabinets)</label>
+    <precision>6</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

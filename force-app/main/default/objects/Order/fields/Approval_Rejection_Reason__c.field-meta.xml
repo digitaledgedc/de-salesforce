@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Approval_Rejection_Reason__c</fullName>
+    <inlineHelpText>The reason provided by the Country Manager when rejecting an order. Populated automatically from the rejection comment on the approval step. Review before resubmitting.</inlineHelpText>
+    <label>Approval Rejection Reason</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>4</visibleLines>
+</CustomField>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Entity_Locked__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set TRUE when Finance_Approval_Phase__c = Approved. Prevents editing of legal entity fields. VR-ACC-02 through VR-ACC-07 enforce.</description>
+    <inlineHelpText>Checked automatically when Finance approval is granted. Prevents changes to legal entity fields (Tax ID, registered address, subsidiary) after approval.</inlineHelpText>
+    <label>Billing Entity Locked</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

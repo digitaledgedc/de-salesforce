@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Unique_Name__c</fullName>
+    <description>Cross-entity brand grouping name from Odoo (BOSS). Groups related accounts under a single logical business entity across subsidiaries and countries. Free text - values are managed in Odoo and synced via the Account integration.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The brand or company group name that links this account to related entities across DE subsidiaries. Synced from BOSS.</inlineHelpText>
+    <label>Unique Name</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

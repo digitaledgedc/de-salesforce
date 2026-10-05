@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Terms_Text_ko__c</fullName>
+    <description>Korean (ko) HTML translation of Terms_Text__c, rendered on Korean-language quote PDFs. Blank falls back to English Terms_Text__c.</description>
+    <label>Terms Text (Korean)</label>
+    <length>131072</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>10</visibleLines>
+</CustomField>

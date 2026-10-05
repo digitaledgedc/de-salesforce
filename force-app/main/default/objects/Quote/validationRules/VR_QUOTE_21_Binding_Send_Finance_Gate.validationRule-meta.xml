@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_21_Binding_Send_Finance_Gate</fullName>
+    <active>true</active>
+    <description>Blocks sending a Binding quote (Status to Presented) while Finance Approval Phase is not Approved/Not_Required. Closes the gap where binding quotes reached the customer before Finance sign-off. Complements VR_QUOTE_02 (Accept gate).</description>
+    <errorConditionFormula>AND(
+  ISCHANGED(Status),
+  ISPICKVAL(Status, &quot;Presented&quot;),
+  Is_Binding__c = true,
+  NOT(ISBLANK(Finance_Approval_Phase__c)),
+  Finance_Approval_Phase__c &lt;&gt; &quot;Approved&quot;,
+  Finance_Approval_Phase__c &lt;&gt; &quot;Not_Required&quot;
+)</errorConditionFormula>
+    <errorMessage>This is a Binding quote and Finance has not approved it yet. A Binding quote can only be sent to the customer once Finance Approval is Approved (or Not Required). Please complete Finance review first.</errorMessage>
+</ValidationRule>

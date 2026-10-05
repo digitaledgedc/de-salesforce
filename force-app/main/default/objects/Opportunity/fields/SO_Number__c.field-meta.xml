@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SO_Number__c</fullName>
+    <description>Order Number (DE) from the linked Original Order, surfaced as SO# for BAR/pipeline reporting.</description>
+    <externalId>false</externalId>
+    <formula>Original_Order__r.Order_Number__c</formula>
+    <inlineHelpText>DE Order Number from the linked Original Order.</inlineHelpText>
+    <label>SO# (Order Number)</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

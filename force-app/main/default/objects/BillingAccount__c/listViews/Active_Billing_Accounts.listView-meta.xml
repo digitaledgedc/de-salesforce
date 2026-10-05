@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_Billing_Accounts</fullName>
+    <columns>NAME</columns>
+    <columns>BAN_Number__c</columns>
+    <columns>Alias__c</columns>
+    <columns>Invoice_Frequency__c</columns>
+    <columns>InvoiceDeliveryMode__c</columns>
+    <columns>Charge_Period_Presentment__c</columns>
+    <columns>Invoice_Presentment__c</columns>
+    <columns>Billing_Contact__c</columns>
+    <columns>Tags__c</columns>
+    <columns>Additional_Invoice_Email__c</columns>
+    <columns>Different_Invoice_Currency__c</columns>
+    <columns>Invoice_Currency__c</columns>
+    <columns>Status__c</columns>
+    <columns>BAN_ID_INV_Label__c</columns>
+    <columns>BAN_ID_Reference__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Active</value>
+    </filters>
+    <label>Active BANs</label>
+</ListView>

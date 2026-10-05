@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Cage_Reference__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Cage Reference</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>Inventory__c.RecordType.Name</field>
+            <operation>equals</operation>
+            <value>Space</value>
+        </filterItems>
+        <filterItems>
+            <field>Inventory__c.Space_Type__c</field>
+            <operation>equals</operation>
+            <value>Cage</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Inventory__c</referenceTo>
+    <relationshipLabel>Inventory</relationshipLabel>
+    <relationshipName>Inventory</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

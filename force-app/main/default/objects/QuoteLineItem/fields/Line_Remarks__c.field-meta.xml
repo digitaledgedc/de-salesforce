@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Line_Remarks__c</fullName>
+    <description>Free-text remarks per quote line. Displayed in invoice Remarks column. Flows to OrderItem.Line_Remarks__c.</description>
+    <label>Line Remarks</label>
+    <length>32768</length>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

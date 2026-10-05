@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DE_Entity__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The Digital Edge legal entity contracting with this customer for this deal. Lookup to an Account record with RecordType = DE Entity. Replaces the Account-level DE_Subsidiary__c picklist so one Account can deal with multiple DE entities across Opportunities.</description>
+    <inlineHelpText>Select the Digital Edge legal entity responsible for this deal (e.g. DE JP KK for Japan, DE SG Pte Ltd for Singapore). Set per Opportunity - one customer can have different contracting entities across deals.</inlineHelpText>
+    <label>DE Subsidiary</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Opportunities (Contracting Entity)</relationshipLabel>
+    <relationshipName>Contracting_Opportunities</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

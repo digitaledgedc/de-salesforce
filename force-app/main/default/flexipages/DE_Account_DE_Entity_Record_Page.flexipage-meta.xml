@@ -68,6 +68,16 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.Account_Tier__c</fieldItem>
+                <identifier>RecordAccount_Tier_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Local_Entity_Name__c</fieldItem>
                 <identifier>RecordLocal_Entity_Name_cField</identifier>
             </fieldInstance>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Declarative access matrix for the CountrySharing Apex engine. Each record = one grant: object + scope (Country-matched or All) + access level + the personas (functional role developer names) that receive it via auto-provisioned public groups. Replaces per-country criteria sharing rules.</description>
+    <label>Country Share Grant</label>
+    <pluralLabel>Country Share Grants</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

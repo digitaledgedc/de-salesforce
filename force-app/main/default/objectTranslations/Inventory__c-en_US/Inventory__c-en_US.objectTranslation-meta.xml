@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Inventory</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Inventory</value>
+    </caseValues>
+    <layouts>
+        <layout>Breaker Layout</layout>
+        <sections>
+            <label><!-- Breaker Details --></label>
+            <section>Breaker Details</section>
+        </sections>
+        <sections>
+            <label><!-- Integration --></label>
+            <section>Integration</section>
+        </sections>
+        <sections>
+            <label><!-- Inventory Core --></label>
+            <section>Inventory Core</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>DE Inventory Breaker Layout</layout>
+        <sections>
+            <label><!-- Breaker Details --></label>
+            <section>Breaker Details</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Location --></label>
+            <section>Location</section>
+        </sections>
+        <sections>
+            <label><!-- System --></label>
+            <section>System</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>DE Inventory Space Layout</layout>
+        <sections>
+            <label><!-- Capacity --></label>
+            <section>Capacity</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Location --></label>
+            <section>Location</section>
+        </sections>
+        <sections>
+            <label><!-- SLA --></label>
+            <section>SLA</section>
+        </sections>
+        <sections>
+            <label><!-- Space Details --></label>
+            <section>Space Details</section>
+        </sections>
+        <sections>
+            <label><!-- System --></label>
+            <section>System</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Space Layout</layout>
+        <sections>
+            <label><!-- Integration --></label>
+            <section>Integration</section>
+        </sections>
+        <sections>
+            <label><!-- Inventory Core --></label>
+            <section>Inventory Core</section>
+        </sections>
+        <sections>
+            <label><!-- Space Details --></label>
+            <section>Space Details</section>
+        </sections>
+    </layouts>
+    <recordTypes>
+        <label><!-- Breaker (Legacy) --></label>
+        <name>Breaker</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Breaker inventory - power circuits (circuit breakers). --></description>
+        <label><!-- Breaker --></label>
+        <name>Inventory_Breaker</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Cabinet, Hall, Cage --></description>
+        <label><!-- Space --></label>
+        <name>Inventory_Space</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Space (Legacy) --></label>
+        <name>Space</name>
+    </recordTypes>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- This inventory record is in a provisioned state (Installed) and cannot be edited. Contact a DE Admin if a change is required. --></errorMessage>
+        <name>Inventory_Edit_Lock</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Status cannot be changed once the Inventory has been Decommissioned. --></errorMessage>
+        <name>Prevent_Status_Change_After_Decommission</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- An Inventory record can only be set to Quoted when linked to a Quote Line. Use the capacity assignment screen on the Quote. --></errorMessage>
+        <name>VR_INV_01_QuotedNeedsQuoteLine</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- A Reserved Inventory record must be linked to an Order or a Quote Line Item. Capacity Managers can set Reserved without a linked record for manual capacity holds. --></errorMessage>
+        <name>VR_INV_02_ReservedNeedsOrder</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- A Sold Inventory record must be linked to an Order Item. This is set automatically at Order confirmation - do not set Sold manually. --></errorMessage>
+        <name>VR_INV_03_SoldNeedsOrderItem</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Record Type cannot be changed after an Inventory record is created. --></errorMessage>
+        <name>VR_INV_04_RecordTypeImmutable</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Export_Inventory --></label>
+        <name>Export_Inventory</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Import_Inventory --></label>
+        <name>Import_Inventory</name>
+    </webLinks>
+</CustomObjectTranslation>

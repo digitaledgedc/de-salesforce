@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Duplicate_Flag__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set TRUE by F-01 when a matching active Contact or open Lead is found. Audit trail for blocked or merged records. FLS Read Only for Sales Reps - only Rev Ops and Admin can clear.</description>
+    <inlineHelpText>Checked automatically when a matching active contact or open lead is found. Only Rev Ops or Admins can clear this flag.</inlineHelpText>
+    <label>Duplicate Detected</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

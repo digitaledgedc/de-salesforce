@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product_Attribute__c</fullName>
+    <description>Product attribute types that require user input on quote lines. Drives the attribute selector UI (e.g. kVA draw cap picker, Z-side site selector). Sourced from Odoo Product Attribute.</description>
+    <label>Product Attribute</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Amps</fullName>
+                <default>false</default>
+                <label>Amps</label>
+            </value>
+            <value>
+                <fullName>Bandwidth</fullName>
+                <default>false</default>
+                <label>Bandwidth</label>
+            </value>
+            <value>
+                <fullName>Connector Type</fullName>
+                <default>false</default>
+                <label>Connector Type</label>
+            </value>
+            <value>
+                <fullName>Draw Cap in kVA</fullName>
+                <default>false</default>
+                <label>Draw Cap in kVA</label>
+            </value>
+            <value>
+                <fullName>Draw Cap in kW</fullName>
+                <default>false</default>
+                <label>Draw Cap in kW</label>
+            </value>
+            <value>
+                <fullName>Number of Cores</fullName>
+                <default>false</default>
+                <label>Number of Cores</label>
+            </value>
+            <value>
+                <fullName>Z-side Operation Site</fullName>
+                <default>false</default>
+                <label>Z-side Operation Site</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

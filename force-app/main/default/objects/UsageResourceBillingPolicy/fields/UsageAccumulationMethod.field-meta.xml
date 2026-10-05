@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UsageAccumulationMethod</fullName>
+    <inlineHelpText>Sum aggregates all consumption in the specified period. Peak indicates the entry with the maximum consumption within the specified period.</inlineHelpText>
+    <trackHistory>false</trackHistory>
+</CustomField>

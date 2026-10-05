@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Finance_Override_Requested__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set to TRUE when Sales clicks &quot;Request Finance Override&quot; on a Credit-Blocked Quote. Drives visibility of the reminder button vs the initial request button. Reset to FALSE if Credit_Block__c is cleared.</description>
+    <label>Finance Override Requested</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

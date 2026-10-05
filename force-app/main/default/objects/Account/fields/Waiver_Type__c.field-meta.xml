@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Waiver_Type__c</fullName>
+    <description>Audit trail for which waiver condition was used in Finance Approval. Set by F-05.</description>
+    <inlineHelpText>Records the credit waiver condition that was applied during Finance approval for this account. Set automatically by the Finance Approval flow. Audit use only.</inlineHelpText>
+    <label>Waiver Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>None</fullName>
+                <default>true</default>
+                <label>None</label>
+            </value>
+            <value>
+                <fullName>Previous_Credit_Check</fullName>
+                <default>false</default>
+                <label>Previous Credit Check</label>
+            </value>
+            <value>
+                <fullName>Below_Default_Limit</fullName>
+                <default>false</default>
+                <label>Below Default Limit</label>
+            </value>
+            <value>
+                <fullName>Fortune_500</fullName>
+                <default>false</default>
+                <label>Fortune 500</label>
+            </value>
+            <value>
+                <fullName>Security_Deposit</fullName>
+                <default>false</default>
+                <label>Security Deposit</label>
+            </value>
+            <value>
+                <fullName>NRC_Prepayment</fullName>
+                <default>false</default>
+                <label>NRC Prepayment</label>
+            </value>
+            <value>
+                <fullName>Legal_Review_Required</fullName>
+                <default>false</default>
+                <label>Legal Review Required</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

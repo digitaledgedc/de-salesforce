@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Platform Manager responsible for this site. Used as the Deal Review approver on Platform-type quotes. --></help>
+    <label><!-- Platform Manager --></label>
+    <name>Platform_Manager__c</name>
+    <relationshipLabel><!-- Sites (Platform Manager) --></relationshipLabel>
+</CustomFieldTranslation>

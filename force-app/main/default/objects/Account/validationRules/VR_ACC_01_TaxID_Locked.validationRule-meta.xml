@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_ACC_01_TaxID_Locked</fullName>
+    <active>true</active>
+    <description>VR-ACC-01: Prevents Tax ID change after Finance Approval.</description>
+    <errorConditionFormula>AND(NOT(ISNEW()), ISCHANGED(Tax_ID__c), Entity_Locked__c)</errorConditionFormula>
+    <errorDisplayField>Tax_ID__c</errorDisplayField>
+    <errorMessage>Tax ID cannot be changed after Finance Approval has been granted. Contact Finance to re-run the approval process.</errorMessage>
+</ValidationRule>

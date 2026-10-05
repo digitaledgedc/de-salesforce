@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QLI_Discount_0_or_100</fullName>
+    <active>true</active>
+    <description>VR-QLI-04: Line Discount may only be set to 0% or 100% (or left blank). Fires only when Discount is changed, so legacy lines carrying other values (and Revise Quote clone-inserts of them) are not blocked unless the discount itself is edited.</description>
+    <errorConditionFormula>AND(
+    ISCHANGED(Discount),
+    NOT(ISBLANK(Discount)),
+    Discount &lt;&gt; 0,
+    Discount &lt;&gt; 1
+)</errorConditionFormula>
+    <errorDisplayField>Discount</errorDisplayField>
+    <errorMessage>Discount must be either 0% or 100%. Set 100% to waive this line in full, or 0% (or leave it blank) for no discount.</errorMessage>
+</ValidationRule>

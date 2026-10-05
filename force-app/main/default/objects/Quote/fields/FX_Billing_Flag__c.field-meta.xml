@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FX_Billing_Flag__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Auto-set TRUE by F-14 when Quote is contracted in USD but BAN bills in local currency. Triggers SBI_Flag__c. Passed in IP-1 FX Arrangement group.</description>
+    <inlineHelpText>Checked automatically when the quote is priced in USD but the billing account invoices in local currency. Triggers an SBI flag and requires FX Rate Model to be completed.</inlineHelpText>
+    <label>FX Billing Required</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

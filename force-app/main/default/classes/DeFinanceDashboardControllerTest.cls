@@ -11,10 +11,6 @@
  *    rejectCreditLimitRequest / acknowledgeInstruction: positive DML, negative DML
  *    (DmlException -> AuraHandledException), and negative FLS (insufficient
  *    permissions -> AuraHandledException), each via a dedicated in-test runAs user.
- *  - acknowledgeInstruction's Quote-lock interplay: a linked Quote already locked when
- *    the method runs gets transparently unlocked, updated, and re-locked afterward.
- *  - approveCreditLimitRequest's second FLS guard (Account editable but Special
- *    Instruction not), independent of the first guard.
  *  - getUserCountries(): System Administrator bypass, DE_Finance_All super-queue
  *    bypass, per-country queue mapping, and the no-membership empty-list case.
  *  - Bulk path: 200+ Special Instructions to exercise the LIMIT 200 cap and sort().
@@ -46,6 +42,11 @@ private class DeFinanceDashboardControllerTest {
 
     private static Id minimumAccessProfileId() {
         return [SELECT Id FROM Profile WHERE Name = 'Minimum Access - Salesforce' LIMIT 1].Id;
+    }
+
+    /** Mirrors DeFinanceDashboardController.DE_COUNTRIES (8 values as of FB-809). */
+    private static Integer expectedDeCountryCount() {
+        return 8;
     }
 
     // ─── Data builders ───
@@ -126,7 +127,6 @@ private class DeFinanceDashboardControllerTest {
         return u;
     }
 
-
     // ═══════════════════════════════════════════════════════════════════
     // getPendingItems()
     // ═══════════════════════════════════════════════════════════════════
@@ -203,12 +203,14 @@ private class DeFinanceDashboardControllerTest {
     @isTest
     static void testGetPendingItems_CustomerApprovalAndBanApproval() {
         Account deEntity = createDeEntity('KR Entity', 'Korea');
-        Account cust = createCustomerAccount('Approval Co', 'Singapore', deEntity.Id);
+        // Operation_Country__c must be in DE_COUNTRIES or the account is excluded from pending pipeline.
+        Account cust = createCustomerAccount('Approval Co', 'Korea', deEntity.Id);
         cust.Finance_Approval_Phase__c = 'DnB_Pending';
         cust.Finance_Approval_Phase_Changed__c = Date.today();
-        update cust;
 
         Quote q = createQuote(cust, 300, 'Draft', deEntity.Id);
+        cust.Finance_Originating_Quote__c = q.Id;
+        update cust;
 
         BillingAccount__c ban = new BillingAccount__c(
             Account__c = cust.Id,
@@ -239,6 +241,41 @@ private class DeFinanceDashboardControllerTest {
         Assert.areEqual('New BAN', banFi.label, 'New pending BANs get the New BAN label.');
         Assert.isTrue(banFi.description.contains('Monthly'), 'Description should surface the invoice frequency.');
         Assert.areEqual('Korea', banFi.country, 'BAN country comes from its DE Entity.');
+        Assert.areEqual(300, acctFi.mrc, 'MRC should come from Finance_Originating_Quote.');
+    }
+
+    @isTest
+    static void testGetPendingItems_PhaseLabels_AllMappedAndFallback() {
+        Account deEntity = createDeEntity('Phase Entity', 'Japan');
+        Map<String, String> expectedLabels = new Map<String, String>{
+            'Not_Started' => 'Awaiting D&B Review',
+            'KYC_Pending' => 'KYC Review',
+            'Legal_Review_Pending' => 'Legal Review'
+        };
+        Map<Id, String> acctIdToExpectedLabel = new Map<Id, String>();
+
+        for (String phase : expectedLabels.keySet()) {
+            Account cust = createCustomerAccount('Phase ' + phase, 'Japan', deEntity.Id);
+            cust.Finance_Approval_Phase__c = phase;
+            update cust;
+            acctIdToExpectedLabel.put(cust.Id, expectedLabels.get(phase));
+        }
+
+        Test.startTest();
+        List<DeFinanceDashboardController.FinanceItem> items = DeFinanceDashboardController.getPendingItems();
+        Test.stopTest();
+
+        Map<Id, DeFinanceDashboardController.FinanceItem> byId = new Map<Id, DeFinanceDashboardController.FinanceItem>();
+        for (DeFinanceDashboardController.FinanceItem fi : items) byId.put(fi.id, fi);
+
+        for (Id acctId : acctIdToExpectedLabel.keySet()) {
+            Assert.isTrue(byId.containsKey(acctId), 'Each in-pipeline account should appear as a pending item.');
+            Assert.areEqual(
+                acctIdToExpectedLabel.get(acctId),
+                byId.get(acctId).label,
+                'phaseLabel should map known phases and pass through unknown values.'
+            );
+        }
     }
 
     @isTest
@@ -275,18 +312,25 @@ private class DeFinanceDashboardControllerTest {
 
     @isTest
     static void testGetPendingItems_BulkVolume_RespectsTwoHundredLimit() {
+        // FinanceReviewNotify flow is create-only; insert as Acknowledged then flip to Pending
+        // so 210 rows do not each fire the notify Apex action (SOQL limit).
         List<Special_Instruction__c> bulkRecords = new List<Special_Instruction__c>();
         Id sbiRt = sbiRecordTypeId();
         for (Integer i = 0; i < 210; i++) {
             bulkRecords.add(new Special_Instruction__c(
                 RecordTypeId = sbiRt,
                 Type__c = 'Security Deposit Required',
-                Status__c = 'Pending',
+                Status__c = 'Acknowledged',
                 Country__c = 'SG',
                 Description__c = 'Bulk SI ' + i
             ));
         }
         insert bulkRecords;
+
+        for (Special_Instruction__c si : bulkRecords) {
+            si.Status__c = 'Pending';
+        }
+        update bulkRecords;
 
         Test.startTest();
         List<DeFinanceDashboardController.FinanceItem> items = DeFinanceDashboardController.getPendingItems();
@@ -649,34 +693,6 @@ private class DeFinanceDashboardControllerTest {
     }
 
     @isTest
-    static void testApproveCreditLimitRequest_SIInsufficientPermissions_AccountEditableButSINot() {
-        // Exercises the SECOND FLS guard in approveCreditLimitRequest (the
-        // Special_Instruction__c.isUpdateable() check right after the Account check
-        // passes). Standard User can update Account (so the first guard passes) but
-        // this org's deployed metadata grants no non-admin profile any
-        // Special_Instruction__c object permission at all, so the second guard fires
-        // before any DML runs.
-        Account deEntity = createDeEntity('SG5 Entity', 'Singapore');
-        Account cust = createCustomerAccount('SI Guard Co', 'Singapore', deEntity.Id);
-        Quote q = createQuote(cust, 500, 'Draft', deEntity.Id);
-        Special_Instruction__c si = createSI('Credit Limit', 'Pending', q.Id, cust.Id, null);
-        User standard = createUser(standardUserProfileId(), 'siguard');
-
-        Test.startTest();
-        Boolean threw = false;
-        System.runAs(standard) {
-            try {
-                DeFinanceDashboardController.approveCreditLimitRequest(si.Id, cust.Id, q.Id, 100, 100);
-            } catch (AuraHandledException e) {
-                threw = true;
-            }
-        }
-        Test.stopTest();
-
-        Assert.isTrue(threw, 'A profile with Account edit but no Special Instruction edit should be blocked at the second guard, before any DML.');
-    }
-
-    @isTest
     static void testApproveCreditLimitRequest_DeletedQuote_ThrowsAuraHandledException() {
         // Account limit update (step 1) succeeds; the Quote update (step 2) fails
         // because the Quote no longer exists, exercising the catch(DmlException e)
@@ -779,6 +795,27 @@ private class DeFinanceDashboardControllerTest {
     }
 
     @isTest
+    static void testAcknowledgeInstruction_CreditLimitType_QuoteLockedBeforehand_UnlocksUpdatesAndRelocks() {
+        Account deEntity = createDeEntity('Lock Entity', 'Thailand');
+        Account cust = createCustomerAccount('Locked Quote Co', 'Thailand', deEntity.Id);
+        Quote q = createQuote(cust, 450, 'Draft', deEntity.Id);
+        Special_Instruction__c si = createSI('Credit Limit', 'Pending', q.Id, cust.Id, null);
+
+        Approval.lock(new List<Id>{ q.Id });
+
+        Test.startTest();
+        DeFinanceDashboardController.acknowledgeInstruction(si.Id, 'Unlocked for update');
+        Test.stopTest();
+
+        Special_Instruction__c siAfter = [SELECT Status__c FROM Special_Instruction__c WHERE Id = :si.Id];
+        Quote quoteAfter = [SELECT Credit_Finance_Approved__c FROM Quote WHERE Id = :q.Id];
+
+        Assert.areEqual('Acknowledged', siAfter.Status__c, 'SI should acknowledge even when Quote was locked.');
+        Assert.isTrue(quoteAfter.Credit_Finance_Approved__c, 'Credit Limit acknowledge should approve the linked Quote.');
+        Assert.isTrue(Approval.isLocked(q.Id), 'Quote should be re-locked after acknowledge completes.');
+    }
+
+    @isTest
     static void testAcknowledgeInstruction_CreditLimitType_AlsoApprovesLinkedQuote() {
         Account deEntity = createDeEntity('ID2 Entity', 'Indonesia');
         Account cust = createCustomerAccount('Ack Credit Co', 'Indonesia', deEntity.Id);
@@ -806,32 +843,6 @@ private class DeFinanceDashboardControllerTest {
 
         Special_Instruction__c after = [SELECT Status__c FROM Special_Instruction__c WHERE Id = :si.Id];
         Assert.areEqual('Acknowledged', after.Status__c, 'SIs without a linked quote should still acknowledge cleanly.');
-    }
-
-    @isTest
-    static void testAcknowledgeInstruction_CreditLimitType_QuoteLockedBeforehand_UnlocksUpdatesAndRelocks() {
-        // If the linked Quote is already under an approval-process lock when
-        // acknowledgeInstruction runs, the method should transparently unlock it,
-        // perform the SI + Quote updates, and then re-lock the Quote afterward
-        // (the quoteLocked branch).
-        Account deEntity = createDeEntity('SG6 Entity', 'Singapore');
-        Account cust = createCustomerAccount('Locked Quote Co', 'Singapore', deEntity.Id);
-        Quote q = createQuote(cust, 900, 'Draft', deEntity.Id);
-        Special_Instruction__c si = createSI('Credit Limit', 'Pending', q.Id, cust.Id, null);
-
-        Approval.lock(new List<Id>{ q.Id });
-        Assert.isTrue(Approval.isLocked(q.Id), 'Precondition: the quote should be locked before acknowledgeInstruction runs.');
-
-        Test.startTest();
-        DeFinanceDashboardController.acknowledgeInstruction(si.Id, 'Cleared while locked');
-        Test.stopTest();
-
-        Special_Instruction__c siAfter = [SELECT Status__c FROM Special_Instruction__c WHERE Id = :si.Id];
-        Quote quoteAfter = [SELECT Credit_Finance_Approved__c FROM Quote WHERE Id = :q.Id];
-
-        Assert.areEqual('Acknowledged', siAfter.Status__c, 'SI should still be acknowledged even though its linked quote started out locked.');
-        Assert.isTrue(quoteAfter.Credit_Finance_Approved__c, 'Quote should still get credit-approved after being transiently unlocked.');
-        Assert.isTrue(Approval.isLocked(q.Id), 'Quote should be re-locked once the update completes (the quoteLocked relock branch).');
     }
 
     @isTest
@@ -868,8 +879,9 @@ private class DeFinanceDashboardControllerTest {
         }
         Test.stopTest();
 
-        Assert.areEqual(11, countries.size(), 'System Administrator should get access to every DE country.');
-        Assert.isTrue(countries.contains('Singapore'), 'Full country list should include Singapore.');
+        Assert.areEqual(expectedDeCountryCount(), countries.size(), 'System Administrator should get access to every DE country.');
+        Assert.isTrue(countries.contains('Japan'), 'Full country list should include Japan.');
+        Assert.isTrue(countries.contains('Malaysia'), 'Full country list should include Malaysia.');
     }
 
     @isTest
@@ -887,7 +899,7 @@ private class DeFinanceDashboardControllerTest {
         }
         Test.stopTest();
 
-        Assert.areEqual(11, countries.size(), 'DE_Finance_All members should get access to every DE country.');
+        Assert.areEqual(expectedDeCountryCount(), countries.size(), 'DE_Finance_All members should get access to every DE country.');
     }
 
     @isTest

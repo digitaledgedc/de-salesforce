@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- A short descriptive name for this BAN used internally - e.g. &quot;SG01 - Colocation&quot; or &quot;HK02 - Power&quot;. Helps distinguish multiple BANs under the same account. --></help>
+    <label><!-- Alias --></label>
+    <name>Alias__c</name>
+</CustomFieldTranslation>

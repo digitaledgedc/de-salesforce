@@ -432,6 +432,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>OrderItem.UoM__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Pricebook_Request_Line__c.Attribute_Value__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -493,6 +498,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Product2.Aggregate_Ramp_Qty__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Product2.Allowed_UoM__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -618,6 +628,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>QuoteLineItem.Ramp_Phase_Notes__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>QuoteLineItem.UoM__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

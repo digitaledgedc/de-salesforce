@@ -470,7 +470,7 @@ private class InventoryControllerTest {
         InventoryController.assignInventoryToLine(new List<Id>{ cab.Id }, qli.Id, q.Id);
 
         Test.startTest();
-        Map<String, Object> result = InventoryController.getLineInventory(qli.Id, q.Id, null);
+        Map<String, Object> result = InventoryController.getLineInventory(qli.Id, q.Id, null, null, null);
         Test.stopTest();
 
         List<Inventory__c> assigned = (List<Inventory__c>) result.get('assigned');
@@ -480,13 +480,83 @@ private class InventoryControllerTest {
         Assert.isTrue(available.size() >= 1, 'Should have available inventory at site');
     }
 
+    /**
+     * SFDC-472. The available-inventory query is capped and ordered by Floor name,
+     * so a floor that sorts last was unreachable once earlier floors filled the cap
+     * (PEK1: 570 available rows on PEK1-2, cap 500, so all 690 PEK1-3 rows vanished).
+     * Cap is squeezed to 3 here to reproduce that in a unit test.
+     */
+    @IsTest
+    static void getLineInventory_floorFilterReachesRowsPastTheCap() {
+        Quote q = firstQuote();
+        QuoteLineItem qli = [SELECT Id FROM QuoteLineItem WHERE QuoteId = :q.Id LIMIT 1];
+        Site__c site = [SELECT Id FROM Site__c LIMIT 1];
+
+        Floor__c early = new Floor__c(Name = 'AAA-1', Site__c = site.Id);
+        Floor__c late  = new Floor__c(Name = 'ZZZ-9', Site__c = site.Id);
+        insert new List<Floor__c>{ early, late };
+
+        DataHall__c lateHall = new DataHall__c(Name = 'ZZZ-9-1', Site__c = site.Id, Floor__c = late.Id);
+        insert lateHall;
+
+        Id spaceRtId = Schema.SObjectType.Inventory__c
+            .getRecordTypeInfosByDeveloperName().get('Inventory_Space').getRecordTypeId();
+
+        List<Inventory__c> rows = new List<Inventory__c>();
+        for (Integer i = 0; i < 3; i++) {
+            rows.add(new Inventory__c(RecordTypeId = spaceRtId, Site_Id__c = site.Id,
+                Status__c = 'Available', Space_Type__c = 'Cabinet',
+                Floor__c = early.Id, Unit_Reference__c = 'EARLY-' + i));
+        }
+        for (Integer i = 0; i < 2; i++) {
+            rows.add(new Inventory__c(RecordTypeId = spaceRtId, Site_Id__c = site.Id,
+                Status__c = 'Available', Space_Type__c = 'Cabinet',
+                Floor__c = late.Id, Data_Hall__c = lateHall.Id,
+                Unit_Reference__c = 'LATE-' + i));
+        }
+        insert rows;
+
+        InventoryController.LINE_AVAILABLE_LIMIT = 3;
+
+        Test.startTest();
+        Map<String, Object> unscoped = InventoryController.getLineInventory(qli.Id, q.Id, 'Space', null, null);
+        Map<String, Object> byFloor  = InventoryController.getLineInventory(qli.Id, q.Id, 'Space', late.Id, null);
+        Map<String, Object> byHall   = InventoryController.getLineInventory(qli.Id, q.Id, 'Space', late.Id, lateHall.Id);
+        Test.stopTest();
+
+        // Unscoped: the cap bites, the last floor is not in the payload, and the
+        // response says so instead of pretending the cut rows do not exist.
+        List<Inventory__c> unscopedRows = (List<Inventory__c>) unscoped.get('available');
+        Assert.areEqual(3, unscopedRows.size(), 'Cap should limit the unscoped payload');
+        Assert.isTrue((Integer) unscoped.get('availableTotal') > unscopedRows.size(),
+            'availableTotal must report the rows the cap cut off');
+        for (Inventory__c inv : unscopedRows) {
+            Assert.areNotEqual(late.Id, inv.Floor__c, 'Last-sorting floor cannot fit under the cap');
+        }
+
+        // Scoped by Floor: the same rows are now reachable.
+        List<Inventory__c> floorRows = (List<Inventory__c>) byFloor.get('available');
+        Assert.areEqual(2, floorRows.size(), 'Floor filter must return that floor\'s available rows');
+        Assert.areEqual(2, (Integer) byFloor.get('availableTotal'), 'Total must match the scoped count');
+        for (Inventory__c inv : floorRows) {
+            Assert.areEqual(late.Id, inv.Floor__c, 'Only the requested floor expected');
+        }
+
+        // Scoped by Data Hall: narrower still.
+        List<Inventory__c> hallRows = (List<Inventory__c>) byHall.get('available');
+        Assert.areEqual(2, hallRows.size(), 'Hall filter must return that hall\'s available rows');
+        for (Inventory__c inv : hallRows) {
+            Assert.areEqual(lateHall.Id, inv.Data_Hall__c, 'Only the requested hall expected');
+        }
+    }
+
     @IsTest
     static void getLineInventory_spaceTypeFilter() {
         Quote q = firstQuote();
         QuoteLineItem qli = [SELECT Id FROM QuoteLineItem WHERE QuoteId = :q.Id LIMIT 1];
 
         Test.startTest();
-        Map<String, Object> result = InventoryController.getLineInventory(qli.Id, q.Id, 'Space');
+        Map<String, Object> result = InventoryController.getLineInventory(qli.Id, q.Id, 'Space', null, null);
         Test.stopTest();
 
         List<Inventory__c> available = (List<Inventory__c>) result.get('available');
@@ -502,7 +572,7 @@ private class InventoryControllerTest {
         QuoteLineItem qli = [SELECT Id FROM QuoteLineItem WHERE QuoteId = :q.Id LIMIT 1];
 
         Test.startTest();
-        Map<String, Object> result = InventoryController.getLineInventory(qli.Id, q.Id, 'Breaker');
+        Map<String, Object> result = InventoryController.getLineInventory(qli.Id, q.Id, 'Breaker', null, null);
         Test.stopTest();
 
         List<Inventory__c> available = (List<Inventory__c>) result.get('available');
@@ -520,7 +590,7 @@ private class InventoryControllerTest {
         QuoteLineItem qli = [SELECT Id FROM QuoteLineItem WHERE QuoteId = :q.Id LIMIT 1];
 
         Test.startTest();
-        Map<String, Object> result = InventoryController.getLineInventory(qli.Id, q.Id, null);
+        Map<String, Object> result = InventoryController.getLineInventory(qli.Id, q.Id, null, null, null);
         Test.stopTest();
 
         List<Inventory__c> assigned = (List<Inventory__c>) result.get('assigned');

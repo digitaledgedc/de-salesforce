@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingOwnerRules>
+        <fullName>Persona_Lead_Support_EditAll</fullName>
+        <accessLevel>Edit</accessLevel>
+        <label>Persona Lead Support EditAll</label>
+        <sharedTo>
+            <group>DE_Persona_Lead_EditAll</group>
+        </sharedTo>
+        <sharedFrom>
+            <allInternalUsers></allInternalUsers>
+        </sharedFrom>
+    </sharingOwnerRules>
+</SharingRules>

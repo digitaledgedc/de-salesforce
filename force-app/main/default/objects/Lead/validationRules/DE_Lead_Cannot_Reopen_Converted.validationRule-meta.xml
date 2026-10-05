@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DE_Lead_Cannot_Reopen_Converted</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+  IsConverted = TRUE,
+  NOT(ISCHANGED(IsConverted)),
+  ISCHANGED(Status)
+)</errorConditionFormula>
+    <errorMessage>A Converted lead cannot be reopened or have its status changed.</errorMessage>
+</ValidationRule>

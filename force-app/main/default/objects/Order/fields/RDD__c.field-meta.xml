@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RDD__c</fullName>
+    <inlineHelpText>Customer&apos;s target date for service go-live. Carried from the Quote. Passed to Operations as the provisioning target date.</inlineHelpText>
+    <label>Requested Delivery Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Date</type>
+</CustomField>

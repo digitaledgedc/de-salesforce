@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MEDDPICC_Economic_Buyer_Status__c</fullName>
+    <inlineHelpText>MEDDPICC confidence level for Economic Buyer. 2 - Known and Confirmed means you have met and engaged the person who controls the budget for this deal.</inlineHelpText>
+    <label>Economic Buyer - Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>0 - Unknown</fullName>
+                <default>true</default>
+                <label>0 - Unknown</label>
+            </value>
+            <value>
+                <fullName>1 - Known but Unconfirmed</fullName>
+                <default>false</default>
+                <label>1 - Known but Unconfirmed</label>
+            </value>
+            <value>
+                <fullName>2 - Known and Confirmed</fullName>
+                <default>false</default>
+                <label>2 - Known and Confirmed</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SP1_Split_Pct__c</fullName>
+    <description>Default 100% for single-rep deals. Total SP1+SP2+SP3 can exceed 100%.</description>
+    <inlineHelpText>SP1&apos;s share of commission for this deal. Default 100% for single-rep deals. SP1, SP2, and SP3 splits can collectively exceed 100% for overlay arrangements.</inlineHelpText>
+    <label>SP1 Split %</label>
+    <precision>7</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Percent</type>
+</CustomField>

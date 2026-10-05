@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Requested_Delivery_Date</fullName>
+    <active>true</active>
+    <description>FB-704: previously exempted every insert, so a Lead could be created with a past delivery date. Now fires on create and on change. System Administrator is exempt so historical leads can be data-migrated.</description>
+    <errorConditionFormula>AND(
+    NOT(ISBLANK(GoLive_Target_Date__c)),
+    OR(ISNEW(), ISCHANGED(GoLive_Target_Date__c)),
+    GoLive_Target_Date__c &lt; TODAY(),
+    $Profile.Name &lt;&gt; &apos;System Administrator&apos;
+)</errorConditionFormula>
+    <errorDisplayField>GoLive_Target_Date__c</errorDisplayField>
+    <errorMessage>Requested Delivery Date should be greater than today.</errorMessage>
+</ValidationRule>

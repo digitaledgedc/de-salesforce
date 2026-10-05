@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <customErrors>
+        <description>Shown when Finance_Approval_Phase__c moves to Approved but Tax_ID__c is blank. Surfaces a clean field-level error.</description>
+        <name>Tax_ID_Required_Error</name>
+        <label>Tax ID Required</label>
+        <locationX>44</locationX>
+        <locationY>614</locationY>
+        <customErrorMessages>
+            <errorMessage>Enter the Tax ID before this account can be approved and locked.</errorMessage>
+            <fieldSelection>Tax_ID__c</fieldSelection>
+            <isFieldError>true</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <decisions>
+        <description>Before locking the entity, verify Tax_ID__c is populated. If blank, surface a clean field-level error.</description>
+        <name>Check_Tax_ID</name>
+        <label>Tax ID Populated?</label>
+        <locationX>176</locationX>
+        <locationY>494</locationY>
+        <defaultConnector>
+            <targetReference>Tax_ID_Required_Error</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Tax ID Missing</defaultConnectorLabel>
+        <rules>
+            <name>Tax_ID_Present</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Tax_ID__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Status_Approved</targetReference>
+            </connector>
+            <label>Tax ID Present</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Only proceed if Finance_Approval_Phase__c actually changed on this save.</description>
+        <name>Phase_Changed</name>
+        <label>Phase Changed?</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <defaultConnectorLabel>Not Changed</defaultConnectorLabel>
+        <rules>
+            <name>Phase_Has_Changed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Finance_Approval_Phase__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>$Record__Prior.Finance_Approval_Phase__c</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Route_By_Phase</targetReference>
+            </connector>
+            <label>Phase Has Changed</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Route to the correct logic based on the new Finance_Approval_Phase__c value.</description>
+        <name>Route_By_Phase</name>
+        <label>Route by Phase</label>
+        <locationX>176</locationX>
+        <locationY>254</locationY>
+        <defaultConnectorLabel>Other (no action)</defaultConnectorLabel>
+        <rules>
+            <name>Phase_Is_Approved</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Finance_Approval_Phase__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Approved</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_Tax_ID</targetReference>
+            </connector>
+            <label>Approved</label>
+        </rules>
+    </decisions>
+    <description>Record-triggered after-save flow on Account. Reacts to Finance_Approval_Phase__c changes per SDD §Finance Approval. When Phase = Approved, verifies Tax ID is present, locks the entity (Entity_Locked__c), and stamps Finance_Approved_Date__c.</description>
+    <environments>Default</environments>
+    <interviewLabel>Finance Approval Notifier {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Finance Approval Notifier</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <description>Phase=Approved - stamp Finance_Approved_Date, lock the entity. Entity_Locked__c blocks edits to legal entity fields via validation rules.</description>
+        <name>Set_Status_Approved</name>
+        <label>Set Status: Approved + Lock Entity</label>
+        <locationX>176</locationX>
+        <locationY>614</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Entity_Locked__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Finance_Approved_Date__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Account</object>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Phase_Changed</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Finance_Approval_Phase__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Account</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

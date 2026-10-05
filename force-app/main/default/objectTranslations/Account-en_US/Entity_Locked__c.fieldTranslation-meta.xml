@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Checked automatically when Finance approval is granted. Prevents changes to legal entity fields (Tax ID, registered address, subsidiary) after approval. --></help>
+    <label><!-- Billing Entity Locked --></label>
+    <name>Entity_Locked__c</name>
+</CustomFieldTranslation>

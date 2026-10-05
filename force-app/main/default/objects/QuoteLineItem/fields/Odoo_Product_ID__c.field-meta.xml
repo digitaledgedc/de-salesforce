@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Odoo_Product_ID__c</fullName>
+    <description>Odoo product ID carried from the original OrderItem for Change Order quotes. Copied to OrderItem.Odoo_Product_ID__c by the SOFHandler so IP-4 can identify the Odoo product without an extra query.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Odoo product identifier. Set automatically by the Change Order Creator from the original order line.</inlineHelpText>
+    <label>Odoo Product ID</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

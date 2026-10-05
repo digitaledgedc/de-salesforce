@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Signed_SOF_Date__c</fullName>
+    <description>Set by F-UploadDocument to TODAY() when Signed SOF is uploaded. Audit record of when the signed document was received.</description>
+    <inlineHelpText>The date the signed Service Order Form was received. Set automatically when the document is uploaded via the Upload Document quick action. Do not edit manually.</inlineHelpText>
+    <label>Signed SOF Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

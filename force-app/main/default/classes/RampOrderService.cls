@@ -10,6 +10,12 @@
  * OrderItem.OrderId is master-detail (non-reparentable), so child-phase items
  * are cloned onto the new Order and the originals are deleted from the parent.
  * NRC pairing is re-run on each child Order via OrderItemNrcPairingService.
+ *
+ * FB-1041: once each phase's MRC is rolled up, RampOppService gives EVERY
+ * phase — 1 through N — its own child Opportunity (Parent_Opportunity__c =
+ * the deal's Opp, StageName = 5-Won) and re-points that phase's Order onto
+ * it, before the child Orders below are activated. After this, the deal's
+ * own Opportunity holds no Order directly.
  */
 // without sharing: system-context invocable called from SOFHandler (after-save flow).
 // Ramp splitting is a data-integrity operation that must succeed regardless of the
@@ -58,6 +64,7 @@ public without sharing class RampOrderService {
                    Charge_Frequency__c, Is_Auto_NRC__c, Line_Booking_Bucket__c,
                    Ramp_Phase__c, Ramp_Start_Date__c, Free_Months_Override__c,
                    Product_Attribute_Value__c, Ramp_Invoice_Display__c, Power_kVA__c,
+                   UoM__c,
                    Ramp_Identifier__c, Ramp_Linked_Phase__c,
                    ns_change_type__c, Original_OrderItem__c, Odoo_Product_ID__c,
                    Is_Active__c, Paired_MRC_OrderItem__c,
@@ -190,6 +197,16 @@ public without sharing class RampOrderService {
         }
 
         OrderMrcRollupService.calculateForRampChain(ordersInPhaseOrder, itemsByOrderId);
+
+        // FB-1041 (Ramp Child Opportunity Spec): give EVERY phase — 1 through
+        // N — its own child Opportunity (Parent_Opportunity__c = the deal's
+        // Opp), closed Won, and re-point that phase's Order onto it. Must run
+        // BEFORE activation below — Order_AfterSave_WonAutoClose resolves the
+        // Opportunity from the Order's OpportunityId at the moment Status
+        // flips to Activated, so the repoint has to be in place first. Phase
+        // 1's own Order (parentOrder) is activated later, outside this
+        // method, by the calling flow — but it is already re-pointed by now.
+        RampOppService.createRampChildren(parentOrder, childOrders);
 
         // Activate child orders — Salesforce does not allow inserting an Order as Activated;
         // must be created as Draft first and then updated to Activated in a separate DML.

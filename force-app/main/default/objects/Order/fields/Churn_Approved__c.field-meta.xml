@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Churn_Approved__c</fullName>
+    <defaultValue>false</defaultValue>
+    <inlineHelpText>Checked when a Sales Director or Country Head has approved this termination. Required before a Churn order can be activated. Do not check manually - use the Approve Churn quick action.</inlineHelpText>
+    <label>Churn Approved</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

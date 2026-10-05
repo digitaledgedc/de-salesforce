@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Signed_SOF_Uploaded__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set TRUE by F-UploadDocument flow when Document_Type__c = Signed SOF is uploaded to Quote Files. Triggers F-15 (SOF Upload Handler - Order Creator). Always use the Upload Document Quick Action, not direct field edit.</description>
+    <inlineHelpText>Checked automatically when a Signed SOF document is attached via the Upload Document quick action. Triggers Order creation. Do not check manually - always use the quick action.</inlineHelpText>
+    <label>Signed SOF Uploaded</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

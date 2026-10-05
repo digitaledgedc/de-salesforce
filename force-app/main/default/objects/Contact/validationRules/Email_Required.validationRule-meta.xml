@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email_Required</fullName>
+    <active>true</active>
+    <description>Email required on all Contacts. Primary key for duplicate detection. Integration User and System Admin profiles exempt.</description>
+    <errorConditionFormula>AND(ISBLANK(Email), $Profile.Name &lt;&gt; &quot;DE Integration User&quot;, $Profile.Name &lt;&gt; &quot;System Administrator&quot;)</errorConditionFormula>
+    <errorDisplayField>Email</errorDisplayField>
+    <errorMessage>Email is required on all Contact records. Email is the primary key for duplicate detection.</errorMessage>
+</ValidationRule>

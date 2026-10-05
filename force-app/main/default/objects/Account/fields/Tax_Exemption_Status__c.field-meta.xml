@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tax_Exemption_Status__c</fullName>
+    <description>Tax exemption classification for invoice tax treatment. Non-Standard values require exemption certificate upload before Finance Approval can complete.</description>
+    <inlineHelpText>Customer&apos;s tax treatment. Exempt or non-standard statuses require an exemption certificate to be attached before Finance Approval. Standard = full applicable tax applies.</inlineHelpText>
+    <label>Tax Exemption Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Standard</fullName>
+                <default>true</default>
+                <label>Standard</label>
+            </value>
+            <value>
+                <fullName>Exempt</fullName>
+                <default>false</default>
+                <label>Exempt</label>
+            </value>
+            <value>
+                <fullName>Withholding Only</fullName>
+                <default>false</default>
+                <label>Withholding Only</label>
+            </value>
+            <value>
+                <fullName>Reverse Charge</fullName>
+                <default>false</default>
+                <label>Reverse Charge</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

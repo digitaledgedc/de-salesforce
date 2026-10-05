@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Solution_Engagement_Required__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set TRUE for complex deals. Triggers TPM assignment.</description>
+    <inlineHelpText>Check for complex deals that require a Technical Project Manager to produce a Solution Design Document. Triggers TPM Owner assignment and SDD approval tracking.</inlineHelpText>
+    <label>Solution Engagement Required</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

@@ -147,6 +147,7 @@ export default class ChangeOrderCreator extends NavigationMixin(LightningElement
                 inventoryName:    d.inventoryName || null,
                 aSideAsset:       d.aSideAsset || null,
                 zSideAsset:       d.zSideAsset || null,
+                mergeIbTask:      d.mergeIbTask || false,
                 changeType:       'NO_CHANGE',
                 newQuantity:      d.quantity,
                 newUnitPrice:     d.unitPrice,
@@ -453,12 +454,16 @@ export default class ChangeOrderCreator extends NavigationMixin(LightningElement
             : curMrc;
         const delta    = newMrc - curMrc;
 
-        let code = '';
-        if (r.assetName && r.productName && r.assetName.includes(': ')) {
-            code = r.assetName.split(': ')[0];
-        } else {
-            code = r.odooIbId ? ('IB-' + r.odooIbId) : (r.subscriptionId || r.productCode || '');
-        }
+        // Previous: shortened to IB-{odooIbId} when Asset.Name had no ": Product" suffix,
+        // which dropped prefixes like NEXJP- from the Change Order modal.
+        // let code = '';
+        // if (r.assetName && r.productName && r.assetName.includes(': ')) {
+        //     code = r.assetName.split(': ')[0];
+        // } else {
+        //     code = r.odooIbId ? ('IB-' + r.odooIbId) : (r.subscriptionId || r.productCode || '');
+        // }
+        let code = r.assetName
+            || (r.odooIbId ? ('IB-' + r.odooIbId) : (r.subscriptionId || r.productCode || ''));
 
         const renewPriceChanged = isRenew && r.newUnitPrice !== r.unitPrice;
 
@@ -564,17 +569,8 @@ export default class ChangeOrderCreator extends NavigationMixin(LightningElement
         );
     }
 
-    handleCancel() {
-    this.dispatchEvent(new CloseActionScreenEvent());
-    //if CloseActionScreenEvent doesn't close the screen, navigate back to the Order record page
-    this[NavigationMixin.Navigate]({
-        type: 'standard__recordPage',
-        attributes: {
-            recordId: this.recordId,
-            actionName: 'view',
-        },
-    });
-}
+    handleCancel() { this.dispatchEvent(new CloseActionScreenEvent()); }
+
     // ── Modal handlers ───────────────────────────────────────────────────
 
     handleModalCancel() {
@@ -769,6 +765,7 @@ export default class ChangeOrderCreator extends NavigationMixin(LightningElement
                     odooIbId:         r.odooIbId,
                     description:      r.description,
                     attribute:        r.newAttribute || null,
+                    mergeIbTask:      r.mergeIbTask || false,
                 };
             }));
 
@@ -780,6 +777,7 @@ export default class ChangeOrderCreator extends NavigationMixin(LightningElement
                 poReference:        null,
                 linesJson,
                 newBillingAccountId: null,
+                renewalTermMonths:  this.intent === 'renewal' ? this.renewalTerm : null,
             });
 
             this.dispatchEvent(new ShowToastEvent({

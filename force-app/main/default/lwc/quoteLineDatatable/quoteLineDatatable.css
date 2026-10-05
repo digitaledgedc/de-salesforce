@@ -47,7 +47,8 @@
     text-align: right;
 }
 .qld-table thead .qld-th-check,
-.qld-table thead .qld-th-action {
+.qld-table thead .qld-th-action,
+.qld-table thead .qld-th-seq {
     border-right: none;
 }
 .qld-th-check {
@@ -57,6 +58,11 @@
     cursor: default;
 }
 .qld-th-action {
+    width: 32px;
+    min-width: 32px;
+    cursor: default;
+}
+.qld-th-seq {
     width: 32px;
     min-width: 32px;
     cursor: default;
@@ -129,8 +135,12 @@ th:hover .qld-sort-icon::after {
 
 /* ─── Checkbox / action — no vertical borders ─── */
 .qld-table tbody .qld-td-check,
-.qld-table tbody .qld-td-action {
+.qld-table tbody .qld-td-action,
+.qld-table tbody .qld-td-seq {
     border-right: none;
+    /* Keep overflow hidden, but never draw "..." — that was the false dots */
+    overflow: hidden;
+    text-overflow: clip;
 }
 .qld-td-check {
     width: 36px;
@@ -143,6 +153,58 @@ th:hover .qld-sort-icon::after {
     text-align: center;
     padding-left: 0;
     padding-right: 0;
+}
+.qld-td-seq {
+    width: 32px;
+    min-width: 32px;
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+    vertical-align: middle;
+}
+
+/* ─── Sequence up/down ─── */
+.qld-seq-btns {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    line-height: 0;
+}
+.qld-seq-btn {
+    width: 1.15rem;
+    height: 0.85rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    color: #706e6b;
+    border-radius: 0.15rem;
+}
+.qld-seq-btn:hover:not(:disabled) {
+    background: #e0e5ee;
+    color: #0176d3;
+}
+.qld-seq-btn:disabled {
+    opacity: 0.28;
+    cursor: default;
+}
+.qld-seq-chevron {
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+.qld-seq-up {
+    border-bottom: 5px solid currentColor;
+}
+.qld-seq-down {
+    border-top: 5px solid currentColor;
 }
 
 /* ─── Row states ─── */

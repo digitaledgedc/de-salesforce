@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Manage_All_Record_Documents</name>
+    </customPermissions>
+    <description>Grants Manage All Record Documents: deletion of any record document, including the holder&apos;s own uploads. Deploying this grants nothing on its own - users must be assigned to it.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Record Document Management</label>
+</PermissionSet>

@@ -6,6 +6,9 @@
                     <th class="qld-th-check">
                         <input type="checkbox" checked={allSelected} onchange={handleSelectAll} class="qld-check" />
                     </th>
+                    <template lwc:if={allowReorder}>
+                        <th class="qld-th-seq" title="Sequence"></th>
+                    </template>
                     <template lwc:if={viewBtnCol}>
                         <th class="qld-th-action"></th>
                     </template>
@@ -27,17 +30,35 @@
                             <input type="checkbox" checked={row.isSelected} data-id={row.rowId}
                                    onchange={handleRowCheck} class="qld-check" disabled={row.isReadOnly} />
                         </td>
+                        <template lwc:if={allowReorder}>
+                            <td class="qld-td-seq">
+                                <div class="qld-seq-btns">
+                                    <button class="qld-seq-btn" data-id={row.rowId} data-dir="up"
+                                            onclick={handleReorderClick} title="Move up"
+                                            aria-label="Move up"
+                                            type="button" disabled={row.disableMoveUp}>
+                                        <span class="qld-seq-chevron qld-seq-up" aria-hidden="true"></span>
+                                    </button>
+                                    <button class="qld-seq-btn" data-id={row.rowId} data-dir="down"
+                                            onclick={handleReorderClick} title="Move down"
+                                            aria-label="Move down"
+                                            type="button" disabled={row.disableMoveDown}>
+                                        <span class="qld-seq-chevron qld-seq-down" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                            </td>
+                        </template>
                         <template lwc:if={viewBtnCol}>
                             <td class="qld-td-action">
                                 <button class="qld-eye-btn" data-id={row.rowId} onclick={handleViewClick}
-                                        title={row.viewTitle} type="button">
+                                        title={row.viewTitle} aria-label={row.viewTitle} type="button">
                                     <template lwc:if={row.isWarning}>
                                         <lightning-icon icon-name="utility:warning" size="xx-small"
-                                                        alternative-text="Warning"></lightning-icon>
+                                                        alternative-text=""></lightning-icon>
                                     </template>
                                     <template lwc:else>
                                         <lightning-icon icon-name="utility:preview" size="xx-small"
-                                                        alternative-text="View"></lightning-icon>
+                                                        alternative-text=""></lightning-icon>
                                     </template>
                                 </button>
                             </td>

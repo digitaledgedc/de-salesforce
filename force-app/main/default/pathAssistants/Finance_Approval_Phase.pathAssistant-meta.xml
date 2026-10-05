@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Account</entityName>
+    <fieldName>Finance_Approval_Phase__c</fieldName>
+    <masterLabel>Finance_Approval_Phase</masterLabel>
+    <pathAssistantSteps>
+        <fieldNames>Finance_Approved_Date__c</fieldNames>
+        <fieldNames>Finance_Approver__c</fieldNames>
+        <info>&lt;p&gt;&lt;b&gt;Finance approval complete.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Account is approved for commercial activity&lt;/li&gt;&lt;li&gt;BAN creation is now enabled&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Approved</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <fieldNames>D_B_Number__c</fieldNames>
+        <fieldNames>DnB_Rating__c</fieldNames>
+        <fieldNames>DnB_Check_Date__c</fieldNames>
+        <info>&lt;p&gt;&lt;b&gt;D&amp;amp;B check in progress.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Enter the D&amp;amp;B Number once retrieved&lt;/li&gt;&lt;li&gt;Record the D&amp;amp;B Rating and check date&lt;/li&gt;&lt;li&gt;Click Finance Approval to advance&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>DnB_Pending</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <fieldNames>KYC_Status__c</fieldNames>
+        <fieldNames>KYC_Approved_Date__c</fieldNames>
+        <info>&lt;p&gt;&lt;b&gt;KYC review in progress.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Complete KYC documentation review&lt;/li&gt;&lt;li&gt;Click Finance Approval to approve or reject&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>KYC_Pending</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <fieldNames>Tax_ID__c</fieldNames>
+        <info>&lt;p&gt;&lt;b&gt;Not yet started.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Ensure Legal Entity Name and Registered Address are on the account&lt;/li&gt;&lt;li&gt;Ensure Tax ID is populated&lt;/li&gt;&lt;li&gt;Click Finance Approval to initiate the D&amp;amp;B check&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Not_Started</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;D&amp;amp;B check rejected.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Review rejection reason with Finance&lt;/li&gt;&lt;li&gt;Restart approval process if circumstances change&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Rejected_DnB</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;&lt;b&gt;KYC review rejected.&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Review rejection reason with Finance and Compliance&lt;/li&gt;&lt;li&gt;Do not proceed with commercial activity&lt;/li&gt;&lt;/ul&gt;</info>
+        <picklistValueName>Rejected_KYC</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>__MASTER__</recordTypeName>
+</PathAssistant>

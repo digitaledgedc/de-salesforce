@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_ORD_02_RDD_Lock_PostConfirm</fullName>
+    <active>true</active>
+    <description>VR-ORD-02: RDD cannot be changed after Order Confirmation.</description>
+    <errorConditionFormula>AND(NOT(ISPICKVAL(Status, &apos;Draft&apos;)), NOT(ISPICKVAL(Status, &apos;Submitted&apos;)), NOT(ISPICKVAL(Status, &apos;Cancelled&apos;)), ISCHANGED(RDD__c))</errorConditionFormula>
+    <errorDisplayField>RDD__c</errorDisplayField>
+    <errorMessage>Requested Delivery Date cannot be changed after Order Confirmation.</errorMessage>
+</ValidationRule>

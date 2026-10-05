@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Finance_Approval_Reminder_Count__c</fullName>
+    <defaultValue>0</defaultValue>
+    <description>Incremented each time the Remind Finance Approval quick action is used. Tracks how many times Sales has nudged Finance.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Tracks how many reminder notifications Sales has sent to Finance. Incremented each time the Remind Finance quick action is used. Read-only.</inlineHelpText>
+    <label>Finance Approval Reminder Count</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

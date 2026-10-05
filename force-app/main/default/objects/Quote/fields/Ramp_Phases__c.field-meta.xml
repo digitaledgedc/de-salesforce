@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ramp_Phases__c</fullName>
+    <description>Required when Is_Ramp_Deal__c = TRUE. Number of ramp delivery phases. Values 2-6. Drives how many Ramp Phase sets appear on Quote Lines.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Required when Ramp Deal is checked. Enter the number of capacity delivery phases (2 to 6). Controls how many ramp phase columns appear on each quote line.</inlineHelpText>
+    <label>Number of Ramp Phases</label>
+    <precision>2</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

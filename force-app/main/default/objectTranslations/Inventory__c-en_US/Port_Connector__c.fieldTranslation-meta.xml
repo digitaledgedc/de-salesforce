@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Port Connector Type --></label>
+    <name>Port_Connector__c</name>
+    <picklistValues>
+        <masterLabel>Coax</masterLabel>
+        <translation><!-- Coax --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>LC Duplex</masterLabel>
+        <translation><!-- LC Duplex --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>RJ45</masterLabel>
+        <translation><!-- RJ45 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SC Duplex</masterLabel>
+        <translation><!-- SC Duplex --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

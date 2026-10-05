@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Power_kVA__c</fullName>
+    <description>For cabinet/cage lines: allocated power draw for this specific unit in kVA. Helps Facilities confirm total power capacity required at the site for this Quote.</description>
+    <externalId>false</externalId>
+    <label>Power Draw (kVA)</label>
+    <precision>6</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

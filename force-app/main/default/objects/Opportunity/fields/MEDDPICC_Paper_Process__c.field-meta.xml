@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MEDDPICC_Paper_Process__c</fullName>
+    <description>Legal and procurement steps to execute the contract.</description>
+    <inlineHelpText>MEDDPICC: What steps are required to get the contract signed? Capture procurement, legal review, KYC, board approvals, and any other steps between verbal agreement and executed SOF.</inlineHelpText>
+    <label>Paper Process (P)</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

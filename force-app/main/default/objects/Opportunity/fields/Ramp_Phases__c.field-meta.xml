@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ramp_Phases__c</fullName>
+    <description>Required when Is_Ramp_Deal__c = TRUE. Values: 2-6.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>How many capacity phases does this ramp deal have? Required when Is Ramp Deal is checked. Valid range is 2-6 phases.</inlineHelpText>
+    <label>Number of Ramp Phases</label>
+    <precision>4</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

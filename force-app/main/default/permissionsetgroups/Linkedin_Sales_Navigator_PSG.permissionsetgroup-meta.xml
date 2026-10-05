@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Assign users to this PSG to provide them the necessary access to Linkedin Sales Navigator capabilities</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Linkedin Sales Navigator PSG</label>
+    <permissionSets>LID__LinkedIn_Sales_Navigator_Standard_User</permissionSets>
+    <permissionSets>Linkedin_Sales_Navigator_component_visibility</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reseller_Status__c</fullName>
+    <description>Replaces Reseller_Flag__c checkbox. Tracks whether a reseller agreement exists with this account. Used on Customer and End Customer record types.</description>
+    <inlineHelpText>Indicates whether this account has a reseller agreement with Digital Edge. Unsigned = pending agreement. Signed = active reseller agreement in place.</inlineHelpText>
+    <label>Reseller Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Unsigned</fullName>
+                <default>false</default>
+                <label>Unsigned</label>
+            </value>
+            <value>
+                <fullName>Signed</fullName>
+                <default>false</default>
+                <label>Signed</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

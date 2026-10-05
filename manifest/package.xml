@@ -82,6 +82,8 @@
         <members>MockOdooCallout</members>
         <members>NrcPairingService</members>
         <members>NrcPairingServiceTest</members>
+        <members>OdooAccountUpdateQueueable</members>
+        <members>OdooAccountUpdateQueueableTest</members>
         <members>OdooAssetStatusHandler</members>
         <members>OdooAssetStatusHandlerTest</members>
         <members>OdooAssetSyncService</members>
@@ -101,6 +103,8 @@
         <members>OdooOrderConfirmHandlerTest</members>
         <members>OdooStatusSyncHandler</members>
         <members>OdooStatusSyncHandlerTest</members>
+        <members>OdooSyncErrorEmailService</members>
+        <members>OdooSyncErrorEmailServiceTest</members>
         <members>OppNumberGenerator</members>
         <members>OppNumberGeneratorTest</members>
         <members>OpportunityFieldEvaluatorService</members>
@@ -154,6 +158,8 @@
         <members>QuoteRevisionServiceTest</members>
         <members>RampMrcService</members>
         <members>RampMrcServiceTest</members>
+        <members>RampOppService</members>
+        <members>RampOppServiceTest</members>
         <members>RampOrderService</members>
         <members>RampOrderServiceTest</members>
         <members>SendChangeOrdersQueueable</members>
@@ -193,6 +199,7 @@
         <members>AccountTrigger</members>
         <members>AssetTrigger</members>
         <members>BillingAccountTrigger</members>
+        <members>DE_IntegrationErrorTrigger</members>
         <members>InventoryTrigger</members>
         <members>LeadTrigger</members>
         <members>OpportunityTrigger</members>
@@ -299,7 +306,12 @@
         <name>CompactLayout</name>
     </types>
     <types>
+        <members>Alice_Ampersand</members>
         <members>CPQIntegrationUserApp</members>
+        <members>Databricks_Ingestion_Connector</members>
+        <members>LinkedIn</members>
+        <members>LinkedIn_Sales_Navigator_Writeback</members>
+        <members>Workbench</members>
         <name>ConnectedApp</name>
     </types>
     <types>
@@ -348,6 +360,7 @@
         <members>Sales_Operations</members>
         <members>Success_Manager</members>
         <members>standard__AllTabSet</members>
+        <members>standard__AlmDevops</members>
         <members>standard__AppLauncher</members>
         <members>standard__Approvals</members>
         <members>standard__Chatter</members>
@@ -356,6 +369,7 @@
         <members>standard__ExpressionSetConsole</members>
         <members>standard__FlowsApp</members>
         <members>standard__HVSConsole</members>
+        <members>standard__IndustriesEcm</members>
         <members>standard__IndustriesEpc</members>
         <members>standard__LightningBolt</members>
         <members>standard__LightningInstrumentation</members>
@@ -403,6 +417,7 @@
         <members>Account.Customer_Pricebook__c</members>
         <members>Account.Customer_Type_Legacy__c</members>
         <members>Account.DE_Entity__c</members>
+        <members>Account.DE_Subsidiary_Name__c</members>
         <members>Account.D_B_Number__c</members>
         <members>Account.DnB_Check_Date__c</members>
         <members>Account.DnB_Rating__c</members>
@@ -435,6 +450,10 @@
         <members>Account.Local_Registered_Office_Address__c</members>
         <members>Account.Migration_Source_Id__c</members>
         <members>Account.Odoo_Partner_ID__c</members>
+        <members>Account.Odoo_Sync_Error__c</members>
+        <members>Account.Odoo_Sync_Payload__c</members>
+        <members>Account.Odoo_Sync_Status__c</members>
+        <members>Account.Old_Sales_Team__c</members>
         <members>Account.Operation_Country__c</members>
         <members>Account.Overdue_90_Days__c</members>
         <members>Account.PT_Approval__c</members>
@@ -548,6 +567,7 @@
         <members>BillingAccount__c.Billing_Contact__c</members>
         <members>BillingAccount__c.Charge_Period_Presentment__c</members>
         <members>BillingAccount__c.DE_Entity__c</members>
+        <members>BillingAccount__c.DE_Subsidiary_Name__c</members>
         <members>BillingAccount__c.Different_Invoice_Currency__c</members>
         <members>BillingAccount__c.InvoiceDeliveryMode__c</members>
         <members>BillingAccount__c.Invoice_Currency__c</members>
@@ -624,6 +644,9 @@
         <members>Contact.Language_Preference__c</members>
         <members>Contact.Migration_Source_Id__c</members>
         <members>Contact.Odoo_Partner_ID__c</members>
+        <members>Contact.Odoo_Sync_Error__c</members>
+        <members>Contact.Odoo_Sync_Payload__c</members>
+        <members>Contact.Odoo_Sync_Status__c</members>
         <members>Contact.Translated_Name__c</members>
         <members>ContentVersion.Document_Type__c</members>
         <members>Country_Currency__mdt.Active__c</members>
@@ -756,6 +779,7 @@
         <members>Lead.Budget_Range__c</members>
         <members>Lead.Capacity_Cabinets__c</members>
         <members>Lead.Capacity_kW__c</members>
+        <members>Lead.Country__c</members>
         <members>Lead.Customer_Type__c</members>
         <members>Lead.Disqualification_Notes__c</members>
         <members>Lead.Disqualification_Reason__c</members>
@@ -763,10 +787,16 @@
         <members>Lead.Duplicate_Flag__c</members>
         <members>Lead.Event_Name__c</members>
         <members>Lead.GoLive_Target_Date__c</members>
+        <members>Lead.Input_Date__c</members>
+        <members>Lead.LinkedIn_URL__c</members>
         <members>Lead.Manual_Assignment__c</members>
+        <members>Lead.Marketing_Channel__c</members>
         <members>Lead.Master_Record__c</members>
+        <members>Lead.Most_Recent_Campaign__c</members>
+        <members>Lead.Positive_Replies__c</members>
         <members>Lead.Product_Interest__c</members>
         <members>Lead.Referral_Partner__c</members>
+        <members>Lead.Registered_Address__c</members>
         <members>Lead.Strategic_Account_Flag__c</members>
         <members>Lead.Target_Country__c</members>
         <members>MEDDPICC_Config__c.Alert_Enabled__c</members>
@@ -812,6 +842,7 @@
         <members>Opportunity.Commission_Pct__c</members>
         <members>Opportunity.Competitor_Account__c</members>
         <members>Opportunity.Competitor__c</members>
+        <members>Opportunity.Contract_End_Date__c</members>
         <members>Opportunity.Contract_Term_Months__c</members>
         <members>Opportunity.Customer_Type__c</members>
         <members>Opportunity.DE_Entity__c</members>
@@ -890,7 +921,11 @@
         <members>Opportunity.Operation_Metro__c</members>
         <members>Opportunity.Opportunity_Number_Group__c</members>
         <members>Opportunity.Opportunity_Number__c</members>
+        <members>Opportunity.Ops_Contact_Email__c</members>
+        <members>Opportunity.Ops_Contact__c</members>
         <members>Opportunity.Ops_Cost_Status__c</members>
+        <members>Opportunity.Order_Contact_Email__c</members>
+        <members>Opportunity.Order_Contact__c</members>
         <members>Opportunity.Order_Source__c</members>
         <members>Opportunity.Order_Type__c</members>
         <members>Opportunity.Original_Order__c</members>
@@ -904,6 +939,8 @@
         <members>Opportunity.Primary_Quote__c</members>
         <members>Opportunity.Product_Interest__c</members>
         <members>Opportunity.Quota_Relief_Pct__c</members>
+        <members>Opportunity.Quote_Contact_Email__c</members>
+        <members>Opportunity.Quote_Contact__c</members>
         <members>Opportunity.Quote_MRC__c</members>
         <members>Opportunity.Quote_NRC__c</members>
         <members>Opportunity.ROI_Analysis_Completed__c</members>
@@ -911,6 +948,7 @@
         <members>Opportunity.Re_Engagement__c</members>
         <members>Opportunity.Referral_Fee__c</members>
         <members>Opportunity.Referral_Partner__c</members>
+        <members>Opportunity.Remaining_Month__c</members>
         <members>Opportunity.Renewal_Type__c</members>
         <members>Opportunity.Reservation_ROFR_kW__c</members>
         <members>Opportunity.Resurrect_Reason__c</members>
@@ -932,10 +970,12 @@
         <members>Opportunity.SP3__c</members>
         <members>Opportunity.Sales_Engineer__c</members>
         <members>Opportunity.Sales_Motion__c</members>
+        <members>Opportunity.Sales_Team__c</members>
         <members>Opportunity.Salesperson_2__c</members>
         <members>Opportunity.Salesperson_3__c</members>
         <members>Opportunity.Skip_Stage_Gate__c</members>
         <members>Opportunity.Solution_Engagement_Required__c</members>
+        <members>Opportunity.TCV_MRC_USD__c</members>
         <members>Opportunity.TPM_Owner__c</members>
         <members>Opportunity.Tags__c</members>
         <members>Opportunity.Target_Country__c</members>
@@ -954,6 +994,7 @@
         <members>Opportunity__hd.NextStep__c</members>
         <members>Opportunity__hd.Probability__c</members>
         <members>Opportunity__hd.StageName__c</members>
+        <members>Order.Account_Type__c</members>
         <members>Order.Amendment_Reason__c</members>
         <members>Order.Approval_Rejection_Reason__c</members>
         <members>Order.Approved_By__c</members>
@@ -1069,7 +1110,9 @@
         <members>OrderItem.Ramp_Start_Date__c</members>
         <members>OrderItem.Space_ID__c</members>
         <members>OrderItem.Space__c</members>
+        <members>OrderItem.Subscription_Id__c</members>
         <members>OrderItem.Target_BAN__c</members>
+        <members>OrderItem.UoM__c</members>
         <members>OrderItem.Z_Side_Asset__c</members>
         <members>OrderItem.Z_Side_Service_ID__c</members>
         <members>OrderItem.ns_change_type__c</members>
@@ -1095,6 +1138,7 @@
         <members>Pricebook_Request__c.Target_Site__c</members>
         <members>Product2.Additional_Charge_Of__c</members>
         <members>Product2.Aggregate_Ramp_Qty__c</members>
+        <members>Product2.Allowed_UoM__c</members>
         <members>Product2.Asset_Creation_Mode__c</members>
         <members>Product2.Attribute_Type__c</members>
         <members>Product2.Attribute_Values__c</members>
@@ -1156,6 +1200,7 @@
         <members>Quote.Contract_End_Date__c</members>
         <members>Quote.Contract_Term_Months__c</members>
         <members>Quote.Country_Manager__c</members>
+        <members>Quote.Created_Date__c</members>
         <members>Quote.Credit_Adjust_Requested__c</members>
         <members>Quote.Credit_Finance_Approved__c</members>
         <members>Quote.Credit_Limit_Exceeded__c</members>
@@ -1197,7 +1242,13 @@
         <members>Quote.Is_Ramp_Deal__c</members>
         <members>Quote.Legal_Entity_Name__c</members>
         <members>Quote.Max_Discount_Percent__c</members>
+        <members>Quote.Notes_To_Capacity_Approver__c</members>
         <members>Quote.Opportunity_Name__c</members>
+        <members>Quote.Ops_Contact_Email__c</members>
+        <members>Quote.Ops_Contact__c</members>
+        <members>Quote.Order_Contact_Email__c</members>
+        <members>Quote.Order_Contact__c</members>
+        <members>Quote.Order_Terms__c</members>
         <members>Quote.Original_Order__c</members>
         <members>Quote.Payment_Terms__c</members>
         <members>Quote.Payment_Terms_formula__c</members>
@@ -1277,9 +1328,11 @@
         <members>QuoteLineItem.Reserved__c</members>
         <members>QuoteLineItem.Space_ID__c</members>
         <members>QuoteLineItem.Space__c</members>
+        <members>QuoteLineItem.Subscription_Id__c</members>
         <members>QuoteLineItem.Target_BAN__c</members>
         <members>QuoteLineItem.Tax_Amount__c</members>
         <members>QuoteLineItem.Tax__c</members>
+        <members>QuoteLineItem.UoM__c</members>
         <members>QuoteLineItem.Withholding_Tax__c</members>
         <members>QuoteLineItem.Z_Side_Asset__c</members>
         <members>QuoteLineItem.Z_Side_Service_ID__c</members>
@@ -1445,6 +1498,7 @@
         <members>Special_Instruction__c.Type__c</members>
         <members>TriggerBypass__mdt.Is_Active__c</members>
         <members>User.Login_Component_Mode__c</members>
+        <members>User.Sales_Team__c</members>
         <members>kVA_Draw_Pricing__mdt.Monthly_Price_CNY__c</members>
         <members>kVA_Draw_Pricing__mdt.Monthly_Price_HKD__c</members>
         <members>kVA_Draw_Pricing__mdt.Monthly_Price_IDR__c</members>
@@ -2131,6 +2185,7 @@
         <members>Site_Document.Credit_Report</members>
         <members>Site_Document.D_B_Report</members>
         <members>Site_Document.GTC</members>
+        <members>Site_Document.Invoice</members>
         <members>Site_Document.KYC_Supporting</members>
         <members>Site_Document.LOA</members>
         <members>Site_Document.Legal_Clearance</members>
@@ -2138,6 +2193,8 @@
         <members>Site_Document.MSA</members>
         <members>Site_Document.NDA</members>
         <members>Site_Document.NRC_Cost</members>
+        <members>Site_Document.Others</members>
+        <members>Site_Document.PO</members>
         <members>Site_Document.SDD</members>
         <members>Site_Document.SO</members>
         <members>Site_Document.Sanctions_Screening</members>
@@ -2303,8 +2360,33 @@
         <members>DE_Subsidiary__mdt</members>
         <members>DataHall__c</members>
         <members>DevopsActivityLog</members>
+        <members>DevopsEnvDeployment</members>
+        <members>DevopsEnvDeploymentMbr</members>
         <members>DevopsEnvironment</members>
+        <members>DevopsPipeline</members>
+        <members>DevopsPipelineEnvironment</members>
+        <members>DevopsPipelineStage</members>
+        <members>DevopsPipelineStageTrigger</members>
+        <members>DevopsPipelineTestProvider</members>
+        <members>DevopsPipelnStgProm</members>
+        <members>DevopsPipelnStgPromWkItem</members>
+        <members>DevopsProject</members>
+        <members>DevopsProjectEnvironment</members>
+        <members>DevopsProjectPipeline</members>
+        <members>DevopsQualityGate</members>
+        <members>DevopsQualityGateResult</members>
+        <members>DevopsQualityGateRule</members>
+        <members>DevopsQualityGateRuleResult</members>
         <members>DevopsRequestInfo</members>
+        <members>DevopsTest</members>
+        <members>DevopsTestExecution</members>
+        <members>DevopsTestProviderSyncLog</members>
+        <members>DevopsTestSuite</members>
+        <members>DevopsTestSuiteExecution</members>
+        <members>DevopsTestSuiteGroupExec</members>
+        <members>DevopsTestSuiteStage</members>
+        <members>DevopsTestSuiteTest</members>
+        <members>DevopsWkItmTstSteGrpExec</members>
         <members>Discount_Threshold__mdt</members>
         <members>DocGenerationQueryResult</members>
         <members>DocTemplateSectionCondition</members>
@@ -2536,6 +2618,9 @@
         <members>SocialPersona</members>
         <members>SocialPost</members>
         <members>Solution</members>
+        <members>SourceCodeRepoProvider</members>
+        <members>SourceCodeRepository</members>
+        <members>SourceCodeRepositoryBranch</members>
         <members>Special_Instruction__c</members>
         <members>StreamActivityAccess</members>
         <members>StreamingChannel</members>
@@ -2577,6 +2662,9 @@
         <members>VoiceCall</members>
         <members>WorkBadge</members>
         <members>WorkBadgeDefinition</members>
+        <members>WorkItem</members>
+        <members>WorkItemComponent</members>
+        <members>WorkItemComponentList</members>
         <members>WorkOrder</members>
         <members>WorkOrderLineItem</members>
         <members>WorkPlan</members>
@@ -2637,9 +2725,15 @@
         <members>Edit_BAN_Currency</members>
         <members>Edit_DR_Locked_Quote</members>
         <members>Inventory_Admin</members>
+        <members>Linkedin_Components</members>
+        <members>Manage_All_Record_Documents</members>
         <members>Manage_Capacity_Status</members>
         <members>Manage_Quote_Type</members>
         <members>Opportunity_Sales_Actions</members>
+        <members>Restrict_Opp_Owner_Change_All_Stages</members>
+        <members>Restrict_Opp_Owner_Change_till_stage_4</members>
+        <members>Restrict_Order_Owner_Change</members>
+        <members>Restrict_Quote_Owner_Change</members>
         <members>View_Finance_Components</members>
         <name>CustomPermission</name>
     </types>
@@ -2656,30 +2750,6 @@
         <members>Site__c</members>
         <members>Special_Instruction__c</members>
         <name>CustomTab</name>
-    </types>
-    <types>
-        <members>Activities1/</members>
-        <members>Activities1/NonA360EacDashboard</members>
-        <members>AutomatedDashboards/</members>
-        <members>AutomatedDashboards/AdoptionDashboard</members>
-        <members>AutomatedDashboards/Agent_Supervisor_Overview</members>
-        <members>AutomatedDashboards/Service_KPIs</members>
-        <members>Mark_Lee_Dashboards/</members>
-        <members>Mark_Lee_Dashboards/Best_Practices_Dashboard61111</members>
-        <members>PreconfiguredSalesCloudDashboards/</members>
-        <members>PreconfiguredSalesCloudDashboards/Best_Practices_Dashboard61211</members>
-        <members>PreconfiguredSalesCloudDashboards/Best_Practices_Dashboard6131</members>
-        <members>PreconfiguredSalesCloudDashboards/Best_Practices_Dashboard6132</members>
-        <members>SalesDashboardFolder/</members>
-        <members>SalesDashboardFolder/tssJUYDxsUiXMKFYcmIsDmqfcQTxpE</members>
-        <members>SalesEngagementSampleDashboards/</members>
-        <members>SalesEngagementSampleDashboards/CRM_180925_HVS_Sample_Dashboard</members>
-        <members>SalesandMarketingDashboards/</members>
-        <members>SalesandMarketingDashboards/Best_Practice_Leads_Dashboard</members>
-        <members>SalesandMarketingDashboards/Best_Practices_Dashboard6</members>
-        <members>ServiceDashboards/</members>
-        <members>ServiceDashboards/Service_Exec_Overview</members>
-        <name>Dashboard</name>
     </types>
     <types>
         <members>Asset_Action_Source_Entries_Decision_Table_V2</members>
@@ -2844,6 +2914,7 @@
         <members>unfiled$public/DE_Finance_Review_Notification</members>
         <members>unfiled$public/DE_Pricebook_Request_Approval_Notification</members>
         <members>unfiled$public/DE_Quote_Approval_Notification</members>
+        <members>unfiled$public/DE_Quote_Approved_Notification</members>
         <members>unfiled$public/DE_Security_Deposit_Notification</members>
         <members>unfiled$public/DE_Special_Instruction_Approval_Notification</members>
         <members>unfiled$public/LeadsNewassignmentnotificationSAMPLE</members>
@@ -2914,6 +2985,10 @@
         <name>ExternalClientApplication</name>
     </types>
     <types>
+        <members>ALMDevOpsGitHub</members>
+        <name>ExternalCredential</name>
+    </types>
+    <types>
         <members>Azure_Datalake_plcy</members>
         <members>Odoo_Inbound_Integration_plcy</members>
         <name>ExtlClntAppConfigurablePolicies</name>
@@ -2982,6 +3057,8 @@
         <members>FlowsApp_UtilityBar</members>
         <members>Getting_Started_Home</members>
         <members>HVSConsole_UtilityBar</members>
+        <members>IndustriesEcm_UtilityBar</members>
+        <members>Integration_Error_Record_Page</members>
         <members>Integration_UtilityBar</members>
         <members>Lead_Generation_UtilityBar</members>
         <members>Lead_Record_Page_Three_Column</members>
@@ -3009,6 +3086,7 @@
         <members>Account_AfterSave_SEReassignTrigger</members>
         <members>Account_BeforeSave_LegalEntityDefault</members>
         <members>Account_BeforeSave_SalesTeam</members>
+        <members>Account_Before_Save_Account_Tier_From_Sales_Team</members>
         <members>Account_Scheduled_FinanceApprovalReminder</members>
         <members>Account_Scheduled_KYCReview</members>
         <members>Account_Screen_DnB_Check</members>
@@ -3031,10 +3109,13 @@
         <members>Lead_AfterSave_InterconnectNotify</members>
         <members>Lead_BeforeSave_CurrencyDefault</members>
         <members>Lead_BeforeSave_DefaultAccountType</members>
+        <members>Lead_BeforeSave_DefaultLastName</members>
         <members>Lead_BeforeSave_QueueAssignment</members>
+        <members>Lead_Before_Save_Disqualified_Duplicate_Set_Status</members>
         <members>Lead_Convert_MultiCountryConversion</members>
         <members>Lead_Screen_ReopenDisqualified</members>
         <members>On_Void_Asset_Update</members>
+        <members>On_Void_Inventory_Update</members>
         <members>Opportunity_AfterSave_AutoCreateQuote</members>
         <members>Opportunity_BeforeSave_AssignSE</members>
         <members>Opportunity_BeforeSave_CurrencyFromCountry</members>
@@ -3043,6 +3124,8 @@
         <members>Opportunity_BeforeSave_SetPrimaryQuote</members>
         <members>Opportunity_BeforeSave_StageGate</members>
         <members>Opportunity_BeforeSave_Subsidiary</members>
+        <members>Opportunity_Before_Save_Assign_Sales_Team</members>
+        <members>Opportunity_Before_Save_Set_Forecast_Status</members>
         <members>Opportunity_ManageStakeholders</members>
         <members>Opportunity_Name_Auto</members>
         <members>Opportunity_Screen_AdvanceToProspect</members>
@@ -3114,6 +3197,7 @@
         <members>Account_AfterSave_SEReassignTrigger</members>
         <members>Account_BeforeSave_LegalEntityDefault</members>
         <members>Account_BeforeSave_SalesTeam</members>
+        <members>Account_Before_Save_Account_Tier_From_Sales_Team</members>
         <members>Account_Scheduled_FinanceApprovalReminder</members>
         <members>Account_Scheduled_KYCReview</members>
         <members>Account_Screen_DnB_Check</members>
@@ -3136,10 +3220,13 @@
         <members>Lead_AfterSave_InterconnectNotify</members>
         <members>Lead_BeforeSave_CurrencyDefault</members>
         <members>Lead_BeforeSave_DefaultAccountType</members>
+        <members>Lead_BeforeSave_DefaultLastName</members>
         <members>Lead_BeforeSave_QueueAssignment</members>
+        <members>Lead_Before_Save_Disqualified_Duplicate_Set_Status</members>
         <members>Lead_Convert_MultiCountryConversion</members>
         <members>Lead_Screen_ReopenDisqualified</members>
         <members>On_Void_Asset_Update</members>
+        <members>On_Void_Inventory_Update</members>
         <members>Opportunity_AfterSave_AutoCreateQuote</members>
         <members>Opportunity_BeforeSave_AssignSE</members>
         <members>Opportunity_BeforeSave_CurrencyFromCountry</members>
@@ -3148,6 +3235,8 @@
         <members>Opportunity_BeforeSave_SetPrimaryQuote</members>
         <members>Opportunity_BeforeSave_StageGate</members>
         <members>Opportunity_BeforeSave_Subsidiary</members>
+        <members>Opportunity_Before_Save_Assign_Sales_Team</members>
+        <members>Opportunity_Before_Save_Set_Forecast_Status</members>
         <members>Opportunity_ManageStakeholders</members>
         <members>Opportunity_Name_Auto</members>
         <members>Opportunity_Screen_AdvanceToProspect</members>
@@ -3237,10 +3326,16 @@
         <name>ForecastingTypeSource</name>
     </types>
     <types>
+        <members>DE_Unit_Of_Measure</members>
+        <members>Sales_Team</members>
+        <name>GlobalValueSet</name>
+    </types>
+    <types>
         <members>DE_Admin</members>
         <members>DE_Persona_Lead_EditAll</members>
         <members>DE_Persona_Oppty_ReadAll</members>
         <members>DE_Persona_Quote_ReadAll</members>
+        <members>DE_Sandbox_Users</members>
         <members>DE_T_C_Approval_Group</members>
         <name>Group</name>
     </types>
@@ -3340,6 +3435,9 @@
         <members>DE_Integration_Error__c-Integration Error Layout</members>
         <members>DE_Subsidiary__mdt-DE Company Layout</members>
         <members>DataHall__c-Data Hall Layout</members>
+        <members>DevopsActivityLog-Activity History Layout</members>
+        <members>DevopsPipeline-DevOps Pipeline Layout</members>
+        <members>DevopsProject-DevOps Project Layout</members>
         <members>Discount_Threshold__mdt-Discount Threshold Layout</members>
         <members>Doc_Type_Visibility__mdt-Doc Type Visibility Layout</members>
         <members>Doc_Type_Visibility__mdt-Document Type Visibility Layout</members>
@@ -3386,6 +3484,7 @@
         <members>OrderDeliveryMethod-Order Delivery Method Layout</members>
         <members>OrderItem-Order Product Layout</members>
         <members>OrderItemAdjustmentLineItem-Order Product Adjustment Line Item Layout</members>
+        <members>OrderItemRecipient-Order Product Recipient Layout</members>
         <members>OrderItemTaxLineItem-Order Product Tax Line Item Layout</members>
         <members>PriceAdjustmentTier-Price Adjustment Tier Layout</members>
         <members>PriceBookEntryDerivedPrice-Derived Price Layout</members>
@@ -3420,6 +3519,7 @@
         <members>Quota__c-Quota Layout</members>
         <members>Quote-DE Quote Layout</members>
         <members>QuoteLineItem-Quote Line Item Layout</members>
+        <members>QuoteLineItemRecipient-Quote Line Item Recipient Layout</members>
         <members>Quote_TandC__mdt-Quote T%26C Layout</members>
         <members>RateAdjustmentByAttribute-Rate Adjustment By Attribute Layout</members>
         <members>RateAdjustmentByTier-Rate Adjustment By Tier Layout</members>
@@ -3439,6 +3539,7 @@
         <members>ScorecardAssociation-Scorecard Association Layout</members>
         <members>ScorecardMetric-Scorecard Metric Layout</members>
         <members>ServiceContract-Service Contract Layout</members>
+        <members>Shipment-Shipment Layout</members>
         <members>Site_Document__mdt-Site Document Layout</members>
         <members>Site_Pricebook__mdt-Site Pricebook Layout</members>
         <members>Site__c-Site Layout</members>
@@ -3464,6 +3565,7 @@
         <members>WorkBadge-Badge Received Layout 192</members>
         <members>WorkBadgeDefinition-Badge Definition Layout</members>
         <members>WorkBadgeDefinition-Badge Layout 192</members>
+        <members>WorkItem-Work Item Layout</members>
         <members>WorkOrder-Work Order Layout</members>
         <members>WorkOrderLineItem-Work Order Line Item Layout</members>
         <members>WorkPlan-Work Plan Layout</members>
@@ -3602,7 +3704,13 @@
         <members>Contract.MyInApprovalContracts</members>
         <members>CostBook.All_CostBooks</members>
         <members>CostBookEntry.All_CostBookEntries</members>
+        <members>DE_Integration_Error__c.All</members>
         <members>DataHall__c.All</members>
+        <members>DevopsActivityLog.All_DevopsActivityLog_List_View</members>
+        <members>DevopsPipeline.All_DevopsPipeline_List_View</members>
+        <members>DevopsPipelineStage.All_DevopsPipelineStage_List_View</members>
+        <members>DevopsProject.All_DevopsProject_List_View</members>
+        <members>DevopsProjectPipeline.All_DevopsProjectPipeline_List_View</members>
         <members>DocumentClause.All_DocumentClauses</members>
         <members>DocumentClauseSet.All_DocumentClauseSets</members>
         <members>DocumentEnvelope.All_DocumentEnvelopes</members>
@@ -3702,6 +3810,7 @@
         <members>ProductConfigurationFlow.All_ProductConfigurationFlows</members>
         <members>ProductConfigurationRule.All_ProductConfigurationRules</members>
         <members>ProductDisqualification.All_ProductDisqualifications</members>
+        <members>ProductFulfillmentScenario.All_ProductFulfillmentScenarios</members>
         <members>ProductQualification.All_ProductQualifications</members>
         <members>ProductRelComponentOverride.All_ProductRelComponentOverrides</members>
         <members>ProductRelationshipType.AllProductRelationshipTypes</members>
@@ -3786,6 +3895,8 @@
         <members>User.SalesSupportUsers</members>
         <members>User.SalesUsers</members>
         <members>UserEsignVendorIdentifier.All_UserEsignVendorIdentifiers</members>
+        <members>WorkItem.All_WorkItem_List_View</members>
+        <members>WorkItem.ItemsToApprove</members>
         <members>WorkOrder.All_WorkOrders</members>
         <members>WorkOrder.My_WorkOrders</members>
         <name>ListView</name>
@@ -3822,8 +3933,12 @@
         <name>MilestoneType</name>
     </types>
     <types>
-        <members>Create_Access_Muted</members>
+        <members>DE_Mute_AE_Forecast_Status</members>
         <name>MutingPermissionSet</name>
+    </types>
+    <types>
+        <members>ALMDevOpsGitHub</members>
+        <name>NamedCredential</name>
     </types>
     <types>
         <members>NotificationTypeConfig</members>
@@ -3844,6 +3959,7 @@
         <name>PathAssistant</name>
     </types>
     <types>
+        <members>AccessDevOpsCenterNamedCredentials</members>
         <members>Account_Record_Type_Name_Read</members>
         <members>Admin_Remove_MFA</members>
         <members>BAN_Currency_Override</members>
@@ -3852,6 +3968,9 @@
         <members>DE_Account_Edit_Create</members>
         <members>DE_Account_Read</members>
         <members>DE_Admin</members>
+        <members>DE_Analytics_Metadata_ReadOnly</members>
+        <members>DE_Analytics_ReadOnly</members>
+        <members>DE_Analytics_UI_ReadOnly</members>
         <members>DE_Apex_Access</members>
         <members>DE_Approval_Authority</members>
         <members>DE_BAN_Creator</members>
@@ -3895,6 +4014,7 @@
         <members>DE_Quote_Line_Item_Edit_Create</members>
         <members>DE_Quote_Line_Item_Read</members>
         <members>DE_Quote_Read</members>
+        <members>DE_Read_All_Data</members>
         <members>DE_Regional_Manager_Supplement</members>
         <members>DE_Revenue_Ops</members>
         <members>DE_SBI_Finance_Approver</members>
@@ -3911,12 +4031,17 @@
         <members>Delgated_Admin</members>
         <members>Document_Upload</members>
         <members>Lead_Capacity_kW</members>
+        <members>Linkedin_Sales_Navigator_component_visibility</members>
         <members>Modify_All</members>
         <members>Odoo_Apex_Access</members>
         <members>Opportunity_Sales_Actions</members>
+        <members>PS_Owner_Change_Restrictions</members>
+        <members>PS_Owner_Change_Restrictions_SS</members>
+        <members>Record_Document_Management</members>
         <members>Sales_User</members>
         <members>Set_Audit_Fields</members>
         <members>Site_Access</members>
+        <members>Temporary_Dashboard_Access</members>
         <members>Terms_Condition</members>
         <members>UAT_Walkthrough_Access</members>
         <members>User_Greeting_Component</members>
@@ -3927,7 +4052,9 @@
     </types>
     <types>
         <members>DE_PSG_AE</members>
+        <members>DE_PSG_Analytics_ReadOnly_User</members>
         <members>DE_PSG_Capacity_Manager</members>
+        <members>DE_PSG_Data_Team</members>
         <members>DE_PSG_Executive</members>
         <members>DE_PSG_Finance</members>
         <members>DE_PSG_Integration</members>
@@ -3938,11 +4065,15 @@
         <members>DE_PSG_Sales_Engineer</members>
         <members>DE_PSG_Sales_Support</members>
         <members>DE_UAT_Permissions</members>
+        <members>Linkedin_Sales_Navigator_PSG</members>
+        <members>Linkedin_Sales_Navigator_setup_user_PSG</members>
         <members>force__SalesCloudCallCoachingSeller</members>
         <members>force__SalesCloudSeller</members>
         <members>force__SalesCloudSellerUnlimited</members>
         <members>force__SalesWorkspacePSG</members>
         <members>force__ScaleCenterUsers</members>
+        <members>force__UnifiedCatalogAdminPsl</members>
+        <members>force__UnifiedCatalogAgentPsl</members>
         <name>PermissionSetGroup</name>
     </types>
     <types>
@@ -3967,6 +4098,7 @@
         <members>Chatter Free User</members>
         <members>Chatter Moderator User</members>
         <members>ContractManager</members>
+        <members>DE Analytics ReadOnly User</members>
         <members>DE Capacity Manager</members>
         <members>DE Finance</members>
         <members>DE Integration</members>
@@ -4200,261 +4332,11 @@
         <name>RemoteSiteSetting</name>
     </types>
     <types>
-        <members>ActivityReports1/</members>
-        <members>ActivityReports1/Accounts_with_Activities</members>
-        <members>ActivityReports1/Opportunities_with_Activities_this_Month</members>
-        <members>ActivityReports1/Opptys_Report</members>
-        <members>ActivityReports1/Sales_Rep_Activities</members>
-        <members>Country_Pipeline/</members>
-        <members>Country_Pipeline/Opportunities_Korea</members>
-        <members>Country_Pipeline/Opportunities_Stage_2_4_China</members>
-        <members>Country_Pipeline/Opportunities_Stage_2_4_Indonesia</members>
-        <members>Country_Pipeline/Opportunities_Stage_2_4_Philippines</members>
-        <members>Country_Pipeline/Opportunities_Stages_2_4_10k</members>
-        <members>Country_Pipeline/Opps_Japan</members>
-        <members>DashboardReportsAdoption1/</members>
-        <members>DashboardReportsAdoption1/UsageActivitiesCompleted</members>
-        <members>GettingStartedCompanyKPI/</members>
-        <members>GettingStartedCompanyKPI/KPI_Average_Days_to_Close</members>
-        <members>GettingStartedCompanyKPI/KPI_Average_Deal_Size</members>
-        <members>GettingStartedCompanyKPI/KPI_Closed_Won_By_FY_Month</members>
-        <members>GettingStartedCompanyKPI/KPI_Closed_Won_By_FY_QT</members>
-        <members>GettingStartedCompanyKPI/KPI_Open_Opportunities_in_the_Pipeline</members>
-        <members>GettingStartedCompanyKPI/KPI_Total_Win_Ratio</members>
-        <members>GettingStartedCompanyKPI/KPI_Won_Plus_70_Probability</members>
-        <members>GettingStartedExecutiveSponsor/</members>
-        <members>GettingStartedExecutiveSponsor/ES_Average_Deal_Size</members>
-        <members>GettingStartedExecutiveSponsor/ES_Closed_Lost_Opportunities_FYTD</members>
-        <members>GettingStartedExecutiveSponsor/ES_Closed_Won_By_FY_Month</members>
-        <members>GettingStartedExecutiveSponsor/ES_Closed_Won_By_FY_Quarter</members>
-        <members>GettingStartedExecutiveSponsor/ES_FYTD_Open_Opps_by_Acct</members>
-        <members>GettingStartedExecutiveSponsor/ES_FYTD_Won_Opps_by_Acct</members>
-        <members>GettingStartedExecutiveSponsor/ES_Open_Opportunities</members>
-        <members>GettingStartedExecutiveSponsor/ES_Open_Opportunities_in_the_Pipeline</members>
-        <members>GettingStartedExecutiveSponsor/ES_Total_Win_Ratio</members>
-        <members>GettingStartedSalesManager/</members>
-        <members>GettingStartedSalesManager/Closed_Won_This_FY_by_Owner_6qB</members>
-        <members>GettingStartedSalesManager/New_Activities_Leaderboard_9ZT</members>
-        <members>GettingStartedSalesManager/New_Opptys_Leaderboard_p5H</members>
-        <members>GettingStartedSalesManager/SM_Average_Days_to_Close</members>
-        <members>GettingStartedSalesManager/SM_Average_Deal_Size_X58</members>
-        <members>GettingStartedSalesManager/SM_Closed_Won_By_FYMonth_m1S</members>
-        <members>GettingStartedSalesManager/SM_Closed_Won_This_M_by_Type_hUc</members>
-        <members>GettingStartedSalesManager/SM_Closed_Won_This_Q_by_Type_h88</members>
-        <members>GettingStartedSalesManager/SM_Open_Opportunities_in_the_Pipeline_9H9</members>
-        <members>GettingStartedSalesManager/SM_Win_Ratio_Current_FY_JUg</members>
-        <members>GettingStartedSalesRepresentative/</members>
-        <members>GettingStartedSalesRepresentative/My_Top_Accounts_PHw</members>
-        <members>GettingStartedSalesRepresentative/SR_Clean_your_Room</members>
-        <members>GettingStartedSalesRepresentative/SR_Closed_Won_By_FYMonth_MdW</members>
-        <members>GettingStartedSalesRepresentative/SR_Closed_Won_MTD</members>
-        <members>GettingStartedSalesRepresentative/SR_Closed_Won_This_Q_by_Type_dCK</members>
-        <members>GettingStartedSalesRepresentative/SR_Neglected_Accounts</members>
-        <members>GettingStartedSalesRepresentative/SR_Open_Opportunities_in_the_Pipeline</members>
-        <members>GettingStartedSalesRepresentative/SR_Stuck_Opportunities_Report</members>
-        <members>GettingStartedSalesRepresentative/Top_Open_Opportunities_r6f</members>
-        <members>Go_Live_Data_Validation/</members>
-        <members>Go_Live_Data_Validation/ACC002_Accounts_missing_Account_Type</members>
-        <members>Go_Live_Data_Validation/ACC003_Accounts_missing_Sales_Team</members>
-        <members>Go_Live_Data_Validation/ACC004_Accounts_missing_Unique</members>
-        <members>Go_Live_Data_Validation/Accounts_owned_by_Alosh</members>
-        <members>Go_Live_Data_Validation/All_Leads_Report</members>
-        <members>Go_Live_Data_Validation/All_Portal_Opportunities_All_Time</members>
-        <members>Go_Live_Data_Validation/OPP007_Opp_missing_Logo_Type</members>
-        <members>Go_Live_Data_Validation/OPP008_Opp_missing_Deal_Type</members>
-        <members>Go_Live_Data_Validation/OPP009_Opp_Account_Type</members>
-        <members>Go_Live_Data_Validation/OPP010_Opp_imported_from_Boss_A_side</members>
-        <members>Go_Live_Data_Validation/OPP011_Opp_imported_from_Boss_B_side</members>
-        <members>Go_Live_Data_Validation/OPP012_Opp_Ramp_Deal</members>
-        <members>Go_Live_Data_Validation/Opportunities_5_Won_after_Go_Live</members>
-        <members>Go_Live_Data_Validation/Opportunities_Report_by_EL</members>
-        <members>Go_Live_Data_Validation/Opportunities_created_after_Go_Live</members>
-        <members>Go_Live_Data_Validation/Opportunities_from_Boss</members>
-        <members>Go_Live_Data_Validation/Opportunities_owned_by_Alosh</members>
-        <members>Go_Live_Data_Validation/QUO004_Quotes_Active_under_CTC</members>
-        <members>Go_Live_Data_Validation/QUO005_Platform_to_Approve</members>
-        <members>Go_Live_Data_Validation/Quote_Approval_History_Report_bMs</members>
-        <members>Go_Live_Data_Validation/Quote_Approved_after_Go_Live</members>
-        <members>Go_Live_Data_Validation/Quotes_created_after_Go_Live</members>
-        <members>Go_Live_Data_Validation/Quotes_under_Alosh</members>
-        <members>Go_Live_Data_Validation/Users_Report_DE_Sales</members>
-        <members>Korea/</members>
-        <members>Korea/Korea_RSA</members>
-        <members>Korea/New_Opportunities_Report1</members>
-        <members>Korea/X7</members>
-        <members>Mark_Lee_Reports/</members>
-        <members>Mark_Lee_Reports/Opportunity_Amount_by_Stage_Sample</members>
-        <members>Mark_Lee_Reports/SampleReportUsersLoggedIn</members>
-        <members>Mark_Lee_Reports/SampleReportofTasksandActivities</members>
-        <members>OpportunityReports/</members>
-        <members>OpportunityReports/Committed_Opportunities_qNu</members>
-        <members>OpportunityReports/MPQ_OpportunitiesUSD_cNx</members>
-        <members>OpportunityReports/Won_USD_37K_vzR</members>
-        <members>Pipeline_Call/</members>
-        <members>Pipeline_Call/CQ_Booking_PI_Pipeline</members>
-        <members>Pipeline_Call/CQ_Churn_PD_WCP_by_Site</members>
-        <members>Pipeline_Call/CQ_Country_Booking_PI_Stage_1_2</members>
-        <members>Pipeline_Call/Japan_Booking_PI_WCP_by_Site_CQ_Country</members>
-        <members>SalesEngagementDashboardReports/</members>
-        <members>SalesEngagementDashboardReports/CRM_180925_CallScript_Monthly_Metrics_Report</members>
-        <members>SalesEngagementDashboardReports/CRM_180925_Complete_Sales_Candences_amp_Trackers_Report</members>
-        <members>SalesEngagementDashboardReports/CRM_180925_Contacts_Engagement_grouped_by_account_Report</members>
-        <members>SalesEngagementDashboardReports/CRM_180925_Contacts_with_Sales_Cadence_Trackers_Report</members>
-        <members>SalesEngagementDashboardReports/CRM_180925_EmailTemplate_Monthly_Metrics_Report</members>
-        <members>SalesEngagementDashboardReports/CRM_180925_Grouped_Users_Monthly_Report</members>
-        <members>SalesEngagementDashboardReports/CRM_180925_Lead_Cadence_Tracker_Conversion_Report</members>
-        <members>SalesEngagementDashboardReports/CRM_180925_Lead_Daily_Engagement_Report</members>
-        <members>SalesEngagementDashboardReports/CRM_180925_Leads_Converted_by_Sales_Rep_Report</members>
-        <members>SalesEngagementDashboardReports/CRM_180925_Leads_with_Sales_Cadence_Trackers_Report</members>
-        <members>SalesEngagementDashboardReports/CRM_180925_Sales_Cadence_Steps_Monthly_Metrics_Report</members>
-        <members>SalesEngagementDashboardReports/CRM_180925_User_Daily_Engagement_Report</members>
-        <members>SalesMarketingDashboardsReports/</members>
-        <members>SalesMarketingDashboardsReports/Closed_Lost_by_Reason</members>
-        <members>SalesMarketingDashboardsReports/Closed_Won_80_This_Q_by_Owner</members>
-        <members>SalesMarketingDashboardsReports/Closed_Won_This_Q_by_Owner</members>
-        <members>SalesMarketingDashboardsReports/Closed_Won_This_Q_by_Type</members>
-        <members>SalesMarketingDashboardsReports/Closed_Won_by_Type</members>
-        <members>SalesMarketingDashboardsReports/Conversion_Rate</members>
-        <members>SalesMarketingDashboardsReports/Hot_Leads_w_o_Activity_96_Hours</members>
-        <members>SalesMarketingDashboardsReports/Leads_Converted_All_Time</members>
-        <members>SalesMarketingDashboardsReports/Leads_Converted_Current_FQ2</members>
-        <members>SalesMarketingDashboardsReports/Leads_Converted_by_FQ</members>
-        <members>SalesMarketingDashboardsReports/Leads_Created_Current_FQ</members>
-        <members>SalesMarketingDashboardsReports/Open_Oppties_This_Q</members>
-        <members>SalesMarketingDashboardsReports/Open_Oppties_This_Q_No_Acti_Last_96hrs</members>
-        <members>SalesMarketingDashboardsReports/Pipeline_Report_This_Q</members>
-        <members>SalesMarketingDashboardsReports/Win_Ratio</members>
-        <members>SalesandMarketingReports/</members>
-        <members>SalesandMarketingReports/Activities_by_Salesperson</members>
-        <members>SalesandMarketingReports/CampaignROIbyCampaignType</members>
-        <members>SalesandMarketingReports/CampaignsbyROI</members>
-        <members>SalesandMarketingReports/Closed_Deals_leader_board</members>
-        <members>SalesandMarketingReports/Closed_opportunity</members>
-        <members>SalesandMarketingReports/Leads_by_Industry</members>
-        <members>SalesandMarketingReports/LeadsbySource</members>
-        <members>SalesandMarketingReports/Marketing_Exec_Amount_per_Camp</members>
-        <members>SalesandMarketingReports/Marketing_Exec_Conversion_Rate</members>
-        <members>SalesandMarketingReports/Marketing_Exec_Converted_Amount</members>
-        <members>SalesandMarketingReports/Marketing_Exec_Converted_and_Won_Amount</members>
-        <members>SalesandMarketingReports/Marketing_Exec_Converted_by_Month</members>
-        <members>SalesandMarketingReports/Marketing_Exec_Lead_Trends_by_Status</members>
-        <members>SalesandMarketingReports/Marketing_Exec_Leads_Converted</members>
-        <members>SalesandMarketingReports/Marketing_Exec_Leads_by_Campaigns</members>
-        <members>SalesandMarketingReports/Marketing_Exec_of_Leads</members>
-        <members>SalesandMarketingReports/OpportunityProductPipeline</members>
-        <members>SalesandMarketingReports/SP_Current_Month_Open_Pipeline</members>
-        <members>SalesandMarketingReports/Sales_Exec</members>
-        <members>SalesandMarketingReports/Sales_Exec_Bookings_Trend</members>
-        <members>SalesandMarketingReports/Sales_Exec_Closed_Deals_QTD</members>
-        <members>SalesandMarketingReports/Sales_Exec_Lost_Deals</members>
-        <members>SalesandMarketingReports/Sales_Exec_Open_Deals</members>
-        <members>SalesandMarketingReports/Sales_Exec_Open_Pipeline</members>
-        <members>SalesandMarketingReports/Sales_Exec_Open_Pipeline_next_90_days</members>
-        <members>SalesandMarketingReports/Sales_Exec_Top_Closed_Deals</members>
-        <members>SalesandMarketingReports/Sales_Manager_Closed_Deals</members>
-        <members>SalesandMarketingReports/Sales_Manager_Open_Opportunities</members>
-        <members>SalesandMarketingReports/Sales_Manager_Open_Pipeline</members>
-        <members>SalesandMarketingReports/Sales_Manager_Pipeline_Next_90_days</members>
-        <members>SalesandMarketingReports/Sales_Person_Activities_Completed</members>
-        <members>SalesandMarketingReports/Sales_Person_Activity</members>
-        <members>SalesandMarketingReports/Sales_Person_MTD_Sales</members>
-        <members>SalesandMarketingReports/Sales_Person_Open_Pipeline_by_stage</members>
-        <members>SampleReports/</members>
-        <members>SampleReports/SampleReportActiveUsers</members>
-        <members>SampleReports/SampleReportCasesStatusbyRep</members>
-        <members>SampleReports/SampleReportClosedSales</members>
-        <members>SampleReports/SampleReportCompletedActivities</members>
-        <members>SampleReports/SampleReportCustomReportsbyUser</members>
-        <members>SampleReports/SampleReportDocumentLibrary</members>
-        <members>SampleReports/SampleReportLastModifiedBy</members>
-        <members>SampleReports/SampleReportLeadsbyLeadSource</members>
-        <members>SampleReports/SampleReportLoginLeaderboard</members>
-        <members>SampleReports/SampleReportLoginWallofShame</members>
-        <members>SampleReports/SampleReportMonthtoDateTrending</members>
-        <members>SampleReports/SampleReportOpenCasesByPriority</members>
-        <members>SampleReports/SampleReportOpenDeals</members>
-        <members>SampleReports/SampleReportPipelineByCloseMonth</members>
-        <members>SampleReports/SampleReportPipelineHistory</members>
-        <members>SampleReports/SampleReportSalesLeaderboard</members>
-        <members>SampleReports/SampleReportSalesPipelinebyStage</members>
-        <members>SampleReports/SampleReportSolutionsAdded</members>
-        <members>SampleReports/SampleReportTopAccounts</members>
-        <members>SampleReports/SampleReportofAccounts</members>
-        <members>SampleReports/SampleReportofCases</members>
-        <members>SampleReports/SampleReportofContacts</members>
-        <members>SampleReports/SampleReportofDocuments</members>
-        <members>SampleReports/SampleReportofLeads</members>
-        <members>SampleReports/SampleReportofOpenTasks</members>
-        <members>SampleReports/SampleReportofOpportunities</members>
-        <members>SampleReports/SampleReportofReports</members>
-        <members>SampleReports/SampleReportofSolutions</members>
-        <members>SampleReports/SampleReportsLeadsbyStatus</members>
-        <members>SampleReports/flow_orchestration_log_ootb_report_two_four_eight</members>
-        <members>SampleReports/flow_orchestration_run_ootb_report_two_four_eight</members>
-        <members>SampleReports/flow_orchestration_stage_run_ootb_report_two_four_eight</members>
-        <members>SampleReports/flow_orchestration_step_run_ootb_report_two_four_eight</members>
-        <members>SampleReports/flow_orchestration_work_item_ootb_report_two_four_eight</members>
-        <members>SampleReports/flow_screen_prebuilt_report</members>
-        <members>SampleSalesReports/</members>
-        <members>SampleSalesReports/CRM_180925_Cadence_Completion_Report</members>
-        <members>SampleSalesReports/CRM_180925_Cadence_Engagement_Monthly_Metric_Report</members>
-        <members>SampleSalesReports/CRM_180925_Cadence_Engagement_Report</members>
-        <members>SampleSalesReports/CRM_180925_Call_Activity_Report</members>
-        <members>SampleSalesReports/CRM_180925_Call_Template_Report</members>
-        <members>SampleSalesReports/CRM_180925_Contact_Daily_Metric_Report</members>
-        <members>SampleSalesReports/CRM_180925_Contact_Monthly_Metric_Report</members>
-        <members>SampleSalesReports/CRM_180925_Email_Template_Report</members>
-        <members>SampleSalesReports/CRM_180925_Lead_Conversion_Report</members>
-        <members>SampleSalesReports/CRM_180925_Lead_Daily_Metric_Report</members>
-        <members>SampleSalesReports/CRM_180925_Lead_Monthly_Metric_Report</members>
-        <members>SampleSalesReports/CRM_180925_User_Daily_Metric_Report</members>
-        <members>SampleSalesReports/CRM_180925_User_Monthly_Metric_Report</members>
-        <members>ServiceDashboardsReports/</members>
-        <members>ServiceDashboardsReports/Age_of_Cases_Currently_Open_by_Type</members>
-        <members>ServiceDashboardsReports/Aged_Cases_by_Account</members>
-        <members>ServiceDashboardsReports/Aged_Cases_by_Agent</members>
-        <members>ServiceDashboardsReports/Average_Case_Resolution_Time_1</members>
-        <members>ServiceDashboardsReports/Average_Case_Resolution_Time_MTD</members>
-        <members>ServiceDashboardsReports/Avg_Case_Resolution_Time_MTD_by_Agen</members>
-        <members>ServiceDashboardsReports/Case_Resolution_Time_MTD_by_Origin</members>
-        <members>ServiceDashboardsReports/Cases_Closed_MTD</members>
-        <members>ServiceDashboardsReports/Cases_Closed_MTD_by_Agent</members>
-        <members>ServiceDashboardsReports/Cases_Created_MTD</members>
-        <members>ServiceDashboardsReports/Cases_Currently_Open</members>
-        <members>ServiceDashboardsReports/Cases_Currently_Open_by_Account</members>
-        <members>ServiceDashboardsReports/Cases_Currently_Open_by_Agent</members>
-        <members>ServiceDashboardsReports/Cases_Currently_Open_by_Origin</members>
-        <members>ServiceDashboardsReports/Cases_Currently_Open_by_Priority</members>
-        <members>ServiceDashboardsReports/Cases_Currently_Open_by_Type</members>
-        <members>ServiceDashboardsReports/Cases_by_Origin</members>
-        <members>ServiceDashboardsReports/Cases_by_Origin_and_Open_Status</members>
-        <members>ServiceDashboardsReports/Cases_by_Priority</members>
-        <members>ServiceDashboardsReports/Cases_by_Type_and_Open_Status</members>
-        <members>ServiceDashboardsReports/High_Priority_Open_Cases_by_Account</members>
-        <members>ServiceDashboardsReports/Top_10_Cases_by_Age</members>
-        <members>ServiceDashboardsReports/Trend_of_Case_Resolution_Time</members>
-        <members>ServiceDashboardsReports/Trend_of_Cases_Closed</members>
-        <members>ServiceDashboardsReports/Trend_of_Cases_Created</members>
-        <members>UserReport/</members>
-        <members>UserReport/Users_Report_4BL</members>
-        <members>unfiled$public/</members>
-        <members>unfiled$public/Closed_Won_MPQ_YTD_Country</members>
-        <members>unfiled$public/Closed_Won_This_Q</members>
-        <members>unfiled$public/Closed_Won_YTD_Country</members>
-        <members>unfiled$public/Closed_Won_YTD_Platform</members>
-        <members>unfiled$public/Closed_Won_by_site_YTD_Country</members>
-        <members>unfiled$public/Leads_Data_Import_Template_si0</members>
-        <members>unfiled$public/Opportunity_Report_WD_Working_030826</members>
-        <members>unfiled$public/Opps_by_AE</members>
-        <members>unfiled$public/Opps_by_Client</members>
-        <members>unfiled$public/Opps_by_Country_current_Q</members>
-        <members>unfiled$public/Opps_by_Site</members>
-        <name>Report</name>
-    </types>
-    <types>
         <members>Accounts_with_Activities</members>
         <members>Accounts_with_Contacts_with_Daily_Engagements</members>
         <members>Approval_History</members>
+        <members>BAR_Acc_Opportunity_Order_OrderItems</members>
+        <members>BAR_Order_Header</members>
         <members>Bar_Account_Opportunity_Order_OrderItems</members>
         <members>Cadences_amp_Steps</members>
         <members>Call_Script_Monthly_Engagement</members>
@@ -4462,6 +4344,7 @@
         <members>Contacts_and_Sales_Cadence_Trackers</members>
         <members>Contacts_with_Daily_Engagements</members>
         <members>Contacts_with_Monthly_Engagements</members>
+        <members>DE_RDD_Compare</members>
         <members>Email_Template</members>
         <members>Email_Template_Monthly_Engagement</members>
         <members>Forecasting_Items_with_Historical_Trending</members>
@@ -4478,6 +4361,7 @@
         <members>Sales_Cadences_amp_Trackers</members>
         <members>Sales_Cadences_and_Trackers_Inner_join</members>
         <members>User_Activities</members>
+        <members>User_License</members>
         <members>Users_with_Daily_Metrics</members>
         <members>Users_with_Monthly_Engagements</members>
         <members>flow_orchestration_log_ootb_crt_two_four_eight</members>
@@ -4640,6 +4524,7 @@
         <members>IndustriesPricing</members>
         <members>IndustriesRating</members>
         <members>IndustriesUnifiedInventory</members>
+        <members>IndustriesUnifiedPromotions</members>
         <members>InsuranceBrokerage</members>
         <members>InvocableAction</members>
         <members>Knowledge</members>
@@ -4830,7 +4715,19 @@
         <members>DE_Integration_Error__c</members>
         <members>DevopsActivityLog</members>
         <members>DevopsEnvironment</members>
+        <members>DevopsPipeline</members>
+        <members>DevopsPipelineStageTrigger</members>
+        <members>DevopsProject</members>
+        <members>DevopsQualityGate</members>
         <members>DevopsRequestInfo</members>
+        <members>DevopsTest</members>
+        <members>DevopsTestExecution</members>
+        <members>DevopsTestProviderSyncLog</members>
+        <members>DevopsTestSuite</members>
+        <members>DevopsTestSuiteExecution</members>
+        <members>DevopsTestSuiteGroupExec</members>
+        <members>DevopsTestSuiteStage</members>
+        <members>DevopsWkItmTstSteGrpExec</members>
         <members>DialerCallUsage</members>
         <members>DocGenerationQueryResult</members>
         <members>DocumentEnvelope</members>
@@ -4937,6 +4834,8 @@
         <members>Site__c</members>
         <members>SocialPersonaFieldBackup</members>
         <members>SocialPost</members>
+        <members>SourceCodeRepoProvider</members>
+        <members>SourceCodeRepository</members>
         <members>Special_Instruction__c</members>
         <members>StagedInviteeEmail</members>
         <members>StreamActivityAccess</members>
@@ -4965,6 +4864,7 @@
         <members>VoiceCall</members>
         <members>WorkAccess</members>
         <members>WorkBadgeDefinition</members>
+        <members>WorkItem</members>
         <members>WorkOrder</members>
         <members>WorkPlan</members>
         <members>WorkPlanTemplate</members>
@@ -5037,6 +4937,7 @@
         <members>DE_Convert_Banner3</members>
         <members>DE_Convert_Banner4</members>
         <members>DE_Logo</members>
+        <members>DE_Logo_Indonet</members>
         <members>DE_Opp_Icon</members>
         <members>DE_Opp_Icon2</members>
         <members>DE_UserGuide</members>
@@ -5116,6 +5017,7 @@
         <members>DE_Quote_Record_Page</members>
         <members>DE_Site_Record_Page</members>
         <members>DE_Special_Instruction_Record_Page</members>
+        <members>Integration_Error_Record_Page</members>
         <members>Lead_Record_Page_Three_Column</members>
         <name>UiViewDefinition</name>
     </types>
@@ -5141,10 +5043,12 @@
         <members>Contact.Email_Required</members>
         <members>DE_Flow_Error__c.VR_ERR_01_ResolutionRequired</members>
         <members>Inventory__c.Inventory_Edit_Lock</members>
+        <members>Inventory__c.Prevent_Status_Change_After_Decommission</members>
         <members>Inventory__c.VR_INV_01_QuotedNeedsQuoteLine</members>
         <members>Inventory__c.VR_INV_02_ReservedNeedsOrder</members>
         <members>Inventory__c.VR_INV_03_SoldNeedsOrderItem</members>
         <members>Inventory__c.VR_INV_04_RecordTypeImmutable</members>
+        <members>Lead.Block_Edits_When_Disqualified_Duplicate</members>
         <members>Lead.DE_Lead_Cannot_Reopen_Converted</members>
         <members>Lead.DE_Lead_Disqualification_Reason_Required</members>
         <members>Lead.DE_Lead_SalesApproved_Req</members>
@@ -5160,6 +5064,7 @@
         <members>Opportunity.DE_Opp_Referral_Partner_Req</members>
         <members>Opportunity.DE_Opp_Stage1_Gate</members>
         <members>Opportunity.Opp_Gate_9_Lost</members>
+        <members>Opportunity.VR_22_Restrict_Opportunity_Owner_Change</members>
         <members>Opportunity.VR_OPP_01_Won_Requires_Quote</members>
         <members>Opportunity.VR_OPP_02_Loss_Notes_Min_5</members>
         <members>Opportunity.VR_OPP_03_Competitor_Required</members>
@@ -5179,6 +5084,7 @@
         <members>Order.VR_ORD_03_OrderType_Lock_PostDraft</members>
         <members>Order.VR_ORD_11_BAN_Required</members>
         <members>Order.VR_ORD_13_FinanceApprovalRequired</members>
+        <members>Order.VR_ORD_14_Restrict_Order_Owner_Change</members>
         <members>Pricebook_Request_Line__c.VR_PRL_01_BelowFloorPrice</members>
         <members>Quote.VR_QUOTE_02_Finance_Required_On_Accept</members>
         <members>Quote.VR_QUOTE_03_SBI_Pending_On_Accept</members>
@@ -5199,7 +5105,9 @@
         <members>Quote.VR_QUOTE_23_ExpirationDate_Max_60</members>
         <members>Quote.VR_QUOTE_24_Expiry_Required_On_Send</members>
         <members>Quote.VR_QUOTE_25_Binding_Mark_Finance_Gate</members>
+        <members>Quote.VR_QUOTE_26_Restrict_Quote_Owner_Change</members>
         <members>Quote.VR_QUOTE_DR_Lock_RevOps_Only</members>
+        <members>Quote.Validation_Rule_For_RDD</members>
         <members>QuoteLineItem.VR_QLI_01_AutoNRC_Delete_Protection</members>
         <members>QuoteLineItem.VR_QLI_04_No_Edit_Qty_Attr_On_CO</members>
         <members>QuoteLineItem.VR_QLI_Discount_0_or_100</members>
@@ -5233,6 +5141,7 @@
     </types>
     <types>
         <members>Case.SendSlaViolationEmailAlert</members>
+        <members>Quote.Send_opportunity_owner_a_notification_when_quote_is_approved</members>
         <name>WorkflowAlert</name>
     </types>
     <types>
@@ -5270,6 +5179,7 @@
         <members>Account_AfterSave_SEReassignTrigger</members>
         <members>Account_BeforeSave_LegalEntityDefault</members>
         <members>Account_BeforeSave_SalesTeam</members>
+        <members>Account_Before_Save_Account_Tier_From_Sales_Team</members>
         <members>Account_Scheduled_FinanceApprovalReminder</members>
         <members>Account_Scheduled_KYCReview</members>
         <members>Account_Screen_DnB_Check</members>
@@ -5292,10 +5202,13 @@
         <members>Lead_AfterSave_InterconnectNotify</members>
         <members>Lead_BeforeSave_CurrencyDefault</members>
         <members>Lead_BeforeSave_DefaultAccountType</members>
+        <members>Lead_BeforeSave_DefaultLastName</members>
         <members>Lead_BeforeSave_QueueAssignment</members>
+        <members>Lead_Before_Save_Disqualified_Duplicate_Set_Status</members>
         <members>Lead_Convert_MultiCountryConversion</members>
         <members>Lead_Screen_ReopenDisqualified</members>
         <members>On_Void_Asset_Update</members>
+        <members>On_Void_Inventory_Update</members>
         <members>Opportunity_AfterSave_AutoCreateQuote</members>
         <members>Opportunity_BeforeSave_AssignSE</members>
         <members>Opportunity_BeforeSave_CurrencyFromCountry</members>
@@ -5304,6 +5217,8 @@
         <members>Opportunity_BeforeSave_SetPrimaryQuote</members>
         <members>Opportunity_BeforeSave_StageGate</members>
         <members>Opportunity_BeforeSave_Subsidiary</members>
+        <members>Opportunity_Before_Save_Assign_Sales_Team</members>
+        <members>Opportunity_Before_Save_Set_Forecast_Status</members>
         <members>Opportunity_ManageStakeholders</members>
         <members>Opportunity_Name_Auto</members>
         <members>Opportunity_Screen_AdvanceToProspect</members>

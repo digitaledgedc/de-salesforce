@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MRC_Amount__c</fullName>
+    <description>Total recurring charge for this line, net of line Discount. Formula: UnitPrice * Quantity * (1 - Discount) for MRC lines; $0 for NRC lines. (Discount is a Percent field, so in formula context it is the fraction: 100% = 1, 50% = 0.5.) Used by Quote.Total_MRC__c roll-up.</description>
+    <formula>IF(ISPICKVAL(Charge_Type__c, &apos;NRC&apos;), 0, UnitPrice * Quantity * (1 - Discount))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Total MRC (Line)</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

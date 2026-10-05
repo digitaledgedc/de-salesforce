@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Site_Id__c</fullName>
+    <description>Master-detail to the canonical Site__c record. Replaces the Site__c picklist field. Populated via data migration from the legacy picklist value. Used for filtering and cross-object rollup to Site capacity views.</description>
+    <inlineHelpText>The Digital Edge site this inventory slot belongs to. Link to the canonical Site record.</inlineHelpText>
+    <label>Site</label>
+    <referenceTo>Site__c</referenceTo>
+    <relationshipLabel>Inventory</relationshipLabel>
+    <relationshipName>Inventory</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prevent_Status_Change_After_Decommission</fullName>
+    <active>true</active>
+    <description>Prevents users from changing the Inventory Status once it has been set to Decommissioned</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(PRIORVALUE(Status__c), &apos;Decommissioned&apos;),
+    ISCHANGED(Status__c),
+    NOT($Permission.Inventory_Admin)
+)</errorConditionFormula>
+    <errorMessage>Status cannot be changed once the Inventory has been Decommissioned.</errorMessage>
+</ValidationRule>

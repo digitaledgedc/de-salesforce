@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Resolution_Notes__c</fullName>
+    <description>Notes explaining how a Special Instruction was resolved. Populated automatically for Auto-Resolved credit limit items, or manually by Finance.</description>
+    <inlineHelpText>How this instruction was resolved.</inlineHelpText>
+    <label>Resolution Notes</label>
+    <length>4000</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

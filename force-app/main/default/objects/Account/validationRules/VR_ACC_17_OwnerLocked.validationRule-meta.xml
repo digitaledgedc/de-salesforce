@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_ACC_17_OwnerLocked</fullName>
+    <active>false</active>
+    <description>H-02: Account ownership cannot be changed after Finance Approval (Entity_Locked__c = true). Territory/ownership changes on approved accounts must go through Finance unlock process.</description>
+    <errorConditionFormula>AND(
+    NOT(ISNEW()),
+    Entity_Locked__c = TRUE,
+    ISCHANGED(OwnerId)
+)</errorConditionFormula>
+    <errorDisplayField>OwnerId</errorDisplayField>
+    <errorMessage>Account ownership cannot be changed after Finance Approval. Contact Finance to unlock the account before transferring ownership.</errorMessage>
+</ValidationRule>

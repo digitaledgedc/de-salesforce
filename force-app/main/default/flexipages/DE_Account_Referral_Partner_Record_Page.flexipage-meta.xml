@@ -256,7 +256,7 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Sales_Team__c</fieldItem>
+                <fieldItem>Record.Old_Sales_Team__c</fieldItem>
                 <identifier>RecordSales_Team_cField</identifier>
             </fieldInstance>
         </itemInstances>

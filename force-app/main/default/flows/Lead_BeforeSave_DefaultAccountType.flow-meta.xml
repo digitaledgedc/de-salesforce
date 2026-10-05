@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Set_Account_Type_to_Country</name>
+        <label>Set_Account_Type_to_Country</label>
+        <locationX>314</locationX>
+        <locationY>503</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Customer_Type__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Country</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Set_Account_Type_to_Platform</name>
+        <label>Set Account Type to Platform</label>
+        <locationX>50</locationX>
+        <locationY>395</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Customer_Type__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Platform</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Account_Type_By_Interest</name>
+        <label>Has_Hyperscale</label>
+        <locationX>248</locationX>
+        <locationY>287</locationY>
+        <defaultConnector>
+            <targetReference>Is_AccountType_Blank</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Hyperscale</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Product_Interest__c</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <stringValue>Hyperscale</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Account_Type_to_Platform</targetReference>
+            </connector>
+            <label>Hyperscale</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Is_AccountType_Blank</name>
+        <label>Account Type Blank?</label>
+        <locationX>446</locationX>
+        <locationY>395</locationY>
+        <defaultConnectorLabel>Has Value - skip</defaultConnectorLabel>
+        <rules>
+            <name>AccountType_Is_Null</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Customer_Type__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Account_Type_to_Country</targetReference>
+            </connector>
+            <label>Null</label>
+        </rules>
+    </decisions>
+    <description>Defaults Lead Customer_Type__c (Account Type) to &quot;Customer&quot; when blank. Removes the need for manual entry since the field is hidden from the UI (L12).
+June 11th - updated the account type assignment to Platform</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>frmIsHyperscale</name>
+        <dataType>Boolean</dataType>
+        <expression>INCLUDES({!$Record.Product_Interest__c}, &quot;Hyperscale&quot;)</expression>
+    </formulas>
+    <interviewLabel>Lead Default Account Type {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead - Before Save - Default Account Type</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>122</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Account_Type_By_Interest</targetReference>
+        </connector>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

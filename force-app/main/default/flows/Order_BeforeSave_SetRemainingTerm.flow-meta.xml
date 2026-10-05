@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Set_Order_Owner</name>
+        <label>Set Order Owner from Opportunity</label>
+        <locationX>50</locationX>
+        <locationY>134</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.Opportunity.OwnerId</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Decision_Needs_Remaining_Term</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Remaining_Term</name>
+        <label>Set Remaining Term</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Remaining_Term__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>frmRemainingTerm</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Decision_Is_Insert</name>
+        <label>Is Insert?</label>
+        <locationX>176</locationX>
+        <locationY>62</locationY>
+        <defaultConnector>
+            <targetReference>Decision_Needs_Remaining_Term</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Update - Keep Owner</defaultConnectorLabel>
+        <rules>
+            <name>Outcome_Is_Insert</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Opportunity.OwnerId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Order_Owner</targetReference>
+            </connector>
+            <label>Insert - Set Owner</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Decision_Needs_Remaining_Term</name>
+        <label>Needs Remaining Term?</label>
+        <locationX>176</locationX>
+        <locationY>188</locationY>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Outcome_Needs_Term</name>
+            <conditionLogic>(1 OR 2) AND 3</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Confirmed</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Activated</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Ramp_Phase__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_OriginalOrder</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <description>Sets Order.Remaining_Term__c when an order transitions to Status = Confirmed or Activated (covers orders that reach Activated without a Confirmed save). Classified by Order Type: Change/Upsell and Partial Churn = complete months between the CO RDD and the original order&apos;s Service End Date; Churn = 0; all others incl. New Service and renewals = Contract Term (Months). Ramp phase-orders (Ramp_Phase__c populated) are excluded here — their per-phase remaining term is set by RampOrderService at split time. Before-save so it writes with no extra DML.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>frmRemainingTerm</name>
+        <dataType>Number</dataType>
+        <expression>IF(
+  ISPICKVAL({!$Record.Order_Type__c}, &apos;Churn&apos;),
+  0,
+  IF(
+    OR(ISPICKVAL({!$Record.Order_Type__c}, &apos;Change/Upsell&apos;), ISPICKVAL({!$Record.Order_Type__c}, &apos;Partial Churn&apos;)),
+    (YEAR({!Get_OriginalOrder.Service_End_Date__c}) - YEAR({!$Record.RDD__c})) * 12
+    + (MONTH({!Get_OriginalOrder.Service_End_Date__c}) - MONTH({!$Record.RDD__c}))
+    - IF(DAY({!Get_OriginalOrder.Service_End_Date__c}) &lt; DAY({!$Record.RDD__c}), 1, 0),
+    {!$Record.Contract_Term_Months__c}
+  )
+)</expression>
+        <scale>0</scale>
+    </formulas>
+    <interviewLabel>Order Before Save Set Remaining Term {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Order - Before Save - Set Remaining Term</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_OriginalOrder</name>
+        <label>Get Original Order</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Set_Remaining_Term</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Original_Order__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Order</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Service_End_Date__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Decision_Is_Insert</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterFormula>OR(ISBLANK({!$Record.Id}), AND(OR(ISPICKVAL({!$Record.Status}, &apos;Confirmed&apos;), ISPICKVAL({!$Record.Status}, &apos;Activated&apos;)), ISBLANK({!$Record.Ramp_Phase__c})))</filterFormula>
+        <object>Order</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Tracks how many reminder notifications Sales has sent to Finance. Incremented each time the Remind Finance quick action is used. Read-only. --></help>
+    <label><!-- Finance Approval Reminder Count --></label>
+    <name>Finance_Approval_Reminder_Count__c</name>
+</CustomFieldTranslation>

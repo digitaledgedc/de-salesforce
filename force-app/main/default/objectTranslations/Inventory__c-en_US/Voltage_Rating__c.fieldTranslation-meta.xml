@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Select the voltage rating for this breaker. --></help>
+    <label><!-- Voltage Rating (V) --></label>
+    <name>Voltage_Rating__c</name>
+    <picklistValues>
+        <masterLabel>100V</masterLabel>
+        <translation><!-- 100V --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>120V</masterLabel>
+        <translation><!-- 120V --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>200/208V</masterLabel>
+        <translation><!-- 200/208V --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>200V</masterLabel>
+        <translation><!-- 200V --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>220V</masterLabel>
+        <translation><!-- 220V --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>230V</masterLabel>
+        <translation><!-- 230V --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>240V</masterLabel>
+        <translation><!-- 240V --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>250V</masterLabel>
+        <translation><!-- 250V --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>380V</masterLabel>
+        <translation><!-- 380V --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>400V</masterLabel>
+        <translation><!-- 400V --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>415V</masterLabel>
+        <translation><!-- 415V --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>440V</masterLabel>
+        <translation><!-- 440V --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

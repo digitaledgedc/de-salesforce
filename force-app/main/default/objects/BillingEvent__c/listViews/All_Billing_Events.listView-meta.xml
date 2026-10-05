@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Billing_Events</fullName>
+    <columns>NAME</columns>
+    <columns>Account__c</columns>
+    <columns>BAN__c</columns>
+    <columns>Order__c</columns>
+    <columns>BillingEvent_Status__c</columns>
+    <columns>Amount__c</columns>
+    <columns>Billing_Period_Start__c</columns>
+    <columns>Billing_Period_End__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All Billing Events</label>
+</ListView>

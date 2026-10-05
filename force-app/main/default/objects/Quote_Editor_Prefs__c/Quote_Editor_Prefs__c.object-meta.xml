@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <description>Stores user-specific preferences for the Quote Line Editor LWC (column visibility, etc.)</description>
+    <enableFeeds>false</enableFeeds>
+    <label>Quote Editor Prefs</label>
+    <visibility>Public</visibility>
+</CustomObject>

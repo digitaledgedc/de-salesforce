@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Payment Status --></label>
+    <name>Payment_Status__c</name>
+    <picklistValues>
+        <masterLabel>Cancelled</masterLabel>
+        <translation><!-- Cancelled --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Invoiced - Unpaid</masterLabel>
+        <translation><!-- Invoiced - Unpaid --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Not Invoiced</masterLabel>
+        <translation><!-- Not Invoiced --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Overdue</masterLabel>
+        <translation><!-- Overdue --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Paid</masterLabel>
+        <translation><!-- Paid --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Partially Paid</masterLabel>
+        <translation><!-- Partially Paid --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

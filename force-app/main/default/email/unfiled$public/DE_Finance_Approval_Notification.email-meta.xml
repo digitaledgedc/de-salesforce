@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Notification to the country Finance queue that an Account has completed customer approval and is ready for Finance Approval (D&amp;B/KYC/Legal). Contains a direct link to the Account_Screen_FinanceApproval page. Notification only - not an approval action. Digital Edge orange theme.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>DE Finance Approval Notification</name>
+    <style>none</style>
+    <subject>Finance Approval Required: {!Account.Name} - {!Account.DE_Subsidiary_Name__c}</subject>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

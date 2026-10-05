@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_ORD_13_FinanceApprovalRequired</fullName>
+    <active>true</active>
+    <description>Gate G-08: Order cannot be activated unless the Account Finance Approval Phase is Approved, Not Required, or blank.</description>
+    <errorConditionFormula>AND(
+    ISCHANGED(Status),
+    ISPICKVAL(Status, &apos;Activated&apos;),
+    NOT(
+        OR(
+            ISPICKVAL(Account.Finance_Approval_Phase__c, &apos;Approved&apos;),
+            ISPICKVAL(Account.Finance_Approval_Phase__c, &apos;Not_Required&apos;),
+            ISBLANK(TEXT(Account.Finance_Approval_Phase__c))
+        )
+    )
+)</errorConditionFormula>
+    <errorDisplayField>Status</errorDisplayField>
+    <errorMessage>This Order cannot be activated - the Account has not completed Finance Approval. The Finance Approval Phase must be Approved or Not Required before activating Orders.</errorMessage>
+</ValidationRule>

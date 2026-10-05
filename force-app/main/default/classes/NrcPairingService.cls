@@ -1,14 +1,14 @@
 /**
  * NrcPairingService
  *
- * When a Cabinet or other DC product QuoteLineItem with a recurring charge
- * (.RC) product code is added to a Quote, automatically creates the paired
- * non-recurring installation charge (.NR) QuoteLineItem if one does not
+ * When a QuoteLineItem is added for a product with an explicit
+ * Paired_NRC_Product__c lookup, automatically creates the paired
+ * non-recurring installation charge QuoteLineItem if one does not
  * already exist on the Quote.
  *
  * Pairing rule:
- *   Strip ".RC" from ProductCode, append ".NR" → NRC product code
- *   e.g. CAB001.RC → CAB001.NR
+ *   Use Product2.Paired_NRC_Product__c only — no product-code derivation.
+ *   A product with this field blank is never auto-paired.
  *
  * Called from the QuoteLineItem_AfterSave_PairNrcProduct flow on QLI create.
  * Runs async (AsyncAfterCommit) to keep the MRC insert transaction clean.
@@ -32,7 +32,7 @@ public with sharing class NrcPairingService {
      */
     @InvocableMethod(
         label='Pair NRC Installation Charge to MRC QLI'
-        description='For each .RC QuoteLineItem added to a Quote, inserts the matching .NR installation charge if not already present.'
+        description='For each QuoteLineItem added to a Quote whose product has an explicit Paired_NRC_Product__c, inserts the paired installation charge if not already present.'
         category='Quote'
     )
     public static void pairNrcProducts(List<Id> qliIds) {
@@ -52,7 +52,7 @@ public with sharing class NrcPairingService {
             return;
         }
 
-        // Load MRC QLIs — only .RC products with a Quote and pricebook
+        // Load MRC QLIs — only products with an explicit Paired_NRC_Product__c
         List<QuoteLineItem> mrcQlis = (List<QuoteLineItem>) Security.stripInaccessible(
             AccessType.READABLE,
             [SELECT Id, QuoteId, Product2Id, Product2.ProductCode,
@@ -62,8 +62,7 @@ public with sharing class NrcPairingService {
              FROM QuoteLineItem
              WHERE Id IN :qliIdSet
              AND Change_Type__c = null
-               AND (Product2.ProductCode LIKE '%.RC'
-                    OR Product2.Paired_NRC_Product__c != null)
+               AND Product2.Paired_NRC_Product__c != null
                AND Quote.Pricebook2Id != null]
         ).getRecords();
 
@@ -78,8 +77,7 @@ public with sharing class NrcPairingService {
         Set<String> quoteCurrencies = new Set<String>();
 
         for (QuoteLineItem qli : mrcQlis) {
-            // Prefer explicit Paired_NRC_Product lookup; fall back to code-based derivation
-            String nrcCode = qli.Product2.Paired_NRC_Product__c != null ? qli.Product2.Paired_NRC_Product__r.ProductCode : buildNrcCode(qli.Product2.ProductCode);
+            String nrcCode = qli.Product2.Paired_NRC_Product__r.ProductCode;
             if (String.isBlank(nrcCode)) continue;
             allNrcCodes.add(nrcCode);
             quoteIds.add(qli.QuoteId);
@@ -126,7 +124,7 @@ public with sharing class NrcPairingService {
         List<QuoteLineItem> nrcToInsert = new List<QuoteLineItem>();
 
         for (QuoteLineItem qli : mrcQlis) {
-            String nrcCode = qli.Product2.Paired_NRC_Product__c != null ? qli.Product2.Paired_NRC_Product__r.ProductCode : buildNrcCode(qli.Product2.ProductCode);
+            String nrcCode = qli.Product2.Paired_NRC_Product__r.ProductCode;
             if (String.isBlank(nrcCode)) continue;
 
             String existKey = qli.QuoteId + '_' + nrcCode;
@@ -190,23 +188,4 @@ public with sharing class NrcPairingService {
         new DmlHelper().doUpdate(Security.stripInaccessible(AccessType.UPDATABLE, pairedNrcLines).getRecords()); new DmlHelper().doDelete(pairedNrcLines);
     }
 
-    /**
-     * Converts a .RC product code to its .NR counterpart.
-     * Returns null if the code does not end with .RC.
-     *
-     * Handles site-specific variant codes (e.g. CTC-only products) where a
-     * single-letter suffix is appended to the base code before .RC
-     * (e.g. CAB001C.RC → CAB001.NR, not CAB001C.NR which does not exist).
-     * The variant letter is stripped when it immediately follows a digit.
-     */
-    @TestVisible
-    private static String buildNrcCode(String productCode) {
-        if (String.isBlank(productCode)) return null;
-        if (!productCode.endsWith('.RC')) return null;
-        String base = productCode.removeEnd('.RC');
-        // Strip single-letter variant suffix preceded by a digit (e.g. CAB001C → CAB001)
-        if (Pattern.matches('.*\\d[A-Z]$', base)) { base = base.left(base.length() - 1);
-        }
-        return base + '.NR';
-    }
 }

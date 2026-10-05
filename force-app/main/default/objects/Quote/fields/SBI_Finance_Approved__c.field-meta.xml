@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SBI_Finance_Approved__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set TRUE by Country Finance during SBI approval step. Cannot be set by Sales. FLS hidden from Sales Reps. Required before Quote can advance past Under Review when SBI_Flag__c = TRUE.</description>
+    <inlineHelpText>Checked by Country Finance once the Special Billing Instruction has been reviewed and approved. Hidden from Sales reps. The quote cannot advance to Accepted while SBI is pending.</inlineHelpText>
+    <label>SBI Finance Approved</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

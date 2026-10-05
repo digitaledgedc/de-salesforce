@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UoM__c</fullName>
+    <description>SFDC-366. Unit of Measure chosen by the rep for this line, picked from the product&apos;s default QuantityUnitOfMeasure plus Product2.Allowed_UoM__c. BLANK MEANS THE LINE INHERITS Product2.QuantityUnitOfMeasure - every reader must coalesce, never read this field on its own. Blank is the state of every line created before SFDC-366. One UoM per ramp family: all phases of a ramped line share the parent&apos;s value, because deleteRampPhases sums phase quantities back onto the parent when unramping.</description>
+    <inlineHelpText>Unit this line&apos;s quantity is expressed in. Changing it does not recalculate quantity or price. Blank means the product&apos;s own unit is used.</inlineHelpText>
+    <label>UoM</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>DE_Unit_Of_Measure</valueSetName>
+    </valueSet>
+</CustomField>

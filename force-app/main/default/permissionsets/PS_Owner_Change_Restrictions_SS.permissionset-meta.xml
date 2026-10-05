@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Restrict_Opp_Owner_Change_till_stage_4</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Restrict_Order_Owner_Change</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Restrict_Quote_Owner_Change</name>
+    </customPermissions>
+    <description>Grants the Restrict Opp Owner Change All Stages Custom permission only</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>PS_Owner_Change_Restrictions_SS</label>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>TransferAnyEntity</name>
+    </userPermissions>
+</PermissionSet>

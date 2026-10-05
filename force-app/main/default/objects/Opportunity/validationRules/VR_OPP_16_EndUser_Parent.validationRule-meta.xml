@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_OPP_16_EndUser_Parent</fullName>
+    <active>true</active>
+    <description>End User Customer (Channel_Partner__c) must be an End Customer account whose Parent = the Opportunity Account. Enforced on create/change only, so unrelated automation (quote sync/revise) is not blocked by pre-existing data.</description>
+    <errorConditionFormula>AND(
+    OR(ISNEW(), ISCHANGED(Channel_Partner__c)),
+    NOT(ISBLANK(Channel_Partner__c)),
+    OR(
+        Channel_Partner__r.RecordType.DeveloperName &lt;&gt; &quot;End_Customer&quot;,
+        Channel_Partner__r.ParentId &lt;&gt; AccountId
+    )
+)</errorConditionFormula>
+    <errorDisplayField>Channel_Partner__c</errorDisplayField>
+    <errorMessage>The End User Customer must be an End Customer account whose Parent Account is this Opportunity&apos;s Account.</errorMessage>
+</ValidationRule>

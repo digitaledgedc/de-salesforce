@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Tax ID / Business Registration Number. Duplicate check on this field at Account level. --></help>
+    <label><!-- Tax ID --></label>
+    <name>Tax_ID__c</name>
+</CustomFieldTranslation>

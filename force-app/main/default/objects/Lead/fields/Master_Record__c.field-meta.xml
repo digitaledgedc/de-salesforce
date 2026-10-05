@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Master_Record__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Points to the master Lead when this record is identified as a duplicate. Set manually when the Duplicate Flag__c is true. The master record is the one to progress for qualification; this record should be set to Status = Duplicate.</description>
+    <inlineHelpText>The lead to keep when this record is a duplicate. Set this to point to the correct lead, then set Status to Duplicate on this record. Sales should work the master record only.</inlineHelpText>
+    <label>Master Record</label>
+    <referenceTo>Lead</referenceTo>
+    <relationshipName>Duplicate_Lead_Copies</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Lookup</type>
+</CustomField>

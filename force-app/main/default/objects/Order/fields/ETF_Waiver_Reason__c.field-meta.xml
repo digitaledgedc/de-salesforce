@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ETF_Waiver_Reason__c</fullName>
+    <inlineHelpText>Required when ETF Waived is checked. Select the business justification for not charging the Early Termination Fee. Reviewed and approved by Finance.</inlineHelpText>
+    <label>ETF Waiver Reason</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Commercial Decision</fullName>
+                <default>false</default>
+                <label>Commercial Decision</label>
+            </value>
+            <value>
+                <fullName>Force Majeure</fullName>
+                <default>false</default>
+                <label>Force Majeure</label>
+            </value>
+            <value>
+                <fullName>Relationship Management</fullName>
+                <default>false</default>
+                <label>Relationship Management</label>
+            </value>
+            <value>
+                <fullName>Legal Settlement</fullName>
+                <default>false</default>
+                <label>Legal Settlement</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

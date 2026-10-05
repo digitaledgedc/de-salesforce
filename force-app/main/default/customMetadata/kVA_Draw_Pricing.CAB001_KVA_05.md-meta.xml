@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>CAB001.RC 5kVA</label>
+    <protected>false</protected>
+    <values>
+        <field>Monthly_Price_CNY__c</field>
+        <value xsi:type="xsd:double">7360.0</value>
+    </values>
+    <values>
+        <field>Monthly_Price_HKD__c</field>
+        <value xsi:type="xsd:double">0.0</value>
+    </values>
+    <values>
+        <field>Monthly_Price_IDR__c</field>
+        <value xsi:type="xsd:double">2.5754E7</value>
+    </values>
+    <values>
+        <field>Monthly_Price_JPY__c</field>
+        <value xsi:type="xsd:double">286000.0</value>
+    </values>
+    <values>
+        <field>Monthly_Price_KRW__c</field>
+        <value xsi:type="xsd:double">0.0</value>
+    </values>
+    <values>
+        <field>Monthly_Price_PHP__c</field>
+        <value xsi:type="xsd:double">126600.0</value>
+    </values>
+    <values>
+        <field>Monthly_Price_SGD__c</field>
+        <value xsi:type="xsd:double">0.0</value>
+    </values>
+    <values>
+        <field>Monthly_Price_USD__c</field>
+        <value xsi:type="xsd:double">1850.0</value>
+    </values>
+    <values>
+        <field>Product_Code__c</field>
+        <value xsi:type="xsd:string">CAB001.RC</value>
+    </values>
+    <values>
+        <field>kVA_Value__c</field>
+        <value xsi:type="xsd:double">5.0</value>
+    </values>
+</CustomMetadata>

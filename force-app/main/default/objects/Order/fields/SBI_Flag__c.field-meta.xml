@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SBI_Flag__c</fullName>
+    <defaultValue>false</defaultValue>
+    <inlineHelpText>Checked when this order has non-standard billing requirements. Carried from the Quote. Triggers SBI Finance review on the order before provisioning proceeds.</inlineHelpText>
+    <label>Special Billing Instruction</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

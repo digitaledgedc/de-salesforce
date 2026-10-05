@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Free_Period_End_Date__c</fullName>
+    <inlineHelpText>Last day of the billing waiver period. When set alongside Free Period Start Date, Odoo uses exact dates for the waiver rather than an integer month count.</inlineHelpText>
+    <label>Free Period End Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

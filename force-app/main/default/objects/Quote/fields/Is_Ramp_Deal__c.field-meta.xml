@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Ramp_Deal__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set TRUE for multi-phase delivery with staged billing. Carried from the Opportunity.</description>
+    <inlineHelpText>Check for deals where the customer takes space or power in multiple phases with staged billing. Carried from the parent Opportunity.</inlineHelpText>
+    <label>Ramp Deal</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

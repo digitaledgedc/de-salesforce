@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Ramp_Deal__c</fullName>
+    <defaultValue>false</defaultValue>
+    <inlineHelpText>Checked when this order covers a multi-phase capacity ramp. Carried from the Quote. Used to identify ramp orders in reporting and provisioning workflows.</inlineHelpText>
+    <label>Ramp Deal</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

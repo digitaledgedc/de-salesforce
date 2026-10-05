@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Remaining_Term__c</fullName>
+    <description>Remaining contract term in whole months. New/renewal orders (no Original Order): equals Contract Term (Months). Change Orders: complete months between the CO RDD and the original order&apos;s Service End Date. Set on confirmation by Order_BeforeSave_SetRemainingTerm.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Remaining contract term in whole months, set when the order is Confirmed.</inlineHelpText>
+    <label>Remaining Term</label>
+    <precision>4</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

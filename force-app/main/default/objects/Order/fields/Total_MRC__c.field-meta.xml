@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_MRC__c</fullName>
+    <inlineHelpText>Sum of all recurring monthly charges across order lines. Auto-calculated from line items. Used for TCV calculation and revenue reporting. Read-only.</inlineHelpText>
+    <label>Total MRC (Order)</label>
+    <summarizedField>OrderItem.MRC_Amount__c</summarizedField>
+    <summaryFilterItems>
+        <field>OrderItem.Charge_Type__c</field>
+        <operation>equals</operation>
+        <value>MRC</value>
+    </summaryFilterItems>
+    <summaryForeignKey>OrderItem.OrderId</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

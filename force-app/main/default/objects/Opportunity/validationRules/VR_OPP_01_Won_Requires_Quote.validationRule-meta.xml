@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_OPP_01_Won_Requires_Quote</fullName>
+    <active>false</active>
+    <description>VR-OPP-01: Won Opportunity requires either a linked accepted Quote or a Booking Override Reason. Exception path for Rev Ops requires Booking_Override_Reason__c.</description>
+    <errorConditionFormula>AND( ISPICKVAL(StageName, &quot;5-Won&quot;), NOT(ISCHANGED(StageName)), ISBLANK(SyncedQuoteId), ISBLANK(Primary_Quote__c), ISBLANK(Booking_Override_Reason__c) )</errorConditionFormula>
+    <errorDisplayField>SyncedQuoteId</errorDisplayField>
+    <errorMessage>A Won Opportunity requires either a linked accepted Quote (via Primary Quote) or a Booking Override Reason documenting why no Quote exists.</errorMessage>
+</ValidationRule>

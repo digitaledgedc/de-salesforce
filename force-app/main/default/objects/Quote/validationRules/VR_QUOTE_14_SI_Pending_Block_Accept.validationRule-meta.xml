@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_14_SI_Pending_Block_Accept</fullName>
+    <active>false</active>
+    <description>VR-QUOTE-14: Quote cannot be Accepted if there is a pending SBI (Billing Mode change not approved) or an exceeded Credit Limit not approved by Finance.</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Status, &quot;Accepted&quot;),
+    NOT(ISPICKVAL(PRIORVALUE(Status), &quot;Rejected&quot;)),
+    OR(
+        AND( SBI_Flag__c, NOT(SBI_Finance_Approved__c) ),
+        AND( Credit_Limit_Exceeded__c, NOT(Credit_Finance_Approved__c) )
+    )
+)</errorConditionFormula>
+    <errorDisplayField>Status</errorDisplayField>
+    <errorMessage>This quote cannot be accepted. Either a Billing Mode change (SBI) is pending Finance approval, or the Credit Limit has been exceeded and is pending Finance approval. Please ensure Finance has approved before accepting.</errorMessage>
+</ValidationRule>

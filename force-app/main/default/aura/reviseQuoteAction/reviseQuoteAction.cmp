@@ -1,0 +1,25 @@
+<aura:component controller="QuoteRevisionService" implements="force:lightningQuickActionWithoutHeader,force:hasRecordId">
+    <aura:attribute name="isProcessing" type="Boolean" default="false" access="private" />
+
+    <aura:if isTrue="{!v.isProcessing}">
+        <div class="slds-is-relative slds-align_absolute-center slds-p-around_large">
+            <lightning:spinner alternativeText="Creating revision..." size="medium" />
+            <p class="slds-m-top_medium slds-text-body_regular">Creating new revision...</p>
+        </div>
+
+        <aura:set attribute="else">
+            <div class="slds-p-horizontal_medium slds-p-top_medium slds-p-bottom_small">
+                <p class="slds-text-heading_small slds-m-bottom_x-small">Revise Quote</p>
+                <p class="slds-text-body_regular">
+                    This will mark the current quote as <strong>Void</strong> and create a new
+                    Draft revision with all line items copied. The original quote cannot be
+                    edited once it is voided.
+                </p>
+            </div>
+            <div class="slds-p-horizontal_medium slds-p-vertical_small slds-text-align_right slds-border_top">
+                <lightning:button label="Cancel" variant="neutral" onclick="{!c.handleCancel}" />
+                <lightning:button label="Revise Quote" variant="brand" class="slds-m-left_x-small" onclick="{!c.handleConfirm}" />
+            </div>
+        </aura:set>
+    </aura:if>
+</aura:component>

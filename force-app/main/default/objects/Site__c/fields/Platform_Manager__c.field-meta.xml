@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Platform_Manager__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Platform Manager for this site. Copied onto Quotes (Quote_BeforeSave_SiteManagers) to drive Deal Review approval when Account Type = Platform.</description>
+    <inlineHelpText>Platform Manager responsible for this site. Used as the Deal Review approver on Platform-type quotes.</inlineHelpText>
+    <label>Platform Manager</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>Sites_Platform_Manager</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

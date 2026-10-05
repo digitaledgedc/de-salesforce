@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Total invoiced amount from Odoo. Set by IP-5 invoice sync. --></help>
+    <label><!-- Invoice Amount --></label>
+    <name>Invoice_Amount__c</name>
+</CustomFieldTranslation>

@@ -345,6 +345,7 @@ private class QuoteLineItemTriggerHandlerTest2 {
             Quantity         = 1,
             UnitPrice        = 0.00,
             Charge_Type__c   = 'NRC',
+            Is_Auto_NRC__c   = true,
             Line_Origin__c   = 'Ramp',
             Ramp_Phase__c    = 1
         );

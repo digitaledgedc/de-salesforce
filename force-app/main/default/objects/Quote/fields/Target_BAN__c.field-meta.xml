@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Target_BAN__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Optional second BAN for split billing. When set, triggers SBI_Flag__c = TRUE.</description>
+    <label>Target BAN (Alternate)</label>
+    <referenceTo>BillingAccount__c</referenceTo>
+    <relationshipLabel>Quotes (Target BAN)</relationshipLabel>
+    <relationshipName>Quotes_Target_BAN</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Original_Order__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>For Change Order quotes: references the original active Order being amended. Populated automatically by the Change Order Creator.</description>
+    <inlineHelpText>The original Order this Change Order amends. Set automatically.</inlineHelpText>
+    <label>Original Order</label>
+    <referenceTo>Order</referenceTo>
+    <relationshipLabel>Change Order Quotes</relationshipLabel>
+    <relationshipName>Change_Order_Quotes</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

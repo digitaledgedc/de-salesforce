@@ -3,6 +3,7 @@
     <description>Assign to DE AE profile users. Full Lead-to-Order pipeline access including supplement permissions and Sales User base access.</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>DE AE</label>
+    <mutingPermissionSets>DE_Mute_AE_Forecast_Status</mutingPermissionSets>
     <permissionSets>DE_Apex_Access</permissionSets>
     <permissionSets>DE_Flow_Access</permissionSets>
     <permissionSets>DE_Lead_Conversion</permissionSets>

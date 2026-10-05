@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_02_Finance_Required_On_Accept</fullName>
+    <active>true</active>
+    <description>VR-QUOTE-02: Quote cannot be Accepted while Finance Approval Status is Pending or Rejected. First quote on an account with Account Finance Approved is bypassed (BOSS parity).</description>
+    <errorConditionFormula>AND(
+  ISPICKVAL(Status, &quot;Accepted&quot;),
+  ISCHANGED(Status),
+  NOT(ISPICKVAL(PRIORVALUE(Status), &quot;Rejected&quot;)),
+  NOT(OR(
+    ISPICKVAL(Finance_Approval_Status__c, &quot;Approved&quot;),
+    ISPICKVAL(Finance_Approval_Status__c, &quot;Not Required&quot;)
+  )),
+  NOT(AND(
+    OR(ISBLANK(Opportunity.Account.Active_Quote_Count__c),
+      Opportunity.Account.Active_Quote_Count__c &lt;= 1),
+    ISPICKVAL(Opportunity.Account.Finance_Approval_Phase__c, &quot;Approved&quot;)
+  ))
+)</errorConditionFormula>
+    <errorDisplayField>Status</errorDisplayField>
+    <errorMessage>Finance Approval is Pending or Rejected. Finance must approve this Quote before it can be Accepted.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Country_Name__c</fullName>
+    <description>Full country name matching the Operation_Country__c and Target_Country__c picklist values (e.g. Korea, Japan, Indonesia). Used by conversion flow for account naming and country matching. Null for non-country-specific queues (e.g. Hyperscaler).</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Country Name</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

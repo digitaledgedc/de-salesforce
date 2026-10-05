@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Opp_Gate_9_Lost</fullName>
+    <active>false</active>
+    <description>VR-OPP-02: Blocks 9-Lost and 5-Won without Loss/Win notes of at least 5 characters. Also requires Loss Reason on 9-Lost.</description>
+    <errorConditionFormula>OR(
+    AND(
+        ISCHANGED(StageName),
+        ISPICKVAL(StageName, &apos;9-Lost&apos;),
+        OR(
+            ISBLANK(TEXT(Loss_Reason__c)),
+            ISBLANK(Loss_Notes__c),
+            LEN(Loss_Notes__c) &lt; 50
+        )
+    ),
+    AND(
+        NOT(ISCHANGED(StageName)),
+        ISPICKVAL(StageName, &apos;5-Won&apos;),
+        NOT(ISBLANK(Loss_Notes__c)),
+        LEN(Loss_Notes__c) &lt; 50
+    )
+)</errorConditionFormula>
+    <errorMessage>Win/Loss notes must be at least 5 characters. For Lost deals, a Loss Reason is also required.</errorMessage>
+</ValidationRule>

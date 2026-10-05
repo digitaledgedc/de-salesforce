@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Competitor_Account__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The primary competitor in this deal. Must be an Account with RecordType = Competitor.</description>
+    <inlineHelpText>Which company is the customer also evaluating? Link an existing Competitor account or create a new one using the Log Deal Info button.</inlineHelpText>
+    <label>Competitor Account</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipName>Competing_Opportunities</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

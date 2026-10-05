@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Target MRC bookings for this period. Set by Revenue Ops per active commission plan. --></help>
+    <label><!-- Quota Amount (MRC) --></label>
+    <name>Quota_Amount__c</name>
+</CustomFieldTranslation>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_11_CurrencyLockOnSubmit</fullName>
+    <active>true</active>
+    <description>VR-QUOTE-11: Currency can only be changed while the Quote is in Draft status. Once submitted for review or accepted, the currency is locked.</description>
+    <errorConditionFormula>AND(
+    NOT(ISNEW()),
+    ISCHANGED(CurrencyIsoCode),
+    NOT(ISPICKVAL(Status, &quot;Draft&quot;))
+)</errorConditionFormula>
+    <errorDisplayField>CurrencyIsoCode</errorDisplayField>
+    <errorMessage>Currency can only be changed while the Quote is in Draft status.</errorMessage>
+</ValidationRule>

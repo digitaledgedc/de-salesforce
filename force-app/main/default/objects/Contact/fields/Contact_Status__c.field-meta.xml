@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contact_Status__c</fullName>
+    <description>Lifecycle status of the contact. Used by lookup filters to exclude stale contacts from selection lists. Aligned with UAT feedback C-06.</description>
+    <inlineHelpText>Active = currently engaged. Inactive = no longer at company or disengaged. Departed = confirmed left the organisation. Inactive and Departed contacts are excluded from lookup filters on BAN Billing Contact and Opportunity Contact Roles.</inlineHelpText>
+    <label>Contact Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Active</fullName>
+                <default>true</default>
+                <label>Active</label>
+            </value>
+            <value>
+                <fullName>Inactive</fullName>
+                <default>false</default>
+                <label>Inactive</label>
+            </value>
+            <value>
+                <fullName>Departed</fullName>
+                <default>false</default>
+                <label>Departed</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Each</fullName>
+        <default>false</default>
+        <label>Each</label>
+    </customValue>
+    <customValue>
+        <fullName>Cab</fullName>
+        <default>false</default>
+        <label>Cab</label>
+    </customValue>
+    <customValue>
+        <fullName>sqm</fullName>
+        <default>false</default>
+        <label>sqm</label>
+    </customValue>
+    <customValue>
+        <fullName>Unit</fullName>
+        <default>false</default>
+        <label>Unit</label>
+    </customValue>
+    <customValue>
+        <fullName>kVA</fullName>
+        <default>false</default>
+        <label>kVA</label>
+    </customValue>
+    <customValue>
+        <fullName>Mbps</fullName>
+        <default>false</default>
+        <label>Mbps</label>
+    </customValue>
+    <customValue>
+        <fullName>Pair</fullName>
+        <default>false</default>
+        <label>Pair</label>
+    </customValue>
+    <customValue>
+        <fullName>Working Hours</fullName>
+        <default>false</default>
+        <label>Working Hours</label>
+    </customValue>
+    <customValue>
+        <fullName>Days</fullName>
+        <default>false</default>
+        <label>Days</label>
+    </customValue>
+    <customValue>
+        <fullName>kwh</fullName>
+        <default>false</default>
+        <label>kwh</label>
+    </customValue>
+    <customValue>
+        <fullName>15-minutes</fullName>
+        <default>false</default>
+        <label>15-minutes</label>
+    </customValue>
+    <description>SFDC-366. Units of Measure available to products and quote/order lines. Mirrors the values on the standard Product2.QuantityUnitOfMeasure picklist. If a value is ever added to QuantityUnitOfMeasure it must be added here too, otherwise stamping it onto the restricted QuoteLineItem.UoM__c / OrderItem.UoM__c fields will fail.</description>
+    <masterLabel>DE Unit Of Measure</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

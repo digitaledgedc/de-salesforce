@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Construction Costs - MEP per IT MW (USD) --></label>
+    <name>Construction_MEP_Per_IT_MW_USD__c</name>
+</CustomFieldTranslation>

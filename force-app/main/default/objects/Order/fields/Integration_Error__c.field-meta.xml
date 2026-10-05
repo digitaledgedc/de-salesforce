@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Integration_Error__c</fullName>
+    <inlineHelpText>Error message returned by Odoo when the order sync failed. Review this field to diagnose integration failures. Populated automatically - do not edit manually.</inlineHelpText>
+    <label>Odoo Sync Error</label>
+    <length>32768</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>6</visibleLines>
+</CustomField>

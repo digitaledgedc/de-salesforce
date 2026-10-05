@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Security_Deposit_Required__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>When checked, creates a Special Instruction for Finance indicating a security deposit is required before invoicing.</description>
+    <inlineHelpText>Check if a security deposit is required for this deal. A Special Instruction will be created for Finance review.</inlineHelpText>
+    <label>Security Deposit Required</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

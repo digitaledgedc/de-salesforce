@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Set_Contract_End_Date</name>
+        <label>Set Contract End Date</label>
+        <locationX>176</locationX>
+        <locationY>276</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Contract_End_Date__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>formula_ContractEndDate</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <description>FB-946: Defaults Contract End Date to RDD + Contract Term (months). Recalculates whenever RDD or Contract Term changes, so a manual override is retained only until either driver is edited. Blanks the field when either driver is empty.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>formula_ContractEndDate</name>
+        <dataType>Date</dataType>
+        <expression>IF(OR(ISBLANK({!$Record.RDD__c}), ISBLANK({!$Record.Contract_Term_Months__c})), null, ADDMONTHS({!$Record.RDD__c}, {!$Record.Contract_Term_Months__c}) - 1)</expression>
+    </formulas>
+    <interviewLabel>Quote Contract End Date {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Quote - Before Save - Contract End Date</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Set_Contract_End_Date</targetReference>
+        </connector>
+        <filterFormula>OR(ISNEW(), ISCHANGED({!$Record.RDD__c}), ISCHANGED({!$Record.Contract_Term_Months__c}))</filterFormula>
+        <object>Quote</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

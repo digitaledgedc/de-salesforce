@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Activate_Assets</name>
+        <label>Activate Assets</label>
+        <locationX>176</locationX>
+        <locationY>206</locationY>
+        <actionName>AssetActivationService</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Screen_Done</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>orderId</name>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>AssetActivationService</nameSegment>
+    </actionCalls>
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>F-23 (Test): Simulates IP-5 inbound from Odoo. Calls AssetActivationService to create Asset, AssetStatePeriod, AssetAction, and AssetActionSource for each MRC line. Remove this quick action when Module 12 IP-5 goes live.</description>
+    <label>Order - Screen - Activate Assets</label>
+    <processType>Flow</processType>
+    <runInMode>SystemModeWithSharing</runInMode>
+    <screens>
+        <name>Screen_Confirm</name>
+        <label>Confirm Asset Activation</label>
+        <locationX>176</locationX>
+        <locationY>98</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Activate_Assets</targetReference>
+        </connector>
+        <fields>
+            <name>txt_Confirm</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;This simulates the Odoo IP-5 inbound callback.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;For each MRC line on this Order, Salesforce will create:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Asset&lt;/li&gt;&lt;li&gt;AssetStatePeriod&lt;/li&gt;&lt;li&gt;AssetAction (New)&lt;/li&gt;&lt;li&gt;AssetActionSource&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Remove this quick action when Module 12 IP-5 goes live.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Screen_Done</name>
+        <label>Assets Activated</label>
+        <locationX>176</locationX>
+        <locationY>314</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>txt_Done</name>
+            <fieldText>&lt;p&gt;Assets, State Periods, Actions and Action Sources created successfully.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>176</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Screen_Confirm</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

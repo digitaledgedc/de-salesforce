@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Reason For Pass --></label>
+    <name>Reason_For_Pass__c</name>
+    <picklistValues>
+        <masterLabel>Connectivity</masterLabel>
+        <translation><!-- Connectivity --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Environmental Risk</masterLabel>
+        <translation><!-- Environmental Risk --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Market Timing</masterLabel>
+        <translation><!-- Market Timing --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Other</masterLabel>
+        <translation><!-- Other --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Power Constraints</masterLabel>
+        <translation><!-- Power Constraints --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pricing</masterLabel>
+        <translation><!-- Pricing --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Zoning / Permitting</masterLabel>
+        <translation><!-- Zoning / Permitting --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

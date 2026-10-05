@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Credit note amount applied to this invoice. Set by IP-5 invoice sync. Nullable. --></help>
+    <label><!-- Credit Note Amount --></label>
+    <name>Credit_Note_Amount__c</name>
+</CustomFieldTranslation>

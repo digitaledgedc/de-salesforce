@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FX_Rate_Model__c</fullName>
+    <description>Required when FX_Billing_Flag__c = TRUE.</description>
+    <inlineHelpText>Required when FX Billing is flagged. Standard Reference Rate uses DE&apos;s published rate; Contract Specific Reference uses a rate negotiated in the SOF.</inlineHelpText>
+    <label>FX Rate Model</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Standard_Reference_Rate</fullName>
+                <default>false</default>
+                <label>Standard_Reference_Rate</label>
+            </value>
+            <value>
+                <fullName>Contract_Specific_Reference</fullName>
+                <default>false</default>
+                <label>Contract_Specific_Reference</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

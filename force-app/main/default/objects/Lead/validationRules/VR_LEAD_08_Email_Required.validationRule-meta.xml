@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_LEAD_08_Email_Required</fullName>
+    <active>true</active>
+    <description>At least one contact method (Email, Phone, or Mobile) is required on all Leads. VR-LEAD-08.</description>
+    <errorConditionFormula>AND(
+  ISBLANK(Email),
+  ISBLANK(Phone),
+  ISBLANK(MobilePhone)
+)</errorConditionFormula>
+    <errorMessage>At least one contact method is required: Email, Phone, or Mobile. Please provide at least one.</errorMessage>
+</ValidationRule>

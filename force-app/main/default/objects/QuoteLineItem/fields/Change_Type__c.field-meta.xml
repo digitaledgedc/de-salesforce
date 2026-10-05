@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Change_Type__c</fullName>
+    <description>For Change Order quotes: the change action for this line item. Maps to OrderItem.ns_change_type__c when the SOFHandler creates the Order. NEW = add line, DELETE = remove line, CHANGE = amend quantity, CHANGE_PRICE = amend price only, NO_CHANGE = carry forward unchanged (BAN Change only).</description>
+    <inlineHelpText>The change action for this line. Set automatically by the Change Order Creator component.</inlineHelpText>
+    <label>Change Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>NEW</fullName>
+                <default>false</default>
+                <label>New</label>
+            </value>
+            <value>
+                <fullName>DELETE</fullName>
+                <default>false</default>
+                <label>Delete</label>
+            </value>
+            <value>
+                <fullName>CHANGE</fullName>
+                <default>false</default>
+                <label>Change</label>
+            </value>
+            <value>
+                <fullName>CHANGE_PRICE</fullName>
+                <default>false</default>
+                <label>Change Price</label>
+            </value>
+            <value>
+                <fullName>NO_CHANGE</fullName>
+                <default>false</default>
+                <label>No Change</label>
+            </value>
+            <value>
+                <fullName>RENEW</fullName>
+                <default>false</default>
+                <label>Renew</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

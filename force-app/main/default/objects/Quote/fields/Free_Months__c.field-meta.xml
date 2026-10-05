@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Free_Months__c</fullName>
+    <description>Number of months MRC billing is deferred. Passed in IP-1 to Odoo. Free_Months__c &gt; 0 triggers SBI_Flag__c. Free_Months__c &gt; 3 also triggers Deal Review.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Number of months where MRC billing is waived at the start of the contract. Any value above 0 triggers an SBI flag; above 3 months also triggers Deal Review approval.</inlineHelpText>
+    <label>Free Months (MRC Waiver)</label>
+    <precision>2</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

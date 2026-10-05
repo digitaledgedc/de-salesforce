@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_OPP_12_BookBucket_Req_Negotiate</fullName>
+    <active>true</active>
+    <description>VR-OPP-12: Booking Bucket must be set at Negotiate stage. Drives Net Bookings calculation and quota reporting.</description>
+    <errorConditionFormula>AND(
+  OR(
+    ISPICKVAL(StageName, &apos;4-Negotiate&apos;),
+    ISPICKVAL(StageName, &apos;5-Won&apos;)
+  ),
+  NOT(ISCHANGED(StageName)),
+  ISPICKVAL(Booking_Bucket__c, &apos;&apos;)
+)</errorConditionFormula>
+    <errorDisplayField>Booking_Bucket__c</errorDisplayField>
+    <errorMessage>Booking Bucket is required from Negotiate stage onwards. Classify this deal before advancing.</errorMessage>
+</ValidationRule>

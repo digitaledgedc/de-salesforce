@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Cabinets_Required__c</fullName>
+    <description>Required for non-Platform colocation deals.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Total number of colocation cabinets the customer requires. Required for non-Platform (non-hyperscaler) colocation deals.</inlineHelpText>
+    <label>Oppt Cab</label>
+    <precision>11</precision>
+    <required>false</required>
+    <scale>3</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

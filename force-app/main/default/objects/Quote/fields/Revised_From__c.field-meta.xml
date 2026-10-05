@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Revised_From__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Lookup to the original Quote that was superseded when this revision was created. Set automatically by the Revise Quote flow.</description>
+    <inlineHelpText>The previous quote version that this revision superseded. Populated automatically when using the Revise Quote action.</inlineHelpText>
+    <label>Revised From</label>
+    <lookupFilter>
+        <active>false</active>
+        <isOptional>true</isOptional>
+    </lookupFilter>
+    <referenceTo>Quote</referenceTo>
+    <relationshipLabel>Revisions</relationshipLabel>
+    <relationshipName>Revisions</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

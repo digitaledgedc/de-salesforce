@@ -303,6 +303,10 @@ public with sharing class OrderTriggerTest {
                           Original_Order__c, BillingAccount__c, CurrencyIsoCode,
                           BillingAccount__r.Odoo_Partner_ID__c, BillingAccount__r.Odoo_BAN_ID__c,
                           BillingAccount__r.Odoo_Invoice_Freq_ID__c,
+                          Quote__c, Quote__r.ContactId, Quote__r.Contact.Odoo_Partner_ID__c,
+                          Quote__r.Ops_Contact__c, Quote__r.Ops_Contact__r.Odoo_Partner_ID__c,
+                          Quote__r.Order_Contact__c, Quote__r.Order_Contact__r.Odoo_Partner_ID__c,
+                          Quote__r.Notes_To_Capacity_Approver__c,
                           (SELECT Id, Product2.Name, Product2.Merge_IB_Task__c, Odoo_Product_ID__c,
                                   Odoo_Attribute_Value_ID__c, Product_Attribute_Value__c, Description, Quantity,
                                   UnitPrice, Billing_Mode__c, CabE__c, Custom_Attribute_Value__c, Line_Remarks__c,
@@ -372,9 +376,13 @@ public with sharing class OrderTriggerTest {
     @IsTest
     static void ip1_batchSplit() {
         Test.setMock(HttpCalloutMock.class, MockOdooCallout.success(5));
-        Order o = [SELECT Id FROM Order LIMIT 1];
-        List<Id> ids = new List<Id>();
-        for (Integer i = 0; i < 11; i++) ids.add(o.Id); // size > 10 → batch-split path
+        // 11 DISTINCT Orders (not the same Id repeated) — still exercises the real
+        // 10+1 batch split, but without ever handing the final combined DML a
+        // duplicate Id (the fix commits every batch's updates together in one
+        // DML at the end, so a repeated Id here would throw "Duplicate id in
+        // list" — a test artifact, not a real scenario: OrderTriggerHandler
+        // never passes the same Order Id twice).
+        List<Id> ids = batchSplitOrderIds();
         Test.startTest();
         // Call execute() directly so the chained "remaining batch" enqueue is a normal
         // first-level enqueue (enqueuing from within an async run in a test throws
@@ -382,6 +390,42 @@ public with sharing class OrderTriggerTest {
         new SendNewOrdersQueueable(ids).execute(null);
         Test.stopTest();
         System.assert(true, 'Batch-split path executed without error');
+    }
+
+    /** 11 distinct Orders (BATCH_SIZE is 10) sharing the @TestSetup Account/BAN/Product/PBE,
+     *  for ip1_batchSplit and ip4_batchSplit — see ip1_batchSplit's comment for why these must
+     *  be distinct records rather than one Id repeated. */
+    private static List<Id> batchSplitOrderIds() {
+        Order setupOrder = [SELECT Id FROM Order WHERE Order_Number__c = 'SETUP-ORD-1' LIMIT 1];
+        Account acct = [SELECT Id FROM Account LIMIT 1];
+        BillingAccount__c ban = [SELECT Id FROM BillingAccount__c LIMIT 1];
+        Product2 prod = [SELECT Id FROM Product2 LIMIT 1];
+        PricebookEntry pbe = [SELECT Id FROM PricebookEntry LIMIT 1];
+
+        List<Order> extraOrders = new List<Order>();
+        for (Integer i = 0; i < 10; i++) {
+            extraOrders.add(new Order(
+                AccountId = acct.Id, BillingAccount__c = ban.Id, EffectiveDate = Date.today(),
+                Status = 'Draft', Pricebook2Id = Test.getStandardPricebookId(),
+                Order_Type__c = 'New Service', Operation_Site__c = 'JKT1',
+                Order_Number__c = 'BATCH-ORD-' + i, Contract_Term_Months__c = 12
+            ));
+        }
+        insert extraOrders;
+
+        List<OrderItem> extraItems = new List<OrderItem>();
+        for (Order eo : extraOrders) {
+            extraItems.add(new OrderItem(
+                OrderId = eo.Id, PricebookEntryId = pbe.Id, Product2Id = prod.Id,
+                Quantity = 1, UnitPrice = 500, Odoo_Product_ID__c = 100,
+                Charge_Type__c = 'MRC', Billing_Mode__c = 'Advance', Is_Active__c = true
+            ));
+        }
+        insert extraItems;
+
+        List<Id> ids = new List<Id>{ setupOrder.Id };
+        for (Order eo : extraOrders) ids.add(eo.Id);
+        return ids; // 11 distinct Ids → size > 10 → batch-split path
     }
 
     // ── IP-4 getSubscriptionManagement mapping (all branches) ────────────────────
@@ -441,7 +485,7 @@ public with sharing class OrderTriggerTest {
                                   Odoo_Sub_Line_ID__c, Odoo_Origin_Line_ID__c, Odoo_Project_Task_IDs__c, Odoo_Sub_Task_IDs__c,
                                   Original_OrderItem__c, Original_OrderItem__r.Odoo_Sub_Line_ID__c, Line_Remarks__c,
                                   Original_OrderItem__r.Odoo_Origin_Line_ID__c, Original_OrderItem__r.Odoo_Project_Task_IDs__c,
-                                  Original_OrderItem__r.Odoo_Sub_Task_IDs__c
+                                  Original_OrderItem__r.Odoo_Sub_Task_IDs__c, Subscription_Id__c
                            FROM OrderItems WHERE Is_Active__c = true)
                    FROM Order WHERE Id = :co.Id];
 
@@ -453,9 +497,9 @@ public with sharing class OrderTriggerTest {
 
         SendChangeOrdersQueueable q = new SendChangeOrdersQueueable(new List<Id>{ co.Id });
         Test.startTest();
-        String p1 = q.buildIP4Payload(o, jkt(), true, freqMap, settings(), spaceMap, breakerMap);
+        String p1 = q.buildIP4Payload(o, jkt(), true, freqMap, settings(), spaceMap, breakerMap, new Map<Id, String>());
         // Frequency-not-found branch
-        String p2 = q.buildIP4Payload(o, jkt(), false, new Map<String, Integer>(), settings(), spaceMap, breakerMap);
+        String p2 = q.buildIP4Payload(o, jkt(), false, new Map<String, Integer>(), settings(), spaceMap, breakerMap, new Map<Id, String>());
         Test.stopTest();
 
         System.assert(p1.contains('"subscription_management":"change_order"'), 'Change/Upsell → change_order');
@@ -489,9 +533,9 @@ public with sharing class OrderTriggerTest {
     @IsTest
     static void ip4_batchSplit() {
         Test.setMock(HttpCalloutMock.class, MockOdooCallout.success(5));
-        Order o = [SELECT Id FROM Order LIMIT 1];
-        List<Id> ids = new List<Id>();
-        for (Integer i = 0; i < 11; i++) ids.add(o.Id);
+        // 11 distinct Orders — see ip1_batchSplit/batchSplitOrderIds() for why these must not
+        // be the same Id repeated.
+        List<Id> ids = batchSplitOrderIds();
         Test.startTest();
         new SendChangeOrdersQueueable(ids).execute(null);
         Test.stopTest();

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Customer_Type__c</fullName>
+    <description>Drives queue routing (Platform to Hyperscaler queue; Country to country queue). Carries to Opportunity.Customer_Type__c on conversion.</description>
+    <inlineHelpText>Classification that drives queue routing - Platform routes to the Hyperscaler team, Country routes to the relevant country team.</inlineHelpText>
+    <label>Account Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Platform</fullName>
+                <default>false</default>
+                <label>Platform</label>
+            </value>
+            <value>
+                <fullName>Country</fullName>
+                <default>false</default>
+                <label>Country</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

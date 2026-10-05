@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_QUOTE_23_ExpirationDate_Max_60</fullName>
+    <active>true</active>
+    <description>VR-QUOTE-23 (FB-909): Caps Quote Expiration Date at 60 days out and blocks back-dating. ISCHANGED only, so the create default (F-14 sets TODAY()+30) and Revise Quote (copies the original expiry, may be past) are unaffected.</description>
+    <errorConditionFormula>AND(
+    ISCHANGED( ExpirationDate ),
+    OR(
+        ExpirationDate &lt; TODAY(),
+        ExpirationDate &gt; TODAY() + 60
+    )
+)</errorConditionFormula>
+    <errorDisplayField>ExpirationDate</errorDisplayField>
+    <errorMessage>Expiration Date must be between today and 60 days from today.</errorMessage>
+</ValidationRule>

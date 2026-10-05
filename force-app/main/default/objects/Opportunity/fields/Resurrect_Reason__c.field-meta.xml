@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Resurrect_Reason__c</fullName>
+    <description>Required when resurrecting a Lost opportunity. Captures why this opportunity has re-entered the pipeline. Set by the Resurrect Opportunity screen flow.</description>
+    <inlineHelpText>Explain why this previously-lost opportunity is being re-opened. Include any new information, changed circumstances, or customer re-engagement details.</inlineHelpText>
+    <label>Resurrect Reason</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>TextArea</type>
+</CustomField>

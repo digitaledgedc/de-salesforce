@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Close_Date_Slip_Reason__c</fullName>
+    <description>Required when CloseDate moves more than 30 days from the previous value. Feeds the Close Date Slip report used by sales managers to identify at-risk deals and sandbagging.</description>
+    <inlineHelpText>Why is the close date moving? Select the primary reason. This is required when the date slips by more than 30 days.</inlineHelpText>
+    <label>Close Date Slip Reason</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Customer Delay — Decision</fullName>
+                <default>false</default>
+                <label>Customer Delay — Decision</label>
+            </value>
+            <value>
+                <fullName>Customer Delay — Budget</fullName>
+                <default>false</default>
+                <label>Customer Delay — Budget</label>
+            </value>
+            <value>
+                <fullName>Customer Delay — Legal</fullName>
+                <default>false</default>
+                <label>Customer Delay — Legal</label>
+            </value>
+            <value>
+                <fullName>Negotiation Extended</fullName>
+                <default>false</default>
+                <label>Negotiation Extended</label>
+            </value>
+            <value>
+                <fullName>Capacity Not Available</fullName>
+                <default>false</default>
+                <label>Capacity Not Available</label>
+            </value>
+            <value>
+                <fullName>Technical Issue</fullName>
+                <default>false</default>
+                <label>Technical Issue</label>
+            </value>
+            <value>
+                <fullName>Internal Resource Constraint</fullName>
+                <default>false</default>
+                <label>Internal Resource Constraint</label>
+            </value>
+            <value>
+                <fullName>Competitive Evaluation Extended</fullName>
+                <default>false</default>
+                <label>Competitive Evaluation Extended</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

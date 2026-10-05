@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tax__c</fullName>
+    <description>Applicable tax rate for this line. Inherited from Product2.Customer_Tax__c for the relevant market. Displayed on quote document.</description>
+    <label>Tax Rate</label>
+    <precision>5</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Percent</type>
+</CustomField>

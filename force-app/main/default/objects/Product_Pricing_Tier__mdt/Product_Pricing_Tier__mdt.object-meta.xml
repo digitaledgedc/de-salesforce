@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Consolidated attribute-based product pricing. Replaces Product_Attribute_Variant__mdt (site-specific USD) and kVA_Draw_Pricing__mdt (generic multi-currency). One record per product + attribute + site + currency combination. Lookup priority: site-specific → product-specific → generic.</description>
+    <label>Product Pricing Tier</label>
+    <pluralLabel>Product Pricing Tiers</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

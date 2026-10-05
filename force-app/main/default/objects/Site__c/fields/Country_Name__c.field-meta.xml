@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Country_Name__c</fullName>
+    <description>Maps the ISO country code to the full country name used on Opportunity.Operation_Country__c. Used by the Target_Site lookup filter to restrict sites by country.</description>
+    <externalId>false</externalId>
+    <formula>CASE(TEXT(Country__c),
+  &quot;JP&quot;, &quot;Japan&quot;,
+  &quot;KR&quot;, &quot;Korea&quot;,
+  &quot;ID&quot;, &quot;Indonesia&quot;,
+  &quot;PH&quot;, &quot;Philippines&quot;,
+  &quot;CN&quot;, &quot;China&quot;,
+  &quot;IN&quot;, &quot;India&quot;,
+  &quot;TH&quot;, &quot;Thailand&quot;,
+  &quot;MY&quot;, &quot;Malaysia&quot;,
+  &quot;SG&quot;, &quot;Singapore&quot;,
+  &quot;HK&quot;, &quot;Hong Kong&quot;,
+  TEXT(Country__c))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Country Name</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
