@@ -21,6 +21,10 @@
         <type>role</type>
     </allowedSubmitters>
     <allowedSubmitters>
+        <submitter>Japan_Account_Executive</submitter>
+        <type>role</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
         <submitter>Japan_CTC</submitter>
         <type>role</type>
     </allowedSubmitters>

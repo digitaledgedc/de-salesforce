@@ -248,8 +248,6 @@
             <quickActionName>NewEvent</quickActionName>
         </quickActionListItems>
     </quickActionList>
-    <relatedObjects>AccountId</relatedObjects>
-    <relatedObjects>ContactId</relatedObjects>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>

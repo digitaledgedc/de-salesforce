@@ -12,3 +12,84 @@ package.xml
 **/__tests__/**
 
 node_modules/
+
+# ---- Org-specific / PROD-only metadata (excluded for sandbox deploys) ----
+
+# DevOps Center + Dev Hub standard objects (PROD only)
+**/objects/Devops*/**
+**/objects/ActiveScratchOrg/**
+
+# Installed packages (install via package ID, not metadata deploy)
+**/installedPackages/**
+
+# Hardcoded PROD usernames / record IDs
+**/customMetadata/SE_Assignment.*
+**/customMetadata/Country_Queue.*
+**/dashboards/**
+**/emailservices/**
+
+# Org-bound SSO / certs / OAuth / External Client Apps
+**/samlssoconfigs/**
+**/certs/**
+**/authproviders/**
+**/externalClientApps/**
+**/extlClntApp*/**
+**/appMenus/**
+
+# Org-level settings that are PROD-only, licence-dependent or contain PROD IDs/users
+**/settings/Analytics.settings-meta.xml
+**/settings/Campaign.settings-meta.xml
+**/settings/Case.settings-meta.xml
+**/settings/Communities.settings-meta.xml
+**/settings/CustomerDataPlatform.settings-meta.xml
+**/settings/DevHub.settings-meta.xml
+**/settings/EAC.settings-meta.xml
+**/settings/EmailAdministration.settings-meta.xml
+**/settings/EmployeeUser.settings-meta.xml
+**/settings/ForecastingObjectList.settings-meta.xml
+**/settings/HighVelocitySales.settings-meta.xml
+**/settings/Pardot.settings-meta.xml
+**/settings/PlatformEncryption.settings-meta.xml
+**/settings/RevenueManagement.settings-meta.xml
+**/settings/SceGlobalModelOptOut.settings-meta.xml
+**/settings/Search.settings-meta.xml
+**/settings/Security.settings-meta.xml
+**/settings/Territory2.settings-meta.xml
+
+# More Dev Hub / DevOps Center / source-tracking standard objects (PROD only)
+**/objects/NamespaceRegistry/**
+**/objects/ScratchOrgInfo/**
+**/objects/SourceCodeRepo*/**
+**/objects/WorkItem*/**
+**/layouts/Devops*
+**/layouts/WorkItem*
+**/layouts/ApprovalAlertContentDef-*
+**/sharingRules/Devops*
+**/sharingRules/ActiveScratchOrg*
+**/sharingRules/ScratchOrgInfo*
+**/sharingRules/SourceCodeRepo*
+**/sharingRules/WorkItem*
+**/sharingRules/DialerCallUsage*
+
+# Standard-namespace apps (cannot be deployed via API)
+**/applications/standard__AlmDevops.app-meta.xml
+**/applications/standard__DigitalWallet.app-meta.xml
+**/applications/standard__LightningInstrumentation.app-meta.xml
+
+# Usage policy "mine" list views (scope not allowed)
+**/objects/Usage*Policy/listViews/mine.listView-meta.xml
+**/objects/ProductUsageResourcePolicy/listViews/mine.listView-meta.xml
+**/objects/UsagePrdGrantBindingPolicy/listViews/mine.listView-meta.xml
+
+# Feature-dependent / non-updatable
+**/quickActions/SendEmail.quickAction-meta.xml
+**/quickActions/Quote.SendEmail.quickAction-meta.xml
+**/cleanDataServices/**
+**/managedContentTypes/**
+**/notificationTypeConfig/**
+
+# Salesforce out-of-the-box sample content (not used)
+**/email/CRM_180925_Email_Templates_From_Salesforce*
+**/email/unfiled$public/*SAMPLE*
+**/email/unfiled$public/Sample_*
+**/documents/SalesTools*

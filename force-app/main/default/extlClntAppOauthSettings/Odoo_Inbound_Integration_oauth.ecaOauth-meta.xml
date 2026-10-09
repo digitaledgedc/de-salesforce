@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ExtlClntAppOauthSettings xmlns="http://soap.sforce.com/2006/04/metadata">
-    <commaSeparatedOauthScopes>Api</commaSeparatedOauthScopes>
-    <externalClientApplication>Odoo_Inbound_Integration</externalClientApplication>
-    <isFirstPartyAppEnabled>false</isFirstPartyAppEnabled>
-    <label>Odoo_Inbound_Integration_oauth</label>
-    <oauthLink>00DIW0000021Fwj:888IW00000023bJ</oauthLink>
-</ExtlClntAppOauthSettings>

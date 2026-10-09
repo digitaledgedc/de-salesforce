@@ -1,3 +1,4045 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Translations xmlns="http://soap.sforce.com/2006/04/metadata"/>
-
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contextDefinitions>
+        <name>SalesTransactionContextAuto</name>
+    </contextDefinitions>
+    <contextDefinitions>
+        <name>RatingDiscoveryContextAuto</name>
+    </contextDefinitions>
+    <contextDefinitions>
+        <name>ProductDiscoveryContextAuto</name>
+    </contextDefinitions>
+    <customApplications>
+        <label><!-- DE Admin --></label>
+        <name>DE_Admin</name>
+    </customApplications>
+    <customApplications>
+        <label><!-- DE Finance --></label>
+        <name>DE_Finance</name>
+    </customApplications>
+    <customApplications>
+        <label><!-- DE Operations --></label>
+        <name>DE_Operations</name>
+    </customApplications>
+    <customApplications>
+        <label><!-- DE Product --></label>
+        <name>DE_Product</name>
+    </customApplications>
+    <customApplications>
+        <label><!-- DE Sales --></label>
+        <name>DE_Sales</name>
+    </customApplications>
+    <customApplications>
+        <label><!-- Digital Edge Corporate --></label>
+        <name>Digital_Edge_Corporate</name>
+    </customApplications>
+    <customApplications>
+        <label><!-- Inside Sales --></label>
+        <name>Inside_Sales</name>
+    </customApplications>
+    <customApplications>
+        <label><!-- Sales Leader --></label>
+        <name>Sales_Leader</name>
+    </customApplications>
+    <customApplications>
+        <label><!-- Sales Operations --></label>
+        <name>Sales_Operations</name>
+    </customApplications>
+    <customApplications>
+        <label><!-- Success Manager --></label>
+        <name>Success_Manager</name>
+    </customApplications>
+    <customLabels>
+        <label><!-- Default Pricebook Approver User ID --></label>
+        <name>DE_Default_Pricebook_Approver_Id</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- OpenCorporates API base URL for company screening --></label>
+        <name>DE_OpenCorporates_Base_URL</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Salesforce org base URL for email buttons --></label>
+        <name>DE_Salesforce_Base_URL</name>
+    </customLabels>
+    <customLabels>
+        <label>페이지:</label>
+        <name>Footer_Page</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Amended Order --></label>
+        <name>Header_Amended_Order</name>
+    </customLabels>
+    <customLabels>
+        <label>수신:</label>
+        <name>Header_Attention</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Contracting Entity --></label>
+        <name>Header_Contracting_Entity</name>
+    </customLabels>
+    <customLabels>
+        <label>계약 통화</label>
+        <name>Header_Currency</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Customer PO Reference --></label>
+        <name>Header_Customer_PO_Reference</name>
+    </customLabels>
+    <customLabels>
+        <label>데이터 센터</label>
+        <name>Header_Data_Center</name>
+    </customLabels>
+    <customLabels>
+        <label>최종사용자 고객명</label>
+        <name>Header_End_Customer_Name</name>
+    </customLabels>
+    <customLabels>
+        <label>제안 수락 유효기간</label>
+        <name>Header_Expiration</name>
+    </customLabels>
+    <customLabels>
+        <label>계약 기간</label>
+        <name>Header_Initial_Term</name>
+    </customLabels>
+    <customLabels>
+        <label>발행일</label>
+        <name>Header_Issued_Date</name>
+    </customLabels>
+    <customLabels>
+        <label>주문 번호</label>
+        <name>Header_Order_Number</name>
+    </customLabels>
+    <customLabels>
+        <label>견적 번호</label>
+        <name>Header_Quote_Number</name>
+    </customLabels>
+    <customLabels>
+        <label>요청 납기일</label>
+        <name>Header_Requested_Delivery_Date</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Network Accessories --></label>
+        <name>Heading_Network_Accessories</name>
+    </customLabels>
+    <customLabels>
+        <label>프로젝트 개요:</label>
+        <name>Heading_Project_Overview</name>
+    </customLabels>
+    <customLabels>
+        <label>맞춤 설치 작업 범위</label>
+        <name>Heading_Scope_Of_Work</name>
+    </customLabels>
+    <customLabels>
+        <label>특별 주문:</label>
+        <name>Heading_Special_Note</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Binding Terms Heading --></label>
+        <name>Heading_Terms_Binding</name>
+    </customLabels>
+    <customLabels>
+        <label>약관:</label>
+        <name>Heading_Terms_NonBinding</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- activate --></label>
+        <name>LID__activate</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- activateJob --></label>
+        <name>LID__activateJob</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- cancel --></label>
+        <name>LID__cancel</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- companyProfileStep_1_description --></label>
+        <name>LID__companyProfileStep_1_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- companyProfileStep_1_title --></label>
+        <name>LID__companyProfileStep_1_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- companyProfileStep_2_description --></label>
+        <name>LID__companyProfileStep_2_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- companyProfileStep_2_title --></label>
+        <name>LID__companyProfileStep_2_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- companyProfileStep_3_description --></label>
+        <name>LID__companyProfileStep_3_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- companyProfileStep_3_title --></label>
+        <name>LID__companyProfileStep_3_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- companyProfileStep_3_description --></label>
+        <name>LID__companyProfileStep_4_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- companyProfileStep_3_title --></label>
+        <name>LID__companyProfileStep_4_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- companyProfileStep_4_description --></label>
+        <name>LID__companyProfileStep_5_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- companyProfileStep_4_title --></label>
+        <name>LID__companyProfileStep_5_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- companyProfileStep_stepDescription --></label>
+        <name>LID__companyProfileStep_stepDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- companyProfileStep_stepHeader --></label>
+        <name>LID__companyProfileStep_stepHeader</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- companyProfileStep_stepSubHeader --></label>
+        <name>LID__companyProfileStep_stepSubHeader</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- componentDragDropStep_a1_description --></label>
+        <name>LID__componentDragDropStep_a1_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- componentDragDropStep_a1_titleStart --></label>
+        <name>LID__componentDragDropStep_a1_titleStart</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- componentDragDropStep_b2_description --></label>
+        <name>LID__componentDragDropStep_b2_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- componentDragDropStep_b2_title --></label>
+        <name>LID__componentDragDropStep_b2_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- componentDragDropStep_c3_description --></label>
+        <name>LID__componentDragDropStep_c3_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- componentDragDropStep_d4_description --></label>
+        <name>LID__componentDragDropStep_d4_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- componentDragDropStep_stepDescription --></label>
+        <name>LID__componentDragDropStep_stepDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- componentDragDropStep_stepHeader --></label>
+        <name>LID__componentDragDropStep_stepHeader</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- deactivate --></label>
+        <name>LID__deactivate</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- deactivateJob --></label>
+        <name>LID__deactivateJob</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- disable --></label>
+        <name>LID__disable</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_activateConfirm --></label>
+        <name>LID__dvss_activateConfirm</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_activateConfirmWithDay --></label>
+        <name>LID__dvss_activateConfirmWithDay</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_deactivateConfirm --></label>
+        <name>LID__dvss_deactivateConfirm</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_deactivateConfirmWithDay --></label>
+        <name>LID__dvss_deactivateConfirmWithDay</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_disableDVFeature --></label>
+        <name>LID__dvss_disableDVFeature</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_disableDVFeatureConfirmation --></label>
+        <name>LID__dvss_disableDVFeatureConfirmation</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_enterpriseDisabled --></label>
+        <name>LID__dvss_enterpriseDisabled</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_jobFrequency_1 --></label>
+        <name>LID__dvss_jobFrequency_1</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_jobFrequency_2 --></label>
+        <name>LID__dvss_jobFrequency_2</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_jobFrequency_3 --></label>
+        <name>LID__dvss_jobFrequency_3</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_jobFrequency_4 --></label>
+        <name>LID__dvss_jobFrequency_4</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_jobName --></label>
+        <name>LID__dvss_jobName</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_jobStartDay --></label>
+        <name>LID__dvss_jobStartDay</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_jobStartTime --></label>
+        <name>LID__dvss_jobStartTime</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_linkedinReportsFolder --></label>
+        <name>LID__dvss_linkedinReportsFolder</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_nextRunTime --></label>
+        <name>LID__dvss_nextRunTime</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_noScheduledJobs --></label>
+        <name>LID__dvss_noScheduledJobs</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_onceDaily --></label>
+        <name>LID__dvss_onceDaily</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_onceWeekly --></label>
+        <name>LID__dvss_onceWeekly</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_otherScheduledJobs --></label>
+        <name>LID__dvss_otherScheduledJobs</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_otherScheduledJobsHeader --></label>
+        <name>LID__dvss_otherScheduledJobsHeader</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_stepDescription_1 --></label>
+        <name>LID__dvss_stepDescription_1</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_stepDescription_2 --></label>
+        <name>LID__dvss_stepDescription_2</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_stepDescription_3 --></label>
+        <name>LID__dvss_stepDescription_3</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_stepDescription_4 --></label>
+        <name>LID__dvss_stepDescription_4</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_stepDescription_5 --></label>
+        <name>LID__dvss_stepDescription_5</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_stepHeader --></label>
+        <name>LID__dvss_stepHeader</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- dvss_viewCompletedReports --></label>
+        <name>LID__dvss_viewCompletedReports</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- finish --></label>
+        <name>LID__finish</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- friday --></label>
+        <name>LID__friday</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_LDV --></label>
+        <name>LID__landing_LDV</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_crmSync --></label>
+        <name>LID__landing_crmSync</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_desc --></label>
+        <name>LID__landing_desc</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_disableEnterpriseConfirmation --></label>
+        <name>LID__landing_disableEnterpriseConfirmation</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_disableEnterpriseTitle --></label>
+        <name>LID__landing_disableEnterpriseTitle</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_embeddedProfile --></label>
+        <name>LID__landing_embeddedProfile</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_enable --></label>
+        <name>LID__landing_enable</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_enterprise --></label>
+        <name>LID__landing_enterprise</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_features --></label>
+        <name>LID__landing_features</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_getStarted --></label>
+        <name>LID__landing_getStarted</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_header --></label>
+        <name>LID__landing_header</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_helpCenter_1 --></label>
+        <name>LID__landing_helpCenter_1</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_helpCenter_2 --></label>
+        <name>LID__landing_helpCenter_2</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_helpCenter_3 --></label>
+        <name>LID__landing_helpCenter_3</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_helpCenter_contactUs --></label>
+        <name>LID__landing_helpCenter_contactUs</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_helpYou --></label>
+        <name>LID__landing_helpYou</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_helpfulLink --></label>
+        <name>LID__landing_helpfulLink</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_learnMoreCrmSync --></label>
+        <name>LID__landing_learnMoreCrmSync</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_learnMoreEmbeddedProfile --></label>
+        <name>LID__landing_learnMoreEmbeddedProfile</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_learnMoreLDV --></label>
+        <name>LID__landing_learnMoreLDV</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_needHelp --></label>
+        <name>LID__landing_needHelp</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- landing_packageVersion --></label>
+        <name>LID__landing_packageVersion</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- lightningAppBuilder --></label>
+        <name>LID__lightningAppBuilder</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- loadingPleaseWait --></label>
+        <name>LID__loadingPleaseWait</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- monday --></label>
+        <name>LID__monday</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_1_description --></label>
+        <name>LID__mps_1_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_1_title --></label>
+        <name>LID__mps_1_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_2_description --></label>
+        <name>LID__mps_2_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_2_title --></label>
+        <name>LID__mps_2_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_3_description --></label>
+        <name>LID__mps_3_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_3_title --></label>
+        <name>LID__mps_3_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_4_description --></label>
+        <name>LID__mps_4_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_4_title --></label>
+        <name>LID__mps_4_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_5_description --></label>
+        <name>LID__mps_5_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_5_title --></label>
+        <name>LID__mps_5_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_6_description --></label>
+        <name>LID__mps_6_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_6_title --></label>
+        <name>LID__mps_6_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_instructionsSubHeader --></label>
+        <name>LID__mps_instructionsSubHeader</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_stepDescription --></label>
+        <name>LID__mps_stepDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- mps_stepHeader --></label>
+        <name>LID__mps_stepHeader</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- next --></label>
+        <name>LID__next</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- oas_1_description --></label>
+        <name>LID__oas_1_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- oas_1_title --></label>
+        <name>LID__oas_1_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- oas_2_description --></label>
+        <name>LID__oas_2_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- oas_2_learnMore --></label>
+        <name>LID__oas_2_learnMore</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- oas_2_title --></label>
+        <name>LID__oas_2_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- oas_3_description --></label>
+        <name>LID__oas_3_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- oas_3_learnMore --></label>
+        <name>LID__oas_3_learnMore</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- oas_3_title --></label>
+        <name>LID__oas_3_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- oas_4_description --></label>
+        <name>LID__oas_4_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- oas_4_title --></label>
+        <name>LID__oas_4_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- oas_instructionsSubHeader --></label>
+        <name>LID__oas_instructionsSubHeader</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- oas_stepDescription --></label>
+        <name>LID__oas_stepDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- oas_stepHeader --></label>
+        <name>LID__oas_stepHeader</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- picklist_completeFieldError --></label>
+        <name>LID__picklist_completeFieldError</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- picklist_noResultsFound --></label>
+        <name>LID__picklist_noResultsFound</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- picklist_selectOption --></label>
+        <name>LID__picklist_selectOption</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- saturday --></label>
+        <name>LID__saturday</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- saveChanges --></label>
+        <name>LID__saveChanges</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- selectADay --></label>
+        <name>LID__selectADay</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- selectATime --></label>
+        <name>LID__selectATime</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- setup_sec1_description --></label>
+        <name>LID__setup_sec1_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- setup_sec1_title --></label>
+        <name>LID__setup_sec1_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- setup_sec2_description --></label>
+        <name>LID__setup_sec2_description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- setup_sec2_title --></label>
+        <name>LID__setup_sec2_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- signIn --></label>
+        <name>LID__signIn</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- sunday --></label>
+        <name>LID__sunday</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- thursday --></label>
+        <name>LID__thursday</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- tuesday --></label>
+        <name>LID__tuesday</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- user --></label>
+        <name>LID__user</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- wednesday --></label>
+        <name>LID__wednesday</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- wizard_exitConfirmHeader --></label>
+        <name>LID__wizard_exitConfirmHeader</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- wizard_exitConfirmWarning --></label>
+        <name>LID__wizard_exitConfirmWarning</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Last used Opp sequence. Next Opp = value + 1. Set 0 to start from 000001. --></label>
+        <name>OppNumber_StartingSequence</name>
+    </customLabels>
+    <customLabels>
+        <label>본 문서는 정식 제안 또는 법적 구속력이 있는 약정을 구성하지 않으며 계약 체결을 전제로 합니다.</label>
+        <name>PDF_NonBinding_Term_1</name>
+    </customLabels>
+    <customLabels>
+        <label>본 문서에 명시된 모든 가격에는 관련 세금이 포함되어 있지 않습니다.</label>
+        <name>PDF_NonBinding_Term_2</name>
+    </customLabels>
+    <customLabels>
+        <label>제시된 가격은 발행일부터 만료일까지 유효하나, 공급 가능 여부는 당사자 간 정식 계약 시점의 상황에 따릅니다.</label>
+        <name>PDF_NonBinding_Term_3</name>
+    </customLabels>
+    <customLabels>
+        <label>본 문서에는 Digital Edge 소유의 독점 정보 또는 기밀 정보가 포함되어 있습니다.</label>
+        <name>PDF_NonBinding_Term_4</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Change binding PDF title --></label>
+        <name>PDF_Title_Change_Binding</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Change non-binding PDF title --></label>
+        <name>PDF_Title_Change_NonBinding</name>
+    </customLabels>
+    <customLabels>
+        <label>서비스 주문서</label>
+        <name>PDF_Title_New_Binding</name>
+    </customLabels>
+    <customLabels>
+        <label>견적서</label>
+        <name>PDF_Title_New_NonBinding</name>
+    </customLabels>
+    <customLabels>
+        <label>월 청구액 (MRC)</label>
+        <name>Section_Monthly_Recurring_Charges</name>
+    </customLabels>
+    <customLabels>
+        <label>일회성 청구액 (NRC)</label>
+        <name>Section_Non_Recurring_Charges</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- All Phases Linked --></label>
+        <name>Section_Ramp_All_Phases_Linked</name>
+    </customLabels>
+    <customLabels>
+        <label>증가 명령</label>
+        <name>Section_Ramp_Up_Orders</name>
+    </customLabels>
+    <customLabels>
+        <label>수락 및 동의:</label>
+        <name>Signature_Accepted_And_Agreed</name>
+    </customLabels>
+    <customLabels>
+        <label>서명권자</label>
+        <name>Signature_Authorized_Signatory</name>
+    </customLabels>
+    <customLabels>
+        <label>날짜:</label>
+        <name>Signature_Date</name>
+    </customLabels>
+    <customLabels>
+        <label>이름:</label>
+        <name>Signature_Name</name>
+    </customLabels>
+    <customLabels>
+        <label>직함:</label>
+        <name>Signature_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Additional Quantity --></label>
+        <name>Table_Additional_Quantity</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Amount Excluding Tax --></label>
+        <name>Table_Amount_Excluding_Tax</name>
+    </customLabels>
+    <customLabels>
+        <label>할인%</label>
+        <name>Table_Discount_Percent</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Original Price --></label>
+        <name>Table_Original_Price</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Original Product Attribute --></label>
+        <name>Table_Original_Product_Attribute</name>
+    </customLabels>
+    <customLabels>
+        <label>서비스 상세</label>
+        <name>Table_Product_Attribute</name>
+    </customLabels>
+    <customLabels>
+        <label>서비스 항목</label>
+        <name>Table_Product_Name</name>
+    </customLabels>
+    <customLabels>
+        <label>수량</label>
+        <name>Table_Quantity</name>
+    </customLabels>
+    <customLabels>
+        <label>비고</label>
+        <name>Table_Remarks</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Service ID --></label>
+        <name>Table_Service_ID</name>
+    </customLabels>
+    <customLabels>
+        <label>소계</label>
+        <name>Table_Subtotal</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Tax Amount --></label>
+        <name>Table_Tax_Amount</name>
+    </customLabels>
+    <customLabels>
+        <label>세금</label>
+        <name>Table_Tax_Rate</name>
+    </customLabels>
+    <customLabels>
+        <label>총계</label>
+        <name>Table_Total</name>
+    </customLabels>
+    <customLabels>
+        <label>단위</label>
+        <name>Table_Unit</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Unit Charge --></label>
+        <name>Table_Unit_Charge</name>
+    </customLabels>
+    <customLabels>
+        <label>단가</label>
+        <name>Table_Unit_Cost</name>
+    </customLabels>
+    <customLabels>
+        <label>월발생 비용 총계</label>
+        <name>Total_Grand_MRC</name>
+    </customLabels>
+    <customLabels>
+        <label>일회성 비용 총계</label>
+        <name>Total_Grand_NRC</name>
+    </customLabels>
+    <customLabels>
+        <label>총계</label>
+        <name>Total_Grand_Total</name>
+    </customLabels>
+    <customLabels>
+        <label>소계</label>
+        <name>Total_Subtotal</name>
+    </customLabels>
+    <customLabels>
+        <label>월발생 비용 소계</label>
+        <name>Total_Subtotal_MRC</name>
+    </customLabels>
+    <customLabels>
+        <label>일회성 비용 소계</label>
+        <name>Total_Subtotal_NRC</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Total Tax --></label>
+        <name>Total_Tax</name>
+    </customLabels>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Account_AfterSave_CreditBlock</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Account_AfterSave_FinanceApprovalNotify</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Account_AfterSave_PaymentTermsApproval</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Account_AfterSave_SEReassignTrigger</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Account_BeforeSave_LegalEntityDefault</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Account_BeforeSave_SalesTeam</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Account_Before_Save_Account_Tier_From_Sales_Team</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Account_Scheduled_FinanceApprovalReminder</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Account_Scheduled_KYCReview</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>choice_DnB_Approve</name>
+            </choices>
+            <choices>
+                <name>choice_DnB_Reject</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>display_Already_Approved</name>
+                </fields>
+                <name>Screen_Already_Approved</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_DnB_Approved_Confirm</name>
+                </fields>
+                <name>Screen_DnB_Approved_Confirm</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_DnB_Rejected_Confirm</name>
+                </fields>
+                <name>Screen_DnB_Rejected_Confirm</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>input_DnB_CheckDate</name>
+                </fields>
+                <fields>
+                    <name>input_DnB_Decision</name>
+                </fields>
+                <fields>
+                    <name>input_DnB_Notes</name>
+                </fields>
+                <fields>
+                    <name>input_DnB_Number</name>
+                </fields>
+                <fields>
+                    <name>input_DnB_Rating</name>
+                </fields>
+                <fields>
+                    <name>input_Tax_ID</name>
+                </fields>
+                <name>Screen_DnB_Review</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>error_message_display</name>
+                </fields>
+                <name>Screen_Flow_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Rejected_State</name>
+                </fields>
+                <name>Screen_Rejected_State</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Wrong_Phase</name>
+                </fields>
+                <name>Screen_Wrong_Phase</name>
+            </screens>
+        </flows>
+        <fullName>Account_Screen_DnB_Check</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>choice_DnB_Approve</name>
+            </choices>
+            <choices>
+                <name>choice_DnB_Reject</name>
+            </choices>
+            <choices>
+                <name>choice_KYC_Approve</name>
+            </choices>
+            <choices>
+                <name>choice_KYC_Reject</name>
+            </choices>
+            <choices>
+                <name>choice_KYC_Save</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>display_Already_Approved</name>
+                </fields>
+                <name>Screen_Already_Approved</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Approval_Complete</name>
+                </fields>
+                <name>Screen_Approval_Complete</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>credit_context_panel</name>
+                </fields>
+                <fields>
+                    <name>input_CreditLimit_MRC</name>
+                </fields>
+                <fields>
+                    <name>input_CreditLimit_NRC</name>
+                </fields>
+                <name>Screen_Credit_Decision</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_DnB_Warning</name>
+                </fields>
+                <fields>
+                    <name>inp_DnB_Confirmed</name>
+                </fields>
+                <name>Screen_DnB_Confirm</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_DnB_Rejected_Confirm</name>
+                </fields>
+                <name>Screen_DnB_Rejected_Confirm</name>
+            </screens>
+            <screens>
+                <fields>
+                    <inputParameters>
+                        <name>cardSubtitle</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>cardTitle</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>objectApiName</name>
+                        <value/>
+                    </inputParameters>
+                    <name>comp_dnb_doc_upload</name>
+                </fields>
+                <fields>
+                    <name>disp_DnB_Context</name>
+                </fields>
+                <fields>
+                    <name>input_DnB_CheckDate</name>
+                </fields>
+                <fields>
+                    <name>input_DnB_Decision</name>
+                </fields>
+                <fields>
+                    <name>input_DnB_Notes</name>
+                </fields>
+                <fields>
+                    <name>input_DnB_Number</name>
+                </fields>
+                <fields>
+                    <name>input_DnB_Rating</name>
+                </fields>
+                <fields>
+                    <name>input_Tax_ID</name>
+                </fields>
+                <name>Screen_DnB_Review</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>error_message_display</name>
+                </fields>
+                <name>Screen_Flow_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Invalid_State</name>
+                </fields>
+                <name>Screen_Invalid_State</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_KYC_Rejected_Confirm</name>
+                </fields>
+                <name>Screen_KYC_Rejected_Confirm</name>
+            </screens>
+            <screens>
+                <fields>
+                    <inputParameters>
+                        <name>cardSubtitle</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>cardTitle</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>objectApiName</name>
+                        <value/>
+                    </inputParameters>
+                    <name>comp_kyc_doc_upload</name>
+                </fields>
+                <fields>
+                    <name>disp_KYC_Due_Diligence</name>
+                </fields>
+                <fields>
+                    <name>inp_KYC_Background_Done</name>
+                </fields>
+                <fields>
+                    <name>inp_KYC_Sanctions_Done</name>
+                </fields>
+                <fields>
+                    <name>inp_KYC_TPI_Done</name>
+                </fields>
+                <fields>
+                    <name>input_KYC_Decision</name>
+                </fields>
+                <fields>
+                    <name>input_KYC_Rejection_Reason</name>
+                </fields>
+                <fields>
+                    <name>input_Legal_Entity_Name</name>
+                </fields>
+                <fields>
+                    <name>input_Local_Entity_Name</name>
+                </fields>
+                <fields>
+                    <name>input_Registered_Address</name>
+                </fields>
+                <fields>
+                    <name>input_Tax_ID_KYC</name>
+                </fields>
+                <fields>
+                    <name>kyc_context_panel</name>
+                </fields>
+                <name>Screen_KYC_Review</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_KYC_Saved</name>
+                </fields>
+                <name>Screen_KYC_Saved</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_KYC_Warning_Msg</name>
+                </fields>
+                <fields>
+                    <name>inp_KYC_Proceed_Anyway</name>
+                </fields>
+                <name>Screen_KYC_Warning</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Legal_Pending</name>
+                </fields>
+                <name>Screen_Legal_Pending</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Rejected_State</name>
+                </fields>
+                <name>Screen_Rejected_State</name>
+            </screens>
+        </flows>
+        <fullName>Account_Screen_FinanceApproval</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>choice_KYC_Approve</name>
+            </choices>
+            <choices>
+                <name>choice_KYC_Reject</name>
+            </choices>
+            <choices>
+                <name>choice_Waiver_GroupFinance</name>
+            </choices>
+            <choices>
+                <name>choice_Waiver_LegalReview</name>
+            </choices>
+            <choices>
+                <name>choice_Waiver_None</name>
+            </choices>
+            <choices>
+                <name>choice_Waiver_Standard</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>display_Already_Approved</name>
+                </fields>
+                <name>Screen_Already_Approved</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Approval_Complete</name>
+                </fields>
+                <name>Screen_Approval_Complete</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>credit_context_panel</name>
+                </fields>
+                <fields>
+                    <name>input_Approved_Date</name>
+                </fields>
+                <fields>
+                    <name>input_CreditLimit_MRC</name>
+                </fields>
+                <fields>
+                    <name>input_CreditLimit_NRC</name>
+                </fields>
+                <fields>
+                    <name>input_Waiver_Type</name>
+                </fields>
+                <name>Screen_Credit_Decision</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_DnB_Not_Done</name>
+                </fields>
+                <name>Screen_DnB_Not_Done</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>error_message_display</name>
+                </fields>
+                <name>Screen_Flow_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_KYC_Rejected_Confirm</name>
+                </fields>
+                <name>Screen_KYC_Rejected_Confirm</name>
+            </screens>
+            <screens>
+                <fields>
+                    <inputParameters>
+                        <name>approveLabel</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>rejectLabel</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>saveLabel</name>
+                        <value/>
+                    </inputParameters>
+                    <name>comp_approval_buttons</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>cardSubtitle</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>cardTitle</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>objectApiName</name>
+                        <value/>
+                    </inputParameters>
+                    <name>comp_kyc_doc_upload</name>
+                </fields>
+                <fields>
+                    <name>input_KYC_ApprovedDate</name>
+                </fields>
+                <fields>
+                    <name>input_KYC_Notes</name>
+                </fields>
+                <fields>
+                    <name>input_Legal_Entity_Name</name>
+                </fields>
+                <fields>
+                    <name>input_Local_Entity_Name</name>
+                </fields>
+                <fields>
+                    <name>input_Registered_Address</name>
+                </fields>
+                <fields>
+                    <name>input_Tax_ID</name>
+                </fields>
+                <fields>
+                    <name>kyc_context_panel</name>
+                </fields>
+                <name>Screen_KYC_Review</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_KYC_Saved</name>
+                </fields>
+                <name>Screen_KYC_Saved</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Legal_Review_Required</name>
+                </fields>
+                <name>Screen_Legal_Review_Required</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Rejected_State</name>
+                </fields>
+                <name>Screen_Rejected_State</name>
+            </screens>
+        </flows>
+        <fullName>Account_Screen_KYC_Check</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>choice_Legal_Cleared</name>
+            </choices>
+            <choices>
+                <name>choice_Legal_Rejected</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>error_message_display</name>
+                </fields>
+                <name>Screen_Flow_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Legal_Cleared</name>
+                </fields>
+                <name>Screen_Legal_Cleared_Confirm</name>
+            </screens>
+            <screens>
+                <fields>
+                    <inputParameters>
+                        <name>cardSubtitle</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>cardTitle</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>objectApiName</name>
+                        <value/>
+                    </inputParameters>
+                    <name>comp_legal_doc_upload</name>
+                </fields>
+                <fields>
+                    <name>disp_Legal_Context</name>
+                </fields>
+                <fields>
+                    <name>inp_Legal_Decision</name>
+                </fields>
+                <fields>
+                    <name>inp_Legal_Notes</name>
+                </fields>
+                <name>Screen_Legal_Decision</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Legal_Rejected</name>
+                </fields>
+                <name>Screen_Legal_Rejected_Confirm</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Not_Applicable</name>
+                </fields>
+                <name>Screen_Not_Applicable</name>
+            </screens>
+        </flows>
+        <fullName>Account_Screen_LegalResolution</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>error_message_display</name>
+                </fields>
+                <name>Screen_Flow_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>input_OperationCountry</name>
+                </fields>
+                <fields>
+                    <name>input_Segment</name>
+                </fields>
+                <fields>
+                    <name>input_StrategicFlag</name>
+                </fields>
+                <fields>
+                    <name>input_SubSegment</name>
+                </fields>
+                <fields>
+                    <name>input_TaxID</name>
+                </fields>
+                <name>Screen_QualifyAccount</name>
+            </screens>
+        </flows>
+        <fullName>Account_Screen_QualifyAccount</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>input_DepositAmount</name>
+                </fields>
+                <fields>
+                    <name>input_DepositInvoiceRef</name>
+                </fields>
+                <fields>
+                    <name>input_DepositReceived</name>
+                </fields>
+                <name>Screen_SecurityDeposit</name>
+            </screens>
+        </flows>
+        <fullName>Account_Screen_RecordSecurityDeposit</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>ch_BillingAddress</name>
+            </choices>
+            <choices>
+                <name>ch_DESubsidiary</name>
+            </choices>
+            <choices>
+                <name>ch_LegalName</name>
+            </choices>
+            <choices>
+                <name>ch_LocalName</name>
+            </choices>
+            <choices>
+                <name>ch_TaxExemption</name>
+            </choices>
+            <choices>
+                <name>ch_TaxID</name>
+            </choices>
+            <choices>
+                <name>ch_UEN</name>
+            </choices>
+            <choices>
+                <name>ch_VAT</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>confText</name>
+                </fields>
+                <name>Screen_Confirmation</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_MDCError</name>
+                </fields>
+                <name>Screen_MDCError</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>inp_fieldToChange</name>
+                </fields>
+                <fields>
+                    <name>inp_newValue</name>
+                </fields>
+                <fields>
+                    <name>inp_reason</name>
+                </fields>
+                <fields>
+                    <name>mdcInfo</name>
+                </fields>
+                <name>Screen_SelectField</name>
+            </screens>
+            <textTemplates>
+                <name>tt_TaskDescription</name>
+            </textTemplates>
+        </flows>
+        <fullName>Account_Screen_RequestMasterDataChange</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>BillingAccount_BeforeSave_DefaultChargePresentment</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>ch_CPP_Standard</name>
+            </choices>
+            <choices>
+                <name>ch_CPP_Summary</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Australia</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Austria</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Bangladesh</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Belgium</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Canada</name>
+            </choices>
+            <choices>
+                <name>ch_Country_CaymanIslands</name>
+            </choices>
+            <choices>
+                <name>ch_Country_China</name>
+            </choices>
+            <choices>
+                <name>ch_Country_HongKong</name>
+            </choices>
+            <choices>
+                <name>ch_Country_India</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Indonesia</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Ireland</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Italy</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Japan</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Korea</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Lithuania</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Luxembourg</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Malaysia</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Netherlands</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Panama</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Philippines</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Singapore</name>
+            </choices>
+            <choices>
+                <name>ch_Country_SouthKorea</name>
+            </choices>
+            <choices>
+                <name>ch_Country_SriLanka</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Switzerland</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Taiwan</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Thailand</name>
+            </choices>
+            <choices>
+                <name>ch_Country_UAE</name>
+            </choices>
+            <choices>
+                <name>ch_Country_UK</name>
+            </choices>
+            <choices>
+                <name>ch_Country_US</name>
+            </choices>
+            <choices>
+                <name>ch_Country_Vietnam</name>
+            </choices>
+            <choices>
+                <name>ch_Curr_CNY</name>
+            </choices>
+            <choices>
+                <name>ch_Curr_HKD</name>
+            </choices>
+            <choices>
+                <name>ch_Curr_IDR</name>
+            </choices>
+            <choices>
+                <name>ch_Curr_INR</name>
+            </choices>
+            <choices>
+                <name>ch_Curr_JPY</name>
+            </choices>
+            <choices>
+                <name>ch_Curr_KRW</name>
+            </choices>
+            <choices>
+                <name>ch_Curr_Local</name>
+            </choices>
+            <choices>
+                <name>ch_Curr_MYR</name>
+            </choices>
+            <choices>
+                <name>ch_Curr_PHP</name>
+            </choices>
+            <choices>
+                <name>ch_Curr_SGD</name>
+            </choices>
+            <choices>
+                <name>ch_Curr_THB</name>
+            </choices>
+            <choices>
+                <name>ch_Curr_USD</name>
+            </choices>
+            <choices>
+                <name>ch_Deliv_Online</name>
+            </choices>
+            <choices>
+                <name>ch_Deliv_Paper</name>
+            </choices>
+            <choices>
+                <name>ch_Freq_HalfYearly</name>
+            </choices>
+            <choices>
+                <name>ch_Freq_Monthly</name>
+            </choices>
+            <choices>
+                <name>ch_Freq_Quarterly</name>
+            </choices>
+            <choices>
+                <name>ch_Freq_Yearly</name>
+            </choices>
+            <choices>
+                <name>ch_Pres_CustomerRemarks</name>
+            </choices>
+            <choices>
+                <name>ch_Pres_EdgeDefault</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>Copy_1_of_disp_DeliveryError</name>
+                </fields>
+                <name>Invoice_Presentment_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Screen_BANConfig_Section1</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>width</name>
+                        <value/>
+                    </inputParameters>
+                    <name>Screen_BANConfig_Section1_Column1</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>width</name>
+                        <value/>
+                    </inputParameters>
+                    <name>Screen_BANConfig_Section1_Column2</name>
+                </fields>
+                <fields>
+                    <name>disp_AccountInfo</name>
+                </fields>
+                <fields>
+                    <name>disp_ChargePeriodPresentment</name>
+                </fields>
+                <fields>
+                    <name>disp_CurrencyLocked</name>
+                </fields>
+                <fields>
+                    <name>disp_CurrencyTagged</name>
+                </fields>
+                <fields>
+                    <name>disp_SBIWarning</name>
+                </fields>
+                <fields>
+                    <name>inp_AdditionalEmail</name>
+                    <validationRule/>
+                </fields>
+                <fields>
+                    <name>inp_BANIdLabel</name>
+                </fields>
+                <fields>
+                    <name>inp_BANIdReference</name>
+                </fields>
+                <fields>
+                    <name>inp_BillingCity</name>
+                </fields>
+                <fields>
+                    <name>inp_BillingContact</name>
+                </fields>
+                <fields>
+                    <name>inp_BillingCountry</name>
+                </fields>
+                <fields>
+                    <name>inp_BillingStreet</name>
+                </fields>
+                <fields>
+                    <name>inp_Currency</name>
+                </fields>
+                <fields>
+                    <name>inp_DeliveryMode</name>
+                </fields>
+                <fields>
+                    <name>inp_DifferentInvoiceCurrency</name>
+                </fields>
+                <fields>
+                    <name>inp_InvoiceFrequency</name>
+                </fields>
+                <fields>
+                    <name>inp_InvoicePresentment</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>fieldApiName</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>objectApiName</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>recordId</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>required</name>
+                        <value/>
+                    </inputParameters>
+                    <name>inp_Subsidiary</name>
+                </fields>
+                <name>Screen_BANConfig</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_DeliveryError</name>
+                </fields>
+                <name>Screen_DeliveryModeError</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>error_message_display</name>
+                </fields>
+                <name>Screen_Flow_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_Success</name>
+                </fields>
+                <name>Screen_Success</name>
+            </screens>
+        </flows>
+        <fullName>BillingAccount_Screen_CreateBAN</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>disp_Confirm</name>
+                </fields>
+                <fields>
+                    <name>inp_Comments</name>
+                </fields>
+                <name>Screen_Confirm</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_Error</name>
+                </fields>
+                <name>Screen_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_Success</name>
+                </fields>
+                <name>Screen_Submitted</name>
+            </screens>
+        </flows>
+        <fullName>BillingAccount_Screen_SubmitForApproval</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>Competitor</name>
+            </choices>
+            <choices>
+                <name>NoBudget</name>
+            </choices>
+            <choices>
+                <name>Unresponsive</name>
+            </choices>
+            <choices>
+                <name>WrongFit</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>DisqNotes</name>
+                </fields>
+                <fields>
+                    <name>DisqReason</name>
+                </fields>
+                <name>Screen_Reason</name>
+            </screens>
+        </flows>
+        <fullName>DE_Lead_Disqualification_Screen_Flow</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>DE_Opportunity_Auto_Name</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>CompetitorWon</name>
+            </choices>
+            <choices>
+                <name>NoBudget</name>
+            </choices>
+            <choices>
+                <name>NoDecision</name>
+            </choices>
+            <choices>
+                <name>OtherLoss</name>
+            </choices>
+            <choices>
+                <name>TechReq</name>
+            </choices>
+            <choices>
+                <name>Timing</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>LossNotes</name>
+                </fields>
+                <fields>
+                    <name>LossReason</name>
+                </fields>
+                <name>Screen_Loss</name>
+            </screens>
+        </flows>
+        <fullName>DE_Opportunity_Lost_Screen_Flow</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>customPricebookBuilderComp</name>
+                </fields>
+                <name>screenCustomPricebook</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>msgError</name>
+                </fields>
+                <name>screenError</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>msgNoSite</name>
+                </fields>
+                <name>screenNoSite</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>productSelectorComp</name>
+                </fields>
+                <name>screenSelectProducts</name>
+            </screens>
+        </flows>
+        <fullName>Discover_Products</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <customErrorMessages>
+                <developerName>Tax_ID_Required_Error</developerName>
+                <field>Tax_ID__c</field>
+            </customErrorMessages>
+        </flows>
+        <fullName>Finance_Approval_Notifier</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>KYC_Annual_Recheck</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Lead_AfterSave_DuplicateCheck</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Lead_AfterSave_InterconnectNotify</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Lead_BeforeSave_CurrencyDefault</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Lead_BeforeSave_DefaultAccountType</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Lead_BeforeSave_DefaultLastName</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Lead_BeforeSave_QueueAssignment</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Lead_Before_Save_Disqualified_Duplicate_Set_Status</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>Choice_Cancel</name>
+            </choices>
+            <choices>
+                <name>Choice_CreateNew</name>
+            </choices>
+            <choices>
+                <name>Choice_UseExisting</name>
+            </choices>
+            <screens>
+                <fields>
+                    <inputParameters>
+                        <name>recordId</name>
+                        <value/>
+                    </inputParameters>
+                    <name>redirectTOconvertedContact</name>
+                </fields>
+                <name>RedirectContact</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Cancelled_Display</name>
+                </fields>
+                <name>Screen_Convert_Cancelled</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Confirm_Header</name>
+                </fields>
+                <name>Screen_Convert_Confirmation</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Fault_Display</name>
+                </fields>
+                <name>Screen_Convert_Fault</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Opp_Row_10</name>
+                </fields>
+                <fields>
+                    <name>Opp_Row_11</name>
+                </fields>
+                <fields>
+                    <name>Opp_Row_12</name>
+                </fields>
+                <fields>
+                    <name>Opp_Row_2</name>
+                </fields>
+                <fields>
+                    <name>Opp_Row_3</name>
+                </fields>
+                <fields>
+                    <name>Opp_Row_4</name>
+                </fields>
+                <fields>
+                    <name>Opp_Row_5</name>
+                </fields>
+                <fields>
+                    <name>Opp_Row_6</name>
+                </fields>
+                <fields>
+                    <name>Opp_Row_7</name>
+                </fields>
+                <fields>
+                    <name>Opp_Row_8</name>
+                </fields>
+                <fields>
+                    <name>Opp_Row_9</name>
+                </fields>
+                <fields>
+                    <name>Success_Main</name>
+                </fields>
+                <name>Screen_Convert_Success</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Duplicate_Choice</name>
+                </fields>
+                <fields>
+                    <name>Duplicate_Info</name>
+                </fields>
+                <name>Screen_Duplicate_Choice</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Missing_Country_Display</name>
+                </fields>
+                <name>Screen_Missing_Target_Country</name>
+            </screens>
+        </flows>
+        <fullName>Lead_Convert_MultiCountryConversion</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>Display_Error</name>
+                </fields>
+                <name>Screen_Not_Disqualified</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Display_Reopen_Info</name>
+                </fields>
+                <fields>
+                    <name>inp_ReopenReason</name>
+                </fields>
+                <name>Screen_Reopen</name>
+            </screens>
+        </flows>
+        <fullName>Lead_Screen_ReopenDisqualified</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>On_Void_Asset_Update</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>On_Void_Inventory_Update</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Opportunity_AfterSave_AutoCreateQuote</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Opportunity_BeforeSave_AssignSE</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Opportunity_BeforeSave_CurrencyFromCountry</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Opportunity_BeforeSave_DEEntity</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Opportunity_BeforeSave_DefaultSplits</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Opportunity_BeforeSave_SetPrimaryQuote</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <customErrorMessages>
+                <developerName>Error_Stage2_ProductInterest</developerName>
+            </customErrorMessages>
+            <customErrorMessages>
+                <developerName>Error_Stage1_Required</developerName>
+            </customErrorMessages>
+            <customErrorMessages>
+                <developerName>Error_Stage9_Required</developerName>
+            </customErrorMessages>
+        </flows>
+        <fullName>Opportunity_BeforeSave_StageGate</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Opportunity_BeforeSave_Subsidiary</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Opportunity_Before_Save_Assign_Sales_Team</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Opportunity_Before_Save_Set_Forecast_Status</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>Choice_BizUser</name>
+            </choices>
+            <choices>
+                <name>Choice_Champion</name>
+            </choices>
+            <choices>
+                <name>Choice_CompKnownConfirmed</name>
+            </choices>
+            <choices>
+                <name>Choice_CompKnownUnconfirmed</name>
+            </choices>
+            <choices>
+                <name>Choice_CompUnknown</name>
+            </choices>
+            <choices>
+                <name>Choice_DecisionMaker</name>
+            </choices>
+            <choices>
+                <name>Choice_EconBuyer</name>
+            </choices>
+            <choices>
+                <name>Choice_EconDecisionMaker</name>
+            </choices>
+            <choices>
+                <name>Choice_Evaluator</name>
+            </choices>
+            <choices>
+                <name>Choice_ExecSponsor</name>
+            </choices>
+            <choices>
+                <name>Choice_InDiscussion</name>
+            </choices>
+            <choices>
+                <name>Choice_Influencer</name>
+            </choices>
+            <choices>
+                <name>Choice_MeddpiccKnownConfirmed</name>
+            </choices>
+            <choices>
+                <name>Choice_MeddpiccKnownUnconfirmed</name>
+            </choices>
+            <choices>
+                <name>Choice_MeddpiccUnknown</name>
+            </choices>
+            <choices>
+                <name>Choice_ModeCompetition</name>
+            </choices>
+            <choices>
+                <name>Choice_ModeContact</name>
+            </choices>
+            <choices>
+                <name>Choice_ModePartner</name>
+            </choices>
+            <choices>
+                <name>Choice_Neutral</name>
+            </choices>
+            <choices>
+                <name>Choice_NotContacted</name>
+            </choices>
+            <choices>
+                <name>Choice_Other</name>
+            </choices>
+            <choices>
+                <name>Choice_Resistant</name>
+            </choices>
+            <choices>
+                <name>Choice_Supportive</name>
+            </choices>
+            <choices>
+                <name>Choice_TechBuyer</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>Field_AddMeddpiccSt</name>
+                </fields>
+                <fields>
+                    <name>Field_ContactPicker</name>
+                </fields>
+                <fields>
+                    <name>Field_ExistingStakeholders</name>
+                </fields>
+                <fields>
+                    <name>Header_Add</name>
+                </fields>
+                <name>Screen_Add</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Field_MeddpiccStatus</name>
+                </fields>
+                <fields>
+                    <name>Field_Role</name>
+                </fields>
+                <fields>
+                    <name>Field_Status</name>
+                </fields>
+                <name>Screen_AddRole</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Field_CompNotes</name>
+                </fields>
+                <fields>
+                    <name>Field_CompStatus</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>allowCreate</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>recordTypeName</name>
+                        <value/>
+                    </inputParameters>
+                    <name>Field_CompetitorAccount</name>
+                </fields>
+                <name>Screen_Competition</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Field_NcMeddpiccStatus</name>
+                </fields>
+                <fields>
+                    <name>Field_NcRole</name>
+                </fields>
+                <fields>
+                    <name>Field_NcStatus</name>
+                </fields>
+                <fields>
+                    <name>Field_NewEmail</name>
+                </fields>
+                <fields>
+                    <name>Field_NewFirstName</name>
+                </fields>
+                <fields>
+                    <name>Field_NewLastName</name>
+                </fields>
+                <fields>
+                    <name>Field_NewTitle</name>
+                </fields>
+                <fields>
+                    <name>Header_CreateContact</name>
+                </fields>
+                <name>Screen_CreateContact</name>
+            </screens>
+            <screens>
+                <fields>
+                    <inputParameters>
+                        <name>allowCreate</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>recordTypeName</name>
+                        <value/>
+                    </inputParameters>
+                    <name>Field_ChannelPartner</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>allowCreate</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>recordTypeName</name>
+                        <value/>
+                    </inputParameters>
+                    <name>Field_ReferralPartner</name>
+                </fields>
+                <name>Screen_Partner</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Field_Mode</name>
+                </fields>
+                <name>Screen_SelectMode</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Text_Success</name>
+                </fields>
+                <name>Screen_Success</name>
+            </screens>
+        </flows>
+        <fullName>Opportunity_ManageStakeholders</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Opportunity_Name_Auto</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>disp_Error</name>
+                </fields>
+                <name>Screen_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>Screen_Fields_Section1</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>width</name>
+                        <value/>
+                    </inputParameters>
+                    <name>Screen_Fields_Section1_Column1</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>width</name>
+                        <value/>
+                    </inputParameters>
+                    <name>Screen_Fields_Section1_Column2</name>
+                </fields>
+                <fields>
+                    <name>disp_MissingError</name>
+                </fields>
+                <fields>
+                    <name>disp_OppCurrency</name>
+                </fields>
+                <fields>
+                    <name>el_0</name>
+                </fields>
+                <fields>
+                    <name>el_1</name>
+                </fields>
+                <fields>
+                    <name>el_2</name>
+                </fields>
+                <fields>
+                    <name>el_3</name>
+                </fields>
+                <fields>
+                    <name>el_4</name>
+                </fields>
+                <fields>
+                    <name>el_5</name>
+                </fields>
+                <fields>
+                    <name>el_6</name>
+                </fields>
+                <fields>
+                    <name>inp_Cab</name>
+                </fields>
+                <fields>
+                    <name>inp_MRC</name>
+                </fields>
+                <fields>
+                    <name>inp_NRC</name>
+                </fields>
+                <fields>
+                    <name>inp_kVA</name>
+                </fields>
+                <fields>
+                    <name>space</name>
+                </fields>
+                <name>Screen_Fields</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>lwc_Navigate</name>
+                </fields>
+                <name>Screen_Redirect</name>
+            </screens>
+        </flows>
+        <fullName>Opportunity_Screen_AdvanceToProspect</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>disp_Error</name>
+                </fields>
+                <name>Screen_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>API</name>
+                </fields>
+                <fields>
+                    <name>Screen_Fields_Section1</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>width</name>
+                        <value/>
+                    </inputParameters>
+                    <name>Screen_Fields_Section1_Column1</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>width</name>
+                        <value/>
+                    </inputParameters>
+                    <name>Screen_Fields_Section1_Column2</name>
+                </fields>
+                <fields>
+                    <name>disp_HallMismatch</name>
+                </fields>
+                <fields>
+                    <name>disp_Intro</name>
+                </fields>
+                <fields>
+                    <name>disp_OppCurrency</name>
+                </fields>
+                <fields>
+                    <name>el_0</name>
+                </fields>
+                <fields>
+                    <name>el_1</name>
+                </fields>
+                <fields>
+                    <name>el_2</name>
+                </fields>
+                <fields>
+                    <name>el_3</name>
+                </fields>
+                <fields>
+                    <name>el_4</name>
+                </fields>
+                <fields>
+                    <name>inp_ContractTerm</name>
+                </fields>
+                <fields>
+                    <name>inp_ReqDeliveryDate</name>
+                </fields>
+                <fields>
+                    <name>note_to_users</name>
+                </fields>
+                <name>Screen_Fields</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_QuoteNotFound</name>
+                </fields>
+                <name>Screen_QuoteNotFound</name>
+            </screens>
+            <screens>
+                <fields>
+                    <inputParameters>
+                        <name>recordId</name>
+                        <value/>
+                    </inputParameters>
+                    <name>lwc_Navigate</name>
+                </fields>
+                <name>Screen_Redirect</name>
+            </screens>
+        </flows>
+        <fullName>Opportunity_Screen_AdvanceToQuote</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>Choice_CNY</name>
+            </choices>
+            <choices>
+                <name>Choice_HKD</name>
+            </choices>
+            <choices>
+                <name>Choice_IDR</name>
+            </choices>
+            <choices>
+                <name>Choice_INR</name>
+            </choices>
+            <choices>
+                <name>Choice_JPY</name>
+            </choices>
+            <choices>
+                <name>Choice_KRW</name>
+            </choices>
+            <choices>
+                <name>Choice_MYR</name>
+            </choices>
+            <choices>
+                <name>Choice_PHP</name>
+            </choices>
+            <choices>
+                <name>Choice_SGD</name>
+            </choices>
+            <choices>
+                <name>Choice_THB</name>
+            </choices>
+            <choices>
+                <name>Choice_USD</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>Screen_NewOpp_Section1</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>width</name>
+                        <value/>
+                    </inputParameters>
+                    <name>Screen_NewOpp_Section1_Column1</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>width</name>
+                        <value/>
+                    </inputParameters>
+                    <name>Screen_NewOpp_Section1_Column2</name>
+                </fields>
+                <fields>
+                    <name>disp_FaultBanner</name>
+                </fields>
+                <fields>
+                    <name>disp_Intro</name>
+                </fields>
+                <fields>
+                    <name>el_0</name>
+                </fields>
+                <fields>
+                    <name>el_1</name>
+                </fields>
+                <fields>
+                    <name>el_2</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>fieldApiName</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>objectApiName</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>recordId</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>required</name>
+                        <value/>
+                    </inputParameters>
+                    <name>inp_Account</name>
+                </fields>
+                <fields>
+                    <name>inp_BookingBucket</name>
+                </fields>
+                <name>Screen_NewOpp</name>
+            </screens>
+            <screens>
+                <fields>
+                    <inputParameters>
+                        <name>recordId</name>
+                        <value/>
+                    </inputParameters>
+                    <name>lwc_Navigate</name>
+                </fields>
+                <name>Screen_Redirect</name>
+            </screens>
+        </flows>
+        <fullName>Opportunity_Screen_NewOpportunity</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>disp_Error</name>
+                </fields>
+                <name>Screen_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_Intro</name>
+                </fields>
+                <fields>
+                    <name>el_0</name>
+                </fields>
+                <fields>
+                    <name>el_1</name>
+                </fields>
+                <fields>
+                    <name>el_2</name>
+                </fields>
+                <fields>
+                    <name>el_3</name>
+                </fields>
+                <fields>
+                    <name>el_4</name>
+                </fields>
+                <name>Screen_NewQuote</name>
+            </screens>
+            <screens>
+                <fields>
+                    <inputParameters>
+                        <name>recordId</name>
+                        <value/>
+                    </inputParameters>
+                    <name>navigateToQuote</name>
+                </fields>
+                <name>Screen_Redirect</name>
+            </screens>
+        </flows>
+        <fullName>Opportunity_Screen_NewQuote</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>Display_Instructions</name>
+                </fields>
+                <fields>
+                    <name>inp_DRNotes</name>
+                </fields>
+                <name>Screen_Confirm</name>
+            </screens>
+        </flows>
+        <fullName>Opportunity_Screen_RequestDealReview</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>display_ResurrectContext</name>
+                </fields>
+                <fields>
+                    <name>input_ResurrectReason</name>
+                </fields>
+                <name>Screen_Resurrect_Details</name>
+            </screens>
+        </flows>
+        <fullName>Opportunity_Screen_Resurrect</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>ch_BestCase</name>
+            </choices>
+            <choices>
+                <name>ch_Commit</name>
+            </choices>
+            <choices>
+                <name>ch_Pipeline</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>Display_CurrentForecast</name>
+                </fields>
+                <fields>
+                    <name>inp_ForecastCategory</name>
+                </fields>
+                <name>Screen_UpdateForecast</name>
+            </screens>
+        </flows>
+        <fullName>Opportunity_Screen_UpdateForecast</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>comp_AWS</name>
+            </choices>
+            <choices>
+                <name>comp_AirTrunk</name>
+            </choices>
+            <choices>
+                <name>comp_Azure</name>
+            </choices>
+            <choices>
+                <name>comp_Equinix</name>
+            </choices>
+            <choices>
+                <name>comp_GCP</name>
+            </choices>
+            <choices>
+                <name>comp_NTT</name>
+            </choices>
+            <choices>
+                <name>comp_Other</name>
+            </choices>
+            <choices>
+                <name>comp_STT</name>
+            </choices>
+            <choices>
+                <name>comp_Singtel</name>
+            </choices>
+            <choices>
+                <name>duplicated</name>
+            </choices>
+            <choices>
+                <name>lr_CompetitorDecision</name>
+            </choices>
+            <choices>
+                <name>lr_Internal</name>
+            </choices>
+            <choices>
+                <name>lr_Location</name>
+            </choices>
+            <choices>
+                <name>lr_NoBudget</name>
+            </choices>
+            <choices>
+                <name>lr_NoDecision</name>
+            </choices>
+            <choices>
+                <name>lr_Price</name>
+            </choices>
+            <choices>
+                <name>lr_Relationship</name>
+            </choices>
+            <choices>
+                <name>lr_SpeedDelivery</name>
+            </choices>
+            <choices>
+                <name>lr_TechnicalFit</name>
+            </choices>
+            <choices>
+                <name>noBid</name>
+            </choices>
+            <choices>
+                <name>postponsed_Cancelled</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>display_CompetitorPrompt</name>
+                </fields>
+                <fields>
+                    <name>input_Competitor</name>
+                </fields>
+                <name>Screen_Competitor</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_LossError</name>
+                </fields>
+                <name>Screen_LossError</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_OppName</name>
+                </fields>
+                <fields>
+                    <name>input_LossNotes</name>
+                </fields>
+                <fields>
+                    <name>input_LossReason</name>
+                </fields>
+                <name>Screen_Loss_Details</name>
+            </screens>
+        </flows>
+        <fullName>Opportunity_Screen_WinLoss</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Order_AfterSave_CancelledOpportunity</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Order_AfterSave_CancelledStage</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Order_AfterSave_CreateAssets</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Order_AfterSave_WonAutoClose</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Order_BeforeSave_SetRemainingTerm</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>txt_Confirm</name>
+                </fields>
+                <name>Screen_Confirm</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>txt_Done</name>
+                </fields>
+                <name>Screen_Done</name>
+            </screens>
+        </flows>
+        <fullName>Order_Screen_ActivateAssets</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>choice_CustomerRequest</name>
+            </choices>
+            <choices>
+                <name>choice_DuplicateOrder</name>
+            </choices>
+            <choices>
+                <name>choice_Error</name>
+            </choices>
+            <choices>
+                <name>choice_NonPayment</name>
+            </choices>
+            <choices>
+                <name>choice_Other</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>lbl_Aborted</name>
+                </fields>
+                <name>Screen_Aborted</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>chk_Confirm</name>
+                </fields>
+                <fields>
+                    <name>inp_CancellationNotes</name>
+                </fields>
+                <fields>
+                    <name>inp_CancellationReason</name>
+                </fields>
+                <fields>
+                    <name>lbl_Warning</name>
+                </fields>
+                <name>Screen_CancelDetails</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_CancelError</name>
+                </fields>
+                <name>Screen_CancelError</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>lbl_Success</name>
+                </fields>
+                <name>Screen_Cancelled</name>
+            </screens>
+        </flows>
+        <fullName>Order_Screen_CancelOrder</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>display_Cancelled</name>
+                </fields>
+                <name>Screen_Cancelled</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_ConfirmError</name>
+                </fields>
+                <name>Screen_ConfirmError</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_GateFailures</name>
+                </fields>
+                <name>Screen_Gate_Failures</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>chk_ConfirmOrder</name>
+                </fields>
+                <fields>
+                    <name>display_OrderSummary</name>
+                </fields>
+                <fields>
+                    <name>display_ReviewIntro</name>
+                </fields>
+                <fields>
+                    <name>display_Warning</name>
+                </fields>
+                <fields>
+                    <name>inp_ContractTerm</name>
+                </fields>
+                <fields>
+                    <name>inp_RDD</name>
+                </fields>
+                <name>Screen_Review</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Success</name>
+                </fields>
+                <name>Screen_Success</name>
+            </screens>
+        </flows>
+        <fullName>Order_Screen_ConfirmOrder</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>lbl_Cancelled</name>
+                </fields>
+                <name>Screen_Cancelled</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>lbl_NoCountryManager</name>
+                </fields>
+                <name>Screen_NoCountryManager</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>chk_Confirm</name>
+                </fields>
+                <fields>
+                    <name>inp_Comments</name>
+                </fields>
+                <fields>
+                    <name>lbl_Intro</name>
+                </fields>
+                <name>Screen_SubmitDetails</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>lbl_Success</name>
+                </fields>
+                <name>Screen_Success</name>
+            </screens>
+        </flows>
+        <fullName>Order_Screen_SubmitForApproval</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>PricebookEntry_Scheduled_Expiry</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Product_AfterSave_CatalogChangeNotification</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Product_Scheduled_OdooIdNullAlert</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>QuoteLineItem_AfterSave_ApplyKvaPricing</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>QuoteLineItem_AfterSave_BillingModeChange</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>QuoteLineItem_AfterSave_DiscountCheck</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>QuoteLineItem_AfterSave_PairNrcProduct</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>QuoteLineItem_BeforeSave_ReservedDefault</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>QuoteLineItem_BeforeSave_TerminationQty</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>msgAddError</name>
+                </fields>
+                <name>screenAddError</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>msgNoPbe</name>
+                </fields>
+                <name>screenNoPricebookEntry</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>msgNoResults</name>
+                </fields>
+                <name>screenNoResults</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>msgProductAdded</name>
+                </fields>
+                <name>screenProductAdded</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>inputQuantity</name>
+                </fields>
+                <fields>
+                    <name>inputSearchTerm</name>
+                </fields>
+                <fields>
+                    <name>msgInstructions</name>
+                </fields>
+                <name>screenSearch</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>inputSelectedProduct</name>
+                </fields>
+                <fields>
+                    <name>msgSelectInstructions</name>
+                </fields>
+                <name>screenSelectProduct</name>
+            </screens>
+        </flows>
+        <fullName>Quote_Add_Product</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_AfterSave_CancelSiblings</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <customErrorMessages>
+                <developerName>Failed_to_create_SI</developerName>
+            </customErrorMessages>
+            <customErrorMessages>
+                <developerName>Failed_to_Create_SII</developerName>
+            </customErrorMessages>
+            <textTemplates>
+                <name>descriptionMRCNRC</name>
+            </textTemplates>
+            <textTemplates>
+                <name>descriptionTemplate</name>
+            </textTemplates>
+            <textTemplates>
+                <name>descriptionTemplateNRC</name>
+            </textTemplates>
+            <textTemplates>
+                <name>descriptionTemplateOverdue</name>
+            </textTemplates>
+        </flows>
+        <fullName>Quote_AfterSave_CreditLimitApprovalSubmit</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_AfterSave_CreditRollup</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_AfterSave_FinanceApprovalNotifier</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_AfterSave_SBIApprovalSubmit</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_AfterSave_SOFHandler</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_AfterSave_SecurityDepositSI</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_AfterSave_SetAccountFinancePhase</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_AfterSave_SetPrimaryQuote</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_AfterSave_SetQuoteAccountId</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_AfterSave_StageAdvance</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_AfterSave_SyncToOpportunity</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_AfterSave_TagBAN</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_BeforeSave_AutoSetup</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_BeforeSave_ContractEndDate</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_BeforeSave_CreditBlockValidator</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_BeforeSave_InvoiceCurrency</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_BeforeSave_SiteManagers</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>confEscalation</name>
+                </fields>
+                <name>Screen_EscalationSent</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>confReminder</name>
+                </fields>
+                <name>Screen_ReminderSent</name>
+            </screens>
+        </flows>
+        <fullName>Quote_Finance_Override_Reminder</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Quote_Name_Auto</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>ch_CreditAdjust</name>
+            </choices>
+            <choices>
+                <name>ch_Override</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>confAdjust</name>
+                </fields>
+                <name>Screen_AdjustConfirmation</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>blockInfo</name>
+                </fields>
+                <fields>
+                    <name>inp_overrideType</name>
+                </fields>
+                <name>Screen_ChooseOverrideType</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>adjInfo</name>
+                </fields>
+                <fields>
+                    <name>inp_newMRC</name>
+                </fields>
+                <fields>
+                    <name>inp_newNRC</name>
+                </fields>
+                <name>Screen_CreditAdjustDetails</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>confOverride</name>
+                </fields>
+                <name>Screen_OverrideConfirmation</name>
+            </screens>
+        </flows>
+        <fullName>Quote_Request_Finance_Override</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>Copy_1_of_disp_AcceptError</name>
+                </fields>
+                <name>Copy_1_of_Accept_Quote_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_QuoteSummary</name>
+                </fields>
+                <fields>
+                    <name>display_Warning</name>
+                </fields>
+                <fields>
+                    <name>inp_BillingAccountId</name>
+                </fields>
+                <name>Screen_AcceptAndType</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_AcceptError</name>
+                </fields>
+                <name>Screen_AcceptError</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_CapacityError</name>
+                </fields>
+                <name>Screen_CapacityError</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_GenericError</name>
+                </fields>
+                <name>Screen_GenericError</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_OrderNotFound</name>
+                </fields>
+                <name>Screen_OrderNotFound</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_Success</name>
+                </fields>
+                <name>Screen_Success</name>
+            </screens>
+        </flows>
+        <fullName>Quote_Screen_AcceptQuote</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>disp_Error</name>
+                </fields>
+                <name>Screen_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_LinkFailed</name>
+                </fields>
+                <name>Screen_LinkFailed</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_Linked</name>
+                </fields>
+                <name>Screen_Linked</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_NoAccount</name>
+                </fields>
+                <name>Screen_NoAccount</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_NoEligible</name>
+                </fields>
+                <fields>
+                    <name>disp_NoEligible_Pending</name>
+                </fields>
+                <name>Screen_NoEligibleBAN</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_NoQuoteAccount</name>
+                </fields>
+                <name>Screen_NoQuoteAccount</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_PendingBANBlock</name>
+                </fields>
+                <name>Screen_PendingBANBlock</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_HowItWorks</name>
+                </fields>
+                <fields>
+                    <name>disp_PendingNote</name>
+                </fields>
+                <fields>
+                    <name>disp_SelectIntro</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>columns</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>maxRowSelection</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>minRowSelection</name>
+                        <value/>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>selectionMode</name>
+                        <value/>
+                    </inputParameters>
+                    <name>dt_BANs</name>
+                </fields>
+                <name>Screen_SelectBAN</name>
+            </screens>
+        </flows>
+        <fullName>Quote_Screen_CreateBAN</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>Display_Instructions</name>
+                </fields>
+                <name>Screen_Confirm</name>
+            </screens>
+        </flows>
+        <fullName>Quote_Screen_RequestDealReview</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>chk_Proceed</name>
+                </fields>
+                <fields>
+                    <name>txt_ConfirmHeading</name>
+                </fields>
+                <fields>
+                    <name>txt_ConfirmMessage</name>
+                </fields>
+                <name>Screen_Confirm</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>txt_CancelMessage</name>
+                </fields>
+                <name>Screen_NotConfirmed</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>txt_SuccessHeading</name>
+                </fields>
+                <fields>
+                    <name>txt_SuccessMessage</name>
+                </fields>
+                <name>Screen_Success</name>
+            </screens>
+        </flows>
+        <fullName>Quote_Screen_ReviseQuote</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>msg_BookingBucketRequired</name>
+                </fields>
+                <name>Screen_BookingBucketRequired</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_SendError</name>
+                </fields>
+                <name>Screen_SendError</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>el_0</name>
+                </fields>
+                <fields>
+                    <name>el_1</name>
+                </fields>
+                <fields>
+                    <name>msg_QuoteName</name>
+                </fields>
+                <name>Screen_SendToCustomer</name>
+            </screens>
+        </flows>
+        <fullName>Quote_Screen_SendToCustomer</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <screens>
+                <fields>
+                    <name>disp_AutoApproved</name>
+                </fields>
+                <name>Screen_AutoApproved</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_LockWarning</name>
+                </fields>
+                <fields>
+                    <name>disp_QuoteDetails</name>
+                </fields>
+                <fields>
+                    <name>disp_Ready</name>
+                </fields>
+                <fields>
+                    <name>inp_Comments</name>
+                </fields>
+                <name>Screen_Confirm</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_Error</name>
+                </fields>
+                <name>Screen_Error</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_MissingLines</name>
+                </fields>
+                <name>Screen_MissingLines</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_MissingManagers</name>
+                </fields>
+                <name>Screen_MissingManagers</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_MissingRDD</name>
+                </fields>
+                <name>Screen_MissingRDD</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_NotDraft</name>
+                </fields>
+                <name>Screen_NotDraft</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>disp_Success</name>
+                </fields>
+                <name>Screen_Submitted</name>
+            </screens>
+        </flows>
+        <fullName>Quote_Screen_SubmitForReview</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>Removal_of_Quote_Line_Item</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>SpecialInstruction_AfterSave_CreditLimitApproval</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>SpecialInstruction_AfterSave_FinanceReviewNotify</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <customErrorMessages>
+                <developerName>Quote_Locked_CustomError</developerName>
+            </customErrorMessages>
+        </flows>
+        <fullName>SpecialInstruction_AfterSave_UpdateQuoteCount</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows/>
+        <fullName>SpecialInstruction_BeforeSave_SetRecordType</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows>
+            <choices>
+                <name>dt_CreditApplication</name>
+            </choices>
+            <choices>
+                <name>dt_CustomerContract</name>
+            </choices>
+            <choices>
+                <name>dt_DnBReport</name>
+            </choices>
+            <choices>
+                <name>dt_IDDocument</name>
+            </choices>
+            <choices>
+                <name>dt_KYCDocument</name>
+            </choices>
+            <choices>
+                <name>dt_Other</name>
+            </choices>
+            <choices>
+                <name>dt_PurchaseOrder</name>
+            </choices>
+            <choices>
+                <name>dt_Quote</name>
+            </choices>
+            <screens>
+                <fields>
+                    <name>display_Success</name>
+                </fields>
+                <name>Screen_Success</name>
+            </screens>
+            <screens>
+                <fields>
+                    <name>display_Instructions</name>
+                </fields>
+                <fields>
+                    <name>input_DocType</name>
+                </fields>
+                <fields>
+                    <inputParameters>
+                        <name>label</name>
+                        <value/>
+                    </inputParameters>
+                    <name>input_FileUpload</name>
+                </fields>
+                <name>Screen_Upload</name>
+            </screens>
+        </flows>
+        <fullName>UploadDocument_Screen</fullName>
+    </flowDefinitions>
+    <quickActions>
+        <label><!-- Follow Up --></label>
+        <name>Follow_Up</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- LogACall --></label>
+        <name>LogACall</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewAccount --></label>
+        <name>NewAccount</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewCase --></label>
+        <name>NewCase</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewContact --></label>
+        <name>NewContact</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewEvent --></label>
+        <name>NewEvent</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewGroup --></label>
+        <name>NewGroup</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewLead --></label>
+        <name>NewLead</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewOpportunity --></label>
+        <name>NewOpportunity</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewTask --></label>
+        <name>NewTask</name>
+    </quickActions>
+    <reportTypes>
+        <description><!-- Accounts with Activities --></description>
+        <label><!-- Accounts with Activities --></label>
+        <name>Accounts_with_Activities</name>
+        <sections>
+            <label><!-- Accounts --></label>
+            <name>Accounts</name>
+        </sections>
+        <sections>
+            <label><!-- Activities --></label>
+            <name>Activities</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Accounts with Contacts with Daily Engagements --></description>
+        <label><!-- Accounts with Contacts with Daily Engagements --></label>
+        <name>Accounts_with_Contacts_with_Daily_Engagements</name>
+        <sections>
+            <label><!-- Accounts --></label>
+            <name>Accounts</name>
+        </sections>
+        <sections>
+            <label><!-- Contact Daily Metrics --></label>
+            <name>Contact Daily Metrics</name>
+        </sections>
+        <sections>
+            <label><!-- Contacts --></label>
+            <name>Contacts</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Approval History --></description>
+        <label><!-- Approval History --></label>
+        <name>Approval_History</name>
+        <sections>
+            <label><!-- Process Instance --></label>
+            <name>Process Instance</name>
+        </sections>
+        <sections>
+            <label><!-- Process Instance Node --></label>
+            <name>Process Instance Node</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- BAR - Acc, Opportunity, Order, OrderItems --></description>
+        <label><!-- BAR - Acc, Opportunity, Order, OrderItems --></label>
+        <name>BAR_Acc_Opportunity_Order_OrderItems</name>
+        <sections>
+            <label><!-- Accounts --></label>
+            <name>Accounts</name>
+        </sections>
+        <sections>
+            <label><!-- Opportunities --></label>
+            <name>Opportunities</name>
+        </sections>
+        <sections>
+            <label><!-- Order Products --></label>
+            <name>Order Products</name>
+        </sections>
+        <sections>
+            <label><!-- Orders --></label>
+            <name>Orders</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- BAR - Order Header (Opp + Account) --></description>
+        <label><!-- BAR - Order Header (Opp + Account) --></label>
+        <name>BAR_Order_Header</name>
+        <sections>
+            <label><!-- Account --></label>
+            <name>Account</name>
+        </sections>
+        <sections>
+            <label><!-- Opportunity --></label>
+            <name>Opportunity</name>
+        </sections>
+        <sections>
+            <label><!-- Orders --></label>
+            <name>Orders</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Bar - Account, Opportunity, Order, OrderItems --></description>
+        <label><!-- Bar - Account, Opportunity, Order, OrderItems --></label>
+        <name>Bar_Account_Opportunity_Order_OrderItems</name>
+        <sections>
+            <label><!-- Accounts --></label>
+            <name>Accounts</name>
+        </sections>
+        <sections>
+            <label><!-- Opportunities --></label>
+            <name>Opportunities</name>
+        </sections>
+        <sections>
+            <label><!-- Order Products --></label>
+            <name>Order Products</name>
+        </sections>
+        <sections>
+            <label><!-- Orders --></label>
+            <name>Orders</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Cadences &amp; Steps --></description>
+        <label><!-- Cadences &amp; Steps --></label>
+        <name>Cadences_amp_Steps</name>
+        <sections>
+            <label><!-- Cadence Steps --></label>
+            <name>Cadence Steps</name>
+        </sections>
+        <sections>
+            <label><!-- Cadences --></label>
+            <name>Cadences</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Call Script Monthly Engagement --></description>
+        <label><!-- Call Script Monthly Engagement --></label>
+        <name>Call_Script_Monthly_Engagement</name>
+        <sections>
+            <label><!-- Call Script Monthly Metrics --></label>
+            <name>Call Script Monthly Metrics</name>
+        </sections>
+        <sections>
+            <label><!-- Call Scripts --></label>
+            <name>Call Scripts</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Call Script Engagement Report --></description>
+        <label><!-- Call Script Engagement Report --></label>
+        <name>Call_Template</name>
+        <sections>
+            <label><!-- Call Scripts --></label>
+            <name>Call Scripts</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Contacts and Cadence Trackers --></description>
+        <label><!-- Contacts and Cadence Trackers --></label>
+        <name>Contacts_and_Sales_Cadence_Trackers</name>
+        <sections>
+            <label><!-- Cadence Trackers --></label>
+            <name>Cadence Trackers</name>
+        </sections>
+        <sections>
+            <label><!-- Contacts --></label>
+            <name>Contacts</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Contacts with Daily Engagements --></description>
+        <label><!-- Contacts with Daily Engagements --></label>
+        <name>Contacts_with_Daily_Engagements</name>
+        <sections>
+            <label><!-- Contact Daily Metrics --></label>
+            <name>Contact Daily Metrics</name>
+        </sections>
+        <sections>
+            <label><!-- Contacts --></label>
+            <name>Contacts</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Contacts with Monthly Engagements --></description>
+        <label><!-- Contacts with Monthly Engagements --></label>
+        <name>Contacts_with_Monthly_Engagements</name>
+        <sections>
+            <label><!-- Contact Monthly Metrics --></label>
+            <name>Contact Monthly Metrics</name>
+        </sections>
+        <sections>
+            <label><!-- Contacts --></label>
+            <name>Contacts</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- DE - RDD Compare (Order, Quote, Opp) --></description>
+        <label><!-- DE - RDD Compare (Order, Quote, Opp) --></label>
+        <name>DE_RDD_Compare</name>
+        <sections>
+            <label><!-- Opportunity (via Order) --></label>
+            <name>Opportunity (via Order)</name>
+        </sections>
+        <sections>
+            <label><!-- Order --></label>
+            <name>Order</name>
+        </sections>
+        <sections>
+            <label><!-- Quote (via Order) --></label>
+            <name>Quote (via Order)</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Email Template Engagement Report --></description>
+        <label><!-- Email Template Engagement Report --></label>
+        <name>Email_Template</name>
+        <sections>
+            <label><!-- Email Templates --></label>
+            <name>Email Templates</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Email Template Monthly Engagement --></description>
+        <label><!-- Email Template Monthly Engagement --></label>
+        <name>Email_Template_Monthly_Engagement</name>
+        <sections>
+            <label><!-- Email Template Monthly Metrics --></label>
+            <name>Email Template Monthly Metrics</name>
+        </sections>
+        <sections>
+            <label><!-- Email Templates --></label>
+            <name>Email Templates</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Forecasting Items with Historical Trending --></description>
+        <label><!-- Forecasting Items with Historical Trending --></label>
+        <name>Forecasting_Items_with_Historical_Trending</name>
+        <sections>
+            <label><!-- Forecasting Item (Historical) --></label>
+            <name>Forecasting Item (Historical)</name>
+        </sections>
+        <sections>
+            <label><!-- Forecasting Items --></label>
+            <name>Forecasting Items</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Leads With or Without Cadence Trackers --></description>
+        <label><!-- Leads With or Without Cadence Trackers --></label>
+        <name>Leads_With_or_Without_Sales_Cadence_Trackers</name>
+        <sections>
+            <label><!-- Cadence Trackers --></label>
+            <name>Cadence Trackers</name>
+        </sections>
+        <sections>
+            <label><!-- Leads --></label>
+            <name>Leads</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Leads and Cadence Trackers --></description>
+        <label><!-- Leads and Cadence Trackers --></label>
+        <name>Leads_and_Sales_Cadence_Trackers</name>
+        <sections>
+            <label><!-- Cadence Trackers --></label>
+            <name>Cadence Trackers</name>
+        </sections>
+        <sections>
+            <label><!-- Leads --></label>
+            <name>Leads</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Leads with Daily Engagements --></description>
+        <label><!-- Leads with Daily Engagements --></label>
+        <name>Leads_with_Daily_Engagements</name>
+        <sections>
+            <label><!-- Lead Daily Metrics --></label>
+            <name>Lead Daily Metrics</name>
+        </sections>
+        <sections>
+            <label><!-- Leads --></label>
+            <name>Leads</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Leads with Monthly Engagements --></description>
+        <label><!-- Leads with Monthly Engagements --></label>
+        <name>Leads_with_Monthly_Engagements</name>
+        <sections>
+            <label><!-- Lead Monthly Metrics --></label>
+            <name>Lead Monthly Metrics</name>
+        </sections>
+        <sections>
+            <label><!-- Leads --></label>
+            <name>Leads</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Opportunities --></description>
+        <label><!-- Opportunities --></label>
+        <name>Opportunities</name>
+        <sections>
+            <label><!-- Opportunities --></label>
+            <name>Opportunities</name>
+        </sections>
+        <sections>
+            <label><!-- Orders --></label>
+            <name>Orders</name>
+        </sections>
+        <sections>
+            <label><!-- Quotes --></label>
+            <name>Quotes</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Opportunities with Activities --></description>
+        <label><!-- Opportunities with Activities --></label>
+        <name>Opportunities_with_Activities</name>
+        <sections>
+            <label><!-- Activities --></label>
+            <name>Activities</name>
+        </sections>
+        <sections>
+            <label><!-- Opportunities --></label>
+            <name>Opportunities</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Opportunities with Historical Trending --></description>
+        <label><!-- Opportunities with Historical Trending --></label>
+        <name>Opportunities_with_Historical_Trending</name>
+        <sections>
+            <label><!-- Opportunities --></label>
+            <name>Opportunities</name>
+        </sections>
+        <sections>
+            <label><!-- Opportunity (Historical) --></label>
+            <name>Opportunity (Historical)</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Opptys --></description>
+        <label><!-- Opptys --></label>
+        <name>Opptys</name>
+        <sections>
+            <label><!-- Opportunities --></label>
+            <name>Opportunities</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Quote --></description>
+        <label><!-- Quote --></label>
+        <name>Quote</name>
+        <sections>
+            <label><!-- Quote Line Items --></label>
+            <name>Quote Line Items</name>
+        </sections>
+        <sections>
+            <label><!-- Quotes --></label>
+            <name>Quotes</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Cadences &amp; Steps with Monthly Metrics --></description>
+        <label><!-- Cadences &amp; Steps with Monthly Metrics --></label>
+        <name>Sales_Cadences_Steps_with_Monthly_Metrics</name>
+        <sections>
+            <label><!-- Cadence Step Monthly Metrics --></label>
+            <name>Cadence Step Monthly Metrics</name>
+        </sections>
+        <sections>
+            <label><!-- Cadence Steps --></label>
+            <name>Cadence Steps</name>
+        </sections>
+        <sections>
+            <label><!-- Cadences --></label>
+            <name>Cadences</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Cadences &amp; Trackers --></description>
+        <label><!-- Cadences &amp; Trackers --></label>
+        <name>Sales_Cadences_amp_Trackers</name>
+        <sections>
+            <label><!-- Cadence Trackers --></label>
+            <name>Cadence Trackers</name>
+        </sections>
+        <sections>
+            <label><!-- Cadences --></label>
+            <name>Cadences</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Cadences and Trackers (Inner join) --></description>
+        <label><!-- Cadences and Trackers (Inner join) --></label>
+        <name>Sales_Cadences_and_Trackers_Inner_join</name>
+        <sections>
+            <label><!-- Cadence Trackers --></label>
+            <name>Cadence Trackers</name>
+        </sections>
+        <sections>
+            <label><!-- Cadences --></label>
+            <name>Cadences</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- User Activities --></description>
+        <label><!-- User Activities --></label>
+        <name>User_Activities</name>
+        <sections>
+            <label><!-- Activities (Assigned To) --></label>
+            <name>Activities (Assigned To)</name>
+        </sections>
+        <sections>
+            <label><!-- Users --></label>
+            <name>Users</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- User License --></description>
+        <label><!-- User License --></label>
+        <name>User_License</name>
+        <sections>
+            <label><!-- Profile License --></label>
+            <name>Profile License</name>
+        </sections>
+        <sections>
+            <label><!-- Users --></label>
+            <name>Users</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Users with Daily Metrics --></description>
+        <label><!-- Users with Daily Metrics --></label>
+        <name>Users_with_Daily_Metrics</name>
+        <sections>
+            <label><!-- User Daily Metrics --></label>
+            <name>User Daily Metrics</name>
+        </sections>
+        <sections>
+            <label><!-- Users --></label>
+            <name>Users</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Users with Monthly Engagements --></description>
+        <label><!-- Users with Monthly Engagements --></label>
+        <name>Users_with_Monthly_Engagements</name>
+        <sections>
+            <label><!-- User Monthly Metrics --></label>
+            <name>User Monthly Metrics</name>
+        </sections>
+        <sections>
+            <label><!-- Users --></label>
+            <name>Users</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Orchestration Run Logs Spring &apos;24 --></description>
+        <label><!-- Orchestration Run Logs Spring &apos;24 --></label>
+        <name>flow_orchestration_log_ootb_crt_two_four_eight</name>
+        <sections>
+            <label><!-- Orchestration Run Log --></label>
+            <name>Orchestration Run Log</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Orchestration Runs Spring &apos;24 --></description>
+        <label><!-- Orchestration Runs Spring &apos;24 --></label>
+        <name>flow_orchestration_run_ootb_crt_two_four_eight</name>
+        <sections>
+            <label><!-- Orchestration Runs --></label>
+            <name>Orchestration Runs</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Orchestration Stage Runs Spring &apos;24 --></description>
+        <label><!-- Orchestration Stage Runs Spring &apos;24 --></label>
+        <name>flow_orchestration_stage_run_ootb_crt_two_four_eight</name>
+        <sections>
+            <label><!-- Orchestration Stage Runs --></label>
+            <name>Orchestration Stage Runs</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Orchestration Step Runs Spring &apos;24 --></description>
+        <label><!-- Orchestration Step Runs Spring &apos;24 --></label>
+        <name>flow_orchestration_step_run_ootb_crt_two_four_eight</name>
+        <sections>
+            <label><!-- Orchestration Step Runs --></label>
+            <name>Orchestration Step Runs</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Orchestration Work Items Spring &apos;24 --></description>
+        <label><!-- Orchestration Work Items Spring &apos;24 --></label>
+        <name>flow_orchestration_work_item_ootb_crt_two_four_eight</name>
+        <sections>
+            <columns>
+                <label><!-- Orchestration Step Run: Label --></label>
+                <name>Orchestration Step Run: Label</name>
+            </columns>
+            <columns>
+                <label><!-- Orchestration Step Run: Name --></label>
+                <name>Orchestration Step Run: Name</name>
+            </columns>
+            <columns>
+                <label><!-- Orchestration Step Run: Status --></label>
+                <name>Orchestration Step Run: Status</name>
+            </columns>
+            <label><!-- Orchestration Step Runs --></label>
+            <name>Orchestration Step Runs</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Assigned Group or Queue --></label>
+                <name>Assigned Group or Queue</name>
+            </columns>
+            <columns>
+                <label><!-- Assigned User --></label>
+                <name>Assigned User</name>
+            </columns>
+            <label><!-- Orchestration Work Items --></label>
+            <name>Orchestration Work Items</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Screen Flows --></description>
+        <label><!-- Screen Flows --></label>
+        <name>screen_flows_prebuilt_crt</name>
+        <sections>
+            <label><!-- Flow Interview Log Entries --></label>
+            <name>Flow Interview Log Entries</name>
+        </sections>
+        <sections>
+            <label><!-- Flow Interview Logs --></label>
+            <name>Flow Interview Logs</name>
+        </sections>
+    </reportTypes>
+</Translations>

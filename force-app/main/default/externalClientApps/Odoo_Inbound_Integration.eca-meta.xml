@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ExternalClientApplication xmlns="http://soap.sforce.com/2006/04/metadata">
-    <contactEmail>sfdc_api_user@digitaledgedc.com</contactEmail>
-    <distributionState>Local</distributionState>
-    <isProtected>false</isProtected>
-    <label>Odoo Inbound Integration</label>
-    <orgScopedExternalApp>00DIW0000021Fwj:Odoo_Inbound_Integration</orgScopedExternalApp>
-</ExternalClientApplication>
